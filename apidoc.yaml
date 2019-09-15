@@ -1,0 +1,188 @@
+swagger: '2.0'
+
+info:
+  title: Muxi K-Stack
+  version: 1.0.0
+  description: 木犀课栈
+
+host: ...
+basePath: /v1
+tags:
+  - name: course
+    description: course
+  - name: tag
+    description: tag
+
+schemes:
+  - https
+  - http
+
+paths:
+  /course/:
+    get:
+      tags:
+        - course
+      summary: course
+      description: 获取课程信息
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: header
+          name: token
+          description: token
+          required: true
+          type: string
+        - in: header
+          name: userid
+          required: true
+          type: string
+        - in: query
+          name: courseid
+          required: true
+          type: string
+      
+      responses:
+        "200": 
+          description: OK
+          schema:
+            type: object
+            properties:
+              token:
+                type: string
+              courseInfo:
+                type: object
+                properties:
+                  courseName:
+                    type: string
+                    description: 课程名称
+                  coursecategory:
+                    type: string
+                    description: 课程类别
+                  coursecredit:
+                    type: number
+                    description: 学分
+                  star:
+                    type: integer
+                    description: 评价星级
+                  starnumber:
+                    type: integer
+                    description: 评价人数
+                  attendance1:
+                    type: number
+                    description: 经常点名数
+                  attendance2:
+                    type: number
+                    description: 偶尔点名数
+                  attendance3:
+                    type: number
+                    description: 签到点名数
+                  inspection1: 
+                    type: number
+                    description: 闭卷考试数
+                  inspection2: 
+                    type: number
+                    description: 开卷考试数
+                  inspection3: 
+                    type: number
+                    description: 论文考核数
+                  inspection4: 
+                    type: number
+                    description: 无考核数
+                  coursetime:
+                    type: string
+                    description: 上课时间
+                  courseplace:
+                    type: string
+                    description: 上课地点
+                  coursegrade:
+                    type: number
+                    description: 分数段（分段待定）
+                  coursegradenumber:
+                    type: number
+                    description: 样本人数   
+        '401':
+          description: 未授权
+        '404':
+          description: not found
+          
+    post:
+      tags:
+        - course
+      summary: favorite
+      description: 收藏课程
+      parameters:
+        - in: header
+          name: token
+          required: true
+          type: string
+        - in: query
+          name: courseId
+          description: 课程id
+          required: true
+          type: string
+        - in: header
+          name: userId
+          required: true
+          type: string
+      
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+            properties:
+              token:
+                type: string
+        '401':
+          description: 未授权
+        '404':
+          description: not found
+          
+  /tag/:
+    post:
+      tags:
+        - tag
+      summary: tag
+      description: tag数
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: header
+          name: token
+          description: token
+          required: true
+          type: string
+        - in: header
+          name: userid
+          required: true
+          type: string
+        - in: query
+          name: courseid
+          required: true
+          type: string
+        - in: query
+          name: tagid
+          required: true
+          type: string
+      
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+            properties:
+              token:
+                type: string
+              number: 
+                type: number
+        '401':
+          description: 未授权
+        '404':
+          description: not found
+
+
+
