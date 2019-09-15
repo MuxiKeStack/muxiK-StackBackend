@@ -1,0 +1,181 @@
+swagger: '2.0'
+info:
+  title: Muxi K-Stack
+  version: 1.0.0
+  description: 木犀课栈
+
+
+host: ...
+basePath: /v1
+tags:
+  - name: comments
+    description: comments
+  - name: courseTable
+    description: courseTable
+
+schemes:
+  - https
+  - http
+
+paths:
+  /comments/course/:
+    post:
+      tags:
+        - comment
+      summary: 发布评课
+      description: ''
+      parameters:
+        - in: header
+          name: token
+          description: token
+          required: true
+          type: string
+        - in: header
+          name: userId
+          required: true
+          type: string
+        - in: body
+          name: body
+          description: 评课内容
+          required: true
+          schema:
+            $ref: '#/definitions/CourseComments'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              token:
+                type: string
+              courseId:
+                type: string
+              courseCommentId:
+                type: string
+              userId:
+                type: string
+        '405':
+          description: Invalid input
+
+    get:
+      tags:
+        - comment
+      summary: 获取评课详情
+      parameters:
+        - in: header
+          name: token    get:
+      tags:
+        - comment
+      summary: 获取评课详情
+      parameters:
+        - in: header
+          name: token
+          required: true
+          type: string
+        - in: query
+          name: courseId
+          description: 课程id
+          required: true
+          type: string
+        - in: query
+          name: courseCommentId
+          required: true
+          description: 评课id
+          type: string
+        - in: header
+          name: userId
+          required: true
+          type: string
+
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+            properties:
+              token:
+                type: string
+              course:
+                $ref: "#/definitions/CourseComments"
+          required: true
+          type: string
+        - in: query
+          name: courseId
+          description: 课程id
+          required: true
+          type: string
+        - in: query
+          name: courseCommentId
+          required: true
+          description: 评课id
+          type: string
+        - in: header
+          name: userId
+          required: true
+          type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+            properties:
+              token:
+                type: string
+              course:
+                $ref: "#/definitions/CourseComments"
+
+    delete:
+      tags:
+        - comment
+      summary: 删除评课
+      description: ''
+      parameters:
+        - in: header
+          name: token
+          required: true
+          type: string
+        - in: header
+          name: courseId
+          description: Pet object that needs to be added to the store
+          required: true
+          type: string
+        - in: header
+          name: courseCommentId
+          required: true
+          type: string
+        - in: header
+          name: userId
+          required: true
+          type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+            properties:
+              token:
+                type: string
+              code:
+                type: integer
+
+  CourseComments:
+    type: object
+    properties:
+      courseName:
+        type: string
+        description: 课程名称
+      star:
+        type: integer
+        description: 评价星级
+      attendance:
+        type: string
+        description: 考勤方式
+      character:
+        type: string
+        description: 课程特点
+      comment:
+        type: string
+        description: 课程评价
+      anonymity:
+        type: boolean
+        description: 是否匿名
