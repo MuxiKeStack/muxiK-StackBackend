@@ -50,17 +50,21 @@ paths:
       summary: logout
       description: logout
       parameters:
-        - name: data
-          in: body
+        - name: sid
+          in: header
           required: true
           description: logout
-          schema:
-            $ref: '#/definitions/auth.Logout'
+          type: string
+        - name: token
+          in: header
+          required: true
+          description: token
+          type: string
       responses:
         200:
           description: OK
           schema:
-            $ref: '#/definitions/auth.Response'
+            $ref: '#/definitions/ResponseModel'
             
   /remind:
     get:
@@ -71,21 +75,36 @@ paths:
       consumes:
         - application/json
       parameters:
-        - name: data
-          in: body
+        - name: sid
+          in: header
           required: true
           description: logout
-          schema:
-            $ref: '#/definitions/remind.Data'
+          type: string
+        - name: token
+          in: header
+          required: true
+          description: token
+          type: string
           
       responses:
         200:
           description: OK
           schema:
-            $ref: '#/definitions/auth.Response'
+            $ref: '#/definitions/remind.Response'
     
     
 definitions:
+  RequestHeader:  #废弃
+    required: 
+      - sid
+      - token
+    properties:
+      sid:
+        type: string
+        description: student's id
+      token:
+        type: string
+        description: token
   auth.UserModel:
     required: 
       - sid
@@ -99,21 +118,57 @@ definitions:
       password:
         type: string
         description: student's password in one.ccnu.edu.cn
-      login_way:
+      loginWay:
         type: integer
         description: the login way, such as 1 refer to wechat, 2 refer to qq, 3 refer to html5
-      login_cide:
+      loginCode:
         type: string
         description: the login code, it could be wechatid, qqid...
-  auth.Logout:
-    properties:
-      sid:
-        type: string
-      token:
-        type: string
-        description: '{"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1MjgwMTY5MjIsImlkIjowLCJuYmYiOjE1MjgwMTY5MjIsInVzZXJuYW1lIjoiYWRtaW4ifQ.LjxrK9DuAwAzUD8-9v43NzWBN7HXsSLfebw92DKd1JQ"}'
-    type: object
   auth.Response:
+    properties:
+      Code:
+        type: integer
+      Message:
+        type: string
+      Data:
+        type: object
+        properties:
+          token:
+            type: string
+            description: authorization
+  remind.Model:
+    required: 
+      - userId
+      - commentId
+      - isLike
+      - reply
+    properties:
+      userId:
+        type: string
+        description: the id of the person who comment or like your commments.
+      commentId:
+        type: integer
+        description: the id of the comment's id or course comment id
+      isLike:
+        type: boolean
+        description: isn't it like?
+      reply:
+        type: string
+        description: if it's comment, this is comment message 
+  remind.Response:
+    properties:
+      Code: 
+        type: integer
+      Message:
+        type: string
+      Data:
+        type: object
+        properties:
+          data:
+            type: array
+            items:
+              $ref: '#/definitions/remind.Model'
+  ResponseModel:
     required: 
       - Code
       - Message
@@ -125,9 +180,3 @@ definitions:
         type: string
       Data:
         type: object
-  remind.Data:
-    properties:
-      sid: 
-        type: string
-      token:
-        type: string
