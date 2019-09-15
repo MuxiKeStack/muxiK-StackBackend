@@ -4,7 +4,6 @@ info:
   version: 1.0.0
   description: 木犀课栈
 
-
 host: ...
 basePath: /api/v1
 tags:
@@ -141,7 +140,6 @@ paths:
       tags:
         - comment
       summary: 删除评课
-      description: ''
       parameters:
         - in: header
           name: token
@@ -215,7 +213,7 @@ paths:
         '401':
           description: 未授权
 
-  /comments/comments/:
+  /comments/:
     post:
       tags:
         - comment
@@ -317,6 +315,7 @@ paths:
         '401':
           description: 未授权
 
+  /table/{tableId}/:
     delete:
       tags:
         - table
@@ -325,8 +324,9 @@ paths:
         - in: header
           name: token
           type: string
-        - in: header
+        - in: path
           name: tableId
+          required: true
           type: string
         - in: header
           name: userId
@@ -344,7 +344,7 @@ paths:
         '404':
           description: not found
 
-  /table/rename/:
+  /table/{tableId}/rename/:
     put:
       tags:
         - table
@@ -352,18 +352,23 @@ paths:
       parameters:
         - in: header
           name: token
+          required: true
+          type: string
+        - in: path
+          name: tableId
+          required: true
           type: string
         - in: body
           name: data
+          required: true
           schema:
             type: object
             properties:
               newName:
                 type: string
-              tableId:
-                type: string
         - in: header
           name: userId
+          required: true
           type: string
       responses:
         "200":
@@ -378,7 +383,7 @@ paths:
         '404':
           description: not found
 
-  /table/class/:
+  /table/{tableId}/class/{classId}/:
     post:
       tags:
         - table
@@ -387,15 +392,14 @@ paths:
         - in: header
           name: token
           type: string
-        - in: body
-          name: data
-          schema:
-            type: object
-            properties:
-              tableId:
-                type: string
-              classId:
-                type: string
+        - in: path
+          name: tableId
+          required: true
+          type: string
+        - in: path
+          name: classId
+          required: true
+          type: string
         - in: header
           name: userId
           type: string
@@ -421,18 +425,19 @@ paths:
       parameters:
         - in: header
           name: token
+          required: true
           type: string
-        - in: body
-          name: data
-          schema:
-            type: object
-            properties:
-              tableId:
-                type: string
-              classId:
-                type: string
+        - in: path
+          name: tableId
+          required: true
+          type: string
+        - in: path
+          name: classId
+          required: true
+          type: string
         - in: header
           name: userId
+          required: true
           type: string
       responses:
         "200":
@@ -522,21 +527,28 @@ definitions:
       teacher:
         type: string
       place:
-        type: string
-      start:
-          type: integer
-          description: 上课开始时间（start=3表示上午第三节开始）
-      during:
-          type: integer
-          description: 上课持续时间（during=2表示持续2节课）
-      day:
-          type: integer
-          description: 上课星期
-      weeks:
-          type: array
-          description: 上课周次如[1, 2, 3 ... 17]
-          items:
-            type: integer
+        type: array
+        items:
+          type: string
+      time:
+        type: array
+        items:
+          type: object
+          properties:
+            start:
+              type: integer
+              description: 上课开始时间（start=3表示上午第三节开始）
+            during:
+              type: integer
+              description: 上课持续时间（during=2表示持续2节课）
+            day:
+              type: integer
+              description: 上课星期
+            weeks:
+              type: array
+              description: 上课周次如[1, 2, 3 ... 17]
+              items:
+                type: integer
 
   Table:
     type: object
