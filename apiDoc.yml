@@ -1,0 +1,31 @@
+swagger: '2.0'
+info:
+  title: Muxi K-Stack
+  version: 1.0.0
+  description: 木犀课栈
+
+
+host: ...
+basePath: /v1
+tags:
+  - name: comments
+    description: comments
+  - name: courseTable
+    description: courseTable
+
+schemes:
+  - https
+  - http
+
+paths:
+  /comments/:
+    post:
+      tags:
+        - comment
+      summary: 发布评课
+      description: ''
+      operationId: addPet
+      consumes:
+        - application/json
+      produces:
+        - application/json
