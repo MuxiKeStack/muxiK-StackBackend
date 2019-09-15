@@ -1,0 +1,133 @@
+swagger: '2.0'
+
+info:
+  title: Muxi K-Stack
+  version: 1.0.0
+  description: 木犀课栈
+
+
+host: ...
+basePath: /v1
+schemes:
+  - https
+  - http
+
+tags: 
+  - name: auth
+    description: authorization
+  - name: remind
+    description: announcement and remend
+
+paths:
+  /login:
+    post:
+      tags:
+        - auth
+      summary: login in one.ccnu.edu.cn
+      description:  login in with sid by wecaht, qq or html5
+      consumes:
+      - application/json
+      parameters:
+        - name: user
+          description: login information
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/auth.UserModel'
+      produces:
+      - application/json
+      responses:
+        200:
+          description: '{"code":0,"message":"OK","data":{"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1MjgwMTY5MjIsImlkIjowLCJuYmYiOjE1MjgwMTY5MjIsInVzZXJuYW1lIjoiYWRtaW4ifQ.LjxrK9DuAwAzUD8-9v43NzWBN7HXsSLfebw92DKd1JQ"}}'
+          schema:
+            $ref: '#/definitions/auth.Response'
+  /logout:
+    get:
+      tags:
+        - auth
+      consumes: 
+        - application/json
+      summary: logout
+      description: logout
+      parameters:
+        - name: data
+          in: body
+          required: true
+          description: logout
+          schema:
+            $ref: '#/definitions/auth.Logout'
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/auth.Response'
+            
+  /remind:
+    get:
+      tags:
+        - remind
+      summary: remind
+      description: remind and announcement
+      consumes:
+        - application/json
+      parameters:
+        - name: data
+          in: body
+          required: true
+          description: logout
+          schema:
+            $ref: '#/definitions/remind.Data'
+          
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/auth.Response'
+    
+    
+definitions:
+  auth.UserModel:
+    required: 
+      - sid
+      - password
+      - login_way
+      - login_code
+    properties:
+      sid:
+        type: string
+        description: student's id 
+      password:
+        type: string
+        description: student's password in one.ccnu.edu.cn
+      login_way:
+        type: integer
+        description: the login way, such as 1 refer to wechat, 2 refer to qq, 3 refer to html5
+      login_cide:
+        type: string
+        description: the login code, it could be wechatid, qqid...
+  auth.Logout:
+    properties:
+      sid:
+        type: string
+      token:
+        type: string
+        description: '{"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1MjgwMTY5MjIsImlkIjowLCJuYmYiOjE1MjgwMTY5MjIsInVzZXJuYW1lIjoiYWRtaW4ifQ.LjxrK9DuAwAzUD8-9v43NzWBN7HXsSLfebw92DKd1JQ"}'
+    type: object
+  auth.Response:
+    required: 
+      - Code
+      - Message
+      - Data
+    properties:
+      Code:
+        type: integer
+      Message:
+        type: string
+      Data:
+        type: object
+  remind.Data:
+    properties:
+      sid: 
+        type: string
+      token:
+        type: string
