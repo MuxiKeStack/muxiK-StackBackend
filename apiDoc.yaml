@@ -246,7 +246,7 @@ paths:
               tableList:
                 type: array
                 items:
-                  $ref: "#/definitions/Table"
+                  $ref: "#/definitions/ClassTable"
         '401':
           description: 未授权
 
@@ -274,7 +274,7 @@ paths:
               token:
                 type: string
               tableInfo:
-                $ref: "#/definitions/Table"
+                $ref: "#/definitions/ClassTable"
         '401':
           description: 未授权
 
@@ -572,7 +572,7 @@ definitions:
               items:
                 type: integer
 
-  Table:
+  ClassTable:
     type: object
     description: 课表
     properties:
