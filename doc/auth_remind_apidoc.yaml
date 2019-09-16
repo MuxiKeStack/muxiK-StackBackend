@@ -155,6 +155,9 @@ definitions:
       reply:
         type: string
         description: if it's comment, this is comment message 
+      isRead:
+        type: boolean
+        description: isn't is read?
   remind.Response:
     properties:
       Code: 
