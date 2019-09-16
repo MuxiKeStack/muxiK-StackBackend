@@ -4,6 +4,7 @@ info:
   version: 1.0.0
   description: 木犀课栈
 
+
 host: ...
 basePath: /api/v1
 tags:
@@ -36,7 +37,7 @@ paths:
           description: 评课内容
           required: true
           schema:
-            $ref: '#/definitions/CourseComments'
+            $ref: '#/definitions/CourseCommentsPublish'
       responses:
         '200':
           description: OK
@@ -49,6 +50,7 @@ paths:
                 type: string
               courseCommentId:
                 type: string
+                description: 评课id
               userId:
                 type: string
         '401':
@@ -86,46 +88,7 @@ paths:
               token:
                 type: string
               courseCommentInfo:
-                type: object
-                properties:
-                  courseName:
-                    type: string
-                    description: 课程名称
-                  star:
-                    type: integer
-                    description: 评价星级
-                  attendance:
-                    type: string
-                    description: 考勤方式
-                  characters:
-                    type: array
-                    description: 课程特点
-                    items:
-                      type: string
-                  content:
-                    type: string
-                    description: 评课内容
-                  anonymity:
-                    type: boolean
-                    description: 是否匿名
-                  likeNum:
-                    type: integer
-                    description: 点赞数
-                  isLike:
-                    type: boolean
-                    description: 是否已点赞
-                  time:
-                    type: integer
-                    description: 评课时间(时间戳)
-                  userInfo:
-                    type: object
-                    description: 用户信息
-                    properties:
-                      username:
-                        type: string
-                      avatar:
-                        type: string
-                        description: 头像
+                $ref: '#/definitions/CourseCommentInfo'
               commentsList:
                 type: array
                 description: 评论列表
@@ -453,29 +416,88 @@ paths:
           description: not found
 
 definitions:
-  CourseComments:
+  CourseCommentsPublish:
     type: object
+    description: 发布评课请求模型
     properties:
+      courseId:
+        type: string
+        description: 课程id
       courseName:
         type: string
-        description: 课程名称
+        description: 课程名
       star:
         type: integer
         description: 评价星级
-      attendance:
+      attendWay:
         type: string
         description: 考勤方式
-      characters:
+      examWay:
+        type: string
+        description: 考核方式
+      tags:
         type: array
-        description: 课程特点
+        description: 课程特点标签
         items:
-          type: string
+          $ref: '#/definitions/CourseCommentTag'
       content:
         type: string
-        description: 课程评价
+        description: 评价内容
       isAnonymous:
         type: boolean
         description: 是否匿名
+
+  CourseCommentInfo:
+    type: object
+    description: 返回的评课信息模型
+    properties:
+      courseId:
+        type: string
+      courseName:
+        type: string
+        description: 课程名称
+      teacher:
+        type: string
+      star:
+        type: integer
+        description: 评价星级
+      attendWay:
+        type: string
+        description: 考勤方式
+      examWay:
+        type: string
+        description: 考核方式
+      tags:
+        type: array
+        description: 课程特点标签
+        items:
+          $ref: '#/definitions/CourseCommentTag'
+      content:
+        type: string
+        description: 评课内容
+      anonymity:
+        type: boolean
+        description: 是否匿名
+      likeNum:
+        type: integer
+        description: 点赞数
+      isLike:
+        type: boolean
+        description: 当前用户是否已点赞
+      time:
+        type: integer
+        description: 评课时间(时间戳)
+      userInfo:
+        type: object
+        description: 评课的用户信息
+        properties:
+          userId:
+            type: string
+          username:
+            type: string
+          avatar:
+            type: string
+            description: 头像
 
   CommentInfo:
     type: object
@@ -567,3 +589,107 @@ definitions:
         description: 课堂列表
         items:
           $ref: "#/definitions/Class"
+
+
+  CourseCommentTable:
+    description: 评课表
+    type: object
+    properties:
+      courseCommentId:
+        type: string
+      courseName:
+        type: string
+        description: 课程名称
+      star:
+        type: integer
+        description: 评价星级
+      attendance:
+        type: string
+        description: 考勤方式
+      examWay:
+        type: string
+        description: 考核方式
+      content:
+        type: string
+        description: 课程评价
+      isAnonymous:
+        type: boolean
+        description: 是否匿名
+      likeNum:
+        type: integer
+        description: 点赞数
+      commentNum:
+        type: integer
+        description: 评论数
+      likeUser:
+        type: array
+        description: 点赞的用户
+        items:
+          type: string
+          description: 用户id
+
+  CommentTable:
+    type: object
+    description: 评论表
+    properties:
+      content:
+        type: string
+        description: 评论内容
+      likeNum:
+        type: integer
+        description: 点赞数
+      likeUser:
+        type: array
+        description: 点赞的用户id
+        items:
+          type: string
+      time:
+        type: string
+        description: 评课时间（时间戳）
+      userId:
+        type: string
+        description: 评论的用户id
+      commentTargetId:
+        type: string
+        description: 评课对象
+      fatherId:
+        type: string
+        description: 父评论id
+      isTop:
+        type: boolean
+        description: 是否是顶端评论
+
+  CourseCommentTag:
+    type: object
+    description: 评课标签
+    properties:
+      tagId:
+        type: string
+      tagName:
+        type: string
+
+  CourseCommentToTag:
+    type: object
+    description: 评课与评课标签的多对多关系表
+    properties:
+      id:
+        type: string
+      courseCommentId:
+        type: string
+      tagId:
+        type: string
+
+  # CommentToUser:
+  #   type: object
+  #   description: 评论与用户的多对多关系表
+  #   properties:
+  #     id:
+  #       type: string
+  #       description: 关系表id
+  #     commentId:
+  #       type: string
+  #     userId:
+  #       type: string
+  #     isLike:
+  #       type: boolean
+  #       description: 是否已点赞
