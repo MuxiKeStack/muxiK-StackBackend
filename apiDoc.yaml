@@ -264,7 +264,7 @@ paths:
           description: not found
 
 
-  /comments/course/:
+  /course/comment/:
     post:
       tags:
         - comment
@@ -302,7 +302,10 @@ paths:
                 type: string
         '401':
           description: 未授权
+        '500':
+          description: 服务器错误
 
+  /course/{courseId}/comment/{courseCommentId}/:
     get:
       tags:
         - comment
@@ -312,12 +315,12 @@ paths:
           name: token
           required: true
           type: string
-        - in: query
+        - in: path
           name: courseId
           description: 课程id
           required: true
           type: string
-        - in: query
+        - in: path
           name: courseCommentId
           required: true
           description: 评课id
@@ -345,6 +348,8 @@ paths:
           description: 未授权
         '404':
           description: not found
+        '500':
+          description: 服务器错误
 
     delete:
       tags:
@@ -355,12 +360,12 @@ paths:
           name: token
           required: true
           type: string
-        - in: query
+        - in: path
           name: courseId
           description: 课程id
           required: true
           type: string
-        - in: query
+        - in: path
           name: courseCommentId
           required: true
           description: 评课id
@@ -382,8 +387,10 @@ paths:
           description: 未授权
         '404':
           description: not found
+        '500':
+          description: 服务器错误
 
-  /comments/like/:
+  /course/{courseId}/comment/{targetId}/like/:
     put:
       tags:
         - comment
@@ -393,11 +400,11 @@ paths:
           name: token
           required: true
           type: string
-        - in: query
+        - in: path
           name: courseId
           required: true
           type: string
-        - in: query
+        - in: path
           name: targetId
           required: true
           description: 点赞对象id
@@ -406,6 +413,14 @@ paths:
           name: userId
           required: true
           type: string
+        - in: body
+          name: data
+          required: true
+          schema:
+            type: object
+            properties:
+              isLike:
+                type: boolean
       responses:
         "200":
           description: OK
@@ -422,8 +437,10 @@ paths:
                 description: 点赞数
         '401':
           description: 未授权
+        '500':
+          description: 服务器错误
 
-  /comments/:
+  /course/{courseId}/comment/:
     post:
       tags:
         - comment
@@ -433,7 +450,7 @@ paths:
           name: token
           required: true
           type: string
-        - in: header
+        - in: path
           name: courseId
           required: true
           type: string
@@ -466,6 +483,8 @@ paths:
           description: 未授权
         '404':
           description: 不存在此评论对象
+        '500':
+          description: 服务器错误
 
   /table/:
     get:
@@ -496,11 +515,13 @@ paths:
                   $ref: "#/definitions/ClassTable"
         '401':
           description: 未授权
+        '500':
+          description: 服务器错误
 
     post:
       tags:
         - table
-      summary: 添加新课标/创建副本
+      summary: 添加新课表/创建副本
       parameters:
         - in: header
           name: token
@@ -524,6 +545,8 @@ paths:
                 $ref: "#/definitions/ClassTable"
         '401':
           description: 未授权
+        '500':
+          description: 服务器错误
 
   /table/{tableId}/:
     delete:
@@ -533,6 +556,7 @@ paths:
       parameters:
         - in: header
           name: token
+          required: true
           type: string
         - in: path
           name: tableId
@@ -540,6 +564,7 @@ paths:
           type: string
         - in: header
           name: userId
+          required: true
           type: string
       responses:
         "200":
@@ -553,6 +578,8 @@ paths:
           description: 未授权
         '404':
           description: not found
+        '500':
+          description: 服务器错误
 
   /table/{tableId}/rename/:
     put:
@@ -592,6 +619,8 @@ paths:
           description: 未授权
         '404':
           description: not found
+        '500':
+          description: 服务器错误
 
   /table/{tableId}/class/{classId}/:
     post:
@@ -627,6 +656,8 @@ paths:
                 $ref: "#/definitions/Class"
         '401':
           description: 未授权
+        '500':
+          description: 服务器错误
 
     delete:
       tags:
@@ -661,6 +692,8 @@ paths:
           description: 未授权
         '404':
           description: not found
+        '500':
+          description: 服务器错误
 
 definitions:
   RequestHeader:  #废弃
