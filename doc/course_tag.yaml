@@ -12,6 +12,8 @@ tags:
     description: course
   - name: tag
     description: tag
+  - name: report
+    description: report
 
 schemes:
   - https
@@ -22,7 +24,7 @@ paths:
     get:
       tags:
         - course
-      summary: course
+      summary: 获取课程信息
       description: 获取课程信息
       consumes:
         - application/json
@@ -42,9 +44,9 @@ paths:
           name: courseid
           required: true
           type: string
-
+      
       responses:
-        "200":
+        "200": 
           description: OK
           schema:
             type: object
@@ -52,65 +54,88 @@ paths:
               token:
                 type: string
               courseInfo:
-                type: object
-                properties:
-                  courseName:
-                    type: string
-                    description: 课程名称
-                  coursecategory:
-                    type: string
-                    description: 课程类别
-                  coursecredit:
-                    type: number
-                    description: 学分
-                  star:
-                    type: integer
-                    description: 评价星级
-                  starnumber:
-                    type: integer
-                    description: 评价人数
-                  attendance1:
-                    type: number
-                    description: 经常点名数
-                  attendance2:
-                    type: number
-                    description: 偶尔点名数
-                  attendance3:
-                    type: number
-                    description: 签到点名数
-                  inspection1:
-                    type: number
-                    description: 闭卷考试数
-                  inspection2:
-                    type: number
-                    description: 开卷考试数
-                  inspection3:
-                    type: number
-                    description: 论文考核数
-                  inspection4:
-                    type: number
-                    description: 无考核数
-                  coursetime:
-                    type: string
-                    description: 上课时间
-                  courseplace:
-                    type: string
-                    description: 上课地点
-                  coursegrade:
-                    type: number
-                    description: 分数段（分段待定）
-                  coursegradenumber:
-                    type: number
-                    description: 样本人数
+                $ref: "#/definitions/CourseInfo"
+                     
         '401':
           description: 未授权
         '404':
           description: not found
-
+    
+    put:
+      tags:
+        - course
+      summary: 添加一个课程和其相关信息
+      parameters:
+        - in: header
+          type: string
+          name: courseid
+          description: 课程id
+          required: true
+        - in: body
+          name: body
+          description: 课程信息
+          required: true
+          schema:
+            $ref: '#/definitions/CourseInfo'
+      
+      responses:
+        '200':
+          description: OK
+        '403':
+          description: 课程已存在
+        '500':
+          description: 服务器错误
+          
     post:
       tags:
         - course
-      summary: favorite
+      summary: 修改一个课程的相关信息
+      parameters:
+        - in: header
+          type: string
+          name: courseid
+          description: 课程id
+          required: true
+        - in: body
+          name: body
+          description: 课程信息
+          required: true
+          schema:
+            $ref: '#/definitions/CourseInfo'
+      
+      responses:
+        '200':
+          description: OK
+        '403':
+          description: 课程已存在
+        '500':
+          description: 服务器错误
+    
+    delete:
+      tags:
+        - course
+      summary: 删除一个课程和其相关信息
+      parameters:
+        - in: header
+          type: string
+          name: courseid
+          description: 课程id
+          required: true
+      
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: not found
+        '500':
+          description: 服务器错误
+        
+    
+  /course/favorite/:     
+    post:
+      tags:
+        - course
+      summary: 收藏课程
       description: 收藏课程
       parameters:
         - in: header
@@ -126,7 +151,7 @@ paths:
           name: userId
           required: true
           type: string
-
+      
       responses:
         "200":
           description: OK
@@ -140,6 +165,46 @@ paths:
         '404':
           description: not found
 
+  /course/query/:
+    get:
+      tags:
+        - course
+      summary: 查询课程
+      parameters:
+        - in: header
+          name: courseid
+          required: false
+          type: string
+        - in: header
+          name: teacherid
+          required: false
+          type: string
+        - in: header
+          name: tag
+          required: false
+          type: string
+        - in: header
+          name: userId
+          required: true
+          type: string
+      
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+            properties:
+              token:
+                type: string
+              courseid:
+                type: string
+        '401':
+          description: 未授权
+        '404':
+          description: not found
+        '500':
+          description: 服务器错误
+          
   /tag/:
     post:
       tags:
@@ -168,7 +233,7 @@ paths:
           name: tagid
           required: true
           type: string
-
+      
       responses:
         "200":
           description: OK
@@ -177,9 +242,167 @@ paths:
             properties:
               token:
                 type: string
-              number:
+              number: 
                 type: number
         '401':
           description: 未授权
         '404':
           description: not found
+        '500':
+          description: 服务器错误
+    
+  /course/comment/coursereport/:
+    post:
+      tags:
+        - report
+      summary: 对评课进行举报
+      parameters:
+        - in: header
+          name: token
+          description: token
+          required: true
+          type: string
+        - in: header
+          name: userid
+          required: true
+          type: string
+        - in: header
+          name: coursecommentid
+          required: true
+          type: string
+        - in: header
+          name: number
+          description: 被举报次数
+          required: true
+          type: integer
+        - in: body
+          name: content
+          required: true
+          schema:
+            type: object
+            properties:
+              content:
+                type: string
+              
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+            properties:
+              token:
+                type: string
+              number: 
+                type: integer
+        '401':
+          description: 未授权
+        '404':
+          description: not found
+        '500':
+          description: 服务器错误
+
+  /course/comment/commentreport/:
+    post:
+      tags:
+        - report
+      summary: 对评论及回复进行举报
+      parameters:
+        - in: header
+          name: token
+          description: token
+          required: true
+          type: string
+        - in: header
+          name: userid
+          required: true
+          type: string
+        - in: header
+          name: commentid
+          required: true
+          type: string
+        - in: header
+          name: number
+          description: 被举报次数
+          required: true
+          type: integer
+        - in: body
+          name: content
+          required: true
+          schema:
+            type: object
+            properties:
+              content:
+                type: string
+              
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+            properties:
+              token:
+                type: string
+              number: 
+                type: integer
+        '401':
+          description: 未授权
+        '404':
+          description: not found
+        '500':
+          description: 服务器错误
+
+definitions:
+  CourseInfo:
+    type: object
+    description: 返回的课程信息模型
+    properties:
+      courseName:
+        type: string
+        description: 课程名称
+      coursecategory:
+        type: string
+        description: 课程类别
+      coursecredit:
+        type: integer
+        description: 学分
+      star:
+        type: integer
+        description: 评价星级
+      starnumber:
+        type: integer
+        description: 评价人数
+      attendance1:
+        type: integer
+        description: 经常点名数
+      attendance2:
+        type: integer
+        description: 偶尔点名数
+      attendance3:
+        type: integer
+        description: 签到点名数
+      inspection1: 
+        type: integer
+        description: 闭卷考试数
+      inspection2: 
+        type: integer
+        description: 开卷考试数
+      inspection3: 
+        type: integer
+        description: 论文考核数
+      inspection4: 
+        type: integer
+        description: 无考核数
+      coursetime:
+        type: string
+        description: 上课时间
+      courseplace:
+        type: string
+        description: 上课地点
+      coursegrade:
+        type: integer
+        description: 分数段（分段待定）
+      coursegradenumber:
+        type: integer
+        description: 样本人数
+    
+    
