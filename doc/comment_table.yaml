@@ -4,7 +4,6 @@ info:
   version: 1.0.0
   description: 木犀课栈
 
-
 host: ...
 basePath: /api/v1
 tags:
@@ -53,10 +52,27 @@ paths:
                 description: 评课id
               userId:
                 type: string
+        '400':
+          description: bad request
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '401':
           description: 未授权
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '500':
           description: 服务器错误
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
 
   /course/{courseId}/comment/{courseCommentId}/:
     get:
@@ -82,6 +98,15 @@ paths:
           name: userId
           required: true
           type: string
+        - in: query
+          name: pageNum
+          type: string
+        - in: query
+          name: pageSize
+          type: string
+        - in: query
+          name: lasthotCommentId
+          type: string
       responses:
         "200":
           description: OK
@@ -92,17 +117,76 @@ paths:
                 type: string
               courseCommentInfo:
                 $ref: '#/definitions/CourseCommentInfo'
-              commentsList:
+              FatherCommentsList:
                 type: array
-                description: 评论列表
+                description: 一级评论列表
                 items:
-                  $ref: '#/definitions/CommentInfo'
+                  type: object
+                  description: 父评论内容
+                  properties:
+                      commentId:
+                        type: string
+                        description: 评论id
+                      content:
+                        type: string
+                        description: 评论内容
+                      likeNum:
+                        type: integer
+                        description: 点赞数
+                      isLike:
+                        type: boolean
+                        description: 是否已点赞
+                      time:
+                        type: string
+                        description: 评课时间（时间戳）
+                      userInfo:
+                        type: object
+                        description: 评论用户的信息
+                        properties:
+                          userId:
+                            type: string
+                          username:
+                            type: string
+                          avatar:
+                            type: string
+                            description: 头像
+                      subCommentNum:
+                        type: integer
+                        description: 子评论总数
+                      subCommentList:
+                        type: array
+                        description: 子评论列表
+                        items:
+                          description: 子评论内容
+                          $ref: '#/definitions/CommentInfo'
+        '400':
+          description: bad request
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '401':
           description: 未授权
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '404':
           description: not found
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '500':
           description: 服务器错误
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
 
     delete:
       tags:
@@ -136,12 +220,34 @@ paths:
             properties:
               token:
                 type: string
+        '400':
+          description: bad request
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '401':
           description: 未授权
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '404':
           description: not found
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '500':
           description: 服务器错误
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
 
   /course/{courseId}/comment/{targetId}/like/:
     put:
@@ -188,10 +294,27 @@ paths:
               likeNum:
                 type: integer
                 description: 点赞数
+        '400':
+          description: bad request
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '401':
           description: 未授权
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '500':
           description: 服务器错误
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
 
   /course/{courseId}/comment/:
     post:
@@ -232,12 +355,34 @@ paths:
                 type: string
               commentInfo:
                 $ref: '#/definitions/CommentInfo'
+        '400':
+          description: bad request
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '401':
           description: 未授权
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '404':
-          description: 不存在此评论对象
+          description: not found
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '500':
           description: 服务器错误
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
 
   /table/:
     get:
@@ -266,10 +411,27 @@ paths:
                 type: array
                 items:
                   $ref: "#/definitions/ClassTable"
+        '400':
+          description: bad request
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '401':
           description: 未授权
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '500':
           description: 服务器错误
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
 
     post:
       tags:
@@ -296,10 +458,27 @@ paths:
                 type: string
               tableInfo:
                 $ref: "#/definitions/ClassTable"
+        '400':
+          description: bad request
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '401':
           description: 未授权
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '500':
           description: 服务器错误
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
 
   /table/{tableId}/:
     delete:
@@ -327,12 +506,34 @@ paths:
             properties:
               token:
                 type: string
+        '400':
+          description: bad request
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '401':
           description: 未授权
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '404':
           description: not found
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '500':
           description: 服务器错误
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
 
   /table/{tableId}/rename/:
     put:
@@ -368,12 +569,34 @@ paths:
             properties:
               token:
                 type: string
+        '400':
+          description: bad request
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '401':
           description: 未授权
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '404':
           description: not found
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '500':
           description: 服务器错误
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
 
   /table/{tableId}/class/{classId}/:
     post:
@@ -407,10 +630,27 @@ paths:
                 type: string
               classInfo:
                 $ref: "#/definitions/Class"
+        '400':
+          description: bad request
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '401':
           description: 未授权
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '500':
           description: 服务器错误
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
 
     delete:
       tags:
@@ -441,12 +681,34 @@ paths:
             properties:
               token:
                 type: string
+        '400':
+          description: bad request
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '401':
           description: 未授权
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '404':
           description: not found
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '500':
           description: 服务器错误
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
 
 definitions:
   CourseCommentsPublish:
@@ -536,6 +798,9 @@ definitions:
     type: object
     description: 评论信息
     properties:
+      commentId:
+        type: string
+        description: 评论id
       content:
         type: string
         description: 评论内容
@@ -552,6 +817,8 @@ definitions:
         type: object
         description: 用户信息
         properties:
+          userId:
+            type: string
           username:
             type: string
           avatar:
@@ -690,7 +957,10 @@ definitions:
         description: 父评论id
       isTop:
         type: boolean
-        description: 是否是顶端评论
+        description: 是否是一级评论
+      subCommentNum:
+        type: integer
+        description: 子评论数
 
   CourseCommentTag:
     type: object
