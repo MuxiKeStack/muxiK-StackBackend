@@ -4,7 +4,6 @@ info:
   version: 1.0.0
   description: 木犀课栈
 
-
 host: ...
 basePath: /api/v1
 tags:
@@ -101,7 +100,7 @@ paths:
     get:
       tags:
         - course
-      summary: course
+      summary: 获取课程信息
       description: 获取课程信息
       consumes:
         - application/json
@@ -131,65 +130,88 @@ paths:
               token:
                 type: string
               courseInfo:
-                type: object
-                properties:
-                  courseName:
-                    type: string
-                    description: 课程名称
-                  coursecategory:
-                    type: string
-                    description: 课程类别
-                  coursecredit:
-                    type: number
-                    description: 学分
-                  star:
-                    type: integer
-                    description: 评价星级
-                  starnumber:
-                    type: integer
-                    description: 评价人数
-                  attendance1:
-                    type: number
-                    description: 经常点名数
-                  attendance2:
-                    type: number
-                    description: 偶尔点名数
-                  attendance3:
-                    type: number
-                    description: 签到点名数
-                  inspection1:
-                    type: number
-                    description: 闭卷考试数
-                  inspection2:
-                    type: number
-                    description: 开卷考试数
-                  inspection3:
-                    type: number
-                    description: 论文考核数
-                  inspection4:
-                    type: number
-                    description: 无考核数
-                  coursetime:
-                    type: string
-                    description: 上课时间
-                  courseplace:
-                    type: string
-                    description: 上课地点
-                  coursegrade:
-                    type: number
-                    description: 分数段（分段待定）
-                  coursegradenumber:
-                    type: number
-                    description: 样本人数
+                $ref: "#/definitions/CourseInfo"
+
         '401':
           description: 未授权
         '404':
           description: not found
 
+    put:
+      tags:
+        - course
+      summary: 添加一个课程和其相关信息
+      parameters:
+        - in: header
+          type: string
+          name: courseid
+          description: 课程id
+          required: true
+        - in: body
+          name: body
+          description: 课程信息
+          required: true
+          schema:
+            $ref: '#/definitions/CourseInfo'
+
+      responses:
+        '200':
+          description: OK
+        '403':
+          description: 课程已存在
+        '500':
+          description: 服务器错误
+
     post:
       tags:
         - course
-      summary: favorite
+      summary: 修改一个课程的相关信息
+      parameters:
+        - in: header
+          type: string
+          name: courseid
+          description: 课程id
+          required: true
+        - in: body
+          name: body
+          description: 课程信息
+          required: true
+          schema:
+            $ref: '#/definitions/CourseInfo'
+
+      responses:
+        '200':
+          description: OK
+        '403':
+          description: 课程已存在
+        '500':
+          description: 服务器错误
+
+    delete:
+      tags:
+        - course
+      summary: 删除一个课程和其相关信息
+      parameters:
+        - in: header
+          type: string
+          name: courseid
+          description: 课程id
+          required: true
+
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: not found
+        '500':
+          description: 服务器错误
+
+
+  /course/favorite/:
+    post:
+      tags:
+        - course
+      summary: 收藏课程
       description: 收藏课程
       parameters:
         - in: header
@@ -218,6 +240,46 @@ paths:
           description: 未授权
         '404':
           description: not found
+
+  /course/query/:
+    get:
+      tags:
+        - course
+      summary: 查询课程
+      parameters:
+        - in: header
+          name: courseid
+          required: false
+          type: string
+        - in: header
+          name: teacherid
+          required: false
+          type: string
+        - in: header
+          name: tag
+          required: false
+          type: string
+        - in: header
+          name: userId
+          required: true
+          type: string
+
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+            properties:
+              token:
+                type: string
+              courseid:
+                type: string
+        '401':
+          description: 未授权
+        '404':
+          description: not found
+        '500':
+          description: 服务器错误
 
   /tag/:
     post:
@@ -262,7 +324,162 @@ paths:
           description: 未授权
         '404':
           description: not found
+        '500':
+          description: 服务器错误
 
+  /course/comment/coursereport/:
+    post:
+      tags:
+        - report
+      summary: 对评课进行举报
+      parameters:
+        - in: header
+          name: token
+          description: token
+          required: true
+          type: string
+        - in: header
+          name: userid
+          required: true
+          type: string
+        - in: header
+          name: coursecommentid
+          required: true
+          type: string
+        - in: header
+          name: number
+          description: 被举报次数
+          required: true
+          type: integer
+        - in: body
+          name: content
+          required: true
+          schema:
+            type: object
+            properties:
+              content:
+                type: string
+
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+            properties:
+              token:
+                type: string
+              number:
+                type: integer
+        '401':
+          description: 未授权
+        '404':
+          description: not found
+        '500':
+          description: 服务器错误
+
+  /course/comment/commentreport/:
+    post:
+      tags:
+        - report
+      summary: 对评论及回复进行举报
+      parameters:
+        - in: header
+          name: token
+          description: token
+          required: true
+          type: string
+        - in: header
+          name: userid
+          required: true
+          type: string
+        - in: header
+          name: commentid
+          required: true
+          type: string
+        - in: header
+          name: number
+          description: 被举报次数
+          required: true
+          type: integer
+        - in: body
+          name: content
+          required: true
+          schema:
+            type: object
+            properties:
+              content:
+                type: string
+
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+            properties:
+              token:
+                type: string
+              number:
+                type: integer
+        '401':
+          description: 未授权
+        '404':
+          description: not found
+        '500':
+          description: 服务器错误
+
+definitions:
+  CourseInfo:
+    type: object
+    description: 返回的课程信息模型
+    properties:
+      courseName:
+        type: string
+        description: 课程名称
+      coursecategory:
+        type: string
+        description: 课程类别
+      coursecredit:
+        type: integer
+        description: 学分
+      star:
+        type: integer
+        description: 评价星级
+      starnumber:
+        type: integer
+        description: 评价人数
+      attendance1:
+        type: integer
+        description: 经常点名数
+      attendance2:
+        type: integer
+        description: 偶尔点名数
+      attendance3:
+        type: integer
+        description: 签到点名数
+      inspection1:
+        type: integer
+        description: 闭卷考试数
+      inspection2:
+        type: integer
+        description: 开卷考试数
+      inspection3:
+        type: integer
+        description: 论文考核数
+      inspection4:
+        type: integer
+        description: 无考核数
+      coursetime:
+        type: string
+        description: 上课时间
+      courseplace:
+        type: string
+        description: 上课地点
+      coursegrade:
+        type: integer
+        description: 分数段（分段待定）
+      coursegradenumber:
+        type: integer
+        description: 样本人数
 
   /course/comment/:
     post:
@@ -300,10 +517,27 @@ paths:
                 description: 评课id
               userId:
                 type: string
+        '400':
+          description: bad request
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '401':
           description: 未授权
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '500':
           description: 服务器错误
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
 
   /course/{courseId}/comment/{courseCommentId}/:
     get:
@@ -329,6 +563,15 @@ paths:
           name: userId
           required: true
           type: string
+        - in: query
+          name: pageNum
+          type: string
+        - in: query
+          name: pageSize
+          type: string
+        - in: query
+          name: lasthotCommentId
+          type: string
       responses:
         "200":
           description: OK
@@ -339,17 +582,34 @@ paths:
                 type: string
               courseCommentInfo:
                 $ref: '#/definitions/CourseCommentInfo'
-              commentsList:
-                type: array
-                description: 评论列表
-                items:
-                  $ref: '#/definitions/CommentInfo'
+        '400':
+          description: bad request
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '401':
           description: 未授权
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '404':
           description: not found
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '500':
           description: 服务器错误
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
 
     delete:
       tags:
@@ -374,7 +634,6 @@ paths:
           name: userId
           required: true
           type: string
-
       responses:
         "200":
           description: OK
@@ -383,12 +642,146 @@ paths:
             properties:
               token:
                 type: string
+        '400':
+          description: bad request
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '401':
           description: 未授权
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '404':
           description: not found
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '500':
           description: 服务器错误
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+
+  /course/{courseId}/comment/{courseCommentId}/commentList/:
+    get:
+      tags:
+        - comment
+      summary: 获取评论详情
+      parameters:
+        - in: header
+          name: token
+          required: true
+          type: string
+        - in: path
+          name: courseId
+          description: 课程id
+          required: true
+          type: string
+        - in: path
+          name: courseCommentId
+          required: true
+          description: 评课id
+          type: string
+        - in: header
+          name: userId
+          required: true
+          type: string
+        - in: query
+          name: pageNum
+          type: string
+        - in: query
+          name: pageSize
+          type: string
+        - in: query
+          name: lasthotCommentId
+          type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+            properties:
+              token:
+                type: string
+              ParentCommentsList:
+                type: array
+                description: 一级评论列表
+                items:
+                  type: object
+                  description: 父评论内容
+                  properties:
+                      commentId:
+                        type: string
+                        description: 评论id
+                      content:
+                        type: string
+                        description: 评论内容
+                      likeNum:
+                        type: integer
+                        description: 点赞数
+                      isLike:
+                        type: boolean
+                        description: 是否已点赞
+                      time:
+                        type: string
+                        description: 评课时间（时间戳）
+                      userInfo:
+                        type: object
+                        description: 评论用户的信息
+                        properties:
+                          userId:
+                            type: string
+                          username:
+                            type: string
+                          avatar:
+                            type: string
+                            description: 头像
+                      subCommentNum:
+                        type: integer
+                        description: 子评论总数
+                      subCommentList:
+                        type: array
+                        description: 子评论列表
+                        items:
+                          $ref: '#/definitions/CommentInfo'
+        '400':
+          description: bad request
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+        '401':
+          description: 未授权
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+        '404':
+          description: not found
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+        '500':
+          description: 服务器错误
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+
 
   /course/{courseId}/comment/{targetId}/like/:
     put:
@@ -435,10 +828,27 @@ paths:
               likeNum:
                 type: integer
                 description: 点赞数
+        '400':
+          description: bad request
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '401':
           description: 未授权
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '500':
           description: 服务器错误
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
 
   /course/{courseId}/comment/:
     post:
@@ -479,12 +889,34 @@ paths:
                 type: string
               commentInfo:
                 $ref: '#/definitions/CommentInfo'
+        '400':
+          description: bad request
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '401':
           description: 未授权
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '404':
-          description: 不存在此评论对象
+          description: not found
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '500':
           description: 服务器错误
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
 
   /table/:
     get:
@@ -513,10 +945,27 @@ paths:
                 type: array
                 items:
                   $ref: "#/definitions/ClassTable"
+        '400':
+          description: bad request
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '401':
           description: 未授权
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '500':
           description: 服务器错误
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
 
     post:
       tags:
@@ -543,10 +992,27 @@ paths:
                 type: string
               tableInfo:
                 $ref: "#/definitions/ClassTable"
+        '400':
+          description: bad request
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '401':
           description: 未授权
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '500':
           description: 服务器错误
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
 
   /table/{tableId}/:
     delete:
@@ -574,12 +1040,34 @@ paths:
             properties:
               token:
                 type: string
+        '400':
+          description: bad request
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '401':
           description: 未授权
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '404':
           description: not found
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '500':
           description: 服务器错误
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
 
   /table/{tableId}/rename/:
     put:
@@ -615,12 +1103,34 @@ paths:
             properties:
               token:
                 type: string
+        '400':
+          description: bad request
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '401':
           description: 未授权
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '404':
           description: not found
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '500':
           description: 服务器错误
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
 
   /table/{tableId}/class/{classId}/:
     post:
@@ -654,10 +1164,27 @@ paths:
                 type: string
               classInfo:
                 $ref: "#/definitions/Class"
+        '400':
+          description: bad request
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '401':
           description: 未授权
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '500':
           description: 服务器错误
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
 
     delete:
       tags:
@@ -688,12 +1215,35 @@ paths:
             properties:
               token:
                 type: string
+        '400':
+          description: bad request
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '401':
           description: 未授权
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '404':
           description: not found
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         '500':
           description: 服务器错误
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+
 
 definitions:
   RequestHeader:  #废弃
@@ -962,7 +1512,6 @@ definitions:
         items:
           $ref: "#/definitions/Class"
 
-
   CourseCommentTable:
     description: 评课表
     type: object
@@ -1024,7 +1573,7 @@ definitions:
       commentTargetId:
         type: string
         description: 评课对象
-      fatherId:
+      parentId:
         type: string
         description: 父评论id
       isTop:
@@ -1050,18 +1599,3 @@ definitions:
         type: string
       tagId:
         type: string
-
-  # CommentToUser:
-  #   type: object
-  #   description: 评论与用户的多对多关系表
-  #   properties:
-  #     id:
-  #       type: string
-  #       description: 关系表id
-  #     commentId:
-  #       type: string
-  #     userId:
-  #       type: string
-  #     isLike:
-  #       type: boolean
-  #       description: 是否已点赞
