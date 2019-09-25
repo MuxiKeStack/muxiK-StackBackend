@@ -427,60 +427,6 @@ paths:
         '500':
           description: 服务器错误
 
-definitions:
-  CourseInfo:
-    type: object
-    description: 返回的课程信息模型
-    properties:
-      courseName:
-        type: string
-        description: 课程名称
-      coursecategory:
-        type: string
-        description: 课程类别
-      coursecredit:
-        type: integer
-        description: 学分
-      star:
-        type: integer
-        description: 评价星级
-      starnumber:
-        type: integer
-        description: 评价人数
-      attendance1:
-        type: integer
-        description: 经常点名数
-      attendance2:
-        type: integer
-        description: 偶尔点名数
-      attendance3:
-        type: integer
-        description: 签到点名数
-      inspection1:
-        type: integer
-        description: 闭卷考试数
-      inspection2:
-        type: integer
-        description: 开卷考试数
-      inspection3:
-        type: integer
-        description: 论文考核数
-      inspection4:
-        type: integer
-        description: 无考核数
-      coursetime:
-        type: string
-        description: 上课时间
-      courseplace:
-        type: string
-        description: 上课地点
-      coursegrade:
-        type: integer
-        description: 分数段（分段待定）
-      coursegradenumber:
-        type: integer
-        description: 样本人数
-
   /course/comment/:
     post:
       tags:
@@ -1599,3 +1545,56 @@ definitions:
         type: string
       tagId:
         type: string
+
+  CourseInfo:
+    type: object
+    description: 返回的课程信息模型
+    properties:
+      courseName:
+        type: string
+        description: 课程名称
+      coursecategory:
+        type: string
+        description: 课程类别
+      coursecredit:
+        type: integer
+        description: 学分
+      star:
+        type: integer
+        description: 评价星级
+      starnumber:
+        type: integer
+        description: 评价人数
+      attendance1:
+        type: integer
+        description: 经常点名数
+      attendance2:
+        type: integer
+        description: 偶尔点名数
+      attendance3:
+        type: integer
+        description: 签到点名数
+      inspection1:
+        type: integer
+        description: 闭卷考试数
+      inspection2:
+        type: integer
+        description: 开卷考试数
+      inspection3:
+        type: integer
+        description: 论文考核数
+      inspection4:
+        type: integer
+        description: 无考核数
+      coursetime:
+        type: string
+        description: 上课时间
+      courseplace:
+        type: string
+        description: 上课地点
+      coursegrade:
+        type: integer
+        description: 分数段（分段待定）
+      coursegradenumber:
+        type: integer
+        description: 样本人数
