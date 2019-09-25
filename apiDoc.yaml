@@ -19,6 +19,8 @@ tags:
     description: 评课和评论
   - name: table
     description: 排课课表
+  - name: report
+    description: report
 
 schemes:
   - https
