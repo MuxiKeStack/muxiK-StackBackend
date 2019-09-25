@@ -117,48 +117,6 @@ paths:
                 type: string
               courseCommentInfo:
                 $ref: '#/definitions/CourseCommentInfo'
-              FatherCommentsList:
-                type: array
-                description: 一级评论列表
-                items:
-                  type: object
-                  description: 父评论内容
-                  properties:
-                      commentId:
-                        type: string
-                        description: 评论id
-                      content:
-                        type: string
-                        description: 评论内容
-                      likeNum:
-                        type: integer
-                        description: 点赞数
-                      isLike:
-                        type: boolean
-                        description: 是否已点赞
-                      time:
-                        type: string
-                        description: 评课时间（时间戳）
-                      userInfo:
-                        type: object
-                        description: 评论用户的信息
-                        properties:
-                          userId:
-                            type: string
-                          username:
-                            type: string
-                          avatar:
-                            type: string
-                            description: 头像
-                      subCommentNum:
-                        type: integer
-                        description: 子评论总数
-                      subCommentList:
-                        type: array
-                        description: 子评论列表
-                        items:
-                          description: 子评论内容
-                          $ref: '#/definitions/CommentInfo'
         '400':
           description: bad request
           schema:
@@ -211,7 +169,6 @@ paths:
           name: userId
           required: true
           type: string
-
       responses:
         "200":
           description: OK
@@ -248,6 +205,118 @@ paths:
             properties:
               msg:
                 type: string
+
+  /course/{courseId}/comment/{courseCommentId}/commentList/:
+    get:
+      tags:
+        - comment
+      summary: 获取评论详情
+      parameters:
+        - in: header
+          name: token
+          required: true
+          type: string
+        - in: path
+          name: courseId
+          description: 课程id
+          required: true
+          type: string
+        - in: path
+          name: courseCommentId
+          required: true
+          description: 评课id
+          type: string
+        - in: header
+          name: userId
+          required: true
+          type: string
+        - in: query
+          name: pageNum
+          type: string
+        - in: query
+          name: pageSize
+          type: string
+        - in: query
+          name: lasthotCommentId
+          type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+            properties:
+              token:
+                type: string
+              ParentCommentsList:
+                type: array
+                description: 一级评论列表
+                items:
+                  type: object
+                  description: 父评论内容
+                  properties:
+                      commentId:
+                        type: string
+                        description: 评论id
+                      content:
+                        type: string
+                        description: 评论内容
+                      likeNum:
+                        type: integer
+                        description: 点赞数
+                      isLike:
+                        type: boolean
+                        description: 是否已点赞
+                      time:
+                        type: string
+                        description: 评课时间（时间戳）
+                      userInfo:
+                        type: object
+                        description: 评论用户的信息
+                        properties:
+                          userId:
+                            type: string
+                          username:
+                            type: string
+                          avatar:
+                            type: string
+                            description: 头像
+                      subCommentNum:
+                        type: integer
+                        description: 子评论总数
+                      subCommentList:
+                        type: array
+                        description: 子评论列表
+                        items:
+                          $ref: '#/definitions/CommentInfo'
+        '400':
+          description: bad request
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+        '401':
+          description: 未授权
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+        '404':
+          description: not found
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+        '500':
+          description: 服务器错误
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+
 
   /course/{courseId}/comment/{targetId}/like/:
     put:
@@ -890,7 +959,6 @@ definitions:
         items:
           $ref: "#/definitions/Class"
 
-
   CourseCommentTable:
     description: 评课表
     type: object
@@ -952,7 +1020,7 @@ definitions:
       commentTargetId:
         type: string
         description: 评课对象
-      fatherId:
+      parentId:
         type: string
         description: 父评论id
       isTop:
