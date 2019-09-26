@@ -62,5 +62,5 @@ func (db *Database) Init() {
 }
 
 func (db *Database) Close() {
-	DB.Self.Close()
+	_ = DB.Self.Close()
 }
