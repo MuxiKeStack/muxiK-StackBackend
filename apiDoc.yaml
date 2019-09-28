@@ -33,7 +33,7 @@ paths:
       summary: login in one.ccnu.edu.cn
       description:  login in with sid by wecaht, qq or html5
       consumes:
-      - application/json
+        - application/json
       parameters:
         - name: user
           description: login information
@@ -42,7 +42,7 @@ paths:
           schema:
             $ref: '#/definitions/auth.UserModel'
       produces:
-      - application/json
+        - application/json
       responses:
         200:
           description: '{"code":0,"message":"OK","data":{"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1MjgwMTY5MjIsImlkIjowLCJuYmYiOjE1MjgwMTY5MjIsInVzZXJuYW1lIjoiYWRtaW4ifQ.LjxrK9DuAwAzUD8-9v43NzWBN7HXsSLfebw92DKd1JQ"}}'
@@ -57,11 +57,6 @@ paths:
       summary: logout
       description: logout
       parameters:
-        - name: sid
-          in: header
-          required: true
-          description: logout
-          type: string
         - name: token
           in: header
           required: true
@@ -71,7 +66,13 @@ paths:
         200:
           description: OK
           schema:
-            $ref: '#/definitions/ResponseModel'
+            properties:
+              Code:
+                type: integer
+              Message:
+                type: string
+              Data:
+                type: object
 
   /remind:
     get:
@@ -82,11 +83,6 @@ paths:
       consumes:
         - application/json
       parameters:
-        - name: sid
-          in: header
-          required: true
-          description: logout
-          type: string
         - name: token
           in: header
           required: true
@@ -667,40 +663,40 @@ paths:
                   type: object
                   description: 父评论内容
                   properties:
-                      commentId:
-                        type: string
-                        description: 评论id
-                      content:
-                        type: string
-                        description: 评论内容
-                      likeNum:
-                        type: integer
-                        description: 点赞数
-                      isLike:
-                        type: boolean
-                        description: 是否已点赞
-                      time:
-                        type: string
-                        description: 评课时间（时间戳）
-                      userInfo:
-                        type: object
-                        description: 评论用户的信息
-                        properties:
-                          userId:
-                            type: string
-                          username:
-                            type: string
-                          avatar:
-                            type: string
-                            description: 头像
-                      subCommentNum:
-                        type: integer
-                        description: 子评论总数
-                      subCommentList:
-                        type: array
-                        description: 子评论列表
-                        items:
-                          $ref: '#/definitions/CommentInfo'
+                    commentId:
+                      type: string
+                      description: 评论id
+                    content:
+                      type: string
+                      description: 评论内容
+                    likeNum:
+                      type: integer
+                      description: 点赞数
+                    isLike:
+                      type: boolean
+                      description: 是否已点赞
+                    time:
+                      type: string
+                      description: 评课时间（时间戳）
+                    userInfo:
+                      type: object
+                      description: 评论用户的信息
+                      properties:
+                        userId:
+                          type: string
+                        username:
+                          type: string
+                        avatar:
+                          type: string
+                          description: 头像
+                    subCommentNum:
+                      type: integer
+                      description: 子评论总数
+                    subCommentList:
+                      type: array
+                      description: 子评论列表
+                      items:
+                        $ref: '#/definitions/CommentInfo'
         '400':
           description: bad request
           schema:
@@ -1194,23 +1190,12 @@ paths:
 
 
 definitions:
-  RequestHeader:  #废弃
-    required:
-      - sid
-      - token
-    properties:
-      sid:
-        type: string
-        description: student's id
-      token:
-        type: string
-        description: token
   auth.UserModel:
     required:
       - sid
       - password
-      - login_way
-      - login_code
+      - loginWay
+      - loginCode
     properties:
       sid:
         type: string
@@ -1251,7 +1236,7 @@ definitions:
         description: the id of the comment's id or course comment id
       isLike:
         type: boolean
-        description: isn't it like?
+        description: isn't it a like?
       reply:
         type: string
         description: if it's comment, this is comment message
@@ -1271,18 +1256,6 @@ definitions:
             type: array
             items:
               $ref: '#/definitions/remind.Model'
-  ResponseModel:
-    required:
-      - Code
-      - Message
-      - Data
-    properties:
-      Code:
-        type: integer
-      Message:
-        type: string
-      Data:
-        type: object
 
   CourseCommentsPublish:
     type: object
