@@ -24,9 +24,8 @@ CREATE TABLE `tb_users` (
   `sid` bigint(20) unsigned NOT NULL,
   `username` varchar(255) NOT NULL,
   `avatar` varchar(255) NOT NULL,
-  `createdAt` timestamp NULL DEFAULT NULL,
-  `updatedAt` timestamp NULL DEFAULT NULL,
-  `deletedAt` timestamp NULL DEFAULT NULL,
+  `loginWay` int(8) unsigned NOT NULL,
+  `loginCode` varchar(255) NOT NULL,
   PRIMARY KEY (`sid`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
