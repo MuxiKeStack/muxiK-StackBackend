@@ -471,7 +471,7 @@ paths:
         '500':
           description: 服务器错误
 
-  /course/comment/:
+  /comment/:
     post:
       tags:
         - comment
@@ -480,10 +480,6 @@ paths:
         - in: header
           name: Authorization
           description: token
-          required: true
-          type: string
-        - in: header
-          name: userId
           required: true
           type: string
         - in: body
@@ -512,6 +508,8 @@ paths:
           schema:
             type: object
             properties:
+              code:
+                type: integer
               msg:
                 type: string
         '401':
@@ -519,6 +517,8 @@ paths:
           schema:
             type: object
             properties:
+              code:
+                type: integer
               msg:
                 type: string
         '500':
@@ -526,10 +526,12 @@ paths:
           schema:
             type: object
             properties:
+              code:
+                type: integer
               msg:
                 type: string
 
-  /course/{courseId}/comment/{courseCommentId}/:
+  /comment/{id}/:
     get:
       tags:
         - comment
@@ -540,27 +542,9 @@ paths:
           required: true
           type: string
         - in: path
-          name: courseId
-          description: 课程id
-          required: true
-          type: string
-        - in: path
-          name: courseCommentId
+          name: id
           required: true
           description: 评课id
-          type: string
-        - in: header
-          name: userId
-          required: true
-          type: string
-        - in: query
-          name: pageNum
-          type: string
-        - in: query
-          name: pageSize
-          type: string
-        - in: query
-          name: lasthotCommentId
           type: string
       responses:
         "200":
@@ -577,6 +561,8 @@ paths:
           schema:
             type: object
             properties:
+              code:
+                type: integer
               msg:
                 type: string
         '401':
@@ -584,6 +570,8 @@ paths:
           schema:
             type: object
             properties:
+              code:
+                type: integer
               msg:
                 type: string
         '404':
@@ -591,6 +579,8 @@ paths:
           schema:
             type: object
             properties:
+              code:
+                type: integer
               msg:
                 type: string
         '500':
@@ -598,6 +588,8 @@ paths:
           schema:
             type: object
             properties:
+              code:
+                type: integer
               msg:
                 type: string
 
@@ -611,18 +603,9 @@ paths:
           required: true
           type: string
         - in: path
-          name: courseId
-          description: 课程id
-          required: true
-          type: string
-        - in: path
-          name: courseCommentId
+          name: id
           required: true
           description: 评课id
-          type: string
-        - in: header
-          name: userId
-          required: true
           type: string
       responses:
         "200":
@@ -637,6 +620,8 @@ paths:
           schema:
             type: object
             properties:
+              code:
+                type: integer
               msg:
                 type: string
         '401':
@@ -644,6 +629,8 @@ paths:
           schema:
             type: object
             properties:
+              code:
+                type: integer
               msg:
                 type: string
         '404':
@@ -651,6 +638,8 @@ paths:
           schema:
             type: object
             properties:
+              code:
+                type: integer
               msg:
                 type: string
         '500':
@@ -658,10 +647,12 @@ paths:
           schema:
             type: object
             properties:
+              code:
+                type: integer
               msg:
                 type: string
 
-  /course/{courseId}/comment/{courseCommentId}/commentList/:
+  /comment/{id}/commentList/:
     get:
       tags:
         - comment
@@ -672,18 +663,9 @@ paths:
           required: true
           type: string
         - in: path
-          name: courseId
-          description: 课程id
-          required: true
-          type: string
-        - in: path
-          name: courseCommentId
+          name: id
           required: true
           description: 评课id
-          type: string
-        - in: header
-          name: userId
-          required: true
           type: string
         - in: query
           name: pageNum
@@ -748,6 +730,8 @@ paths:
           schema:
             type: object
             properties:
+              code:
+                type: integer
               msg:
                 type: string
         '401':
@@ -755,6 +739,8 @@ paths:
           schema:
             type: object
             properties:
+              code:
+                type: integer
               msg:
                 type: string
         '404':
@@ -762,6 +748,8 @@ paths:
           schema:
             type: object
             properties:
+              code:
+                type: integer
               msg:
                 type: string
         '500':
@@ -769,11 +757,13 @@ paths:
           schema:
             type: object
             properties:
+              code:
+                type: integer
               msg:
                 type: string
 
 
-  /course/{courseId}/comment/{targetId}/like/:
+  /comment/{id}/like/:
     put:
       tags:
         - comment
@@ -784,17 +774,9 @@ paths:
           required: true
           type: string
         - in: path
-          name: courseId
-          required: true
-          type: string
-        - in: path
-          name: targetId
+          name: id
           required: true
           description: 点赞对象id
-          type: string
-        - in: header
-          name: userId
-          required: true
           type: string
         - in: body
           name: data
@@ -823,6 +805,8 @@ paths:
           schema:
             type: object
             properties:
+              code:
+                type: integer
               msg:
                 type: string
         '401':
@@ -830,6 +814,8 @@ paths:
           schema:
             type: object
             properties:
+              code:
+                type: integer
               msg:
                 type: string
         '500':
@@ -837,10 +823,12 @@ paths:
           schema:
             type: object
             properties:
+              code:
+                type: integer
               msg:
                 type: string
 
-  /course/{courseId}/comment/:
+  /comment/{id}/new/:
     post:
       tags:
         - comment
@@ -851,8 +839,9 @@ paths:
           required: true
           type: string
         - in: path
-          name: courseId
+          name: id
           required: true
+          description: 评论对象id
           type: string
         - in: body
           name: data
@@ -860,9 +849,6 @@ paths:
           schema:
             type: object
             properties:
-              targetId:
-                type: string
-                description: 评论对象id
               content:
                 type: string
                 description: 评论内容
@@ -884,6 +870,8 @@ paths:
           schema:
             type: object
             properties:
+              code:
+                type: integer
               msg:
                 type: string
         '401':
@@ -891,6 +879,8 @@ paths:
           schema:
             type: object
             properties:
+              code:
+                type: integer
               msg:
                 type: string
         '404':
@@ -898,6 +888,8 @@ paths:
           schema:
             type: object
             properties:
+              code:
+                type: integer
               msg:
                 type: string
         '500':
@@ -905,6 +897,8 @@ paths:
           schema:
             type: object
             properties:
+              code:
+                type: integer
               msg:
                 type: string
 
@@ -916,9 +910,6 @@ paths:
       parameters:
         - in: header
           name: Authorization
-          type: string
-        - in: header
-          name: userId
           type: string
       responses:
         "200":
@@ -940,6 +931,8 @@ paths:
           schema:
             type: object
             properties:
+              code:
+                type: integer
               msg:
                 type: string
         '401':
@@ -947,6 +940,8 @@ paths:
           schema:
             type: object
             properties:
+              code:
+                type: integer
               msg:
                 type: string
         '500':
@@ -954,6 +949,8 @@ paths:
           schema:
             type: object
             properties:
+              code:
+                type: integer
               msg:
                 type: string
 
@@ -965,12 +962,10 @@ paths:
         - in: header
           name: Authorization
           type: string
-        - in: header
-          name: targetTableId
-          description: 课表副本id
-          type: string
-        - in: header
-          name: userId
+        - in: query
+          name: id
+          required: false
+          description: 若是创建副本，则为课表副本id，若是添加新课标，则为空
           type: string
       responses:
         "200":
@@ -987,6 +982,8 @@ paths:
           schema:
             type: object
             properties:
+              code:
+                type: integer
               msg:
                 type: string
         '401':
@@ -994,6 +991,8 @@ paths:
           schema:
             type: object
             properties:
+              code:
+                type: integer
               msg:
                 type: string
         '500':
@@ -1001,10 +1000,12 @@ paths:
           schema:
             type: object
             properties:
+              code:
+                type: integer
               msg:
                 type: string
 
-  /table/{tableId}/:
+  /table/{id}/:
     delete:
       tags:
         - table
@@ -1015,12 +1016,9 @@ paths:
           required: true
           type: string
         - in: path
-          name: tableId
+          name: id
           required: true
-          type: string
-        - in: header
-          name: userId
-          required: true
+          description: 课表id
           type: string
       responses:
         "200":
@@ -1035,6 +1033,8 @@ paths:
           schema:
             type: object
             properties:
+              code:
+                type: integer
               msg:
                 type: string
         '401':
@@ -1042,6 +1042,8 @@ paths:
           schema:
             type: object
             properties:
+              code:
+                type: integer
               msg:
                 type: string
         '404':
@@ -1049,6 +1051,8 @@ paths:
           schema:
             type: object
             properties:
+              code:
+                type: integer
               msg:
                 type: string
         '500':
@@ -1056,10 +1060,12 @@ paths:
           schema:
             type: object
             properties:
+              code:
+                type: integer
               msg:
                 type: string
 
-  /table/{tableId}/rename/:
+  /table/{id}/rename/:
     put:
       tags:
         - table
@@ -1070,8 +1076,9 @@ paths:
           required: true
           type: string
         - in: path
-          name: tableId
+          name: id
           required: true
+          description: 课表id
           type: string
         - in: body
           name: data
@@ -1081,10 +1088,6 @@ paths:
             properties:
               newName:
                 type: string
-        - in: header
-          name: userId
-          required: true
-          type: string
       responses:
         "200":
           description: OK
@@ -1098,6 +1101,8 @@ paths:
           schema:
             type: object
             properties:
+              code:
+                type: integer
               msg:
                 type: string
         '401':
@@ -1105,6 +1110,8 @@ paths:
           schema:
             type: object
             properties:
+              code:
+                type: integer
               msg:
                 type: string
         '404':
@@ -1112,6 +1119,8 @@ paths:
           schema:
             type: object
             properties:
+              code:
+                type: integer
               msg:
                 type: string
         '500':
@@ -1119,10 +1128,12 @@ paths:
           schema:
             type: object
             properties:
+              code:
+                type: integer
               msg:
                 type: string
 
-  /table/{tableId}/class/{classId}/:
+  /table/{id}/class/{classId}/:
     post:
       tags:
         - table
@@ -1132,15 +1143,13 @@ paths:
           name: Authorization
           type: string
         - in: path
-          name: tableId
+          name: id
           required: true
+          description: 课表id
           type: string
         - in: path
           name: classId
           required: true
-          type: string
-        - in: header
-          name: userId
           type: string
       responses:
         "200":
@@ -1159,6 +1168,8 @@ paths:
           schema:
             type: object
             properties:
+              code:
+                type: integer
               msg:
                 type: string
         '401':
@@ -1166,6 +1177,8 @@ paths:
           schema:
             type: object
             properties:
+              code:
+                type: integer
               msg:
                 type: string
         '500':
@@ -1173,6 +1186,8 @@ paths:
           schema:
             type: object
             properties:
+              code:
+                type: integer
               msg:
                 type: string
 
@@ -1186,17 +1201,15 @@ paths:
           required: true
           type: string
         - in: path
-          name: tableId
+          name: id
           required: true
+          description: 课表id
           type: string
         - in: path
           name: classId
           required: true
           type: string
-        - in: header
-          name: userId
-          required: true
-          type: string
+
       responses:
         "200":
           description: OK
@@ -1210,6 +1223,8 @@ paths:
           schema:
             type: object
             properties:
+              code:
+                type: integer
               msg:
                 type: string
         '401':
@@ -1217,6 +1232,8 @@ paths:
           schema:
             type: object
             properties:
+              code:
+                type: integer
               msg:
                 type: string
         '404':
@@ -1224,6 +1241,8 @@ paths:
           schema:
             type: object
             properties:
+              code:
+                type: integer
               msg:
                 type: string
         '500':
@@ -1231,9 +1250,10 @@ paths:
           schema:
             type: object
             properties:
+              code:
+                type: integer
               msg:
                 type: string
-
 
 definitions:
   auth.UserModel:
