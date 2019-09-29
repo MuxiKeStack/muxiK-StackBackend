@@ -21,6 +21,8 @@ tags:
     description: 排课课表
   - name: report
     description: report
+  - name: user
+    description: user info
 
 schemes:
   - https
@@ -35,7 +37,7 @@ paths:
       consumes:
         - application/json
       parameters:
-        - name: user
+        - name: data
           description: login information
           in: body
           required: true
@@ -57,7 +59,7 @@ paths:
       summary: logout
       description: logout
       parameters:
-        - name: token
+        - name: Authorization
           in: header
           required: true
           description: token
@@ -83,7 +85,7 @@ paths:
       consumes:
         - application/json
       parameters:
-        - name: token
+        - name: Authorization
           in: header
           required: true
           description: token
@@ -94,6 +96,50 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/remind.Response'
+
+  /info:
+    get:
+      tags:
+        - user
+      description: return user's name and avatar
+      summary: return user
+      consumes:
+        - application/json
+      parameters:
+        - name: Authorizaiton
+          in: header
+          required: true
+          description: token
+          type: string
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/user.UserInfoResponse'
+    put:
+      tags:
+        - user
+      summary: modify user info
+      description: modify user info
+      consumes:
+        - application/json
+      parameters:
+        - name: data
+          description: login information
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/user.UserInfo'
+        - name: Authorization
+          in: header
+          required: true
+          description: token
+          type: string
+      responses:
+        200:
+          description: OK
+
+
   /course/:
     get:
       tags:
@@ -106,7 +152,7 @@ paths:
         - application/json
       parameters:
         - in: header
-          name: token
+          name: Authorization
           description: token
           required: true
           type: string
@@ -213,7 +259,7 @@ paths:
       description: 收藏课程
       parameters:
         - in: header
-          name: token
+          name: Authorization
           required: true
           type: string
         - in: query
@@ -291,7 +337,7 @@ paths:
         - application/json
       parameters:
         - in: header
-          name: token
+          name: Authorization
           description: token
           required: true
           type: string
@@ -332,7 +378,7 @@ paths:
       summary: 对评课进行举报
       parameters:
         - in: header
-          name: token
+          name: Authorization
           description: token
           required: true
           type: string
@@ -382,7 +428,7 @@ paths:
       summary: 对评论及回复进行举报
       parameters:
         - in: header
-          name: token
+          name: Authorization
           description: token
           required: true
           type: string
@@ -432,7 +478,7 @@ paths:
       summary: 发布评课
       parameters:
         - in: header
-          name: token
+          name: Authorization
           description: token
           required: true
           type: string
@@ -490,7 +536,7 @@ paths:
       summary: 获取评课详情
       parameters:
         - in: header
-          name: token
+          name: Authorization
           required: true
           type: string
         - in: path
@@ -561,7 +607,7 @@ paths:
       summary: 删除评课
       parameters:
         - in: header
-          name: token
+          name: Authorization
           required: true
           type: string
         - in: path
@@ -622,7 +668,7 @@ paths:
       summary: 获取评论详情
       parameters:
         - in: header
-          name: token
+          name: Authorization
           required: true
           type: string
         - in: path
@@ -734,7 +780,7 @@ paths:
       summary: 点赞
       parameters:
         - in: header
-          name: token
+          name: Authorization
           required: true
           type: string
         - in: path
@@ -801,7 +847,7 @@ paths:
       summary: 评论评课/回复评论
       parameters:
         - in: header
-          name: token
+          name: Authorization
           required: true
           type: string
         - in: path
@@ -869,7 +915,7 @@ paths:
       summary: 获取所有课表
       parameters:
         - in: header
-          name: token
+          name: Authorization
           type: string
         - in: header
           name: userId
@@ -917,7 +963,7 @@ paths:
       summary: 添加新课表/创建副本
       parameters:
         - in: header
-          name: token
+          name: Authorization
           type: string
         - in: header
           name: targetTableId
@@ -965,7 +1011,7 @@ paths:
       summary: 删除课表
       parameters:
         - in: header
-          name: token
+          name: Authorization
           required: true
           type: string
         - in: path
@@ -1020,7 +1066,7 @@ paths:
       summary: 课表重命名
       parameters:
         - in: header
-          name: token
+          name: Authorization
           required: true
           type: string
         - in: path
@@ -1083,7 +1129,7 @@ paths:
       summary: 收藏的课堂加入课表
       parameters:
         - in: header
-          name: token
+          name: Authorization
           type: string
         - in: path
           name: tableId
@@ -1136,7 +1182,7 @@ paths:
       summary: 删除课堂
       parameters:
         - in: header
-          name: token
+          name: Authorization
           required: true
           type: string
         - in: path
@@ -1198,7 +1244,7 @@ definitions:
       - loginCode
     properties:
       sid:
-        type: string
+        type: integer
         description: student's id
       password:
         type: string
@@ -1229,7 +1275,7 @@ definitions:
       - reply
     properties:
       userId:
-        type: string
+        type: integer
         description: the id of the person who comment or like your commments.
       commentId:
         type: integer
@@ -1243,6 +1289,32 @@ definitions:
       isRead:
         type: boolean
         description: isn't is read?
+  user.UserInfo:
+    required:
+      - username
+      - avatar
+    properties:
+      username:
+        type: string
+        description: the name of user.
+      avatar:
+        type: string
+        description: the avatar of user
+  user.UserInfoResponse:
+    properties:
+      Code:
+        type: integer
+      Message:
+        type: string
+      Data:
+        type: object
+        properties:
+          userId:
+            type: integer
+          username:
+            type: string
+          avatar:
+            type: string
   remind.Response:
     properties:
       Code:

@@ -13,7 +13,7 @@ type BaseModel struct {
 }
 
 type UserInfo struct {
-	Id        uint64 `json:"id"`
+	Sid	       uint64 `json:"sid"`
 	Username  string `json:"username"`
 	SayHello  string `json:"sayHello"`
 	Password  string `json:"password"`
