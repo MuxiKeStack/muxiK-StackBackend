@@ -1653,15 +1653,33 @@ definitions:
       inspection4:
         type: integer
         description: 无考核数
-      coursetime:
+      coursetime1:
         type: string
-        description: 上课时间
-      courseplace:
+        description: 上课时间1
+      courseplace1:
         type: string
-        description: 上课地点
-      coursegrade:
+        description: 上课地点1
+      coursetime2:
+        type: string
+        description: 上课时间2
+      courseplace2:
+        type: string
+        description: 上课地点2
+      coursetime3:
+        type: string
+        description: 上课时间3
+      courseplace3:
+        type: string
+        description: 上课地点3
+      coursegrade70:
         type: integer
-        description: 分数段（分段待定）
+        description: 70以下人数
+       coursegrade70_85:
+        type: integer
+        description: 70-85人数
+       coursegrade85:
+        type: integer
+        description: 85以上人数
       coursegradenumber:
         type: integer
-        description: 样本人数
+        description: 成绩样本量
