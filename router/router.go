@@ -40,15 +40,15 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 	}
 
 	// 评课&评论
-	comments := g.Group("/api/v1/course")
+	comments := g.Group("/api/v1/comment")
 	comments.Use(middleware.AuthMiddleware())
 	{
-		comments.POST("/comment/", comment.Publish)
-		comments.POST("/:courseId/comment/", comment.Create)
-		comments.DELETE("/:courseId/comment/:courseCommentId/", comment.Delete)
-		comments.GET("/:courseId/comment/:courseCommentId/", comment.GetCourseCommentInfo)
-		comments.GET("/:courseId/comment/:courseCommentId/commentList/", comment.GetCommentList)
-		comments.PUT("/:courseId/comment/:targetId/like/", comment.UpdateLike)
+		comments.POST("/", comment.Publish)
+		comments.POST("/:id/new/", comment.Create)
+		comments.DELETE("/:id/", comment.Delete)
+		comments.GET("/:id/", comment.GetCourseCommentInfo)
+		comments.GET("/:id/commentList/", comment.GetCommentList)
+		comments.PUT("/:id/like/", comment.UpdateLike)
 	}
 
 	// 排课课表
@@ -56,11 +56,11 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 	tables.Use(middleware.AuthMiddleware())
 	{
 		tables.GET("/", table.Get)
-		tables.PUT("/:tableId/rename/", table.Rename)
 		tables.POST("/", table.AddTable)
-		tables.POST("/:tableId/class/:classId/", table.AddClass)
-		tables.DELETE("/:tableId/", table.DeleteTable)
-		tables.DELETE("/:tableId/class/:classId/", table.DeleteClass)
+		tables.POST("/:id/class/:classId/", table.AddClass)
+		tables.PUT("/:id/rename/", table.Rename)
+		tables.DELETE("/:id/", table.DeleteTable)
+		tables.DELETE("/:id/class/:classId/", table.DeleteClass)
 	}
 
 	// The health check handlers

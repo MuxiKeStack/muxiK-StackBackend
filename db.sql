@@ -34,6 +34,52 @@ CREATE TABLE `tb_users` (
 -- Insert mock data
 --
 
+CREATE TABLE "course_comment" (
+  `course_id`         VARCHAR(50) NOT NULL,
+  `course_name`       VARCHAR(20) NOT NULL,
+  `star`              INT         NOT NULL,
+  `attendance_check`  INT         NOT NULL,
+  `exam_check`        INT         NOT NULL,
+  `content`           text        NOT NULL,
+  `is_annoymous`      TINYINT(1)  NOT NULL,
+  `like_num`          INT         NOT NULL,
+  `comment_num`       INT         NOT NULL,
+  `tags`              VARCHAR(255) NOT NULL,
+  `time`              VARCHAR(50) NOT NULL,
+  `is_valid`          TINYINT(1)  NOT NULL,
+)
+
+CREATE TABLE "comment" (
+  `time`              VARCHAR(20) NOT NULL,
+  `content`           text        NOT NULL,
+  `like_num`          INT         NOT NULL,
+  `user_id`           INT         NOT NULL,
+  `parent_id`         INT         NOT NULL,
+  `is_root`           TINYINT(1)  NOT NULL,
+  `comment_target_id` INT         NOT NULL,
+  `subcomment_num`    INT         NOT NULL,
+)
+
+CREATE TABLE "course_comment_like" (
+  `course_comment_id` INT NOT NULL,
+  `user_id`           INT NOT NULL,
+)
+
+CREATE TABLE "comment_like" (
+  `comment_id` INT NOT NULL,
+  `user_id`    INT NOT NULL,
+)
+
+CREATE TABLE "class_table" (
+  `user_id` INT  NOT NULL,
+  `courses` text NOT NULL,
+)
+
+CREATE TABLE "tag" (
+  `tag_name` VARCHAR(20) NOT NULL,
+)
+
+
 # LOCK TABLES `tb_users` WRITE;
 # /*!40000 ALTER TABLE `tb_users` DISABLE KEYS */;
 # INSERT INTO `tb_users` VALUES (0,'admin','$2a$10$veGcArz47VGj7l9xN7g2iuT9TF21jLI1YGXarGzvARNdnt4inC9PG','2018-05-27 16:25:33','2018-05-27 16:25:33',NULL);
