@@ -156,12 +156,8 @@ paths:
           description: token
           required: true
           type: string
-        - in: header
-          name: userid
-          required: true
-          type: string
-        - in: query
-          name: courseid
+        - in: path
+          name: courseId
           required: true
           type: string
 
@@ -186,9 +182,9 @@ paths:
         - course
       summary: 添加一个课程和其相关信息
       parameters:
-        - in: header
+        - in: path
           type: string
-          name: courseid
+          name: courseId
           description: 课程id
           required: true
         - in: body
@@ -211,9 +207,9 @@ paths:
         - course
       summary: 修改一个课程的相关信息
       parameters:
-        - in: header
+        - in: path
           type: string
-          name: courseid
+          name: courseId
           description: 课程id
           required: true
         - in: body
@@ -238,7 +234,7 @@ paths:
       parameters:
         - in: header
           type: string
-          name: courseid
+          name: courseId
           description: 课程id
           required: true
 
@@ -262,13 +258,9 @@ paths:
           name: Authorization
           required: true
           type: string
-        - in: query
+        - in: path
           name: courseId
           description: 课程id
-          required: true
-          type: string
-        - in: header
-          name: userId
           required: true
           type: string
 
@@ -292,11 +284,11 @@ paths:
       summary: 查询课程
       parameters:
         - in: header
-          name: courseid
+          name: courseId
           required: false
           type: string
         - in: header
-          name: teacherid
+          name: teacherId
           required: false
           type: string
         - in: header
@@ -341,16 +333,12 @@ paths:
           description: token
           required: true
           type: string
-        - in: header
-          name: userid
+        - in: path
+          name: courseId
           required: true
           type: string
         - in: query
-          name: courseid
-          required: true
-          type: string
-        - in: query
-          name: tagid
+          name: tagId
           required: true
           type: string
 
@@ -383,11 +371,7 @@ paths:
           required: true
           type: string
         - in: header
-          name: userid
-          required: true
-          type: string
-        - in: header
-          name: coursecommentid
+          name: coursecommentId
           required: true
           type: string
         - in: header
@@ -433,11 +417,7 @@ paths:
           required: true
           type: string
         - in: header
-          name: userid
-          required: true
-          type: string
-        - in: header
-          name: commentid
+          name: commentId
           required: true
           type: string
         - in: header
@@ -1620,16 +1600,16 @@ definitions:
       courseName:
         type: string
         description: 课程名称
-      coursecategory:
+      courseCategory:
         type: string
         description: 课程类别
-      coursecredit:
+      courseCredit:
         type: integer
         description: 学分
       star:
         type: integer
         description: 评价星级
-      starnumber:
+      starNumber:
         type: integer
         description: 评价人数
       attendance1:
@@ -1653,33 +1633,33 @@ definitions:
       inspection4:
         type: integer
         description: 无考核数
-      coursetime1:
+      courseTime1:
         type: string
         description: 上课时间1
-      courseplace1:
+      coursePlace1:
         type: string
         description: 上课地点1
-      coursetime2:
+      courseTime2:
         type: string
         description: 上课时间2
-      courseplace2:
+      coursePlace2:
         type: string
         description: 上课地点2
-      coursetime3:
+      courseTime3:
         type: string
         description: 上课时间3
-      courseplace3:
+      coursePlace3:
         type: string
         description: 上课地点3
-      coursegrade70:
+      courseGrade70:
         type: integer
         description: 70以下人数
-       coursegrade70_85:
+      courseGrade7085:
         type: integer
         description: 70-85人数
-       coursegrade85:
+      courseGrade85:
         type: integer
         description: 85以上人数
-      coursegradenumber:
+      courseGradeNumber:
         type: integer
         description: 成绩样本量
