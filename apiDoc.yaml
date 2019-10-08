@@ -1505,74 +1505,6 @@ definitions:
         items:
           $ref: "#/definitions/Class"
 
-  CourseCommentTable:
-    description: 评课表
-    type: object
-    properties:
-      courseCommentId:
-        type: string
-      courseName:
-        type: string
-        description: 课程名称
-      star:
-        type: integer
-        description: 评价星级
-      attendance:
-        type: string
-        description: 考勤方式
-      examWay:
-        type: string
-        description: 考核方式
-      content:
-        type: string
-        description: 课程评价
-      isAnonymous:
-        type: boolean
-        description: 是否匿名
-      likeNum:
-        type: integer
-        description: 点赞数
-      commentNum:
-        type: integer
-        description: 评论数
-      likeUser:
-        type: array
-        description: 点赞的用户
-        items:
-          type: string
-          description: 用户id
-
-  CommentTable:
-    type: object
-    description: 评论表
-    properties:
-      content:
-        type: string
-        description: 评论内容
-      likeNum:
-        type: integer
-        description: 点赞数
-      likeUser:
-        type: array
-        description: 点赞的用户id
-        items:
-          type: string
-      time:
-        type: string
-        description: 评课时间（时间戳）
-      userId:
-        type: string
-        description: 评论的用户id
-      commentTargetId:
-        type: string
-        description: 评课对象
-      parentId:
-        type: string
-        description: 父评论id
-      isTop:
-        type: boolean
-        description: 是否是顶端评论
-
   CourseCommentTag:
     type: object
     description: 评课标签
@@ -1580,17 +1512,6 @@ definitions:
       tagId:
         type: string
       tagName:
-        type: string
-
-  CourseCommentToTag:
-    type: object
-    description: 评课与评课标签的多对多关系表
-    properties:
-      id:
-        type: string
-      courseCommentId:
-        type: string
-      tagId:
         type: string
 
   CourseInfo:
