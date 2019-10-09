@@ -140,7 +140,7 @@ paths:
           description: OK
 
 
-  /course/:
+  /course/{id}/:
     get:
       tags:
         - course
@@ -157,7 +157,7 @@ paths:
           required: true
           type: string
         - in: path
-          name: courseId
+          name: id
           required: true
           type: string
 
@@ -184,7 +184,7 @@ paths:
       parameters:
         - in: path
           type: string
-          name: courseId
+          name: id
           description: 课程id
           required: true
         - in: body
@@ -209,7 +209,7 @@ paths:
       parameters:
         - in: path
           type: string
-          name: courseId
+          name: id
           description: 课程id
           required: true
         - in: body
@@ -232,9 +232,9 @@ paths:
         - course
       summary: 删除一个课程和其相关信息
       parameters:
-        - in: header
+        - in: path
           type: string
-          name: courseId
+          name: id
           description: 课程id
           required: true
 
@@ -247,7 +247,7 @@ paths:
           description: 服务器错误
 
 
-  /course/favorite/:
+  /course/{id}/favorite/:
     post:
       tags:
         - course
@@ -259,7 +259,7 @@ paths:
           required: true
           type: string
         - in: path
-          name: courseId
+          name: id
           description: 课程id
           required: true
           type: string
