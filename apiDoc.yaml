@@ -979,51 +979,55 @@ paths:
             properties:
               Authorization:
                 type: string
-              evaluationInfo:
-                type: object
-                properties:
-                  courseId:
-                    type: string
-                  courseName:
-                    type: string
-                    description: 课程名称
-                  teacher:
-                    type: string
-                    description: 教师
-                  rate:
-                    type: integer
-                    description: 评价星级
-                  content:
-                    type: string
-                    description: 评课内容
-                  anonymity:
-                    type: boolean
-                    description: 是否匿名
-                  likeNum:
-                    type: integer
-                    description: 点赞数
-                  isLike:
-                    type: boolean
-                    description: 当前用户是否已点赞
-                  time:
-                    type: integer
-                    description: 评课时间(时间戳)
-                  commentNum:
-                    type: integer
-                    description: 一级评论数
-                  userInfo:
-                    type: object
-                    description: 评课的用户信息
-                    properties:
-                      userId:
-                        type: string
-                      username:
-                        type: string
-                      avatar:
-                        type: string
-                        description: 头像
-
-
+              count:
+                type: integer
+                description: 评课数量
+              evaluationList:
+                type: array
+                items:
+                  type: object
+                  description: 评课列表
+                  properties:
+                    courseId:
+                      type: string
+                    courseName:
+                      type: string
+                      description: 课程名称
+                    teacher:
+                      type: string
+                      description: 教师
+                    rate:
+                      type: integer
+                      description: 评价星级
+                    content:
+                      type: string
+                      description: 评课内容
+                    anonymity:
+                      type: boolean
+                      description: 是否匿名
+                    likeNum:
+                      type: integer
+                      description: 点赞数
+                    isLike:
+                      type: boolean
+                      description: 当前用户是否已点赞
+                    time:
+                      type: integer
+                      description: 评课时间(时间戳)
+                    commentNum:
+                      type: integer
+                      description: 一级评论数
+                    userInfo:
+                      type: object
+                      description: 评课的用户信息
+                      properties:
+                        userId:
+                          type: string
+                        username:
+                          type: string
+                        avatar:
+                          type: string
+                          description: 头像
         '400':
           description: bad request
           schema:
