@@ -90,7 +90,7 @@ paths:
       tags:
         - message
       summary: message
-      description: remind and announcement
+      description: message and announcement
       consumes:
         - application/json
       parameters:
@@ -103,7 +103,7 @@ paths:
         200:
           description: OK
           schema:
-            $ref: '#/definitions/remind.Response'
+            $ref: '#/definitions/message.Response'
         '401':
           description: 未授权
         '404':
@@ -1447,7 +1447,7 @@ definitions:
           is_new:
             type: integer
             description: 是不是新用户，如果返回1，你就要调/user/info/ api传输头像和昵称。
-  remind.Model:
+  message.Model:
     required:
       - user_id
       - comment_id
@@ -1455,12 +1455,10 @@ definitions:
       - reply
       - is_read
     properties:
-      user_id:
-        type: integer
-        description: the id of the person who comment or like your commments.
-      comment_id:
-        type: integer
-        description: the id of the comment's id or course comment id
+      user_info:
+        $ref: '#/definitions/user.UserInfo'
+      comment_course_info:
+        $ref: '#/definitions/message.courseInfo'
       is_like:
         type: boolean
         description: isn't it a like?
@@ -1470,6 +1468,27 @@ definitions:
       is_read:
         type: integer
         description: isn't is read?
+  message.courseInfo:
+    properties:
+      comment_course_id:
+        type: integer
+        description: the id of the comment course 
+      course_name:
+        type: string
+        description: the name of the course which is called
+      comment:
+        type: string
+        description: comment
+  message.Response:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/message.Model'
   user.UserInfo:
     required:
       - user_name
@@ -1488,22 +1507,7 @@ definitions:
       message:
         type: string
       data:
-        type: object
-        properties:
-          user_name:
-            type: string
-          avatar:
-            type: string
-  remind.Response:
-    properties:
-      code:
-        type: integer
-      message:
-        type: string
-      data:
-        type: array
-        items:
-          $ref: '#/definitions/remind.Model'
+        $ref: '#/definitions/user.UserInfo'
 
   CourseCommentsPublish:
     type: object
