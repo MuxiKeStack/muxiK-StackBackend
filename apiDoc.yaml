@@ -31,7 +31,7 @@ paths:
       tags:
         - auth
       summary: login in one.ccnu.edu.cn
-      description:  login in with sid by wecaht, qq or html5
+      description:  login in with sid .
       consumes:
         - application/json
       parameters:
@@ -48,6 +48,10 @@ paths:
           description: ok
           schema:
             $ref: '#/definitions/auth.Response'
+        '404':
+          description: not found
+        '500':
+          description: 服务器错误
 
   /logout/:
     get:
@@ -74,6 +78,12 @@ paths:
                 type: string
               data:
                 type: object
+        '401':
+          description: 未授权
+        '404':
+          description: not found
+        '500':
+          description: 服务器错误
 
   /message/:
     get:
@@ -94,6 +104,12 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/remind.Response'
+        '401':
+          description: 未授权
+        '404':
+          description: not found
+        '500':
+          description: 服务器错误
 
   /user/info/:
     get:
@@ -114,6 +130,12 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/user.UserInfoResponse'
+        '401':
+          description: 未授权
+        '404':
+          description: not found
+        '500':
+          description: 服务器错误
 
     post:
       tags:
@@ -137,6 +159,12 @@ paths:
       responses:
         200:
           description: OK
+        '401':
+          description: 未授权
+        '404':
+          description: not found
+        '500':
+          description: 服务器错误
 
 
   /course/{id}/:
@@ -1405,48 +1433,49 @@ definitions:
         description: student's password in one.ccnu.edu.cn
   auth.Response:
     properties:
-      Code:
+      code:
         type: integer
-      Message:
+      message:
         type: string
-      Data:
+      data:
         type: object
         properties:
           token:
             type: string
             description: authorization
             example: "eyJhbG...w92DKd1JQ"
-          isNew:
+          is_new:
             type: integer
-            description: isn't is new user
+            description: 是不是新用户，如果返回1，你就要调/user/info/ api传输头像和昵称。
   remind.Model:
     required:
-      - userId
-      - commentId
-      - isLike
+      - user_id
+      - comment_id
+      - is_like
       - reply
+      - is_read
     properties:
-      userId:
+      user_id:
         type: integer
         description: the id of the person who comment or like your commments.
-      commentId:
+      comment_id:
         type: integer
         description: the id of the comment's id or course comment id
-      isLike:
+      is_like:
         type: boolean
         description: isn't it a like?
       reply:
         type: string
         description: if it's comment, this is comment message
-      isRead:
-        type: boolean
+      is_read:
+        type: integer
         description: isn't is read?
   user.UserInfo:
     required:
-      - username
+      - user_name
       - avatar
     properties:
-      username:
+      user_name:
         type: string
         description: the name of user.
       avatar:
@@ -1454,32 +1483,27 @@ definitions:
         description: the avatar of user
   user.UserInfoResponse:
     properties:
-      Code:
+      code:
         type: integer
-      Message:
+      message:
         type: string
-      Data:
+      data:
         type: object
         properties:
-          userId:
-            type: integer
-          username:
+          user_name:
             type: string
           avatar:
             type: string
   remind.Response:
     properties:
-      Code:
+      code:
         type: integer
-      Message:
+      message:
         type: string
-      Data:
-        # type: object
-        # properties:
-        #   data:
-            type: array
-            items:
-              $ref: '#/definitions/remind.Model'
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/remind.Model'
 
   CourseCommentsPublish:
     type: object
