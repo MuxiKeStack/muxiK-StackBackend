@@ -1491,10 +1491,10 @@ definitions:
           $ref: '#/definitions/message.Model'
   user.UserInfo:
     required:
-      - user_name
+      - username
       - avatar
     properties:
-      user_name:
+      username:
         type: string
         description: the name of user.
       avatar:
