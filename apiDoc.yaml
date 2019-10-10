@@ -1475,7 +1475,7 @@ definitions:
       - user_name
       - avatar
     properties:
-      username:
+      user_name:
         type: string
         description: the name of user.
       avatar:
@@ -1490,7 +1490,7 @@ definitions:
       data:
         type: object
         properties:
-          username:
+          user_name:
             type: string
           avatar:
             type: string
