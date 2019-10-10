@@ -8,7 +8,7 @@ USE `MUXIKSTACK`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user` (
   `sid`        BiGINT(20)   NOT NULL COMMENT "学生id",
-  `user_name`   VARCHAR(25)  NOT NULL,
+  `username`   VARCHAR(25)  NOT NULL,
   `avatar`     VARCHAR(255) NOT NULL,
   `is_blocked` TINYINT(1)   NOT NULL DEFAULT 0,
 
