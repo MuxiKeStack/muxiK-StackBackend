@@ -117,7 +117,7 @@ paths:
           schema:
             $ref: '#/definitions/user.UserInfoResponse'
 
-    put:
+    post:
       tags:
         - user
       summary: modify user info
@@ -1424,8 +1424,6 @@ definitions:
     required:
       - sid
       - password
-      - loginWay
-      - loginCode
     properties:
       sid:
         type: integer
@@ -1433,12 +1431,6 @@ definitions:
       password:
         type: string
         description: student's password in one.ccnu.edu.cn
-      loginWay:
-        type: integer
-        description: the login way, such as 1 refer to wechat, 2 refer to qq, 3 refer to html5
-      loginCode:
-        type: string
-        description: the login code, it could be wechatid, qqid...
   auth.Response:
     properties:
       Code:
@@ -1448,9 +1440,12 @@ definitions:
       Data:
         type: object
         properties:
-          Authorization:
+          token:
             type: string
             description: authorization
+          isNew:
+            type: integer
+            description: isn't is new user
   remind.Model:
     required:
       - userId

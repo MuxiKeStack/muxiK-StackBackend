@@ -2,23 +2,16 @@ package model
 
 import (
 	"sync"
-	"time"
 )
 
 type BaseModel struct {
-	Id        uint64     `gorm:"primary_key;AUTO_INCREMENT;column:id" json:"-"`
-	CreatedAt time.Time  `gorm:"column:createdAt" json:"-"`
-	UpdatedAt time.Time  `gorm:"column:updatedAt" json:"-"`
-	DeletedAt *time.Time `gorm:"column:deletedAt" sql:"index" json:"-"`
+	Sid        uint64     `gorm:"primary_key;column:sid" json:"sid"`
 }
 
 type UserInfo struct {
-	Sid	       uint64 `json:"sid"`
-	Username  string `json:"username"`
-	SayHello  string `json:"sayHello"`
-	Password  string `json:"password"`
-	CreatedAt string `json:"createdAt"`
-	UpdatedAt string `json:"updatedAt"`
+	Sid	       	uint64 `json:"sid"`
+	Username  	string `json:"username"`
+	Avatar		string `json:"avatar"`
 }
 
 type UserList struct {
