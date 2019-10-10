@@ -396,12 +396,16 @@ paths:
           type: string
         - in: query
           name: pageNum
+          required: true
           type: string
         - in: query
           name: pageSize
+          required: true
           type: string
         - in: query
           name: lastEvaluationId
+          required: false
+          description: 上一页请求的最后一个评课的id
           type: string
       responses:
         "200":
@@ -1373,7 +1377,6 @@ paths:
           name: classId
           required: true
           type: string
-
       responses:
         "200":
           description: OK
@@ -1431,6 +1434,7 @@ definitions:
       password:
         type: string
         description: student's password in one.ccnu.edu.cn
+
   auth.Response:
     properties:
       code:
@@ -1447,6 +1451,7 @@ definitions:
           is_new:
             type: integer
             description: 是不是新用户，如果返回1，你就要调/user/info/ api传输头像和昵称。
+
   remind.Model:
     required:
       - user_id
@@ -1470,6 +1475,7 @@ definitions:
       is_read:
         type: integer
         description: isn't is read?
+
   user.UserInfo:
     required:
       - user_name
@@ -1481,6 +1487,7 @@ definitions:
       avatar:
         type: string
         description: the avatar of user
+
   user.UserInfoResponse:
     properties:
       code:
@@ -1494,6 +1501,7 @@ definitions:
             type: string
           avatar:
             type: string
+
   remind.Response:
     properties:
       code:
@@ -1625,7 +1633,6 @@ definitions:
           username:
             type: string
             description: 用户昵称
-
   Class:
     type: object
     description: 课堂
