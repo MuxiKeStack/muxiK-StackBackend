@@ -1,98 +1,109 @@
-# /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-# /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-# /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-# /*!40101 SET NAMES utf8 */;
-# /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-# /*!40103 SET TIME_ZONE='+00:00' */;
-# /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-# /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-# /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-# /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+DROP DATABASE `MUXIKSTACK`
 
-CREATE DATABASE /*!32312 IF NOT EXISTS*/ `MUXIKSTACK` /*!40100 DEFAULT CHARACTER SET utf8 */;
+CREATE DATABASE `MUXIKSTACK`;
 
 USE `MUXIKSTACK`;
 
---
--- Table structure for table `tb_users`
---
-
-DROP TABLE IF EXISTS `tb_users`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `tb_users` (
-  `sid` bigint(20) unsigned NOT NULL,
-  `username` varchar(255) NOT NULL,
-  `avatar` varchar(255) NOT NULL,
-  `loginWay` int(8) unsigned NOT NULL,
-  `loginCode` varchar(255) NOT NULL,
+CREATE TABLE `user` (
+  `sid`        BiGINT(20)   NOT NULL COMMENT "学生id",
+  `username`   VARCHAR(25)  NOT NULL,
+  `avatar`     VARCHAR(255) NOT NULL,
+  `is_blocked` TINYINT(1)   NOT NULL DEFAULT 0,
+
   PRIMARY KEY (`sid`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Insert mock data
---
+CREATE TABLE "course_evaluation" (
+  `course_name`           VARCHAR(50)  NOT NULL,
+  `rate`                  INT          NOT NULL DEFAULT 0,
+  `attendance_check_type` INT          NOT NULL DEFAULT 0 COMMENT "考勤方式，经常点名/偶尔点名/签到点名，标识为 0/1/2",
+  `exam_check_type`       INT          NOT NULL DEFAULT 0 COMMENT "考核方式，无考核/闭卷考试/开卷考试/论文考核，标识为 0/1/2/3",
+  `content`               TEXT         NOT NULL           COMMENT "评课内容",
+  `is_annoymous`          TINYINT(1)   NOT NULL DEFAULT 0 COMMENT "是否匿名评课",
+  `like_num`              INT          NOT NULL DEFAULT 0 COMMENT "点赞数",
+  `comment_num`           INT          NOT NULL DEFAULT 0 COMMENT "一级评论数",
+  `tags`                  VARCHAR(255) NOT NULL           COMMENT "标签id列表，逗号分隔",
+  `time`                  VARCHAR(20)  NOT NULL           COMMENT "评课时间，时间戳",
+  `is_valid`              TINYINT(1)            DEFAULT 1 COMMENT "是否有效，未被折叠",
 
-CREATE TABLE "course_comment" (
-  `course_id`         VARCHAR(50) NOT NULL,
-  `course_name`       VARCHAR(20) NOT NULL,
-  `star`              INT         NOT NULL,
-  `attendance_check`  INT         NOT NULL,
-  `exam_check`        INT         NOT NULL,
-  `content`           text        NOT NULL,
-  `is_annoymous`      TINYINT(1)  NOT NULL,
-  `like_num`          INT         NOT NULL,
-  `comment_num`       INT         NOT NULL,
-  `tags`              VARCHAR(255) NOT NULL,
-  `time`              VARCHAR(50) NOT NULL,
-  `is_valid`          TINYINT(1)  NOT NULL,
-)
+  `course_id`             VARCHAR(50)  NOT NULL,
+  `user_id`               INT          NOT NULl,
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE "comment" (
-  `time`              VARCHAR(20) NOT NULL,
-  `content`           text        NOT NULL,
-  `like_num`          INT         NOT NULL,
+  `time`              VARCHAR(20) NOT NULL           COMMENT "评课时间，时间戳",
+  `content`           TEXT        NOT NULl           COMMENT "评论内容",
+  `like_num`          INT         NOT NULL DEFAULT 0 COMMENT "点赞数",
+  `is_root`           TINYINT(1)  NOT NULL DEFAULT 0 COMMENT "是否是一级评论",
+  `subcomment_num`    INT         NOT NULL DEFAULT 0 COMMENT "子评论数",
+
   `user_id`           INT         NOT NULL,
   `parent_id`         INT         NOT NULL,
-  `is_root`           TINYINT(1)  NOT NULL,
-  `comment_target_id` INT         NOT NULL,
-  `subcomment_num`    INT         NOT NULL,
-)
+  `comment_target_id` INT         NOT NULL COMMENT "评论对象id",
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE "course_comment_like" (
-  `course_comment_id` INT NOT NULL,
-  `user_id`           INT NOT NULL,
-)
+CREATE TABLE "course_evaluation_like" (
+  `evaluation_id` INT NOT NULL COMMENT "评课id",
+  `user_id`       INT NOT NULL,
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE "comment_like" (
-  `comment_id` INT NOT NULL,
+  `comment_id` INT NOT NULL COMMENT "评论id",
   `user_id`    INT NOT NULL,
-)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE "class_table" (
   `user_id` INT  NOT NULL,
-  `courses` text NOT NULL,
-)
+  `courses` TEXT NOT NULL COMMENT "课程 hash 列表，逗号分隔",
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE "tag" (
   `tag_name` VARCHAR(20) NOT NULL,
-)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `report` (
+  `evaluation_id` INT        NOT NULL,
+  `user_id`       INT        NOT NULL,
+  `pass`          TINYINT(1) NOT NULL DEFAULT 1 COMMENT "举报审核是否通过",
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-# LOCK TABLES `tb_users` WRITE;
-# /*!40000 ALTER TABLE `tb_users` DISABLE KEYS */;
-# INSERT INTO `tb_users` VALUES (0,'admin','$2a$10$veGcArz47VGj7l9xN7g2iuT9TF21jLI1YGXarGzvARNdnt4inC9PG','2018-05-27 16:25:33','2018-05-27 16:25:33',NULL);
-# /*!40000 ALTER TABLE `tb_users` ENABLE KEYS */;
-# UNLOCK TABLES;
-# /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
-#
-# /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-# /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-# /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-# /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-# /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-# /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-# /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+CREATE TABLE `course_list` (
+  `user_id`   INT         NOT NULL,
+  `course_id` VARCHAR(50) NOT NULL,
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- Dump completed on 2018-05-28  0:25:41
+CREATE TABLE `history_course` (
+  `hash`    VARCHAR(50) NOT NULL COMMENT "课程id + 教师名 hash 生成的唯一标识",
+  `name`    VARCHAR(50) NOT NULL,
+  `teacher` VARCHAR(20) NOT NULL,
+  `type`    INT         NOT NULL COMMENT "课程类型（专业课，公共课）",
+
+  UNIQUE KEY `hash` (`hash`),
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `using_course` (
+  `hash`           VARCHAR(50) NOT NULL           COMMENT "课程id + 教师名 hash 生成的唯一标识",
+  `name`           VARCHAR(50) NOT NULL,
+  `rate`           FLOAT       NOT NULL DEFAULT 0 COMMENT "课程评价星级",
+  `stars_num`      INT         NOT NULL DEFAULT 0 COMMENT "参与评课人数",
+  `credit`         FLOAT       NOT NULL DEFAULT 0 COMMENT "学分",
+  `teacher`        VARCHAR(20) NOT NULL,
+  `course_id`      VARCHAR(50) NOT NULL           COMMENT "课程号",
+  `class_id`       VARCHAR(50) NOT NULL           COMMENT "教学班编号",
+  `type`           INT         NOT NULL           COMMENT "通识必修，通识选修，通识核心，专业必修，专业选修分别为 0/1/2/3/4",
+  `credit_type`    INT         NOT NULL           COMMENT "学分类别，文科理科艺术之类的，加索引（筛选条件）",
+  `total_score`    FLOAT       NOT NULL DEFAULT 0 COMMENT "总评均分",
+  `ordinary_score` FLOAT       NOT NULL DEFAULT 0 COMMENT "平时均分",
+  `time1`          VARCHAR(20) NOT NULL,
+  `place1`         VARCHAR(20) NOT NULL,
+  `time2`          VARCHAR(20) NOT NULL,
+  `place2`         VARCHAR(20) NOT NULL,
+  `time3`          VARCHAR(20) NOT NULL,
+  `place3`         VARCHAR(20) NOT NULL,
+  `weeks`          VARCHAR(20) NOT NULL,
+  `region`         INT         NOT NULL COMMENT "上课地区，南湖，东区，西区。加索引（筛选条件）",
+
+  UNIQUE KEY `hash` (`hash`),
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
