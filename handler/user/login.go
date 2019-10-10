@@ -35,7 +35,7 @@ func Login(c *gin.Context) {
 	}
 
 	// Sign the json web token.
-	t, err := token.Sign(c, token.Context{ID: d.Id, Username: d.Username}, "")
+	t, err := token.Sign(c, token.Context{Sid: d.Id,}, "")
 	if err != nil {
 		SendError(c, errno.ErrToken, nil, err.Error())
 		return
