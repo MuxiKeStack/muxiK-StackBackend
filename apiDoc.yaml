@@ -334,7 +334,7 @@ paths:
             properties:
               Authorization:
                 type: string
-              courseid:
+              course_id:
                 type: string
         '401':
           description: 未授权
@@ -393,6 +393,7 @@ paths:
         - in: header
           name: Authorization
           required: false
+          description: 游客登录则不需要此字段或为空
           type: string
         - in: query
           name: pageNum
@@ -404,7 +405,7 @@ paths:
           type: string
         - in: query
           name: lastEvaluationId
-          required: false
+          required: true
           description: 上一页请求的最后一个评课的id
           type: string
       responses:
@@ -413,93 +414,78 @@ paths:
           schema:
             type: object
             properties:
-              Authorization:
-                type: string
-              count:
+              code:
                 type: integer
-                description: 评课数量
-              evaluationList:
-                type: array
-                items:
-                  type: object
-                  description: 评课列表
-                  properties:
-                    courseId:
-                      type: string
-                    courseName:
-                      type: string
-                      description: 课程名称
-                    teacher:
-                      type: string
-                      description: 教师
-                    rate:
-                      type: integer
-                      description: 评价星级
-                    content:
-                      type: string
-                      description: 评课内容
-                    anonymity:
-                      type: boolean
-                      description: 是否匿名
-                    likeNum:
-                      type: integer
-                      description: 点赞数
-                    isLike:
-                      type: boolean
-                      description: 当前用户是否已点赞
-                    time:
-                      type: integer
-                      description: 评课时间(时间戳)
-                    commentNum:
-                      type: integer
-                      description: 一级评论数
-                    userInfo:
+              message:
+                type: string
+              data:
+                type: object
+                properties:
+                  evaluation_num:
+                    type: integer
+                    description: 评课数量
+                  evaluation_list:
+                    type: array
+                    items:
                       type: object
-                      description: 评课的用户信息
+                      description: 评课列表
                       properties:
-                        userId:
+                        course_id:
                           type: string
-                        username:
+                        course_name:
                           type: string
-                        avatar:
+                          description: 课程名称
+                        teacher:
                           type: string
-                          description: 头像
+                          description: 教师
+                        rate:
+                          type: integer
+                          description: 评价星级
+                        content:
+                          type: string
+                          description: 评课内容
+                        is_annoymous:
+                          type: boolean
+                          description: 是否匿名
+                        like_num:
+                          type: integer
+                          description: 点赞数
+                        is_like:
+                          type: boolean
+                          description: 当前用户是否已点赞
+                        time:
+                          type: integer
+                          description: 评课时间(时间戳)
+                        comment_num:
+                          type: integer
+                          description: 一级评论数
+                        user_info:
+                          type: object
+                          description: 评课的用户信息
+                          properties:
+                            user_id:
+                              type: string
+                            username:
+                              type: string
+                            avatar:
+                              type: string
+                              description: 头像，一条url
         '400':
           description: bad request
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
         '401':
           description: 未授权
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
         '404':
           description: not found
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
         '500':
           description: 服务器错误
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
 
   /evaluation/:
     post:
@@ -524,42 +510,32 @@ paths:
           schema:
             type: object
             properties:
-              Authorization:
+              code:
+                type: integer
+              message:
                 type: string
-              courseId:
-                type: string
-              courseCommentId:
-                type: string
-                description: 评课id
-              userId:
-                type: string
+              data:
+                type: object
+                properties:
+                  course_id:
+                    type: string
+                  evaluation_id:
+                    type: integer
+                    description: 评课id
+                  user_id:
+                    type: integer
         '400':
           description: bad request
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
         '401':
           description: 未授权
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
         '500':
           description: 服务器错误
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
 
   /evaluation/{id}/:
     get:
@@ -582,46 +558,28 @@ paths:
           schema:
             type: object
             properties:
-              Authorization:
+              code:
+                type: integer
+              message:
                 type: string
-              courseCommentInfo:
+              data:
                 $ref: '#/definitions/CourseCommentInfo'
         '400':
           description: bad request
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
         '401':
           description: 未授权
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
         '404':
           description: not found
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
         '500':
           description: 服务器错误
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
 
     delete:
       tags:
@@ -643,44 +601,28 @@ paths:
           schema:
             type: object
             properties:
-              Authorization:
+              code:
+                type: integer
+              message:
                 type: string
+              data:
+                type: object
         '400':
           description: bad request
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
         '401':
           description: 未授权
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
         '404':
           description: not found
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
         '500':
           description: 服务器错误
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
 
   /evaluation/{id}/comments/:
     get:
@@ -699,12 +641,16 @@ paths:
           type: string
         - in: query
           name: pageNum
+          required: true
           type: string
         - in: query
           name: pageSize
+          required: true
           type: string
         - in: query
           name: lastCommentId
+          required: true
+          description: 上一页请求的最后一个评课的id
           type: string
       responses:
         "200":
@@ -712,85 +658,73 @@ paths:
           schema:
             type: object
             properties:
-              Authorization:
+              code:
+                type: integer
+              message:
                 type: string
-              ParentCommentsList:
-                type: array
-                description: 一级评论列表
-                items:
-                  type: object
-                  description: 父评论内容
-                  properties:
-                    commentId:
-                      type: string
-                      description: 评论id
-                    content:
-                      type: string
-                      description: 评论内容
-                    likeNum:
-                      type: integer
-                      description: 点赞数
-                    isLike:
-                      type: boolean
-                      description: 是否已点赞
-                    time:
-                      type: string
-                      description: 评课时间（时间戳）
-                    userInfo:
+              data:
+                type: object
+                properties:
+                  parent_comment_num:
+                    type: integer
+                    description: 一级评论数
+                  parent_comments_list:
+                    type: array
+                    description: 一级评论列表
+                    items:
                       type: object
-                      description: 评论用户的信息
+                      description: 父评论内容
                       properties:
-                        userId:
+                        comment_id:
                           type: string
-                        username:
+                          description: 评论id
+                        content:
                           type: string
-                        avatar:
+                          description: 评论内容
+                        like_num:
+                          type: integer
+                          description: 点赞数
+                        is_like:
+                          type: boolean
+                          description: 是否已点赞
+                        time:
                           type: string
-                          description: 头像
-                    subCommentNum:
-                      type: integer
-                      description: 子评论总数
-                    subCommentList:
-                      type: array
-                      description: 子评论列表
-                      items:
-                        $ref: '#/definitions/CommentInfo'
+                          description: 评课时间（时间戳）
+                        user_info:
+                          type: object
+                          description: 评论用户的信息
+                          properties:
+                            user_id:
+                              type: string
+                            username:
+                              type: string
+                            avatar:
+                              type: string
+                              description: 头像
+                        subcomments_num:
+                          type: integer
+                          description: 子评论总数
+                        subcomments_list:
+                          type: array
+                          description: 子评论列表
+                          items:
+                            $ref: '#/definitions/CommentInfo'
         '400':
           description: bad request
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
         '401':
           description: 未授权
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
         '404':
           description: not found
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
         '500':
           description: 服务器错误
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
 
   /evaluation/{id}/like/:
     put:
@@ -813,7 +747,7 @@ paths:
           schema:
             type: object
             properties:
-              isLike:
+              is_like:
                 type: boolean
       responses:
         "200":
@@ -821,41 +755,31 @@ paths:
           schema:
             type: object
             properties:
-              Authorization:
-                type: string
-              isLike:
-                type: boolean
-                description: 点赞状态
-              likeNum:
+              code:
                 type: integer
-                description: 点赞数
+              message:
+                type: string
+              data:
+                type: object
+                properties:
+                  is_like:
+                    type: boolean
+                    description: 点赞状态
+                  like_num:
+                    type: integer
+                    description: 点赞数
         '400':
           description: bad request
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
         '401':
           description: 未授权
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
         '500':
           description: 服务器错误
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
 
   /evaluation/{id}/comment/:
     post:
@@ -881,7 +805,7 @@ paths:
               content:
                 type: string
                 description: 评论内容
-              isAnonymous:
+              is_anonymous:
                 type: boolean
                 description: 是否匿名
       responses:
@@ -890,46 +814,28 @@ paths:
           schema:
             type: object
             properties:
-              Authorization:
+              code:
+                type: integer
+              message:
                 type: string
-              commentInfo:
+              data:
                 $ref: '#/definitions/CommentInfo'
         '400':
           description: bad request
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
         '401':
           description: 未授权
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
         '404':
           description: not found
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
         '500':
           description: 服务器错误
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
 
   /comment/{id}/:
     post:
@@ -964,46 +870,28 @@ paths:
           schema:
             type: object
             properties:
-              Authorization:
+              code:
+                type: integer
+              message:
                 type: string
-              commentInfo:
+              data:
                 $ref: '#/definitions/CommentInfo'
         '400':
           description: bad request
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
         '401':
           description: 未授权
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
         '404':
           description: not found
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
         '500':
           description: 服务器错误
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
 
   /comment/{id}/like/:
     put:
@@ -1026,7 +914,7 @@ paths:
           schema:
             type: object
             properties:
-              isLike:
+              is_like:
                 type: boolean
       responses:
         "200":
@@ -1034,41 +922,31 @@ paths:
           schema:
             type: object
             properties:
-              Authorization:
-                type: string
-              isLike:
-                type: boolean
-                description: 点赞状态
-              likeNum:
+              code:
                 type: integer
-                description: 点赞数
+              message:
+                type: string
+              data:
+                type: object
+                properties:
+                  is_like:
+                    type: boolean
+                    description: 点赞状态
+                  like_num:
+                    type: integer
+                    description: 点赞数
         '400':
           description: bad request
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
         '401':
           description: 未授权
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
         '500':
           description: 服务器错误
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
 
   /table/:
     get:
@@ -1078,6 +956,7 @@ paths:
       parameters:
         - in: header
           name: Authorization
+          required: true
           type: string
       responses:
         "200":
@@ -1085,42 +964,32 @@ paths:
           schema:
             type: object
             properties:
-              Authorization:
-                type: string
-              tableNum:
+              code:
                 type: integer
-                description: 课表总数
-              tableList:
-                type: array
-                items:
-                  $ref: "#/definitions/ClassTable"
+              message:
+                type: string
+              data:
+                type: object
+                properties:
+                  table_num:
+                    type: integer
+                    description: 课表总数
+                  table_list:
+                    type: array
+                    items:
+                      $ref: "#/definitions/ClassTable"
         '400':
           description: bad request
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
         '401':
           description: 未授权
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
         '500':
           description: 服务器错误
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
 
     post:
       tags:
@@ -1129,11 +998,12 @@ paths:
       parameters:
         - in: header
           name: Authorization
+          required: true
           type: string
         - in: query
           name: id
-          required: false
-          description: 若是创建副本，则为课表副本id，若是添加新课标，则为空
+          required: true
+          description: 若是创建副本，则为课表副本id，若是添加新课表，则为空
           type: string
       responses:
         "200":
@@ -1141,37 +1011,24 @@ paths:
           schema:
             type: object
             properties:
-              Authorization:
+              code:
+                type: integer
+              message:
                 type: string
-              tableInfo:
+              data:
                 $ref: "#/definitions/ClassTable"
         '400':
           description: bad request
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
         '401':
           description: 未授权
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
         '500':
           description: 服务器错误
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
 
   /table/{id}/:
     delete:
@@ -1194,44 +1051,28 @@ paths:
           schema:
             type: object
             properties:
-              Authorization:
+              code:
+                type: integer
+              message:
                 type: string
+              data:
+                type: object
         '400':
           description: bad request
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
         '401':
           description: 未授权
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
         '404':
           description: not found
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
         '500':
           description: 服务器错误
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
 
   /table/{id}/rename/:
     put:
@@ -1254,7 +1095,7 @@ paths:
           schema:
             type: object
             properties:
-              newName:
+              new_name:
                 type: string
       responses:
         "200":
@@ -1262,44 +1103,28 @@ paths:
           schema:
             type: object
             properties:
-              Authorization:
+              code:
+                type: integer
+              message:
                 type: string
+              data:
+                type: object
         '400':
           description: bad request
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
         '401':
           description: 未授权
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
         '404':
           description: not found
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
         '500':
           description: 服务器错误
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
 
   /table/{id}/class/:
     post:
@@ -1309,6 +1134,7 @@ paths:
       parameters:
         - in: header
           name: Authorization
+          required: true
           type: string
         - in: path
           name: id
@@ -1325,39 +1151,29 @@ paths:
           schema:
             type: object
             properties:
-              Authorization:
+              code:
+                type: integer
+              message:
                 type: string
-              tableId:
-                type: string
-              classInfo:
-                $ref: "#/definitions/Class"
+              data:
+                type: object
+                properties:
+                  table_id:
+                    type: string
+                  class_info:
+                    $ref: "#/definitions/Class"
         '400':
           description: bad request
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
         '401':
           description: 未授权
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
         '500':
           description: 服务器错误
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
 
     delete:
       tags:
@@ -1383,44 +1199,28 @@ paths:
           schema:
             type: object
             properties:
-              Authorization:
+              code:
+                type: integer
+              message:
                 type: string
+              data:
+                type: object
         '400':
           description: bad request
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
         '401':
           description: 未授权
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
         '404':
           description: not found
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
         '500':
           description: 服务器错误
           schema:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/CodeResponse'
 
 definitions:
   auth.UserModel:
@@ -1522,19 +1322,19 @@ definitions:
     type: object
     description: 发布评课请求模型
     properties:
-      courseId:
+      course_id:
         type: string
         description: 课程id
-      courseName:
+      course_name:
         type: string
         description: 课程名
       rate:
         type: integer
         description: 评价星级
-      attendWay:
+      attendance_check_type:
         type: string
         description: 考勤方式
-      examWay:
+      exam_check_type:
         type: string
         description: 考核方式
       tags:
@@ -1545,7 +1345,7 @@ definitions:
       content:
         type: string
         description: 评价内容
-      isAnonymous:
+      is_anonymous:
         type: boolean
         description: 是否匿名
 
@@ -1553,9 +1353,9 @@ definitions:
     type: object
     description: 返回的评课信息模型
     properties:
-      courseId:
+      course_id:
         type: string
-      courseName:
+      course_name:
         type: string
         description: 课程名称
       teacher:
@@ -1563,10 +1363,10 @@ definitions:
       rate:
         type: integer
         description: 评价星级
-      attendWay:
+      attendance_check_type:
         type: string
         description: 考勤方式
-      examWay:
+      exam_check_type:
         type: string
         description: 考核方式
       tags:
@@ -1577,26 +1377,26 @@ definitions:
       content:
         type: string
         description: 评课内容
-      anonymity:
+      is_annoymous:
         type: boolean
         description: 是否匿名
-      likeNum:
+      like_num:
         type: integer
         description: 点赞数
-      isLike:
+      is_like:
         type: boolean
         description: 当前用户是否已点赞
       time:
         type: integer
         description: 评课时间(时间戳)
-      commentNum:
+      comment_num:
         type: integer
         description: 一级评论数
-      userInfo:
+      user_info:
         type: object
         description: 评课的用户信息
         properties:
-          userId:
+          user_id:
             type: string
           username:
             type: string
@@ -1611,16 +1411,16 @@ definitions:
       content:
         type: string
         description: 评论内容
-      likeNum:
+      like_num:
         type: integer
         description: 点赞数
-      isLike:
+      is_like:
         type: boolean
         description: 是否已点赞
       time:
         type: string
         description: 评课时间（时间戳）
-      userInfo:
+      user_info:
         type: object
         description: 用户信息
         properties:
@@ -1629,36 +1429,37 @@ definitions:
           avatar:
             type: string
             description: 头像
-      commentTarget:
+      comment_target_info:
         type: object
-        description: 评课对象
+        description: 评课对象信息
         properties:
-          userId:
+          user_id:
             type: string
           username:
             type: string
             description: 用户昵称
+
   Class:
     type: object
     description: 课堂
     properties:
-      courseId:
+      course_id:
         type: string
         description: 课程id
-      classId:
+      class_id:
         type: string
         description: 课堂id
-      courseName:
+      course_name:
         type: string
-      className:
+      class_name:
         type: string
       teacher:
         type: string
-      place:
+      places:
         type: array
         items:
           type: string
-      time:
+      times:
         type: array
         items:
           type: object
@@ -1675,6 +1476,7 @@ definitions:
             weeks:
               type: array
               description: 上课周次如[1, 2, 3 ... 17]
+              example: [1,2,3, 4, 5,]
               items:
                 type: integer
 
@@ -1682,15 +1484,18 @@ definitions:
     type: object
     description: 课表
     properties:
-      tableId:
+      table_id:
         type: string
-      tableName:
+      table_name:
         type: string
         description: 课表名
       rank:
         type: integer
         description: 课表优先级，排列顺序
-      classList:
+      class_num:
+        type: integer
+        description: 课堂总数
+      class_list:
         type: array
         description: 课堂列表
         items:
@@ -1700,28 +1505,28 @@ definitions:
     type: object
     description: 评课标签
     properties:
-      tagId:
+      tag_id:
         type: string
-      tagName:
+      tag_name:
         type: string
 
   CourseInfo:
     type: object
     description: 返回的课程信息模型
     properties:
-      courseName:
+      course_name:
         type: string
         description: 课程名称
-      courseCategory:
+      course_category:
         type: string
         description: 课程类别
-      courseCredit:
+      course_credit:
         type: integer
         description: 学分
       rate:
         type: integer
         description: 评价星级
-      starNumber:
+      star_number:
         type: integer
         description: 评价人数
       attendance1:
@@ -1745,38 +1550,38 @@ definitions:
       inspection4:
         type: integer
         description: 无考核数
-      courseTime1:
+      course_time1:
         type: string
         description: 上课时间1
-      coursePlace1:
+      course_place1:
         type: string
         description: 上课地点1
-      courseTime2:
+      course_time2:
         type: string
         description: 上课时间2
-      coursePlace2:
+      course_place2:
         type: string
         description: 上课地点2
-      courseTime3:
+      course_time3:
         type: string
         description: 上课时间3
-      coursePlace3:
+      course_place3:
         type: string
         description: 上课地点3
-      courseGrade70:
+      course_grade70:
         type: integer
         description: 70以下人数
-      courseGrade7085:
+      course_grade7085:
         type: integer
         description: 70-85人数
-      courseGrade85:
+      course_grade85:
         type: integer
         description: 85以上人数
-      courseGradeNumber:
+      course_grade_number:
         type: integer
         description: 成绩样本量
 
-  ResponseData:
+  CodeResponse:
     type: object
     properties:
       code:
