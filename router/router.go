@@ -32,11 +32,8 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 	u := g.Group("/api/v1/user")
 	u.Use(middleware.AuthMiddleware())
 	{
-		u.POST("", user.Create)
-		u.DELETE("/:id", user.Delete)
-		u.PUT("/:id", user.Update)
-		u.GET("", user.List)
-		u.GET("/:username", user.Get)
+		u.POST("/info", user.PostInfo)
+		u.GET("/info", user.GetInfo)
 	}
 
 	// 评课&评论
