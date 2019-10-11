@@ -2,6 +2,7 @@ package user
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/MuxiKeStack/muxiK-StackBackend/config"
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/router/middleware"
@@ -37,8 +38,10 @@ func TestLogin(t *testing.T) {
 
 	uri := "/login"
 	u := CreateRequest{
-		Username: "admin",
-		Password: "admin",
+		model.LoginModel{
+			Sid:      "",
+			Password: "",
+		},
 	}
 	jsonByte, err := json.Marshal(u)
 	if err != nil {
@@ -53,7 +56,7 @@ func TestLogin(t *testing.T) {
 		t.Errorf("Test error: Get LoginResponse Error:%s", err.Error())
 	}
 	tokenString = data.Data.Token
-
+	fmt.Println(tokenString)
 	if w.Code != http.StatusOK {
 		t.Errorf("Test Error: StatusCode Error:%d", w.Code)
 	}
