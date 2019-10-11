@@ -1,21 +1,16 @@
 package model
 
 import (
+	"fmt"
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/auth"
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/constvar"
-	"fmt"
 
 	validator "gopkg.in/go-playground/validator.v9"
 )
 
-// User represents a registered user.
-type UserModel struct {
-	BaseModel
-	Username string `json:"username" gorm:"column:username;not null" binding:"required" validate:"min=1,max=32"`
-}
 
 func (c *UserModel) TableName() string {
-	return "tb_users"
+	return "user"
 }
 
 // Create creates a new user account.
@@ -23,12 +18,6 @@ func (u *UserModel) Create() error {
 	return DB.Self.Create(&u).Error
 }
 
-// DeleteUser deletes the user by the user identifier.
-func DeleteUser(id uint64) error {
-	user := UserModel{}
-	user.BaseModel.Sid = id
-	return DB.Self.Delete(&user).Error
-}
 
 // Update updates an user account information.
 func (u *UserModel) Update() error {
