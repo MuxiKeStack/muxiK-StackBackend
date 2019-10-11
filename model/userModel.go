@@ -4,14 +4,20 @@ import (
 	"sync"
 )
 
-type BaseModel struct {
-	Sid        uint64     `gorm:"primary_key;column:sid" json:"sid"`
+type LoginModel struct {
+	Sid      uint64 `json:"sid"      binding:"required"`
+	Password string `json:"password" binding:"required"`
+}
+
+// User represents a registered user.
+type UserModel struct {
+	Sid string `json:"sid" gorm:"column:sid;not null"`
 }
 
 type UserInfo struct {
-	Sid	       	uint64 `json:"sid"`
-	Username  	string `json:"username"`
-	Avatar		string `json:"avatar"`
+	Sid      uint64 `json:"sid"`
+	Username string `json:"username"`
+	Avatar   string `json:"avatar"`
 }
 
 type UserList struct {
@@ -20,6 +26,7 @@ type UserList struct {
 }
 
 // Token represents a JSON web token.
-type Token struct {
+type AuthRespnse struct {
 	Token string `json:"token"`
+	IsNew uint8  `json:"is_new"`
 }
