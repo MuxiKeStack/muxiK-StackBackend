@@ -53,38 +53,6 @@
           '500':
             description: 服务器错误
 
-    /logout/:
-      get:
-        tags:
-          - auth
-        consumes:
-          - application/json
-        summary: logout
-        description: logout
-        parameters:
-          - name: token
-            in: header
-            required: true
-            description: token
-            type: string
-        responses:
-          200:
-            description: OK
-            schema:
-              properties:
-                code:
-                  type: integer
-                message:
-                  type: string
-                data:
-                  type: object
-          '401':
-            description: 未授权
-          '404':
-            description: not found
-          '500':
-            description: 服务器错误
-
     /message/:
       get:
         tags:
