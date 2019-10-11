@@ -1,18 +1,15 @@
 package user
 
 import (
+	"encoding/json"
 	"github.com/MuxiKeStack/muxiK-StackBackend/config"
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/router/middleware"
 	"github.com/MuxiKeStack/muxiK-StackBackend/util"
-	"encoding/json"
+	"github.com/gin-gonic/gin"
 	"net/http"
 	"os"
-	"strconv"
 	"testing"
-	"time"
-
-	"github.com/gin-gonic/gin"
 )
 
 var (
@@ -62,87 +59,6 @@ func TestLogin(t *testing.T) {
 	}
 }
 
-func TestCreate(t *testing.T) {
-	g := getRouter(true)
-	uri := "/v1/user"
-
-	username = strconv.FormatInt(time.Now().Unix(), 10)
-	password = strconv.FormatInt(time.Now().Unix(), 10)
-
-	u := CreateRequest{
-		Username: username,
-		Password: password,
-	}
-	jsonByte, err := json.Marshal(u)
-	if err != nil {
-		t.Errorf("Test Error: %s", err.Error())
-	}
-	w := util.PerformRequestWithBody(http.MethodPost, g, uri, jsonByte, tokenString)
-	result := w.Result()
-
-	// GetUid
-	user, err := model.GetUser(username)
-	if err != nil {
-		t.Errorf("Test Error: %s", err.Error())
-	}
-	uid = user.Id
-
-	if result.StatusCode != http.StatusOK {
-		t.Errorf("Test Error: StatusCode Error:%d", result.StatusCode)
-	}
-}
-
-func TestGet(t *testing.T) {
-	g := getRouter(true)
-	uri := "/v1/user/" + username
-	w := util.PerformRequest(http.MethodGet, g, uri, tokenString)
-	result := w.Result()
-
-	if result.StatusCode != http.StatusOK {
-		t.Errorf("Test Error: StatusCode Error:%d", result.StatusCode)
-	}
-}
-
-func TestUpdate(t *testing.T) {
-	g := getRouter(true)
-	uri := "/v1/user/" + strconv.FormatInt(int64(uid), 10)
-	u := CreateRequest{
-		Username: "test" + username,
-		Password: "test" + password,
-	}
-	jsonByte, err := json.Marshal(u)
-	if err != nil {
-		t.Errorf("Test Error: %s", err.Error())
-	}
-	w := util.PerformRequestWithBody(http.MethodPut, g, uri, jsonByte, tokenString)
-	result := w.Result()
-	if result.StatusCode != http.StatusOK {
-		t.Errorf("Test Error: StatusCode Error:%d", result.StatusCode)
-	}
-}
-
-func TestList(t *testing.T) {
-	g := getRouter(true)
-	uri := "/v1/user"
-	w := util.PerformRequest(http.MethodGet, g, uri, tokenString)
-	result := w.Result()
-
-	if result.StatusCode != http.StatusOK {
-		t.Errorf("Test Error: StatusCode Error:%d", result.StatusCode)
-	}
-}
-
-func TestDelete(t *testing.T) {
-	g := getRouter(true)
-	uri := "/v1/user/" + strconv.FormatInt(int64(uid), 10)
-	w := util.PerformRequest(http.MethodDelete, g, uri, tokenString)
-	result := w.Result()
-
-	if result.StatusCode != http.StatusOK {
-		t.Errorf("Test Error: StatusCode Error:%d", result.StatusCode)
-	}
-}
-
 // Helper function to create a router during testing
 func getRouter(withRouter bool) *gin.Engine {
 	g = gin.New()
@@ -179,11 +95,8 @@ func loadRouters(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 	u := g.Group("/v1/user")
 	u.Use(middleware.AuthMiddleware())
 	{
-		u.POST("", Create)
-		u.DELETE("/:id", Delete)
-		u.PUT("/:id", Update)
-		u.GET("", List)
-		u.GET("/:username", Get)
+		//u.POST("/info", PostInfo())
+		//u.GET("/info", GetInfo())
 	}
 
 	return g

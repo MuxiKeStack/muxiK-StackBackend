@@ -11,13 +11,13 @@ import (
 )
 
 var (
-	// ErrMissingHeader means the `Authorization` header was empty.
-	ErrMissingHeader = errors.New("The length of the `Authorization` header is zero.")
+	// ErrMissingHeader means the `token` header was empty.
+	ErrMissingHeader = errors.New("The length of the `token` header is zero;")
 )
 
 // Context is the context of the JSON web token.
 type Context struct {
-	Sid       uint64
+	Sid uint64
 }
 
 // secretFunc validates the secret format.
@@ -46,7 +46,7 @@ func Parse(tokenString string, secret string) (*Context, error) {
 
 		// Read the token if it's valid.
 	} else if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		ctx.Sid = uint64(claims["id"].(float64))
+		ctx.Sid = uint64(claims["sid"].(float64))
 		return ctx, nil
 
 		// Other errors.
@@ -58,7 +58,7 @@ func Parse(tokenString string, secret string) (*Context, error) {
 // ParseRequest gets the token from the header and
 // pass it to the Parse function to parses the token.
 func ParseRequest(c *gin.Context) (*Context, error) {
-	header := c.Request.Header.Get("Authorization")
+	header := c.Request.Header.Get("token")
 
 	// Load the jwt secret from config
 	secret := viper.GetString("jwt_secret")
@@ -81,9 +81,9 @@ func Sign(ctx *gin.Context, c Context, secret string) (tokenString string, err e
 	}
 	// The token content.
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"id":       c.Sid,
-		"nbf":      time.Now().Unix(),
-		"iat":      time.Now().Unix(),
+		"sid": c.Sid,
+		"nbf": time.Now().Unix(), //JWT Token 生效时间
+		"iat": time.Now().Unix(), //JWT Token 签发时间
 	})
 	// Sign the token with the specified secret.
 	tokenString, err = token.SignedString([]byte(secret))
