@@ -167,92 +167,132 @@
             description: 服务器错误
 
 
-    /course/{id}/:
-      get:
-        tags:
-          - course
-        summary: 获取课程信息
-        description: 获取课程信息
-        consumes:
-          - application/json
-        produces:
-          - application/json
-        parameters:
-          - in: header
-            name: token
-            description: token
-            required: true
-            type: string
-          - in: path
-            name: id
-            required: true
-            type: string
+  /course/using/{id}/:
+    get:
+      tags:
+        - course
+      summary: 获取课程信息
+      description: 获取课程信息
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: header
+          name: token
+          description: token
+          required: true
+          type: string
+        - in: path
+          name: id
+          required: true
+          type: string
 
-        responses:
-          "200":
-            description: OK
-            schema:
-              type: object
-              properties:
-                token:
-                  type: string
-                courseInfo:
-                  $ref: "#/definitions/CourseInfo"
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              token:
+                type: string
+              courseInfo:
+                $ref: "#/definitions/UsingCourseInfo"
 
-          '401':
-            description: 未授权
-          '404':
-            description: not found
+        '400':
+          description: bad request
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '401':
+          description: 未授权
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '404':
+          description: not found
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '500':
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/CodeResponse'
 
-      put:
-        tags:
-          - course
-        summary: 添加一个课程和其相关信息
-        parameters:
-          - in: path
-            type: string
-            name: id
-            description: 课程id
-            required: true
-          - in: body
-            name: body
-            description: 课程信息
-            required: true
-            schema:
-              $ref: '#/definitions/CourseInfo'
+    put:
+      tags:
+        - course
+      summary: 添加一个课程和其相关信息
+      parameters:
+        - in: path
+          type: string
+          name: id
+          description: 课程id
+          required: true
+        - in: body
+          name: body
+          description: 课程信息
+          required: true
+          schema:
+            $ref: '#/definitions/UsingCourseInfo'
 
-        responses:
-          '200':
-            description: OK
-          '403':
-            description: 课程已存在
-          '500':
-            description: 服务器错误
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '400':
+          description: bad request
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '401':
+          description: 未授权
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '404':
+          description: not found
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '500':
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/CodeResponse'
 
-      post:
-        tags:
-          - course
-        summary: 修改一个课程的相关信息
-        parameters:
-          - in: path
-            type: string
-            name: id
-            description: 课程id
-            required: true
-          - in: body
-            name: body
-            description: 课程信息
-            required: true
-            schema:
-              $ref: '#/definitions/CourseInfo'
+    post:
+      tags:
+        - course
+      summary: 修改一个课程的相关信息
+      parameters:
+        - in: path
+          type: string
+          name: id
+          description: 课程id
+          required: true
+        - in: body
+          name: body
+          description: 课程信息
+          required: true
+          schema:
+            $ref: '#/definitions/UsingCourseInfo'
 
-        responses:
-          '200':
-            description: OK
-          '403':
-            description: 课程已存在
-          '500':
-            description: 服务器错误
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '400':
+          description: bad request
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '401':
+          description: 未授权
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '404':
+          description: not found
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '500':
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/CodeResponse'
 
       delete:
         tags:
@@ -265,973 +305,84 @@
             description: 课程id
             required: true
 
-        responses:
-          '200':
-            description: OK
-          '404':
-            description: not found
-          '500':
-            description: 服务器错误
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '400':
+          description: bad request
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '401':
+          description: 未授权
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '404':
+          description: not found
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '500':
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/CodeResponse'
 
 
-    /course/{id}/favorite/:
-      post:
-        tags:
-          - course
-        summary: 收藏课程
-        description: 收藏课程
-        parameters:
-          - in: header
-            name: token
-            required: true
-            type: string
-          - in: path
-            name: id
-            description: 课程id
-            required: true
-            type: string
+  /course/using/{id}/favorite/:
+    post:
+      tags:
+        - course
+      summary: 收藏课程
+      description: 收藏课程
+      parameters:
+        - in: header
+          name: token
+          required: true
+          type: string
+        - in: path
+          name: id
+          description: 课程id
+          required: true
+          type: string
 
-        responses:
-          "200":
-            description: OK
-            schema:
-              type: object
-              properties:
-                token:
-                  type: string
-          '401':
-            description: 未授权
-          '404':
-            description: not found
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+            properties:
+              token:
+                type: string
+        '400':
+          description: bad request
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '401':
+          description: 未授权
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '404':
+          description: not found
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '500':
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/CodeResponse'
 
-    /course/query/:
-      get:
-        tags:
-          - course
-        summary: 查询课程
-        parameters:
-          - in: header
-            name: courseId
-            required: false
-            type: string
-          - in: header
-            name: teacherId
-            required: false
-            type: string
-          - in: header
-            name: tag
-            required: false
-            type: string
-          - in: header
-            name: userId
-            required: true
-            type: string
-        responses:
-          "200":
-            description: OK
-            schema:
-              type: object
-              properties:
-                token:
-                  type: string
-                course_id:
-                  type: string
-          '401':
-            description: 未授权
-          '404':
-            description: not found
-          '500':
-            description: 服务器错误
-
-    /report/evaluation/{id}/:
-      post:
-        tags:
-          - report
-        summary: 对评课进行举报
-        parameters:
-          - in: header
-            name: token
-            description: token
-            required: true
-            type: string
-          - in: path
-            name: id
-            required: true
-            type: string
-          - in: body
-            name: content
-            required: true
-            schema:
-              type: object
-              properties:
-                content:
-                  type: string
-        responses:
-          "200":
-            description: OK
-            schema:
-              type: object
-              properties:
-                token:
-                  type: string
-                number:
-                  type: integer
-                  description: 被举报次数
-          '401':
-            description: 未授权
-          '404':
-            description: not found
-          '500':
-            description: 服务器错误
-
-    /evaluation/list/:
-      get:
-        tags:
-          - comment
-        summary: 评课广场，获取评课列表
-        parameters:
-          - in: header
-            name: token
-            required: false
-            description: 游客登录则不需要此字段或为空
-            type: string
-          - in: query
-            name: pageNum
-            required: true
-            type: string
-          - in: query
-            name: pageSize
-            required: true
-            type: string
-          - in: query
-            name: lastEvaluationId
-            required: true
-            description: 上一页请求的最后一个评课的id
-            type: string
-        responses:
-          "200":
-            description: OK
-            schema:
-              type: object
-              properties:
-                code:
-                  type: integer
-                message:
-                  type: string
-                data:
-                  type: object
-                  properties:
-                    evaluation_num:
-                      type: integer
-                      description: 评课数量
-                    evaluation_list:
-                      type: array
-                      items:
-                        type: object
-                        description: 评课列表
-                        properties:
-                          course_id:
-                            type: string
-                          course_name:
-                            type: string
-                            description: 课程名称
-                          teacher:
-                            type: string
-                            description: 教师
-                          rate:
-                            type: integer
-                            description: 评价星级
-                          content:
-                            type: string
-                            description: 评课内容
-                          is_annoymous:
-                            type: boolean
-                            description: 是否匿名
-                          like_num:
-                            type: integer
-                            description: 点赞数
-                          is_like:
-                            type: boolean
-                            description: 当前用户是否已点赞
-                          time:
-                            type: integer
-                            description: 评课时间(时间戳)
-                          comment_num:
-                            type: integer
-                            description: 一级评论数
-                          user_info:
-                            type: object
-                            description: 评课的用户信息
-                            properties:
-                              user_id:
-                                type: string
-                              username:
-                                type: string
-                              avatar:
-                                type: string
-                                description: 头像，一条url
-          '400':
-            description: bad request
-            schema:
-              $ref: '#/definitions/CodeResponse'
-          '401':
-            description: 未授权
-            schema:
-              $ref: '#/definitions/CodeResponse'
-          '404':
-            description: not found
-            schema:
-              $ref: '#/definitions/CodeResponse'
-          '500':
-            description: 服务器错误
-            schema:
-              $ref: '#/definitions/CodeResponse'
-
-    /evaluation/:
-      post:
-        tags:
-          - comment
-        summary: 发布评课
-        parameters:
-          - in: header
-            name: token
-            description: token
-            required: true
-            type: string
-          - in: body
-            name: body
-            description: 评课内容
-            required: true
-            schema:
-              $ref: '#/definitions/CourseCommentsPublish'
-        responses:
-          '200':
-            description: OK
-            schema:
-              type: object
-              properties:
-                code:
-                  type: integer
-                message:
-                  type: string
-                data:
-                  type: object
-                  properties:
-                    course_id:
-                      type: string
-                    evaluation_id:
-                      type: integer
-                      description: 评课id
-                    user_id:
-                      type: integer
-          '400':
-            description: bad request
-            schema:
-              $ref: '#/definitions/CodeResponse'
-          '401':
-            description: 未授权
-            schema:
-              $ref: '#/definitions/CodeResponse'
-          '500':
-            description: 服务器错误
-            schema:
-              $ref: '#/definitions/CodeResponse'
-
-    /evaluation/{id}/:
-      get:
-        tags:
-          - comment
-        summary: 获取评课详情
-        parameters:
-          - in: header
-            name: token
-            required: true
-            type: string
-          - in: path
-            name: id
-            required: true
-            description: 评课id
-            type: string
-        responses:
-          "200":
-            description: OK
-            schema:
-              type: object
-              properties:
-                code:
-                  type: integer
-                message:
-                  type: string
-                data:
-                  $ref: '#/definitions/CourseCommentInfo'
-          '400':
-            description: bad request
-            schema:
-              $ref: '#/definitions/CodeResponse'
-          '401':
-            description: 未授权
-            schema:
-              $ref: '#/definitions/CodeResponse'
-          '404':
-            description: not found
-            schema:
-              $ref: '#/definitions/CodeResponse'
-          '500':
-            description: 服务器错误
-            schema:
-              $ref: '#/definitions/CodeResponse'
-
-      delete:
-        tags:
-          - comment
-        summary: 删除评课
-        parameters:
-          - in: header
-            name: token
-            required: true
-            type: string
-          - in: path
-            name: id
-            required: true
-            description: 评课id
-            type: string
-        responses:
-          "200":
-            description: OK
-            schema:
-              type: object
-              properties:
-                code:
-                  type: integer
-                message:
-                  type: string
-                data:
-                  type: object
-          '400':
-            description: bad request
-            schema:
-              $ref: '#/definitions/CodeResponse'
-          '401':
-            description: 未授权
-            schema:
-              $ref: '#/definitions/CodeResponse'
-          '404':
-            description: not found
-            schema:
-              $ref: '#/definitions/CodeResponse'
-          '500':
-            description: 服务器错误
-            schema:
-              $ref: '#/definitions/CodeResponse'
-
-    /evaluation/{id}/comments/:
-      get:
-        tags:
-          - comment
-        summary: 获取某一评课下的全部评论
-        parameters:
-          - in: header
-            name: token
-            required: true
-            type: string
-          - in: path
-            name: id
-            required: true
-            description: 评课id
-            type: string
-          - in: query
-            name: pageNum
-            required: true
-            type: string
-          - in: query
-            name: pageSize
-            required: true
-            type: string
-          - in: query
-            name: lastCommentId
-            required: true
-            description: 上一页请求的最后一个评课的id
-            type: string
-        responses:
-          "200":
-            description: OK
-            schema:
-              type: object
-              properties:
-                code:
-                  type: integer
-                message:
-                  type: string
-                data:
-                  type: object
-                  properties:
-                    parent_comment_num:
-                      type: integer
-                      description: 一级评论数
-                    parent_comments_list:
-                      type: array
-                      description: 一级评论列表
-                      items:
-                        type: object
-                        description: 父评论内容
-                        properties:
-                          comment_id:
-                            type: string
-                            description: 评论id
-                          content:
-                            type: string
-                            description: 评论内容
-                          like_num:
-                            type: integer
-                            description: 点赞数
-                          is_like:
-                            type: boolean
-                            description: 是否已点赞
-                          time:
-                            type: string
-                            description: 评课时间（时间戳）
-                          user_info:
-                            type: object
-                            description: 评论用户的信息
-                            properties:
-                              user_id:
-                                type: string
-                              username:
-                                type: string
-                              avatar:
-                                type: string
-                                description: 头像
-                          subcomments_num:
-                            type: integer
-                            description: 子评论总数
-                          subcomments_list:
-                            type: array
-                            description: 子评论列表
-                            items:
-                              $ref: '#/definitions/CommentInfo'
-          '400':
-            description: bad request
-            schema:
-              $ref: '#/definitions/CodeResponse'
-          '401':
-            description: 未授权
-            schema:
-              $ref: '#/definitions/CodeResponse'
-          '404':
-            description: not found
-            schema:
-              $ref: '#/definitions/CodeResponse'
-          '500':
-            description: 服务器错误
-            schema:
-              $ref: '#/definitions/CodeResponse'
-
-    /evaluation/{id}/like/:
-      put:
-        tags:
-          - comment
-        summary: 评课点赞
-        parameters:
-          - in: header
-            name: token
-            required: true
-            type: string
-          - in: path
-            name: id
-            required: true
-            description: 点赞对象id
-            type: string
-          - in: body
-            name: data
-            required: true
-            schema:
-              type: object
-              properties:
-                is_like:
-                  type: boolean
-        responses:
-          "200":
-            description: OK
-            schema:
-              type: object
-              properties:
-                code:
-                  type: integer
-                message:
-                  type: string
-                data:
-                  type: object
-                  properties:
-                    is_like:
-                      type: boolean
-                      description: 点赞状态
-                    like_num:
-                      type: integer
-                      description: 点赞数
-          '400':
-            description: bad request
-            schema:
-              $ref: '#/definitions/CodeResponse'
-          '401':
-            description: 未授权
-            schema:
-              $ref: '#/definitions/CodeResponse'
-          '500':
-            description: 服务器错误
-            schema:
-              $ref: '#/definitions/CodeResponse'
-
-    /evaluation/{id}/comment/:
-      post:
-        tags:
-          - comment
-        summary: 评论评课
-        parameters:
-          - in: header
-            name: token
-            required: true
-            type: string
-          - in: path
-            name: id
-            required: true
-            description: 评课id
-            type: string
-          - in: body
-            name: data
-            required: true
-            schema:
-              type: object
-              properties:
-                content:
-                  type: string
-                  description: 评论内容
-                is_anonymous:
-                  type: boolean
-                  description: 是否匿名
-        responses:
-          "200":
-            description: OK
-            schema:
-              type: object
-              properties:
-                code:
-                  type: integer
-                message:
-                  type: string
-                data:
-                  $ref: '#/definitions/CommentInfo'
-          '400':
-            description: bad request
-            schema:
-              $ref: '#/definitions/CodeResponse'
-          '401':
-            description: 未授权
-            schema:
-              $ref: '#/definitions/CodeResponse'
-          '404':
-            description: not found
-            schema:
-              $ref: '#/definitions/CodeResponse'
-          '500':
-            description: 服务器错误
-            schema:
-              $ref: '#/definitions/CodeResponse'
-
-    /comment/{id}/:
-      post:
-        tags:
-          - comment
-        summary: 回复评论
-        parameters:
-          - in: header
-            name: token
-            required: true
-            type: string
-          - in: path
-            name: id
-            required: true
-            description: 评论id
-            type: string
-          - in: body
-            name: data
-            required: true
-            schema:
-              type: object
-              properties:
-                content:
-                  type: string
-                  description: 评论内容
-                is_anonymous:
-                  type: boolean
-                  description: 是否匿名
-        responses:
-          "200":
-            description: OK
-            schema:
-              type: object
-              properties:
-                code:
-                  type: integer
-                message:
-                  type: string
-                data:
-                  $ref: '#/definitions/CommentInfo'
-          '400':
-            description: bad request
-            schema:
-              $ref: '#/definitions/CodeResponse'
-          '401':
-            description: 未授权
-            schema:
-              $ref: '#/definitions/CodeResponse'
-          '404':
-            description: not found
-            schema:
-              $ref: '#/definitions/CodeResponse'
-          '500':
-            description: 服务器错误
-            schema:
-              $ref: '#/definitions/CodeResponse'
-
-    /comment/{id}/like/:
-      put:
-        tags:
-          - comment
-        summary: 评论点赞
-        parameters:
-          - in: header
-            name: token
-            required: true
-            type: string
-          - in: path
-            name: id
-            required: true
-            description: 点赞对象id
-            type: string
-          - in: body
-            name: data
-            required: true
-            schema:
-              type: object
-              properties:
-                is_like:
-                  type: boolean
-        responses:
-          "200":
-            description: OK
-            schema:
-              type: object
-              properties:
-                code:
-                  type: integer
-                message:
-                  type: string
-                data:
-                  type: object
-                  properties:
-                    is_like:
-                      type: boolean
-                      description: 点赞状态
-                    like_num:
-                      type: integer
-                      description: 点赞数
-          '400':
-            description: bad request
-            schema:
-              $ref: '#/definitions/CodeResponse'
-          '401':
-            description: 未授权
-            schema:
-              $ref: '#/definitions/CodeResponse'
-          '500':
-            description: 服务器错误
-            schema:
-              $ref: '#/definitions/CodeResponse'
-
-    /table/:
-      get:
-        tags:
-          - table
-        summary: 获取所有课表
-        parameters:
-          - in: header
-            name: token
-            required: true
-            type: string
-        responses:
-          "200":
-            description: OK
-            schema:
-              type: object
-              properties:
-                code:
-                  type: integer
-                message:
-                  type: string
-                data:
-                  type: object
-                  properties:
-                    table_num:
-                      type: integer
-                      description: 课表总数
-                    table_list:
-                      type: array
-                      items:
-                        $ref: "#/definitions/ClassTable"
-          '400':
-            description: bad request
-            schema:
-              $ref: '#/definitions/CodeResponse'
-          '401':
-            description: 未授权
-            schema:
-              $ref: '#/definitions/CodeResponse'
-          '500':
-            description: 服务器错误
-            schema:
-              $ref: '#/definitions/CodeResponse'
-
-      post:
-        tags:
-          - table
-        summary: 添加新课表/创建副本
-        parameters:
-          - in: header
-            name: token
-            required: true
-            type: string
-          - in: query
-            name: id
-            required: true
-            description: 若是创建副本，则为课表副本id，若是添加新课表，则为空
-            type: string
-        responses:
-          "200":
-            description: OK
-            schema:
-              type: object
-              properties:
-                code:
-                  type: integer
-                message:
-                  type: string
-                data:
-                  $ref: "#/definitions/ClassTable"
-          '400':
-            description: bad request
-            schema:
-              $ref: '#/definitions/CodeResponse'
-          '401':
-            description: 未授权
-            schema:
-              $ref: '#/definitions/CodeResponse'
-          '500':
-            description: 服务器错误
-            schema:
-              $ref: '#/definitions/CodeResponse'
-
-    /table/{id}/:
-      delete:
-        tags:
-          - table
-        summary: 删除课表
-        parameters:
-          - in: header
-            name: token
-            required: true
-            type: string
-          - in: path
-            name: id
-            required: true
-            description: 课表id
-            type: string
-        responses:
-          "200":
-            description: OK
-            schema:
-              type: object
-              properties:
-                code:
-                  type: integer
-                message:
-                  type: string
-                data:
-                  type: object
-          '400':
-            description: bad request
-            schema:
-              $ref: '#/definitions/CodeResponse'
-          '401':
-            description: 未授权
-            schema:
-              $ref: '#/definitions/CodeResponse'
-          '404':
-            description: not found
-            schema:
-              $ref: '#/definitions/CodeResponse'
-          '500':
-            description: 服务器错误
-            schema:
-              $ref: '#/definitions/CodeResponse'
-
-    /table/{id}/rename/:
-      put:
-        tags:
-          - table
-        summary: 课表重命名
-        parameters:
-          - in: header
-            name: token
-            required: true
-            type: string
-          - in: path
-            name: id
-            required: true
-            description: 课表id
-            type: string
-          - in: body
-            name: data
-            required: true
-            schema:
-              type: object
-              properties:
-                new_name:
-                  type: string
-        responses:
-          "200":
-            description: OK
-            schema:
-              type: object
-              properties:
-                code:
-                  type: integer
-                message:
-                  type: string
-                data:
-                  type: object
-          '400':
-            description: bad request
-            schema:
-              $ref: '#/definitions/CodeResponse'
-          '401':
-            description: 未授权
-            schema:
-              $ref: '#/definitions/CodeResponse'
-          '404':
-            description: not found
-            schema:
-              $ref: '#/definitions/CodeResponse'
-          '500':
-            description: 服务器错误
-            schema:
-              $ref: '#/definitions/CodeResponse'
-
-    /table/{id}/class/:
-      post:
-        tags:
-          - table
-        summary: 收藏的课堂加入课表
-        parameters:
-          - in: header
-            name: token
-            required: true
-            type: string
-          - in: path
-            name: id
-            required: true
-            description: 课表id
-            type: string
-          - in: query
-            name: classId
-            required: true
-            type: string
-        responses:
-          "200":
-            description: OK
-            schema:
-              type: object
-              properties:
-                code:
-                  type: integer
-                message:
-                  type: string
-                data:
-                  type: object
-                  properties:
-                    table_id:
-                      type: string
-                    class_info:
-                      $ref: "#/definitions/Class"
-          '400':
-            description: bad request
-            schema:
-              $ref: '#/definitions/CodeResponse'
-          '401':
-            description: 未授权
-            schema:
-              $ref: '#/definitions/CodeResponse'
-          '500':
-            description: 服务器错误
-            schema:
-              $ref: '#/definitions/CodeResponse'
-
-      delete:
-        tags:
-          - table
-        summary: 删除课堂
-        parameters:
-          - in: header
-            name: token
-            required: true
-            type: string
-          - in: path
-            name: id
-            required: true
-            description: 课表id
-            type: string
-          - in: path
-            name: classId
-            required: true
-            type: string
-        responses:
-          "200":
-            description: OK
-            schema:
-              type: object
-              properties:
-                code:
-                  type: integer
-                message:
-                  type: string
-                data:
-                  type: object
-          '400':
-            description: bad request
-            schema:
-              $ref: '#/definitions/CodeResponse'
-          '401':
-            description: 未授权
-            schema:
-              $ref: '#/definitions/CodeResponse'
-          '404':
-            description: not found
-            schema:
-              $ref: '#/definitions/CodeResponse'
-          '500':
-            description: 服务器错误
-            schema:
-              $ref: '#/definitions/CodeResponse'
-
-  definitions:
-    auth.UserModel:
-      required:
-        - sid
-        - password
-      properties:
-        sid:
-          type: integer
-          description: student's id
-        password:
+  /course/using/query/:
+    get:
+      tags:
+        - course
+      summary: 查询课程
+      parameters:
+        - in: header
+          name: courseId
+          required: false
+          type: string
+        - in: header
+          name: teacherId
+          required: false
           type: string
           description: student's password in one.ccnu.edu.cn
 
@@ -1269,10 +420,243 @@
           description: isn't it a like?
         reply:
           type: string
-          description: if it's comment, this is comment message
-        is_read:
-          type: integer
-          description: isn't is read?
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+            properties:
+              token:
+                type: string
+              course_id:
+                type: string
+        '400':
+          description: bad request
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '401':
+          description: 未授权
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '404':
+          description: not found
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '500':
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/CodeResponse'
+
+  /course/history/{id}/:
+    get:
+      tags:
+        - course
+      summary: 获取课程信息
+      description: 获取课程信息
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: header
+          name: token
+          description: token
+          required: true
+          type: string
+        - in: path
+          name: id
+          required: true
+          type: string
+
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+            properties:
+              token:
+                type: string
+              courseInfo:
+                $ref: "#/definitions/HistoryCourseInfo"
+
+        '400':
+          description: bad request
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '401':
+          description: 未授权
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '404':
+          description: not found
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '500':
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/CodeResponse'
+
+    put:
+      tags:
+        - course
+      summary: 添加一个课程和其相关信息
+      parameters:
+        - in: path
+          type: string
+          name: id
+          description: 课程id
+          required: true
+        - in: body
+          name: body
+          description: 课程信息
+          required: true
+          schema:
+            $ref: '#/definitions/HistoryCourseInfo'
+
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '400':
+          description: bad request
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '401':
+          description: 未授权
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '404':
+          description: not found
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '500':
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/CodeResponse'
+
+    post:
+      tags:
+        - course
+      summary: 修改一个课程的相关信息
+      parameters:
+        - in: path
+          type: string
+          name: id
+          description: 课程id
+          required: true
+        - in: body
+          name: body
+          description: 课程信息
+          required: true
+          schema:
+            $ref: '#/definitions/HistoryCourseInfo'
+
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '400':
+          description: bad request
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '401':
+          description: 未授权
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '404':
+          description: not found
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '500':
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/CodeResponse'
+
+    delete:
+      tags:
+        - course
+      summary: 删除一个课程和其相关信息
+      parameters:
+        - in: path
+          type: string
+          name: id
+          description: 课程id
+          required: true
+
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '400':
+          description: bad request
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '401':
+          description: 未授权
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '404':
+          description: not found
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '500':
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/CodeResponse'
+
+
+  /course/history/query/:
+    get:
+      tags:
+        - course
+      summary: 查询课程
+      parameters:
+        - in: header
+          name: courseId
+          required: false
+          type: string
+        - in: header
+          name: teacherId
+          required: false
+          type: string
+        - in: header
+          name: tag
+          required: false
+          type: string
+        - in: header
+          name: userId
+          required: true
+          type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+            properties:
+              token:
+                type: string
+              course_id:
+                type: string
+        '400':
+          description: bad request
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '401':
+          description: 未授权
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '404':
+          description: not found
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '500':
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/CodeResponse'
+
 
     message.courseInfo:
       properties:
@@ -1284,7 +668,41 @@
           description: the name of the course which is called
         comment:
           type: string
-          description: comment
+        - in: body
+          name: content
+          required: true
+          schema:
+            type: object
+            properties:
+              content:
+                type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+            properties:
+              token:
+                type: string
+              number:
+                type: integer
+                description: 被举报次数
+        '400':
+          description: bad request
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '401':
+          description: 未授权
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '404':
+          description: not found
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '500':
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/CodeResponse'
 
     message.Response:
       properties:
@@ -1590,3 +1008,166 @@
           type: string
         data:
           type: object
+          properties:
+            start:
+              type: integer
+              description: 上课开始时间（start=3表示上午第三节开始）
+            during:
+              type: integer
+              description: 上课持续时间（during=2表示持续2节课）
+            day:
+              type: integer
+              description: 上课星期
+            weeks:
+              type: array
+              description: 上课周次如[1, 2, 3 ... 17]
+              example: [1,2,3, 4, 5,]
+              items:
+                type: integer
+
+  ClassTable:
+    type: object
+    description: 课表
+    properties:
+      table_id:
+        type: string
+      table_name:
+        type: string
+        description: 课表名
+      rank:
+        type: integer
+        description: 课表优先级，排列顺序
+      class_num:
+        type: integer
+        description: 课堂总数
+      class_list:
+        type: array
+        description: 课堂列表
+        items:
+          $ref: "#/definitions/Class"
+
+  CourseCommentTag:
+    type: object
+    description: 评课标签
+    properties:
+      tag_id:
+        type: string
+      tag_name:
+        type: string
+
+  HistoryCourseInfo:
+    type: object
+    description: 返回正在使用中的课程信息模型
+    properties:
+      course_name:
+        type: string
+        description: 课程名称
+      course_category:
+        type: string
+        description: 课程类别
+      teacher_name:
+        type: string
+        description: 教师名称
+
+        
+  UsingCourseInfo:
+    type: object
+    description: 返回的历史课程信息模型
+    properties:
+      course_name:
+        type: string
+        description: 课程名称
+      teacher_name:
+        type: string
+        description: 教师名称
+      course_category:
+        type: string
+        description: 课程类别
+      course_credit:
+        type: integer
+        description: 学分
+      rate:
+        type: integer
+        description: 评价星级
+      star_number:
+        type: integer
+        description: 评价人数
+      attendance1:
+        type: integer
+        description: 经常点名数
+      attendance2:
+        type: integer
+        description: 偶尔点名数
+      attendance3:
+        type: integer
+        description: 签到点名数
+      inspection1:
+        type: integer
+        description: 闭卷考试数
+      inspection2:
+        type: integer
+        description: 开卷考试数
+      inspection3:
+        type: integer
+        description: 论文考核数
+      inspection4:
+        type: integer
+        description: 无考核数
+      course_time1:
+        type: string
+        description: 上课时间1
+      course_place1:
+        type: string
+        description: 上课地点1
+      course_time2:
+        type: string
+        description: 上课时间2
+      course_place2:
+        type: string
+        description: 上课地点2
+      course_time3:
+        type: string
+        description: 上课时间3
+      course_place3:
+        type: string
+        description: 上课地点3
+      course_feature1:
+        type: string
+        description: 选择生动有趣的人数
+      course_feature2:
+        type: string
+        description: 选择干货满满的人数
+      course_feature3:
+        type: string
+        description: 选择作业量少的人数
+      course_feature4:
+        type: string
+        description: 选择老师很好的人数
+      course_feature5:
+        type: string
+        description: 选择简单易学的人数
+      course_feature6:
+        type: string
+        description: 选择云课堂资料全的人数
+      course_grade70:
+        type: integer
+        description: 70以下人数
+      course_grade7085:
+        type: integer
+        description: 70-85人数
+      course_grade85:
+        type: integer
+        description: 85以上人数
+      course_grade_number:
+        type: integer
+        description: 成绩样本量
+
+  CodeResponse:
+    type: object
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+      data:
+        type: object
