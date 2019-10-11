@@ -1,8 +1,24 @@
 package comment
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
+	"github.com/MuxiKeStack/muxiK-StackBackend/model"
+
+	"github.com/gin-gonic/gin"
+)
 
 // 发布评课
 func Publish(c *gin.Context) {
+	var data model.EvaluationPublish
+	if err := c.ShouldBindJSON(&data); err != nil {
+		handler.SendError(c, err, nil, err.Error())
+	}
 
+	userId := c.MustGet("userId").(uint64)
+	evaluationId, err := model.NewEvaluation(&data, userId)
+	if err != nil {
+		handler.SendError(c, err, nil, err.Error())
+	}
+
+	handler.SendResponse(c, nil, evaluationId)
 }
