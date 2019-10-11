@@ -40,15 +40,25 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 	}
 
 	// 评课&评论
+	g.GET("/api/v1/evaluation/list/", comment.EvaluationPlayground)
+
+	evaluation := g.Group("/api/v1/evaluation")
+	evaluation.Use(middleware.AuthMiddleware())
+	{
+		evaluation.POST("/", comment.Publish)
+		evaluation.POST("/:id/comment/", comment.CreateNewComment)
+		evaluation.DELETE("/:id/", comment.Delete)
+		evaluation.GET("/:id/", comment.GetEvaluationInfo)
+		evaluation.PUT("/:id/like/", comment.UpdateEvaluationLike)
+
+		evaluation.GET("/:id/comments/", comment.GetComments)
+	}
+
 	comments := g.Group("/api/v1/comment")
 	comments.Use(middleware.AuthMiddleware())
 	{
-		comments.POST("/", comment.Publish)
-		comments.POST("/:id/new/", comment.Create)
-		comments.DELETE("/:id/", comment.Delete)
-		comments.GET("/:id/", comment.GetCourseCommentInfo)
-		comments.GET("/:id/commentList/", comment.GetCommentList)
-		comments.PUT("/:id/like/", comment.UpdateLike)
+		comments.POST("/:id/", comment.Reply)
+		comments.PUT("/:id/like/", comment.UpdateCommentLike)
 	}
 
 	// 排课课表
@@ -57,10 +67,10 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 	{
 		tables.GET("/", table.Get)
 		tables.POST("/", table.AddTable)
-		tables.POST("/:id/class/:classId/", table.AddClass)
+		tables.POST("/:id/class/", table.AddClass)
 		tables.PUT("/:id/rename/", table.Rename)
 		tables.DELETE("/:id/", table.DeleteTable)
-		tables.DELETE("/:id/class/:classId/", table.DeleteClass)
+		tables.DELETE("/:id/class/", table.DeleteClass)
 	}
 
 	// The health check handlers
