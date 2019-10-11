@@ -15,7 +15,7 @@ CREATE TABLE `user` (
   PRIMARY KEY (`sid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-CREATE TABLE "course_evaluation" (
+CREATE TABLE `course_evaluation` (
   `course_name`           VARCHAR(50)  NOT NULL,
   `rate`                  INT          NOT NULL DEFAULT 0,
   `attendance_check_type` INT          NOT NULL DEFAULT 0 COMMENT "考勤方式，经常点名/偶尔点名/签到点名，标识为 0/1/2",
@@ -32,7 +32,7 @@ CREATE TABLE "course_evaluation" (
   `user_id`               INT          NOT NULl,
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE "comment" (
+CREATE TABLE `comment` (
   `time`              VARCHAR(20) NOT NULL           COMMENT "评课时间，时间戳",
   `content`           TEXT        NOT NULl           COMMENT "评论内容",
   `like_num`          INT         NOT NULL DEFAULT 0 COMMENT "点赞数",
@@ -44,22 +44,22 @@ CREATE TABLE "comment" (
   `comment_target_id` INT         NOT NULL COMMENT "评论对象id",
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE "course_evaluation_like" (
+CREATE TABLE `course_evaluation_like` (
   `evaluation_id` INT NOT NULL COMMENT "评课id",
   `user_id`       INT NOT NULL,
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE "comment_like" (
+CREATE TABLE `comment_like` (
   `comment_id` INT NOT NULL COMMENT "评论id",
   `user_id`    INT NOT NULL,
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE "class_table" (
+CREATE TABLE `class_table` (
   `user_id` INT  NOT NULL,
   `courses` TEXT NOT NULL COMMENT "课程 hash 列表，逗号分隔",
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE "tag" (
+CREATE TABLE `tag` (
   `tag_name` VARCHAR(20) NOT NULL,
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
