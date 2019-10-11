@@ -33,7 +33,14 @@ type CommentModel struct {
 
 // 发布评课
 type EvaluationPublish struct {
-
+	CourseId            string 			`json:"course_id"`
+	CourseName 			string 			`json:"course_name"`
+	Rate			    uint8 			`json:"rate"`
+	AttendanceCheckType uint8 			`json:"attendance_check_type"`
+	ExamCheckType 		uint8 		  	`json:"exam_check_type"`
+	Content 	  		string 		  	`json:"content"`
+	IsAnonymous	  		bool	 		`json:"is_anonymous"`
+	Tags 		  		[]EvaluationTag `json:"tags"`
 }
 
 // 评课信息
@@ -44,4 +51,9 @@ type EvaluationInfo struct {
 // 评论信息
 type CommentInfo struct {
 
+}
+
+type EvaluationTag struct {
+	TagId   uint64 `json:"tag_id"`
+	TagName string `json:"tag_name"`
 }
