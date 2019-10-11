@@ -1,7 +1,7 @@
 package model
 
 type LoginModel struct {
-	Sid      uint64 `json:"sid"      binding:"required"`
+	Sid      string `json:"sid"      binding:"required"`
 	Password string `json:"password" binding:"required"`
 }
 

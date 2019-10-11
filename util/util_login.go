@@ -9,7 +9,6 @@ import (
 	"net/http/cookiejar"
 	"net/url"
 	"regexp"
-	"strconv"
 	"strings"
 	"time"
 
@@ -114,10 +113,9 @@ func MakeAccountPreflightRequest() (*AccountReqeustParams, error) {
 }
 
 // account.ccnu.edu.cn 模拟登录，用于验证账号密码是否可以正常登录
-func MakeAccountRequest(sid uint64, password string, params *AccountReqeustParams, client *http.Client) error {
-	ssid := strconv.FormatUint(sid, 10)
+func MakeAccountRequest(sid, password string, params *AccountReqeustParams, client *http.Client) error {
 	v := url.Values{}
-	v.Set("username", ssid)
+	v.Set("username", sid)
 	v.Set("password", password)
 	v.Set("lt", params.lt)
 	v.Set("execution", params.execution)
@@ -151,7 +149,7 @@ func MakeAccountRequest(sid uint64, password string, params *AccountReqeustParam
 	log.Println("Login successfully")
 	return nil
 }
-func LoginRequest(Sid uint64, Password string) error {
+func LoginRequest(Sid, Password string) error {
 	params, err := MakeAccountPreflightRequest()
 	if err != nil {
 		return errno.InternalServerError

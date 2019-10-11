@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 )
@@ -17,7 +17,7 @@ var (
 
 // Context is the context of the JSON web token.
 type Context struct {
-	Sid uint64
+	Sid string
 }
 
 // secretFunc validates the secret format.
@@ -46,7 +46,7 @@ func Parse(tokenString string, secret string) (*Context, error) {
 
 		// Read the token if it's valid.
 	} else if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		ctx.Sid = uint64(claims["sid"].(float64))
+		ctx.Sid = claims["sid"].(string)
 		return ctx, nil
 
 		// Other errors.
