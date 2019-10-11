@@ -167,7 +167,7 @@ paths:
           description: 服务器错误
 
 
-  /course/{id}/:
+  /course/using/{id}/:
     get:
       tags:
         - course
@@ -197,7 +197,7 @@ paths:
               Authorization:
                 type: string
               courseInfo:
-                $ref: "#/definitions/CourseInfo"
+                $ref: "#/definitions/UsingCourseInfo"
 
         '401':
           description: 未授权
@@ -219,7 +219,7 @@ paths:
           description: 课程信息
           required: true
           schema:
-            $ref: '#/definitions/CourseInfo'
+            $ref: '#/definitions/UsingCourseInfo'
 
       responses:
         '200':
@@ -244,7 +244,7 @@ paths:
           description: 课程信息
           required: true
           schema:
-            $ref: '#/definitions/CourseInfo'
+            $ref: '#/definitions/UsingCourseInfo'
 
       responses:
         '200':
@@ -274,7 +274,7 @@ paths:
           description: 服务器错误
 
 
-  /course/{id}/favorite/:
+  /course/using/{id}/favorite/:
     post:
       tags:
         - course
@@ -304,7 +304,7 @@ paths:
         '404':
           description: not found
 
-  /course/query/:
+  /course/using/query/:
     get:
       tags:
         - course
@@ -342,6 +342,153 @@ paths:
           description: not found
         '500':
           description: 服务器错误
+
+  /course/history/{id}/:
+    get:
+      tags:
+        - course
+      summary: 获取课程信息
+      description: 获取课程信息
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: header
+          name: Authorization
+          description: Authorization
+          required: true
+          type: string
+        - in: path
+          name: id
+          required: true
+          type: string
+
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+            properties:
+              Authorization:
+                type: string
+              courseInfo:
+                $ref: "#/definitions/HistoryCourseInfo"
+
+        '401':
+          description: 未授权
+        '404':
+          description: not found
+
+    put:
+      tags:
+        - course
+      summary: 添加一个课程和其相关信息
+      parameters:
+        - in: path
+          type: string
+          name: id
+          description: 课程id
+          required: true
+        - in: body
+          name: body
+          description: 课程信息
+          required: true
+          schema:
+            $ref: '#/definitions/HistoryCourseInfo'
+
+      responses:
+        '200':
+          description: OK
+        '403':
+          description: 课程已存在
+        '500':
+          description: 服务器错误
+
+    post:
+      tags:
+        - course
+      summary: 修改一个课程的相关信息
+      parameters:
+        - in: path
+          type: string
+          name: id
+          description: 课程id
+          required: true
+        - in: body
+          name: body
+          description: 课程信息
+          required: true
+          schema:
+            $ref: '#/definitions/HistoryCourseInfo'
+
+      responses:
+        '200':
+          description: OK
+        '403':
+          description: 课程已存在
+        '500':
+          description: 服务器错误
+
+    delete:
+      tags:
+        - course
+      summary: 删除一个课程和其相关信息
+      parameters:
+        - in: path
+          type: string
+          name: id
+          description: 课程id
+          required: true
+
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: not found
+        '500':
+          description: 服务器错误
+
+
+  /course/history/query/:
+    get:
+      tags:
+        - course
+      summary: 查询课程
+      parameters:
+        - in: header
+          name: courseId
+          required: false
+          type: string
+        - in: header
+          name: teacherId
+          required: false
+          type: string
+        - in: header
+          name: tag
+          required: false
+          type: string
+        - in: header
+          name: userId
+          required: true
+          type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+            properties:
+              Authorization:
+                type: string
+              course_id:
+                type: string
+        '401':
+          description: 未授权
+        '404':
+          description: not found
+        '500':
+          description: 服务器错误
+
 
   /report/evaluation/{id}/:
     post:
@@ -1510,13 +1657,31 @@ definitions:
       tag_name:
         type: string
 
-  CourseInfo:
+  HistoryCourseInfo:
     type: object
-    description: 返回的课程信息模型
+    description: 返回正在使用中的课程信息模型
     properties:
       course_name:
         type: string
         description: 课程名称
+      course_category:
+        type: string
+        description: 课程类别
+      teacher_name:
+        type: string
+        description: 教师名称
+
+        
+  UsingCourseInfo:
+    type: object
+    description: 返回的历史课程信息模型
+    properties:
+      course_name:
+        type: string
+        description: 课程名称
+      teacher_name:
+        type: string
+        description: 教师名称
       course_category:
         type: string
         description: 课程类别
