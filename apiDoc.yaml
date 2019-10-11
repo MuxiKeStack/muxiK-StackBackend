@@ -700,7 +700,7 @@ paths:
                         content:
                           type: string
                           description: 评课内容
-                        is_annoymous:
+                        is_anoymous:
                           type: boolean
                           description: 是否匿名
                         like_num:
@@ -1633,7 +1633,7 @@ definitions:
       content:
         type: string
         description: 评课内容
-      is_annoymous:
+      is_anoymous:
         type: boolean
         description: 是否匿名
       like_num:
