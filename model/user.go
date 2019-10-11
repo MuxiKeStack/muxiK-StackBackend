@@ -2,6 +2,7 @@ package model
 
 import (
 	"gopkg.in/go-playground/validator.v9"
+	"strconv"
 )
 
 func (c *UserModel) TableName() string {
@@ -9,8 +10,9 @@ func (c *UserModel) TableName() string {
 }
 
 // Create creates a new user account.
-func CreateUser(sid uint64) error {
-	return DB.Self.Create(&UserModel{Sid: sid}).Error
+func CreateUser(sid string) error {
+	usid, _ := strconv.ParseUint(sid, 10, 64)
+	return DB.Self.Create(&UserModel{Sid: usid}).Error
 }
 
 // Update updates an user account information.
@@ -19,7 +21,7 @@ func (u *UserModel) Update() error {
 }
 
 // HaveUser determines whether there is this user or not by the user identifier.
-func HaveUser(sid uint64) (uint8, error) {
+func HaveUser(sid string) (uint8, error) {
 	var num int
 	DB.Self.Model(&UserModel{}).Where("sid = ?", sid).Count(num)
 	if num == 0 {
