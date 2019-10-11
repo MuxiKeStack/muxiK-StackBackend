@@ -3,7 +3,6 @@ package user
 import (
 	. "github.com/MuxiKeStack/muxiK-StackBackend/handler"
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
-	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/auth"
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/token"
 	"github.com/MuxiKeStack/muxiK-StackBackend/util"
@@ -11,7 +10,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var 
 // Login generates the authentication token
 // if the password was matched with the specified account.
 func Login(c *gin.Context) {
@@ -36,5 +34,13 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	SendResponse(c, nil, model.AuthRespnse{IsNew:})
+	// judge whether there is this user or not
+	IsNewUser, err := model.HaveUser(u.Sid)
+	if IsNewUser == 1 {
+		err := model.CreateUser(u.Sid)
+		if err != nil {
+			SendResponse(c, errno.ErrCreateUser, nil)
+		}
+	}
+	SendResponse(c, nil, model.AuthResponse{Token: t, IsNew: IsNewUser})
 }

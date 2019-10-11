@@ -15,7 +15,7 @@ var (
 	ErrPasswordIncorrect = &Errno{Code: 20104, Message: "The password was incorrect."}
 
 	// user errors
-	ErrEncrypt      = &Errno{Code: 20101, Message: "Error occurred while encrypting the user password."}
+	ErrCreateUser   = &Errno{Code: 20101, Message: "Error in creating user."}
 	ErrUserNotFound = &Errno{Code: 20102, Message: "The user was not found."}
 	ErrTokenInvalid = &Errno{Code: 20103, Message: "The token was invalid."}
 )
