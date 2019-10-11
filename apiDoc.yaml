@@ -189,7 +189,7 @@ paths:
           type: string
 
       responses:
-        "200":
+        '200':
           description: OK
           schema:
             type: object
@@ -199,10 +199,22 @@ paths:
               courseInfo:
                 $ref: "#/definitions/UsingCourseInfo"
 
+        '400':
+          description: bad request
+          schema:
+            $ref: '#/definitions/CodeResponse'
         '401':
           description: 未授权
+          schema:
+            $ref: '#/definitions/CodeResponse'
         '404':
           description: not found
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '500':
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/CodeResponse'
 
     put:
       tags:
@@ -224,10 +236,24 @@ paths:
       responses:
         '200':
           description: OK
-        '403':
-          description: 课程已存在
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '400':
+          description: bad request
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '401':
+          description: 未授权
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '404':
+          description: not found
+          schema:
+            $ref: '#/definitions/CodeResponse'
         '500':
           description: 服务器错误
+          schema:
+            $ref: '#/definitions/CodeResponse'
 
     post:
       tags:
@@ -249,10 +275,24 @@ paths:
       responses:
         '200':
           description: OK
-        '403':
-          description: 课程已存在
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '400':
+          description: bad request
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '401':
+          description: 未授权
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '404':
+          description: not found
+          schema:
+            $ref: '#/definitions/CodeResponse'
         '500':
           description: 服务器错误
+          schema:
+            $ref: '#/definitions/CodeResponse'
 
     delete:
       tags:
@@ -268,10 +308,24 @@ paths:
       responses:
         '200':
           description: OK
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '400':
+          description: bad request
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '401':
+          description: 未授权
+          schema:
+            $ref: '#/definitions/CodeResponse'
         '404':
           description: not found
+          schema:
+            $ref: '#/definitions/CodeResponse'
         '500':
           description: 服务器错误
+          schema:
+            $ref: '#/definitions/CodeResponse'
 
 
   /course/using/{id}/favorite/:
@@ -299,10 +353,22 @@ paths:
             properties:
               Authorization:
                 type: string
+        '400':
+          description: bad request
+          schema:
+            $ref: '#/definitions/CodeResponse'
         '401':
           description: 未授权
+          schema:
+            $ref: '#/definitions/CodeResponse'
         '404':
           description: not found
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '500':
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/CodeResponse'
 
   /course/using/query/:
     get:
@@ -336,12 +402,22 @@ paths:
                 type: string
               course_id:
                 type: string
+        '400':
+          description: bad request
+          schema:
+            $ref: '#/definitions/CodeResponse'
         '401':
           description: 未授权
+          schema:
+            $ref: '#/definitions/CodeResponse'
         '404':
           description: not found
+          schema:
+            $ref: '#/definitions/CodeResponse'
         '500':
           description: 服务器错误
+          schema:
+            $ref: '#/definitions/CodeResponse'
 
   /course/history/{id}/:
     get:
@@ -375,10 +451,22 @@ paths:
               courseInfo:
                 $ref: "#/definitions/HistoryCourseInfo"
 
+        '400':
+          description: bad request
+          schema:
+            $ref: '#/definitions/CodeResponse'
         '401':
           description: 未授权
+          schema:
+            $ref: '#/definitions/CodeResponse'
         '404':
           description: not found
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '500':
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/CodeResponse'
 
     put:
       tags:
@@ -400,10 +488,24 @@ paths:
       responses:
         '200':
           description: OK
-        '403':
-          description: 课程已存在
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '400':
+          description: bad request
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '401':
+          description: 未授权
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '404':
+          description: not found
+          schema:
+            $ref: '#/definitions/CodeResponse'
         '500':
           description: 服务器错误
+          schema:
+            $ref: '#/definitions/CodeResponse'
 
     post:
       tags:
@@ -425,10 +527,24 @@ paths:
       responses:
         '200':
           description: OK
-        '403':
-          description: 课程已存在
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '400':
+          description: bad request
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '401':
+          description: 未授权
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '404':
+          description: not found
+          schema:
+            $ref: '#/definitions/CodeResponse'
         '500':
           description: 服务器错误
+          schema:
+            $ref: '#/definitions/CodeResponse'
 
     delete:
       tags:
@@ -444,10 +560,24 @@ paths:
       responses:
         '200':
           description: OK
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '400':
+          description: bad request
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '401':
+          description: 未授权
+          schema:
+            $ref: '#/definitions/CodeResponse'
         '404':
           description: not found
+          schema:
+            $ref: '#/definitions/CodeResponse'
         '500':
           description: 服务器错误
+          schema:
+            $ref: '#/definitions/CodeResponse'
 
 
   /course/history/query/:
@@ -482,12 +612,22 @@ paths:
                 type: string
               course_id:
                 type: string
+        '400':
+          description: bad request
+          schema:
+            $ref: '#/definitions/CodeResponse'
         '401':
           description: 未授权
+          schema:
+            $ref: '#/definitions/CodeResponse'
         '404':
           description: not found
+          schema:
+            $ref: '#/definitions/CodeResponse'
         '500':
           description: 服务器错误
+          schema:
+            $ref: '#/definitions/CodeResponse'
 
 
   /report/evaluation/{id}/:
@@ -524,12 +664,22 @@ paths:
               number:
                 type: integer
                 description: 被举报次数
+        '400':
+          description: bad request
+          schema:
+            $ref: '#/definitions/CodeResponse'
         '401':
           description: 未授权
+          schema:
+            $ref: '#/definitions/CodeResponse'
         '404':
           description: not found
+          schema:
+            $ref: '#/definitions/CodeResponse'
         '500':
           description: 服务器错误
+          schema:
+            $ref: '#/definitions/CodeResponse'
 
   /evaluation/list/:
     get:
@@ -1733,6 +1883,24 @@ definitions:
       course_place3:
         type: string
         description: 上课地点3
+      course_feature1:
+        type: string
+        description: 选择生动有趣的人数
+      course_feature2:
+        type: string
+        description: 选择干货满满的人数
+      course_feature3:
+        type: string
+        description: 选择作业量少的人数
+      course_feature4:
+        type: string
+        description: 选择老师很好的人数
+      course_feature5:
+        type: string
+        description: 选择简单易学的人数
+      course_feature6:
+        type: string
+        description: 选择云课堂资料全的人数
       course_grade70:
         type: integer
         description: 70以下人数
