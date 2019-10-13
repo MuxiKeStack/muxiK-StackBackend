@@ -7,6 +7,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type responseData struct {
+	EvaluationId uint64 `json:"evaluation_id"`
+}
+
 // 发布评课
 func Publish(c *gin.Context) {
 	var data model.EvaluationPublish
@@ -20,5 +24,5 @@ func Publish(c *gin.Context) {
 		handler.SendError(c, err, nil, err.Error())
 	}
 
-	handler.SendResponse(c, nil, evaluationId)
+	handler.SendResponse(c, nil, responseData{EvaluationId: evaluationId})
 }
