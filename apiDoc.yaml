@@ -341,6 +341,10 @@ paths:
       summary: 查询课程
       parameters:
         - in: header
+          name: token
+          required: true
+          type: string
+        - in: header
           name: courseId
           required: false
           type: string
@@ -351,10 +355,6 @@ paths:
         - in: header
           name: tag
           required: false
-          type: string
-        - in: header
-          name: userId
-          required: true
           type: string
       responses:
         "200":
@@ -547,6 +547,10 @@ paths:
       summary: 查询课程
       parameters:
         - in: header
+          name: token
+          required: true
+          type: string
+        - in: header
           name: courseId
           required: false
           type: string
@@ -557,10 +561,6 @@ paths:
         - in: header
           name: tag
           required: false
-          type: string
-        - in: header
-          name: userId
-          required: true
           type: string
       responses:
         "200":
