@@ -9,20 +9,20 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// 回复评论
-func Reply(c *gin.Context) {
+// 评论评课
+func CreateTopComment(c *gin.Context) {
 	var data model.NewCommentRequest
 	if err := c.BindJSON(&data); err != nil {
 		handler.SendError(c, err, nil, err.Error())
 	}
 
 	userId := c.MustGet("userId").(uint64)
-	commentTargetId, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	evaluationId, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
 		handler.SendError(c, err, nil, err.Error())
 	}
 
-	newCommentId, err := model.NewComment(&data, commentTargetId, false, userId)
+	newCommentId, err := model.NewComment(&data, evaluationId, true, userId)
 	if  err != nil {
 		handler.SendError(c, err, nil, err.Error())
 	}

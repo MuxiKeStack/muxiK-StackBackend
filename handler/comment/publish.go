@@ -24,5 +24,7 @@ func Publish(c *gin.Context) {
 		handler.SendError(c, err, nil, err.Error())
 	}
 
-	handler.SendResponse(c, nil, responseData{EvaluationId: evaluationId})
+	// 还有对课程的数据库操作
+
+	handler.SendResponse(c, nil, &responseData{EvaluationId: evaluationId})
 }

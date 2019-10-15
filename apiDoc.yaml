@@ -1650,8 +1650,6 @@ definitions:
         type: object
         description: 评课的用户信息
         properties:
-          user_id:
-            type: integer
           username:
             type: string
           avatar:
