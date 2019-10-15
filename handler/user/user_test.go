@@ -18,7 +18,7 @@ var (
 	tokenString string
 	username    string
 	password    string
-	uid         uint64
+	sid         string
 )
 
 func TestMain(m *testing.M) {
