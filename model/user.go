@@ -42,3 +42,16 @@ func (u *UserModel) Validate() error {
 	validate := validator.New()
 	return validate.Struct(u)
 }
+
+// GetUserInfo gets user information by userId.
+func GetUserInfo(id uint64) (*UserInfo, error) {
+	u, err := GetUserById(id)
+	if err != nil {
+		return &UserInfo{}, err
+	}
+	info := &UserInfo{
+		Username: u.Username,
+		Avatar:   u.Avatar,
+	}
+	return info, nil
+}

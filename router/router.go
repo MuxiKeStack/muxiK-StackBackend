@@ -36,20 +36,21 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 		u.GET("/info", user.GetInfo)
 	}
 
-	// 评课&评论
+	// 评课
 	g.GET("/api/v1/evaluation/list/", comment.EvaluationPlayground)
+	g.GET("/api/v1/evaluation/:id/", comment.GetEvaluation)
 
 	evaluation := g.Group("/api/v1/evaluation")
 	evaluation.Use(middleware.AuthMiddleware())
 	{
 		evaluation.POST("/", comment.Publish)
-		evaluation.POST("/:id/comment/", comment.CreateNewComment)
+		evaluation.POST("/:id/comment/", comment.CreateTopComment)
 		evaluation.DELETE("/:id/", comment.Delete)
-		evaluation.GET("/:id/", comment.GetEvaluationInfo)
 		evaluation.PUT("/:id/like/", comment.UpdateEvaluationLike)
-
-		evaluation.GET("/:id/comments/", comment.GetComments)
 	}
+
+	// 评论
+	g.GET("/api/v1/evaluation/:id/comments/", comment.GetComments)
 
 	comments := g.Group("/api/v1/comment")
 	comments.Use(middleware.AuthMiddleware())
