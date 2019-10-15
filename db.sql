@@ -7,13 +7,14 @@ USE `MUXIKSTACK`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user` (
-  `sid`        BiGINT(20)   NOT NULL COMMENT "学生id",
-  `username`   VARCHAR(25)  NOT NULL,
-  `avatar`     VARCHAR(255) NOT NULL,
-  `is_blocked` TINYINT(1)   NOT NULL DEFAULT 0,
+  `id`         INT              unsigned  NOT NULL AUTO_INCREMENT,
+  `sid`        VARCHAR(10)      NOT NULL COMMENT   "学生学号",
+  `username`   VARCHAR(25)      ,
+  `avatar`     VARCHAR(255)     ,
+  `is_blocked` TINYINT          NOT NULL DEFAULT 0,
 
-  PRIMARY KEY (`sid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE `course_evaluation` (
   `course_name`           VARCHAR(50)  NOT NULL,
