@@ -22,7 +22,7 @@ CREATE TABLE `course_evaluation` (
   `attendance_check_type` INT          NOT NULL DEFAULT 0 COMMENT "考勤方式，经常点名/偶尔点名/签到点名，标识为 0/1/2",
   `exam_check_type`       INT          NOT NULL DEFAULT 0 COMMENT "考核方式，无考核/闭卷考试/开卷考试/论文考核，标识为 0/1/2/3",
   `content`               TEXT         NOT NULL           COMMENT "评课内容",
-  `is_annoymous`          TINYINT(1)   NOT NULL DEFAULT 0 COMMENT "是否匿名评课",
+  `is_anonymous`         TINYINT(1)   NOT NULL DEFAULT 0 COMMENT "是否匿名评课",
   `like_num`              INT          NOT NULL DEFAULT 0 COMMENT "点赞数",
   `comment_num`           INT          NOT NULL DEFAULT 0 COMMENT "一级评论数",
   `tags`                  VARCHAR(255) NOT NULL           COMMENT "标签id列表，逗号分隔",
@@ -38,7 +38,7 @@ CREATE TABLE `comment` (
   `content`           TEXT        NOT NULl           COMMENT "评论内容",
   `like_num`          INT         NOT NULL DEFAULT 0 COMMENT "点赞数",
   `is_root`           TINYINT(1)  NOT NULL DEFAULT 0 COMMENT "是否是一级评论",
-  `subcomment_num`    INT         NOT NULL DEFAULT 0 COMMENT "子评论数",
+  `sub_comment_num`    INT         NOT NULL DEFAULT 0 COMMENT "子评论数",
 
   `user_id`           INT         NOT NULL,
   `parent_id`         INT         NOT NULL,

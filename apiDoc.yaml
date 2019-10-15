@@ -341,6 +341,10 @@ paths:
       summary: 查询课程
       parameters:
         - in: header
+          name: token
+          required: true
+          type: string
+        - in: header
           name: courseId
           required: false
           type: string
@@ -351,10 +355,6 @@ paths:
         - in: header
           name: tag
           required: false
-          type: string
-        - in: header
-          name: userId
-          required: true
           type: string
       responses:
         "200":
@@ -547,6 +547,10 @@ paths:
       summary: 查询课程
       parameters:
         - in: header
+          name: token
+          required: true
+          type: string
+        - in: header
           name: courseId
           required: false
           type: string
@@ -557,10 +561,6 @@ paths:
         - in: header
           name: tag
           required: false
-          type: string
-        - in: header
-          name: userId
-          required: true
           type: string
       responses:
         "200":
@@ -700,7 +700,7 @@ paths:
                         content:
                           type: string
                           description: 评课内容
-                        is_annoymous:
+                        is_anonymous:
                           type: boolean
                           description: 是否匿名
                         like_num:
@@ -773,13 +773,9 @@ paths:
               data:
                 type: object
                 properties:
-                  course_id:
-                    type: string
                   evaluation_id:
                     type: integer
                     description: 评课id
-                  user_id:
-                    type: integer
         '400':
           description: bad request
           schema:
@@ -801,7 +797,7 @@ paths:
       parameters:
         - in: header
           name: token
-          required: true
+          required: false
           type: string
         - in: path
           name: id
@@ -888,7 +884,7 @@ paths:
       parameters:
         - in: header
           name: token
-          required: true
+          required: false
           type: string
         - in: path
           name: id
@@ -1588,16 +1584,17 @@ definitions:
         type: integer
         description: 评价星级
       attendance_check_type:
-        type: string
-        description: 考勤方式
+        type: integer
+        description: 考勤方式，经常点名/偶尔点名/签到点名，标识为 0/1/2
       exam_check_type:
-        type: string
-        description: 考核方式
+        type: integer
+        description: 考核方式，无考核/闭卷考试/开卷考试/论文考核，标识为 0/1/2/3
       tags:
         type: array
-        description: 课程特点标签
+        description: 课程特点标签id列表
+        example: [0, 1, 2]
         items:
-          $ref: '#/definitions/CourseCommentTag'
+          type: integer
       content:
         type: string
         description: 评价内容
@@ -1620,20 +1617,21 @@ definitions:
         type: integer
         description: 评价星级
       attendance_check_type:
-        type: string
-        description: 考勤方式
+        type: integer
+        description: 考勤方式，经常点名/偶尔点名/签到点名，标识为 0/1/2
       exam_check_type:
-        type: string
-        description: 考核方式
+        type: integer
+        description: 考核方式，无考核/闭卷考试/开卷考试/论文考核，标识为 0/1/2/3
       tags:
         type: array
-        description: 课程特点标签
+        description: 课程特点标签id列表
+        example: [0,1,2]
         items:
-          $ref: '#/definitions/CourseCommentTag'
+          type: integer
       content:
         type: string
         description: 评课内容
-      is_annoymous:
+      is_anonymous:
         type: boolean
         description: 是否匿名
       like_num:
@@ -1652,8 +1650,6 @@ definitions:
         type: object
         description: 评课的用户信息
         properties:
-          user_id:
-            type: string
           username:
             type: string
           avatar:
@@ -1689,11 +1685,11 @@ definitions:
         type: object
         description: 评课对象信息
         properties:
-          user_id:
-            type: string
           username:
             type: string
             description: 用户昵称
+          avatar:
+            type: string
 
   Class:
     type: object
@@ -1756,15 +1752,6 @@ definitions:
         description: 课堂列表
         items:
           $ref: "#/definitions/Class"
-
-  CourseCommentTag:
-    type: object
-    description: 评课标签
-    properties:
-      tag_id:
-        type: string
-      tag_name:
-        type: string
 
   HistoryCourseInfo:
     type: object
