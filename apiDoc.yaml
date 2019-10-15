@@ -1678,8 +1678,6 @@ definitions:
         type: object
         description: 用户信息
         properties:
-          user_id:
-            type: integer
           username:
             type: string
           avatar:
@@ -1689,11 +1687,11 @@ definitions:
         type: object
         description: 评课对象信息
         properties:
-          user_id:
-            type: string
           username:
             type: string
             description: 用户昵称
+          avatar:
+            type: string
 
   Class:
     type: object
