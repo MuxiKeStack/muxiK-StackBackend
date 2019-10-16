@@ -2,8 +2,7 @@ package model
 
 //云课堂课程物理表
 type HistoryCourseModel struct{
-    Hash          string  'gorm:"column:hash; primary_key"' //教师名和课程hash成
-的唯一标识
+    Hash          string  'gorm:"column:hash; primary_key"' //教师名和课程hash成的唯一标识
     Name          string  'gorm:"column:name"'              //课程名称
     Teacher       string  'gorm:"column:teacher"'           //教师性名
     Type          uint8   'gorm:"column:type"'              //课程类型，公共课为0，专业课为1
