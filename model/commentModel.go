@@ -31,14 +31,14 @@ type CommentModel struct {
 	SubCommentNum   uint64 `gorm:"column:sub_comment_num"`
 }
 
-type EvaluationLikeModel struct{
+type EvaluationLikeModel struct {
 	Id           uint64 `gorm:"column:id; primary_key; AUTO_INCREMENT"`
 	EvaluationId uint64 `gorm:"column:evaluation_id"`
 	UserId       uint64 `gorm:"column:user_id"`
 }
 
 // 评论点赞中间表
-type CommentLikeModel struct{
+type CommentLikeModel struct {
 	Id        uint64 `gorm:"column:id; primary_key; AUTO_INCREMENT"`
 	CommentId uint64 `gorm:"column:comment_id"`
 	UserId    uint64 `gorm:"column:user_id"`
@@ -46,13 +46,13 @@ type CommentLikeModel struct{
 
 // 发布评课
 type EvaluationPublish struct {
-	CourseId            string   `json:"course_id"`
-	CourseName          string   `json:"course_name"`
-	Rate                uint8    `json:"rate"`
-	AttendanceCheckType uint8    `json:"attendance_check_type"`
-	ExamCheckType       uint8    `json:"exam_check_type"`
-	Content             string   `json:"content"`
-	IsAnonymous         bool     `json:"is_anonymous"`
+	CourseId            string  `json:"course_id"`
+	CourseName          string  `json:"course_name"`
+	Rate                uint8   `json:"rate"`
+	AttendanceCheckType uint8   `json:"attendance_check_type"`
+	ExamCheckType       uint8   `json:"exam_check_type"`
+	Content             string  `json:"content"`
+	IsAnonymous         bool    `json:"is_anonymous"`
 	Tags                []uint8 `json:"tags"`
 }
 
@@ -64,7 +64,7 @@ type EvaluationInfo struct {
 	Rate                uint8
 	AttendanceCheckType uint8
 	ExamCheckType       uint8
-	Content	            string
+	Content             string
 	Time                string
 	IsAnonymous         bool
 	IsLike              bool
@@ -72,7 +72,6 @@ type EvaluationInfo struct {
 	CommentNum          uint64
 	Tags                []uint8
 	UserInfo            UserInfo
-
 }
 
 // 评论信息

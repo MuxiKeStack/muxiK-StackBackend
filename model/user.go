@@ -9,8 +9,19 @@ func (u *UserModel) TableName() string {
 }
 
 // Update updates an user account information.
-func (u *UserModel) Update() error {
+func (u *UserModel) UpdateInfo(info UserInfo) error {
+	u.Avatar = info.Avatar
+	u.Username = info.Username
 	return DB.Self.Save(u).Error
+}
+
+// Get user info
+func (u *UserModel) GetInfo() UserInfo {
+	info := UserInfo{
+		Username: u.Username,
+		Avatar:   u.Avatar,
+	}
+	return info
 }
 
 // Create creates a new user account.
