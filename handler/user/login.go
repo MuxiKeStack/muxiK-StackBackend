@@ -42,5 +42,5 @@ func Login(c *gin.Context) {
 			SendResponse(c, errno.ErrCreateUser, nil)
 		}
 	}
-	SendResponse(c, nil, model.AuthResponse{Token: t, IsNew: IsNewUser})
+	SendResponse(c, errno.OK, model.AuthResponse{Token: t, IsNew: IsNewUser})
 }

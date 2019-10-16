@@ -129,7 +129,7 @@ func GetCommentInfo(id uint64, userId uint64) (*CommentInfo, error) {
 		UserInfo:          *commentUser,
 		CommentTargetInfo: *targetUser,
 	}
-	
+
 	return data, nil
 }
 
@@ -228,7 +228,7 @@ func GetEvaluationLike(id uint64, userId uint64) bool {
 	var data EvaluationLikeModel
 	DB.Self.Where("user_id = ? AND evaluation_id = ?", userId, id).Find(&data)
 	if data.Id != 0 {
-		return  true
+		return true
 	}
 	return false
 }

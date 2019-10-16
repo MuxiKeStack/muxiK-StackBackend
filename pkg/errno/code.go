@@ -12,10 +12,11 @@ var (
 
 	// Auth errors
 	ErrAuthFailed        = &Errno{Code: 20101, Message: "The sid or password was incorrect."}
-	ErrPasswordIncorrect = &Errno{Code: 20104, Message: "The password was incorrect."}
+	ErrPasswordIncorrect = &Errno{Code: 20102, Message: "The password was incorrect."}
 
 	// user errors
-	ErrCreateUser   = &Errno{Code: 20101, Message: "Error in creating user."}
-	ErrUserNotFound = &Errno{Code: 20102, Message: "The user was not found."}
-	ErrTokenInvalid = &Errno{Code: 20103, Message: "The token was invalid."}
+	ErrCreateUser   = &Errno{Code: 20201, Message: "Error in creating user."}
+	ErrUpdateUser   = &Errno{Code: 20202, Message: "Error in updating user"}
+	ErrUserNotFound = &Errno{Code: 20203, Message: "The user was not found."}
+	ErrTokenInvalid = &Errno{Code: 20204, Message: "The token was invalid."}
 )

@@ -5,7 +5,7 @@ clean:
 	find . -name "[._]*.s[a-w][a-z]" | xargs -i rm -f {}
 gotool:
 	gofmt -w .
-	go tool vet . | grep -v vendor;true
+	go vet . | grep -v vendor;true
 test:
 	@go test -v -count=1  ./...
 ca:
