@@ -53,40 +53,52 @@ type EvaluationPublish struct {
 	ExamCheckType       uint8    `json:"exam_check_type"`
 	Content             string   `json:"content"`
 	IsAnonymous         bool     `json:"is_anonymous"`
-	Tags                []uint8 `json:"tags"`
+	Tags                []uint8  `json:"tags"`
 }
 
 // 评课信息
 type EvaluationInfo struct {
-	CourseId            string
-	CourseName          string
-	teacher             string
-	Rate                uint8
-	AttendanceCheckType uint8
-	ExamCheckType       uint8
-	Content	            string
-	Time                string
-	IsAnonymous         bool
-	IsLike              bool
-	LikeNum             uint64
-	CommentNum          uint64
-	Tags                []uint8
-	UserInfo            UserInfo
-
+	CourseId            string    `json:"course_id"`
+	CourseName          string    `json:"course_name"`
+	Teacher             string    `json:"teacher"`
+	Rate                uint8     `json:"rate"`
+	AttendanceCheckType uint8     `json:"attendance_check_type"`
+	ExamCheckType       uint8     `json:"exam_check_type"`
+	Content	            string    `json:"content"`
+	Time                string    `json:"time"`
+	IsAnonymous         bool      `json:"is_anonymous"`
+	IsLike              bool      `json:"is_like"`
+	LikeNum             uint64    `json:"like_num"`
+	CommentNum          uint64    `json:"comment_num"`
+	Tags                []uint8   `json:"tags"`
+	UserInfo            *UserInfo `json:"user_info"`
 }
 
 // 评论信息
 type CommentInfo struct {
-	Content           string
-	LikeNum           uint64
-	IsLike            bool
-	Time              string
-	UserInfo          UserInfo
-	CommentTargetInfo UserInfo
+	Content           string    `json:"content"`
+	LikeNum           uint64    `json:"like_num"`
+	IsLike            bool      `json:"is_like"`
+	Time              string    `json:"time"`
+	UserInfo          *UserInfo `json:"user_info"`
+	CommentTargetInfo *UserInfo `json:"comment_target_info"`
 }
 
 // 新增评论请求模型
 type NewCommentRequest struct {
-	Content     string `json:"content,omitempty"`
-	IsAnonymous bool   `json:"is_anonymous,omitempty"`
+	Content     string `json:"content"`
+	IsAnonymous bool   `json:"is_anonymous"`
 }
+
+// 返回的评论列表，一级评论模型
+type ParentCommentInfo struct {
+	CommentId       uint64         `json:"comment_id"`
+	Content         string         `json:"content"`
+	LikeNum         uint64         `json:"like_num"`
+	IsLike          bool           `json:"is_like"`
+	Time            string         `json:"time"`
+	UserInfo        *UserInfo      `json:"user_info"`
+	SubCommentsNum  uint64         `json:"sub_comments_num"`
+	SubCommentsList *[]CommentInfo `json:"sub_comments_list"`
+}
+
