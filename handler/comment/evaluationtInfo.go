@@ -5,6 +5,8 @@ import (
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
+	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
+	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/token"
 
 	"github.com/gin-gonic/gin"
 )
@@ -16,10 +18,19 @@ func GetEvaluation(c *gin.Context) {
 		handler.SendError(c, err, nil, err.Error())
 	}
 
-	// 游客模式
+	var userId uint64
+	visitor := false
+	// 游客登录
+	if t := c.Request.Header.Get("token"); len(t) == 0 {
+		visitor = true
+	} else {
+		if _, err := token.ParseRequest(c); err != nil {
+			handler.SendResponse(c, errno.ErrTokenInvalid, nil)
+		}
+		userId = c.MustGet("id").(uint64)
+	}
 
-	userId := c.MustGet("userId").(uint64)
-	data, err := model.GetEvaluationInfo(id, userId)
+	data, err := model.GetEvaluationInfo(id, userId, visitor)
 	if err != nil {
 		handler.SendError(c, err, nil, err.Error())
 	}

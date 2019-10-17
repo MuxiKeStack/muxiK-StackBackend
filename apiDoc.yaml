@@ -677,55 +677,13 @@ paths:
               data:
                 type: object
                 properties:
-                  evaluation_num:
+                  sum:
                     type: integer
-                    description: 评课数量
-                  evaluation_list:
+                    description: 返回的评课数
+                  list:
                     type: array
                     items:
-                      type: object
-                      description: 评课列表
-                      properties:
-                        course_id:
-                          type: string
-                        course_name:
-                          type: string
-                          description: 课程名称
-                        teacher:
-                          type: string
-                          description: 教师
-                        rate:
-                          type: integer
-                          description: 评价星级
-                        content:
-                          type: string
-                          description: 评课内容
-                        is_anonymous:
-                          type: boolean
-                          description: 是否匿名
-                        like_num:
-                          type: integer
-                          description: 点赞数
-                        is_like:
-                          type: boolean
-                          description: 当前用户是否已点赞
-                        time:
-                          type: integer
-                          description: 评课时间(时间戳)
-                        comment_num:
-                          type: integer
-                          description: 一级评论数
-                        user_info:
-                          type: object
-                          description: 评课的用户信息
-                          properties:
-                            user_id:
-                              type: string
-                            username:
-                              type: string
-                            avatar:
-                              type: string
-                              description: 头像，一条url
+                      $ref: '#/definitions/CourseCommentInfo'
         '400':
           description: bad request
           schema:
@@ -928,7 +886,7 @@ paths:
                       description: 父评论内容
                       properties:
                         comment_id:
-                          type: string
+                          type: integer
                           description: 评论id
                         content:
                           type: string
@@ -946,17 +904,15 @@ paths:
                           type: object
                           description: 评论用户的信息
                           properties:
-                            user_id:
-                              type: string
                             username:
                               type: string
                             avatar:
                               type: string
                               description: 头像
-                        subcomments_num:
+                        sub_comments_num:
                           type: integer
                           description: 子评论总数
-                        subcomments_list:
+                        sub_comments_list:
                           type: array
                           description: 子评论列表
                           items:
