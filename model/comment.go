@@ -210,7 +210,7 @@ func GetCommentInfo(id, userId uint64) (*CommentInfo, error) {
 // 获取评论列表
 func GetCommentList(id uint64, lastId, size int64, userId uint64, visitor bool) (*[]ParentCommentInfo, uint64, error) {
 	var count uint64
-	var list  []ParentCommentInfo
+	var list []ParentCommentInfo
 	var data []CommentModel
 
 	if lastId != -1 {

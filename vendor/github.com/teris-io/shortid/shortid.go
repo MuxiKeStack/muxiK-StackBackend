@@ -1,5 +1,5 @@
-// Copyright (c) 2016-2017. Oleg Sklyar & teris.io. All rights reserved.
-// See the LICENSE file in the project root for licensing information.
+// Copyright (c) 2016 Ventu.io, Oleg Sklyar, contributors
+// The use of this source code is governed by a MIT style license found in the LICENSE file
 
 // Original algorithm:
 // Copyright (c) 2015 Dylan Greene, contributors: https://github.com/dylang/shortid.
@@ -78,11 +78,10 @@ import (
 	"unsafe"
 )
 
-// Version defined the library version.
-const Version = 1.1
+const Version = 1.0
 
-// DefaultABC is the default URL-friendly alphabet.
-const DefaultABC = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_-"
+// DEFAULT_ABC is the default URL-friendly alphabet.
+const DEFAULT_ABC = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_-"
 
 // Abc represents a shuffled alphabet used to generate the Ids and provides methods to
 // encode data.
@@ -103,13 +102,13 @@ type Shortid struct {
 var shortid *Shortid
 
 func init() {
-	shortid = MustNew(0, DefaultABC, 1)
+	shortid = MustNew(0, DEFAULT_ABC, 1)
 }
 
 // GetDefault retrieves the default short Id generator initialised with the default alphabet,
 // worker=0 and seed=1. The default can be overwritten using SetDefault.
-func GetDefault() *Shortid {
-	return (*Shortid)(atomic.LoadPointer((*unsafe.Pointer)(unsafe.Pointer(&shortid))))
+func GetDefault() Shortid {
+	return *(*Shortid)(atomic.LoadPointer((*unsafe.Pointer)(unsafe.Pointer(&shortid))))
 }
 
 // SetDefault overwrites the default generator.
@@ -126,11 +125,11 @@ func Generate() (string, error) {
 
 // MustGenerate acts just like Generate, but panics instead of returning errors.
 func MustGenerate() string {
-	id, err := Generate()
-	if err == nil {
+	if id, err := Generate(); err == nil {
 		return id
+	} else {
+		panic(err)
 	}
-	panic(err)
 }
 
 // New constructs an instance of the short Id generator for the given worker number [0,31], alphabet
@@ -141,8 +140,7 @@ func New(worker uint8, alphabet string, seed uint64) (*Shortid, error) {
 	if worker > 31 {
 		return nil, errors.New("expected worker in the range [0,31]")
 	}
-	abc, err := NewAbc(alphabet, seed)
-	if err == nil {
+	if abc, err := NewAbc(alphabet, seed); err == nil {
 		sid := &Shortid{
 			abc:    abc,
 			worker: uint(worker),
@@ -151,17 +149,18 @@ func New(worker uint8, alphabet string, seed uint64) (*Shortid, error) {
 			count:  0,
 		}
 		return sid, nil
+	} else {
+		return nil, err
 	}
-	return nil, err
 }
 
 // MustNew acts just like New, but panics instead of returning errors.
 func MustNew(worker uint8, alphabet string, seed uint64) *Shortid {
-	sid, err := New(worker, alphabet, seed)
-	if err == nil {
+	if sid, err := New(worker, alphabet, seed); err == nil {
 		return sid
+	} else {
+		panic(err)
 	}
-	panic(err)
 }
 
 // Generate generates a new short Id.
@@ -171,11 +170,11 @@ func (sid *Shortid) Generate() (string, error) {
 
 // MustGenerate acts just like Generate, but panics instead of returning errors.
 func (sid *Shortid) MustGenerate() string {
-	id, err := sid.Generate()
-	if err == nil {
+	if id, err := sid.Generate(); err == nil {
 		return id
+	} else {
+		panic(err)
 	}
-	panic(err)
 }
 
 // GenerateInternal should only be used for testing purposes.
@@ -245,8 +244,8 @@ func (sid *Shortid) Worker() uint {
 // NewAbc constructs a new instance of shuffled alphabet to be used for Id representation.
 func NewAbc(alphabet string, seed uint64) (Abc, error) {
 	runes := []rune(alphabet)
-	if len(runes) != len(DefaultABC) {
-		return Abc{}, fmt.Errorf("alphabet must contain %v unique characters", len(DefaultABC))
+	if len(runes) != len(DEFAULT_ABC) {
+		return Abc{}, errors.New(fmt.Sprintf("alphabet must contain %v unique characters", len(DEFAULT_ABC)))
 	}
 	if nonUnique(runes) {
 		return Abc{}, errors.New("alphabet must contain unique characters only")
@@ -258,11 +257,11 @@ func NewAbc(alphabet string, seed uint64) (Abc, error) {
 
 // MustNewAbc acts just like NewAbc, but panics instead of returning errors.
 func MustNewAbc(alphabet string, seed uint64) Abc {
-	res, err := NewAbc(alphabet, seed)
-	if err == nil {
+	if res, err := NewAbc(alphabet, seed); err == nil {
 		return res
+	} else {
+		panic(err)
 	}
-	panic(err)
 }
 
 func nonUnique(runes []rune) bool {
@@ -297,7 +296,7 @@ func (abc *Abc) shuffle(alphabet string, seed uint64) {
 // is represented by exactly 1 symbol with no randomness (permitting 64 values).
 func (abc *Abc) Encode(val, nsymbols, digits uint) ([]rune, error) {
 	if digits < 4 || 6 < digits {
-		return nil, fmt.Errorf("allowed digits range [4,6], found %v", digits)
+		return nil, errors.New(fmt.Sprintf("allowed digits range [4,6], found %v", digits))
 	}
 
 	var computedSize uint = 1
@@ -307,7 +306,7 @@ func (abc *Abc) Encode(val, nsymbols, digits uint) ([]rune, error) {
 	if nsymbols == 0 {
 		nsymbols = computedSize
 	} else if nsymbols < computedSize {
-		return nil, fmt.Errorf("cannot accommodate data, need %v digits, got %v", computedSize, nsymbols)
+		return nil, errors.New(fmt.Sprintf("cannot accommodate data, need %v digits, got %v", computedSize, nsymbols))
 	}
 
 	mask := 1<<digits - 1
@@ -319,7 +318,7 @@ func (abc *Abc) Encode(val, nsymbols, digits uint) ([]rune, error) {
 	}
 
 	res := make([]rune, int(nsymbols))
-	for i := range res {
+	for i, _ := range res {
 		shift := digits * uint(i)
 		index := (int(val>>shift) & mask) | random[i]
 		res[i] = abc.alphabet[index]
@@ -329,11 +328,11 @@ func (abc *Abc) Encode(val, nsymbols, digits uint) ([]rune, error) {
 
 // MustEncode acts just like Encode, but panics instead of returning errors.
 func (abc *Abc) MustEncode(val, size, digits uint) []rune {
-	res, err := abc.Encode(val, size, digits)
-	if err == nil {
+	if res, err := abc.Encode(val, size, digits); err == nil {
 		return res
+	} else {
+		panic(err)
 	}
-	panic(err)
 }
 
 func maskedRandomInts(size, mask int) []int {
@@ -344,7 +343,7 @@ func maskedRandomInts(size, mask int) []int {
 			ints[i] = int(b) & mask
 		}
 	} else {
-		for i := range ints {
+		for i, _ := range ints {
 			ints[i] = randm.Intn(0xff) & mask
 		}
 	}
