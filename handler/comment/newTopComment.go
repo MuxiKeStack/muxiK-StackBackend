@@ -23,7 +23,7 @@ func CreateTopComment(c *gin.Context) {
 	}
 
 	newCommentId, err := model.NewComment(&data, evaluationId, true, userId)
-	if  err != nil {
+	if err != nil {
 		handler.SendError(c, err, nil, err.Error())
 	}
 
