@@ -23,7 +23,7 @@ func Reply(c *gin.Context) {
 	}
 
 	newCommentId, err := model.NewComment(&data, commentTargetId, false, userId)
-	if  err != nil {
+	if err != nil {
 		handler.SendError(c, err, nil, err.Error())
 	}
 

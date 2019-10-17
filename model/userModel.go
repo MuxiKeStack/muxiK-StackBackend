@@ -1,5 +1,6 @@
 package model
 
+//	LoginModel represents a json for registering
 type LoginModel struct {
 	Sid      string `json:"sid"      binding:"required"`
 	Password string `json:"password" binding:"required"`
@@ -7,7 +8,8 @@ type LoginModel struct {
 
 // UserModel represents a registered user.
 type UserModel struct {
-	Sid       uint64 `json:"sid"`
+	Id        uint   `json:"id"`
+	Sid       string `json:"sid"`
 	Username  string `json:"username"`
 	Avatar    string `json:"avatar"`
 	IsBlocked uint8  `json:"is_blocked"`
