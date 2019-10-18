@@ -18,7 +18,7 @@ func Publish(c *gin.Context) {
 		handler.SendError(c, err, nil, err.Error())
 	}
 
-	userId := c.MustGet("userId").(uint64)
+	userId := c.MustGet("sid").(uint64)
 	evaluationId, err := model.NewEvaluation(&data, userId)
 	if err != nil {
 		handler.SendError(c, err, nil, err.Error())
