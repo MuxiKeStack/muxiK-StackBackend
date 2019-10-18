@@ -31,7 +31,9 @@ CREATE TABLE `course_evaluation` (
   `course_id`             VARCHAR(50)  NOT NULL,
   `user_id`               INT          NOT NULl,
 
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `course_id` (`course_id`),
+  KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE `comment` (
@@ -46,7 +48,10 @@ CREATE TABLE `comment` (
   `parent_id`         INT          NOT NULL,
   `comment_target_id` INT          NOT NULL COMMENT "评论对象id",
 
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `parent_id` (`parent_id`),
+  KEY `comment_target_id` (`comment_target_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE `course_evaluation_like` (
@@ -54,7 +59,9 @@ CREATE TABLE `course_evaluation_like` (
   `evaluation_id` INT          NOT NULL COMMENT "评课id",
   `user_id`       INT          NOT NULL,
 
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `evaluation_id` (`evaluation_id`),
+  KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE `comment_like` (
@@ -62,7 +69,9 @@ CREATE TABLE `comment_like` (
   `comment_id` INT          NOT NULL COMMENT "评论id",
   `user_id`    INT          NOT NULL,
 
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `comment_id` (`comment_id`),
+  KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE `class_table` (
@@ -70,7 +79,8 @@ CREATE TABLE `class_table` (
   `user_id` INT          NOT NULL,
   `courses` TEXT         NOT NULL COMMENT "课程 hash 列表，逗号分隔",
 
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE `tag` (
@@ -94,39 +104,45 @@ CREATE TABLE `course_list` (
   `user_id`   INT          NOT NULL,
   `course_id` VARCHAR(50)  NOT NULL,
 
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `course_id` (`course_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE `history_course` (
-  `hash`    VARCHAR(50) NOT NULL COMMENT "课程id + 教师名 hash 生成的唯一标识",
-  `name`    VARCHAR(50) NOT NULL,
-  `teacher` VARCHAR(20) NOT NULL,
-  `type`    INT         NOT NULL COMMENT "课程类型（专业课，公共课）",
+  `id`      INT unsigned NOT NULL AUTO_INCREMENT,
+  `hash`    VARCHAR(50)  NOT NULL COMMENT "课程id + 教师名 hash 生成的唯一标识",
+  `name`    VARCHAR(50)  NOT NULL,
+  `teacher` VARCHAR(20)  NOT NULL,
+  `type`    INT          NOT NULL COMMENT "课程类型（专业课，公共课）",
 
+  PRIMARY KEY (`id`),
   UNIQUE KEY `hash` (`hash`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE `using_course` (
-  `hash`           VARCHAR(50) NOT NULL           COMMENT "课程id + 教师名 hash 生成的唯一标识",
-  `name`           VARCHAR(50) NOT NULL,
-  `rate`           FLOAT       NOT NULL DEFAULT 0 COMMENT "课程评价星级",
-  `stars_num`      INT         NOT NULL DEFAULT 0 COMMENT "参与评课人数",
-  `credit`         FLOAT       NOT NULL DEFAULT 0 COMMENT "学分",
-  `teacher`        VARCHAR(20) NOT NULL,
-  `course_id`      VARCHAR(50) NOT NULL           COMMENT "课程号",
-  `class_id`       VARCHAR(50) NOT NULL           COMMENT "教学班编号",
-  `type`           INT         NOT NULL           COMMENT "通识必修，通识选修，通识核心，专业必修，专业选修分别为 0/1/2/3/4",
-  `credit_type`    INT         NOT NULL           COMMENT "学分类别，文科理科艺术之类的，加索引（筛选条件）",
-  `total_score`    FLOAT       NOT NULL DEFAULT 0 COMMENT "总评均分",
-  `ordinary_score` FLOAT       NOT NULL DEFAULT 0 COMMENT "平时均分",
-  `time1`          VARCHAR(20) NOT NULL,
-  `place1`         VARCHAR(20) NOT NULL,
-  `time2`          VARCHAR(20) NOT NULL,
-  `place2`         VARCHAR(20) NOT NULL,
-  `time3`          VARCHAR(20) NOT NULL,
-  `place3`         VARCHAR(20) NOT NULL,
-  `weeks`          VARCHAR(20) NOT NULL,
-  `region`         INT         NOT NULL COMMENT "上课地区，南湖，东区，西区。加索引（筛选条件）",
+  `id`             INT unsigned NOT NULL AUTO_INCREMENT,
+  `hash`           VARCHAR(50)  NOT NULL           COMMENT "课程id + 教师名 hash 生成的唯一标识",
+  `name`           VARCHAR(50)  NOT NULL,
+  `rate`           FLOAT        NOT NULL DEFAULT 0 COMMENT "课程评价星级",
+  `stars_num`      INT          NOT NULL DEFAULT 0 COMMENT "参与评课人数",
+  `credit`         FLOAT        NOT NULL DEFAULT 0 COMMENT "学分",
+  `teacher`        VARCHAR(20)  NOT NULL,
+  `course_id`      VARCHAR(50)  NOT NULL           COMMENT "课程号",
+  `class_id`       VARCHAR(50)  NOT NULL           COMMENT "教学班编号",
+  `type`           INT          NOT NULL           COMMENT "通识必修，通识选修，通识核心，专业必修，专业选修分别为 0/1/2/3/4",
+  `credit_type`    INT          NOT NULL           COMMENT "学分类别，文科理科艺术之类的，加索引（筛选条件）",
+  `total_score`    FLOAT        NOT NULL DEFAULT 0 COMMENT "总评均分",
+  `ordinary_score` FLOAT        NOT NULL DEFAULT 0 COMMENT "平时均分",
+  `time1`          VARCHAR(20)  NOT NULL,
+  `place1`         VARCHAR(20)  NOT NULL,
+  `time2`          VARCHAR(20)  NOT NULL,
+  `place2`         VARCHAR(20)  NOT NULL,
+  `time3`          VARCHAR(20)  NOT NULL,
+  `place3`         VARCHAR(20)  NOT NULL,
+  `weeks`          VARCHAR(20)  NOT NULL,
+  `region`         INT          NOT NULL COMMENT "上课地区，南湖，东区，西区。加索引（筛选条件）",
 
+  PRIMARY KEY (`id`),
   UNIQUE KEY `hash` (`hash`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
