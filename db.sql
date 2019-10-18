@@ -1,11 +1,7 @@
-DROP DATABASE `MUXIKSTACK`
-
-CREATE DATABASE `MUXIKSTACK`;
+CREATE DATABASE IF NOT EXISTS `MUXIKSTACK`;
 
 USE `MUXIKSTACK`;
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user` (
   `id`         INT              unsigned  NOT NULL AUTO_INCREMENT,
   `sid`        VARCHAR(10)      NOT NULL COMMENT   "学生学号",
