@@ -16,7 +16,7 @@ func Reply(c *gin.Context) {
 		handler.SendError(c, err, nil, err.Error())
 	}
 
-	userId := c.MustGet("userId").(uint64)
+	userId := c.MustGet("sid").(uint64)
 	commentTargetId, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
 		handler.SendError(c, err, nil, err.Error())

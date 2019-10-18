@@ -21,7 +21,7 @@ func UpdateCommentLike(c *gin.Context) {
 		handler.SendError(c, err, nil, err.Error())
 	}
 
-	userId := c.MustGet("userId").(uint64)
+	userId := c.MustGet("sid").(uint64)
 
 	err = model.UpdateCommentLikeState(id, userId, d.IsLike)
 	if err != nil {

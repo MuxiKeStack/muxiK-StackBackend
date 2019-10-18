@@ -31,7 +31,7 @@ func UpdateEvaluationLike(c *gin.Context) {
 		handler.SendError(c, err, nil, err.Error())
 	}
 
-	userId := c.MustGet("userId").(uint64)
+	userId := c.MustGet("sid").(uint64)
 
 	err = model.UpdateEvaluationLikeState(id, userId, d.IsLike)
 

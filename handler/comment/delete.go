@@ -16,7 +16,7 @@ func Delete(c *gin.Context) {
 	if err != nil {
 		handler.SendError(c, err, nil, err.Error())
 	}
-	userId := c.MustGet("id").(uint64)
+	userId := c.MustGet("sid").(uint64)
 
 	err = model.DeleteEvaluation(id, userId)
 	if err != nil {
