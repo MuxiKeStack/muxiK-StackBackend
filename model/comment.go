@@ -459,3 +459,9 @@ func DeleteEvaluation(id, userId uint64) error {
 	DB.Self.Delete(&e)
 	return nil
 }
+
+// 新增评课时更新课程的评课信息，先暂时放这里，避免冲突
+func updateCourseEvaluationInfo(id uint64, rate uint8) error {
+
+	return nil
+}

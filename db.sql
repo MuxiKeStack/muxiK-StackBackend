@@ -1,11 +1,11 @@
-DROP DATABASE `MUXIKSTACK`
+DROP DATABASE IF EXISTS `MUXIKSTACK`;
 
 CREATE DATABASE `MUXIKSTACK`;
 
 USE `MUXIKSTACK`;
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = UTF8MB4 */;
 CREATE TABLE `user` (
   `id`         INT              unsigned  NOT NULL AUTO_INCREMENT,
   `sid`        VARCHAR(10)      NOT NULL COMMENT   "学生学号",
@@ -17,12 +17,13 @@ CREATE TABLE `user` (
 ) ENGINE=MyISAM DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE `course_evaluation` (
+  `id`                    INT unsigned NOT NULL AUTO_INCREMENT,
   `course_name`           VARCHAR(50)  NOT NULL,
   `rate`                  INT          NOT NULL DEFAULT 0,
   `attendance_check_type` INT          NOT NULL DEFAULT 0 COMMENT "考勤方式，经常点名/偶尔点名/签到点名，标识为 0/1/2",
   `exam_check_type`       INT          NOT NULL DEFAULT 0 COMMENT "考核方式，无考核/闭卷考试/开卷考试/论文考核，标识为 0/1/2/3",
   `content`               TEXT         NOT NULL           COMMENT "评课内容",
-  `is_anonymous`         TINYINT(1)   NOT NULL DEFAULT 0 COMMENT "是否匿名评课",
+  `is_anonymous`          TINYINT(1)   NOT NULL DEFAULT 0 COMMENT "是否匿名评课",
   `like_num`              INT          NOT NULL DEFAULT 0 COMMENT "点赞数",
   `comment_num`           INT          NOT NULL DEFAULT 0 COMMENT "一级评论数",
   `tags`                  VARCHAR(255) NOT NULL           COMMENT "标签id列表，逗号分隔",
@@ -31,49 +32,72 @@ CREATE TABLE `course_evaluation` (
 
   `course_id`             VARCHAR(50)  NOT NULL,
   `user_id`               INT          NOT NULl,
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE `comment` (
-  `time`              VARCHAR(20) NOT NULL           COMMENT "评课时间，时间戳",
-  `content`           TEXT        NOT NULl           COMMENT "评论内容",
-  `like_num`          INT         NOT NULL DEFAULT 0 COMMENT "点赞数",
-  `is_root`           TINYINT(1)  NOT NULL DEFAULT 0 COMMENT "是否是一级评论",
-  `sub_comment_num`    INT         NOT NULL DEFAULT 0 COMMENT "子评论数",
+  `id`                INT unsigned NOT NULL AUTO_INCREMENT,
+  `time`              VARCHAR(20)  NOT NULL           COMMENT "评课时间，时间戳",
+  `content`           TEXT         NOT NULl           COMMENT "评论内容",
+  `like_num`          INT          NOT NULL DEFAULT 0 COMMENT "点赞数",
+  `is_root`           TINYINT(1)   NOT NULL DEFAULT 0 COMMENT "是否是一级评论",
+  `sub_comment_num`   INT          NOT NULL DEFAULT 0 COMMENT "子评论数",
 
-  `user_id`           INT         NOT NULL,
-  `parent_id`         INT         NOT NULL,
-  `comment_target_id` INT         NOT NULL COMMENT "评论对象id",
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `user_id`           INT          NOT NULL,
+  `parent_id`         INT          NOT NULL,
+  `comment_target_id` INT          NOT NULL COMMENT "评论对象id",
+
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE `course_evaluation_like` (
-  `evaluation_id` INT NOT NULL COMMENT "评课id",
-  `user_id`       INT NOT NULL,
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `id`            INT unsigned NOT NULL AUTO_INCREMENT,
+  `evaluation_id` INT          NOT NULL COMMENT "评课id",
+  `user_id`       INT          NOT NULL,
+
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE `comment_like` (
-  `comment_id` INT NOT NULL COMMENT "评论id",
-  `user_id`    INT NOT NULL,
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `id`         INT unsigned NOT NULL AUTO_INCREMENT,
+  `comment_id` INT          NOT NULL COMMENT "评论id",
+  `user_id`    INT          NOT NULL,
+
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE `class_table` (
-  `user_id` INT  NOT NULL,
-  `courses` TEXT NOT NULL COMMENT "课程 hash 列表，逗号分隔",
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `id`      INT unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` INT          NOT NULL,
+  `courses` TEXT         NOT NULL COMMENT "课程 hash 列表，逗号分隔",
+
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE `tag` (
-  `tag_name` VARCHAR(20) NOT NULL,
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `id`       INT unsigned NOT NULL AUTO_INCREMENT,
+  `tag_name` VARCHAR(20)  NOT NULL,
+
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE `report` (
-  `evaluation_id` INT        NOT NULL,
-  `user_id`       INT        NOT NULL,
-  `pass`          TINYINT(1) NOT NULL DEFAULT 1 COMMENT "举报审核是否通过",
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `id`            INT unsigned NOT NULL AUTO_INCREMENT,
+  `evaluation_id` INT          NOT NULL,
+  `user_id`       INT          NOT NULL,
+  `pass`          TINYINT(1)   NOT NULL DEFAULT 1 COMMENT "举报审核是否通过",
+
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE `course_list` (
-  `user_id`   INT         NOT NULL,
-  `course_id` VARCHAR(50) NOT NULL,
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `id`        INT unsigned NOT NULL AUTO_INCREMENT,
+  `user_id`   INT          NOT NULL,
+  `course_id` VARCHAR(50)  NOT NULL,
+
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE `history_course` (
   `hash`    VARCHAR(50) NOT NULL COMMENT "课程id + 教师名 hash 生成的唯一标识",
@@ -81,8 +105,8 @@ CREATE TABLE `history_course` (
   `teacher` VARCHAR(20) NOT NULL,
   `type`    INT         NOT NULL COMMENT "课程类型（专业课，公共课）",
 
-  UNIQUE KEY `hash` (`hash`),
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  UNIQUE KEY `hash` (`hash`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE `using_course` (
   `hash`           VARCHAR(50) NOT NULL           COMMENT "课程id + 教师名 hash 生成的唯一标识",
@@ -106,5 +130,5 @@ CREATE TABLE `using_course` (
   `weeks`          VARCHAR(20) NOT NULL,
   `region`         INT         NOT NULL COMMENT "上课地区，南湖，东区，西区。加索引（筛选条件）",
 
-  UNIQUE KEY `hash` (`hash`),
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  UNIQUE KEY `hash` (`hash`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
