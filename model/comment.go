@@ -8,11 +8,6 @@ import (
 
 // 新增评课
 func NewEvaluation(data *EvaluationPublish, userId uint32) (uint32, error) {
-	if exit := DB.Self.HasTable(&CourseEvaluationModel{}); !exit {
-		//DB.Self.CreateTable(&CourseEvaluationModel{})
-		return 0, errors.New("Table does not exit. ")
-	}
-
 	tagStr := TagArrayToStr(data.Tags)
 
 	newEvaluation := &CourseEvaluationModel{
@@ -122,7 +117,7 @@ func evaluationSQLDataToResponseInfo(e *CourseEvaluationModel, userId uint32, vi
 	var err error
 	var u = &UserInfo{}
 	if !e.IsAnonymous {
-		u, err = GetUserInfo(e.UserId)
+		u, err = GetUserInfoById(e.UserId)
 		if err != nil {
 			return &EvaluationInfo{}, err
 		}
@@ -185,12 +180,12 @@ func GetCommentInfo(id, userId uint32) (*CommentInfo, error) {
 		return nil, d.Error
 	}
 
-	commentUser, err := GetUserInfo(c.UserId)
+	commentUser, err := GetUserInfoById(c.UserId)
 	if err != nil {
 		return nil, nil
 	}
 
-	targetUser, err := GetUserInfo(c.CommentTargetId)
+	targetUser, err := GetUserInfoById(c.CommentTargetId)
 	if err != nil {
 		return nil, nil
 	}
@@ -229,12 +224,12 @@ func GetCommentList(id uint32, lastId, size int64, userId uint32, visitor bool) 
 
 		// 优化：并发
 		for _, k := range comments {
-			commentUser, err := GetUserInfo(k.UserId)
+			commentUser, err := GetUserInfoById(k.UserId)
 			if err != nil {
 				return nil, 0, nil
 			}
 
-			targetUser, err := GetUserInfo(k.CommentTargetId)
+			targetUser, err := GetUserInfoById(k.CommentTargetId)
 			if err != nil {
 				return nil, 0, nil
 			}
@@ -254,7 +249,7 @@ func GetCommentList(id uint32, lastId, size int64, userId uint32, visitor bool) 
 			})
 		}
 
-		userInfo, err := GetUserInfo(i.UserId)
+		userInfo, err := GetUserInfoById(i.UserId)
 		if err != nil {
 			return nil, 0, nil
 		}
