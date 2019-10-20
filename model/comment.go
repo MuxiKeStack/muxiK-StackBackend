@@ -7,7 +7,7 @@ import (
 )
 
 // 新增评课
-func NewEvaluation(data *EvaluationPublish, userId uint64) (uint64, error) {
+func NewEvaluation(data *EvaluationPublish, userId uint32) (uint32, error) {
 	if exit := DB.Self.HasTable(&CourseEvaluationModel{}); !exit {
 		//DB.Self.CreateTable(&CourseEvaluationModel{})
 		return 0, errors.New("Table does not exit. ")
@@ -41,9 +41,9 @@ func NewEvaluation(data *EvaluationPublish, userId uint64) (uint64, error) {
 }
 
 // 新增评论
-func NewComment(data *NewCommentRequest, id uint64, isRoot bool, userId uint64) (uint64, error) {
+func NewComment(data *NewCommentRequest, id uint32, isRoot bool, userId uint32) (uint32, error) {
 	var newComment = &CommentModel{}
-	var newCommentId uint64
+	var newCommentId uint32
 
 	// 是否是评论评课
 	if isRoot {
@@ -102,7 +102,7 @@ func NewComment(data *NewCommentRequest, id uint64, isRoot bool, userId uint64) 
 }
 
 // 获取评课详情
-func GetEvaluationInfo(id, userId uint64, visitor bool) (*EvaluationInfo, error) {
+func GetEvaluationInfo(id, userId uint32, visitor bool) (*EvaluationInfo, error) {
 	var e CourseEvaluationModel
 	d := DB.Self.Find(&e, "id = ?", id)
 	if d.Error != nil {
@@ -118,7 +118,7 @@ func GetEvaluationInfo(id, userId uint64, visitor bool) (*EvaluationInfo, error)
 }
 
 // 评课表数据转换为返回的评课信息数据
-func evaluationSQLDataToResponseInfo(e *CourseEvaluationModel, userId uint64, visitor bool) (*EvaluationInfo, error) {
+func evaluationSQLDataToResponseInfo(e *CourseEvaluationModel, userId uint32, visitor bool) (*EvaluationInfo, error) {
 	var err error
 	var u = &UserInfo{}
 	if !e.IsAnonymous {
@@ -154,7 +154,7 @@ func evaluationSQLDataToResponseInfo(e *CourseEvaluationModel, userId uint64, vi
 }
 
 // 获取最新的评课列表
-func GetLatestEvaluationList(lastId, size int64, userId uint64, visitor bool) (*[]EvaluationInfo, error) {
+func GetLatestEvaluationList(lastId, size int64, userId uint32, visitor bool) (*[]EvaluationInfo, error) {
 	var result []EvaluationInfo
 	var data []CourseEvaluationModel
 	if lastId != -1 {
@@ -176,7 +176,7 @@ func GetLatestEvaluationList(lastId, size int64, userId uint64, visitor bool) (*
 }
 
 // 获取评论详情
-func GetCommentInfo(id, userId uint64) (*CommentInfo, error) {
+func GetCommentInfo(id, userId uint32) (*CommentInfo, error) {
 	var data = &CommentInfo{}
 	var c CommentModel
 
@@ -208,8 +208,8 @@ func GetCommentInfo(id, userId uint64) (*CommentInfo, error) {
 }
 
 // 获取评论列表
-func GetCommentList(id uint64, lastId, size int64, userId uint64, visitor bool) (*[]ParentCommentInfo, uint64, error) {
-	var count uint64
+func GetCommentList(id uint32, lastId, size int64, userId uint32, visitor bool) (*[]ParentCommentInfo, uint32, error) {
+	var count uint32
 	var list []ParentCommentInfo
 	var data []CommentModel
 
@@ -280,14 +280,14 @@ func GetCommentList(id uint64, lastId, size int64, userId uint64, visitor bool) 
 }
 
 // 获取最新插入数据的id
-func getLastInsertId() (uint64, error) {
+func getLastInsertId() (uint32, error) {
 	rows, err := DB.Self.Raw("select last_insert_id()").Rows()
 	if err != nil {
 		return 0, err
 	}
 	defer rows.Close()
 
-	var id uint64
+	var id uint32
 	if err := DB.Self.ScanRows(rows, id); err != nil {
 		return 0, err
 	}
@@ -295,7 +295,7 @@ func getLastInsertId() (uint64, error) {
 }
 
 // 是否是一级评论
-func isTopComment(id uint64) bool {
+func isTopComment(id uint32) bool {
 	var data CommentModel
 	DB.Self.First(&data, "id = ?", id)
 
@@ -305,7 +305,7 @@ func isTopComment(id uint64) bool {
 }
 
 // Get parentId by commentTargetId
-func getParentId(id uint64) (uint64, error) {
+func getParentId(id uint32) (uint32, error) {
 	var data = new(CommentModel)
 	DB.Self.Where("id = ?", id).First(data)
 
@@ -315,12 +315,12 @@ func getParentId(id uint64) (uint64, error) {
 }
 
 // 修改评课点赞状态
-func UpdateEvaluationLikeState(id, userId uint64, like bool) error {
+func UpdateEvaluationLikeState(id, userId uint32, like bool) error {
 	d := &EvaluationLikeModel{
 		EvaluationId: id,
 		UserId:       userId,
 	}
-	var count uint64
+	var count uint32
 	DB.Self.Find(d).Count(&count)
 
 	// 点赞
@@ -345,12 +345,12 @@ func UpdateEvaluationLikeState(id, userId uint64, like bool) error {
 }
 
 // 修改评论点赞状态
-func UpdateCommentLikeState(id, userId uint64, like bool) error {
+func UpdateCommentLikeState(id, userId uint32, like bool) error {
 	d := &CommentLikeModel{
 		CommentId: id,
 		UserId:    userId,
 	}
-	var count uint64
+	var count uint32
 	DB.Self.Find(d).Count(&count)
 
 	// 点赞
@@ -375,7 +375,7 @@ func UpdateCommentLikeState(id, userId uint64, like bool) error {
 }
 
 // 获取评论点赞状态
-func GetCommentLikeState(id, userId uint64) bool {
+func GetCommentLikeState(id, userId uint32) bool {
 	var data CommentLikeModel
 	DB.Self.Where("user_id = ? AND comment_id = ?", userId, id).Find(&data)
 	if data.Id != 0 {
@@ -385,7 +385,7 @@ func GetCommentLikeState(id, userId uint64) bool {
 }
 
 // 获取评课点赞状态
-func GetEvaluationLikeState(id, userId uint64) bool {
+func GetEvaluationLikeState(id, userId uint32) bool {
 	var data EvaluationLikeModel
 	DB.Self.Where("user_id = ? AND evaluation_id = ?", userId, id).Find(&data)
 	if data.Id != 0 {
@@ -395,34 +395,34 @@ func GetEvaluationLikeState(id, userId uint64) bool {
 }
 
 // 获取评课点赞数
-func GetEvaluationLikeNum(id uint64) uint64 {
-	var count uint64
+func GetEvaluationLikeNum(id uint32) uint32 {
+	var count uint32
 	DB.Self.Where("id = ?", id).Find(&CourseEvaluationModel{}).Count(&count)
 
 	return count
 }
 
 // 获取评论点赞数
-func GetCommentLikeNum(id uint64) uint64 {
-	var count uint64
+func GetCommentLikeNum(id uint32) uint32 {
+	var count uint32
 	DB.Self.Where("id = ?", id).Find(&CommentModel{}).Count(&count)
 
 	return count
 }
 
 // 修改评课点赞数
-func updateEvaluationLikeNum(id uint64, num int8) uint64 {
+func updateEvaluationLikeNum(id uint32, num int8) uint32 {
 	var d = &CourseEvaluationModel{}
 	DB.Self.Where("id = ?", id).Find(d)
 
 	if num < 0 {
-		if d.LikeNum < uint64(-num) {
+		if d.LikeNum < uint32(-num) {
 			d.LikeNum = 0
 		} else {
-			d.LikeNum -= uint64(-num)
+			d.LikeNum -= uint32(-num)
 		}
 	} else {
-		d.LikeNum += uint64(num)
+		d.LikeNum += uint32(num)
 	}
 	DB.Self.Save(d)
 
@@ -430,18 +430,18 @@ func updateEvaluationLikeNum(id uint64, num int8) uint64 {
 }
 
 // 修改评论数
-func updateCommentLikeNum(id uint64, num int8) uint64 {
+func updateCommentLikeNum(id uint32, num int8) uint32 {
 	var d = &CommentModel{}
 	DB.Self.Where("id = ?", id).Find(d)
 
 	if num < 0 {
-		if d.LikeNum < uint64(-num) {
+		if d.LikeNum < uint32(-num) {
 			d.LikeNum = 0
 		} else {
-			d.LikeNum -= uint64(-num)
+			d.LikeNum -= uint32(-num)
 		}
 	} else {
-		d.LikeNum += uint64(num)
+		d.LikeNum += uint32(num)
 	}
 	DB.Self.Save(d)
 
@@ -449,7 +449,7 @@ func updateCommentLikeNum(id uint64, num int8) uint64 {
 }
 
 // 删除评课
-func DeleteEvaluation(id, userId uint64) error {
+func DeleteEvaluation(id, userId uint32) error {
 	var e CourseEvaluationModel
 	DB.Self.Find(&e, "id = ?", id)
 
@@ -461,7 +461,13 @@ func DeleteEvaluation(id, userId uint64) error {
 }
 
 // 新增评课时更新课程的评课信息，先暂时放这里，避免冲突
-func updateCourseEvaluationInfo(id uint64, rate uint8) error {
+func UpdateCourseByEva(id uint32, rate uint8) error {
+	var c UsingCourseModel
+	DB.Self.Find(&c, "id = ?", id)
+
+	c.Rate = (c.Rate*float32(c.StarsNum) + float32(rate)) / float32(c.StarsNum+1)
+	c.StarsNum++
+	DB.Self.Save(&c)
 
 	return nil
 }

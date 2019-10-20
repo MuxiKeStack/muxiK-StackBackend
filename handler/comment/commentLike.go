@@ -11,7 +11,7 @@ import (
 
 // 评论点赞/取消点赞
 func UpdateCommentLike(c *gin.Context) {
-	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
 		handler.SendError(c, err, nil, err.Error())
 	}
@@ -21,16 +21,16 @@ func UpdateCommentLike(c *gin.Context) {
 		handler.SendError(c, err, nil, err.Error())
 	}
 
-	userId := c.MustGet("sid").(uint64)
+	userId := c.MustGet("id").(uint32)
 
-	err = model.UpdateCommentLikeState(id, userId, d.IsLike)
+	err = model.UpdateCommentLikeState(uint32(id), userId, d.IsLike)
 	if err != nil {
 		handler.SendError(c, err, nil, err.Error())
 	}
 
 	data := &commentLikeResponse{
-		IsLike:  model.GetCommentLikeState(id, userId),
-		LikeNum: model.GetCommentLikeNum(id),
+		IsLike:  model.GetCommentLikeState(uint32(id), userId),
+		LikeNum: model.GetCommentLikeNum(uint32(id)),
 	}
 
 	handler.SendResponse(c, nil, data)
