@@ -43,7 +43,7 @@ func main() {
 		// Cores.
 		g,
 
-		// Middlwares.
+		// Middle wares.
 		middleware.Logging(),
 		middleware.RequestId(),
 	)

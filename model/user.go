@@ -36,13 +36,13 @@ func CreateUser(sid string) error {
 }
 
 // HaveUser determines whether there is this user or not by the user identifier.
-func HaveUser(sid string) (uint8, error) {
+func HaveUser(sid string) uint8 {
 	var num int
-	DB.Self.Model(&UserModel{}).Where("sid = ?", sid).Count(num)
+	DB.Self.Model(&UserModel{}).Where("sid = ?", sid).Count(&num)
 	if num == 0 {
-		return 0, nil
+		return 1
 	}
-	return 1, nil
+	return 0
 }
 
 // GetUser gets an user by the student identifier.
