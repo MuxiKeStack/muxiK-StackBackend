@@ -1,27 +1,31 @@
 package model
 
-import (
-	"gopkg.in/go-playground/validator.v9"
-)
+import "gopkg.in/go-playground/validator.v9"
 
 func (u *UserModel) TableName() string {
 	return "user"
 }
 
 // Update updates an user account information.
-func (u *UserModel) UpdateInfo(info UserInfo) error {
+func (u *UserModel) UpdateInfo(info *UserInfo) error {
 	u.Avatar = info.Avatar
 	u.Username = info.Username
 	return DB.Self.Save(u).Error
 }
 
 // Get user info
-func (u *UserModel) GetInfo() UserInfo {
+func (u *UserModel) GetInfo() *UserInfo {
 	info := UserInfo{
 		Username: u.Username,
 		Avatar:   u.Avatar,
 	}
-	return info
+	return &info
+}
+
+// Validate the fields.
+func (u *UserModel) Validate() error {
+	validate := validator.New()
+	return validate.Struct(u)
 }
 
 // Create creates a new user account.
@@ -53,21 +57,12 @@ func GetUserById(id uint32) (*UserModel, error) {
 	return u, d.Error
 }
 
-// Validate the fields.
-func (u *UserModel) Validate() error {
-	validate := validator.New()
-	return validate.Struct(u)
-}
-
 // GetUserInfo gets user information by userId.
-func GetUserInfo(id uint32) (*UserInfo, error) {
+func GetUserInfoById(id uint32) (*UserInfo, error) {
 	u, err := GetUserById(id)
 	if err != nil {
 		return &UserInfo{}, err
 	}
-	info := &UserInfo{
-		Username: u.Username,
-		Avatar:   u.Avatar,
-	}
+	info := u.GetInfo()
 	return info, nil
 }
