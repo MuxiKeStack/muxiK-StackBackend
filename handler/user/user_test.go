@@ -39,8 +39,8 @@ func TestLogin(t *testing.T) {
 	uri := "/login"
 	u := CreateRequest{
 		model.LoginModel{
-			Sid:      "",
-			Password: "",
+			Sid:      "2018212576",
+			Password: "Yu@14796825550",
 		},
 	}
 	jsonByte, err := json.Marshal(u)
@@ -56,7 +56,7 @@ func TestLogin(t *testing.T) {
 		t.Errorf("Test error: Get LoginResponse Error:%s", err.Error())
 	}
 	tokenString = data.Data.Token
-	fmt.Println(tokenString)
+	fmt.Println(tokenString, data.Data.IsNew)
 	if w.Code != http.StatusOK {
 		t.Errorf("Test Error: StatusCode Error:%d", w.Code)
 	}

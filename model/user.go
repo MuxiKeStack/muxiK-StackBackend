@@ -47,7 +47,7 @@ func GetUserBySid(sid string) (*UserModel, error) {
 }
 
 // GetUser gets an user by the user identifier.
-func GetUserById(id uint64) (*UserModel, error) {
+func GetUserById(id uint32) (*UserModel, error) {
 	u := &UserModel{}
 	d := DB.Self.Where("id = ?", id).First(&u)
 	return u, d.Error
@@ -60,7 +60,7 @@ func (u *UserModel) Validate() error {
 }
 
 // GetUserInfo gets user information by userId.
-func GetUserInfo(id uint64) (*UserInfo, error) {
+func GetUserInfo(id uint32) (*UserInfo, error) {
 	u, err := GetUserById(id)
 	if err != nil {
 		return &UserInfo{}, err
