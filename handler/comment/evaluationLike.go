@@ -11,7 +11,7 @@ import (
 
 type commentLikeResponse struct {
 	IsLike  bool
-	LikeNum uint64
+	LikeNum uint32
 }
 
 type likeResponse struct {
@@ -31,13 +31,13 @@ func UpdateEvaluationLike(c *gin.Context) {
 		handler.SendError(c, err, nil, err.Error())
 	}
 
-	userId := c.MustGet("sid").(uint64)
+	userId := c.MustGet("id").(uint32)
 
-	err = model.UpdateEvaluationLikeState(id, userId, d.IsLike)
+	err = model.UpdateEvaluationLikeState(uint32(id), userId, d.IsLike)
 
 	data := &commentLikeResponse{
-		IsLike:  model.GetEvaluationLikeState(id, userId),
-		LikeNum: model.GetEvaluationLikeNum(id),
+		IsLike:  model.GetEvaluationLikeState(uint32(id), userId),
+		LikeNum: model.GetEvaluationLikeNum(uint32(id)),
 	}
 
 	// 数据库的点赞状态和请求的点赞状态相冲突
