@@ -4,30 +4,39 @@ import (
 	. "github.com/MuxiKeStack/muxiK-StackBackend/handler"
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
+	"github.com/MuxiKeStack/muxiK-StackBackend/util"
 	"github.com/gin-gonic/gin"
-	"strconv"
+	"github.com/lexkong/log"
+	"github.com/lexkong/log/lager"
 )
 
-// Update user info by sid
+// Update user info by token
 func PostInfo(c *gin.Context) {
+	log.Info("PostInfo function called.", lager.Data{"X-Request-Id": util.GetReqID(c)})
 	var info model.UserInfo
 	if err := c.ShouldBindJSON(&info); err != nil {
 		SendBadRequest(c, errno.ErrBind, nil, err.Error())
 		return
 	}
-	id, _ := strconv.ParseUint(c.Param("id"), 10, 32)
-	if err := model.UpdateInfoById(uint32(id), &info); err != nil {
+	id, _ := c.Get("id")
+	if err := model.UpdateInfoById(id.(uint32), &info); err != nil {
 		SendBadRequest(c, errno.ErrUpdateUser, nil, err.Error())
+		return
 	}
 	SendResponse(c, errno.OK, nil)
 }
 
 //
 func GetInfo(c *gin.Context) {
-	id, _ := strconv.ParseUint(c.Param("id"), 10, 32)
-	info, err := model.GetUserInfoById(uint32(id))
+	log.Info("GetInfo function called.", lager.Data{"X-Request-Id": util.GetReqID(c)})
+	id, _ := c.Get("id")
+	info, err := model.GetUserInfoById(id.(uint32))
 	if err != nil {
 		SendError(c, errno.ErrGetUserInfo, nil, err.Error())
+		return
 	}
-	SendResponse(c, errno.OK, info)
+	SendResponse(c, errno.OK, model.UserInfo{
+		Username: info.Username,
+		Avatar:   info.Avatar,
+	})
 }
