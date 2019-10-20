@@ -20,7 +20,7 @@ func PostInfo(c *gin.Context) {
 		SendBadRequest(c, errno.ErrUserNotFound, nil, err.Error())
 		return
 	}
-	if err := u.UpdateInfo(info); err != nil {
+	if err := u.UpdateInfo(&info); err != nil {
 		SendBadRequest(c, errno.ErrUpdateUser, nil, err.Error())
 		return
 	}

@@ -39,8 +39,8 @@ func TestLogin(t *testing.T) {
 	uri := "/login"
 	u := CreateRequest{
 		model.LoginModel{
-			Sid:      "2018212576",
-			Password: "Yu@14796825550",
+			Sid:      "",
+			Password: "",
 		},
 	}
 	jsonByte, err := json.Marshal(u)
