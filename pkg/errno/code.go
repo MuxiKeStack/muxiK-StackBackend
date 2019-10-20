@@ -19,4 +19,5 @@ var (
 	ErrUpdateUser   = &Errno{Code: 20202, Message: "Error in updating user"}
 	ErrUserNotFound = &Errno{Code: 20203, Message: "The user was not found."}
 	ErrTokenInvalid = &Errno{Code: 20204, Message: "The token was invalid."}
+	ErrGetUserInfo  = &Errno{Code: 20205, Message: "Error in getting user info"}
 )

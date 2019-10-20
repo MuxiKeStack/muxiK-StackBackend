@@ -5,6 +5,7 @@ import (
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
 	"github.com/gin-gonic/gin"
+	"strconv"
 )
 
 // Update user info by sid
@@ -14,27 +15,19 @@ func PostInfo(c *gin.Context) {
 		SendBadRequest(c, errno.ErrBind, nil, err.Error())
 		return
 	}
-	sid := c.Param("sid")
-	u, err := model.GetUserBySid(sid)
-	if err != nil {
-		SendBadRequest(c, errno.ErrUserNotFound, nil, err.Error())
-		return
-	}
-	if err := u.UpdateInfo(&info); err != nil {
+	id, _ := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err := model.UpdateInfoById(uint32(id), &info); err != nil {
 		SendBadRequest(c, errno.ErrUpdateUser, nil, err.Error())
-		return
 	}
 	SendResponse(c, errno.OK, nil)
 }
 
 //
 func GetInfo(c *gin.Context) {
-	sid := c.Param("sid")
-	u, err := model.GetUserBySid(sid)
+	id, _ := strconv.ParseUint(c.Param("id"), 10, 32)
+	info, err := model.GetUserInfoById(uint32(id))
 	if err != nil {
-		SendBadRequest(c, errno.ErrUserNotFound, nil, err.Error())
-		return
+		SendError(c, errno.ErrGetUserInfo, nil, err.Error())
 	}
-	info := u.GetInfo()
 	SendResponse(c, errno.OK, info)
 }
