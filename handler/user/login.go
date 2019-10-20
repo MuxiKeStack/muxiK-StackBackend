@@ -28,16 +28,17 @@ func Login(c *gin.Context) {
 	}
 
 	// judge whether there is this user or not
-	IsNewUser, err := model.HaveUser(l.Sid)
+	IsNewUser := model.HaveUser(l.Sid)
 	if IsNewUser == 1 {
 		err := model.CreateUser(l.Sid)
 		if err != nil {
-			SendResponse(c, errno.ErrCreateUser, nil)
+			SendError(c, errno.ErrCreateUser, nil, err.Error())
 		}
 	}
 	u, err := model.GetUserBySid(l.Sid)
 	if err != nil {
 		SendError(c, errno.ErrUserNotFound, nil, err.Error())
+		return
 	}
 
 	// Sign the json web token.

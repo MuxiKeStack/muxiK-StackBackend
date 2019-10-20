@@ -2,7 +2,6 @@ package user
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/MuxiKeStack/muxiK-StackBackend/config"
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/router/middleware"
@@ -16,7 +15,6 @@ import (
 var (
 	g           *gin.Engine
 	tokenString string
-	username    string
 	password    string
 	sid         string
 )
@@ -33,34 +31,6 @@ func TestMain(m *testing.M) {
 
 	os.Exit(m.Run())
 }
-func TestLogin(t *testing.T) {
-	g := getRouter(true)
-
-	uri := "/login"
-	u := CreateRequest{
-		model.LoginModel{
-			Sid:      "",
-			Password: "",
-		},
-	}
-	jsonByte, err := json.Marshal(u)
-	if err != nil {
-		t.Errorf("Test Error: %s", err.Error())
-	}
-	w := util.PerformRequestWithBody(http.MethodPost, g, uri, jsonByte, "")
-
-	// 读取响应body,获取tokenString
-	var data LoginResponse
-
-	if err := json.Unmarshal([]byte(w.Body.String()), &data); err != nil {
-		t.Errorf("Test error: Get LoginResponse Error:%s", err.Error())
-	}
-	tokenString = data.Data.Token
-	fmt.Println(tokenString, data.Data.IsNew)
-	if w.Code != http.StatusOK {
-		t.Errorf("Test Error: StatusCode Error:%d", w.Code)
-	}
-}
 
 // Helper function to create a router during testing
 func getRouter(withRouter bool) *gin.Engine {
@@ -76,6 +46,35 @@ func getRouter(withRouter bool) *gin.Engine {
 		)
 	}
 	return g
+}
+
+// TestLogin function to test login model
+func TestLogin(t *testing.T) {
+	g := getRouter(true)
+
+	uri := "/login"
+	u := CreateRequest{
+		model.LoginModel{
+			Sid:      sid,
+			Password: password,
+		},
+	}
+	jsonByte, err := json.Marshal(u)
+	if err != nil {
+		t.Errorf("Test Error: %s", err.Error())
+	}
+	w := util.PerformRequestWithBody(http.MethodPost, g, uri, jsonByte, "")
+
+	// 读取响应body,获取tokenString
+	var data LoginResponse
+
+	if err := json.Unmarshal([]byte(w.Body.String()), &data); err != nil {
+		t.Errorf("Test error: Get LoginResponse Error:%s", err.Error())
+	}
+	tokenString = data.Data.Token
+	if w.Code != http.StatusOK {
+		t.Errorf("Test Error: StatusCode Error:%d", w.Code)
+	}
 }
 
 // Load loads the middlewares, routes, handlers about Test

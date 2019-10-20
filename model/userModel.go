@@ -8,11 +8,11 @@ type LoginModel struct {
 
 // UserModel represents a registered user.
 type UserModel struct {
-	Id        uint32 `json:"id"`
-	Sid       string `json:"sid"`
-	Username  string `json:"username"`
-	Avatar    string `json:"avatar"`
-	IsBlocked uint8  `json:"is_blocked"`
+	Id        uint32 `gorm:"column:id; primary_key; AUTO_INCREMENT"`
+	Sid       string `gorm:"column:sid"`
+	Username  string `gorm:"column:username"`
+	Avatar    string `gorm:"column:avatar"`
+	IsBlocked uint8  `gorm:"column:is_blocked"`
 }
 
 // UserInfo represents a user's info
