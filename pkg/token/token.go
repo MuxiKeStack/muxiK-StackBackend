@@ -17,7 +17,7 @@ var (
 
 // Context is the context of the JSON web token.
 type Context struct {
-	Sid string
+	Id uint32
 }
 
 // secretFunc validates the secret format.
@@ -46,7 +46,7 @@ func Parse(tokenString string, secret string) (*Context, error) {
 
 		// Read the token if it's valid.
 	} else if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		ctx.Sid = claims["sid"].(string)
+		ctx.Id = claims["id"].(uint32)
 		return ctx, nil
 
 		// Other errors.
@@ -81,7 +81,7 @@ func Sign(ctx *gin.Context, c Context, secret string) (tokenString string, err e
 	}
 	// The token content.
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"sid": c.Sid,
+		"id":  c.Id,
 		"nbf": time.Now().Unix(), //JWT Token 生效时间
 		"iat": time.Now().Unix(), //JWT Token 签发时间
 	})

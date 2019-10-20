@@ -8,7 +8,7 @@ type LoginModel struct {
 
 // UserModel represents a registered user.
 type UserModel struct {
-	Id        uint   `json:"id"`
+	Id        uint32 `json:"id"`
 	Sid       string `json:"sid"`
 	Username  string `json:"username"`
 	Avatar    string `json:"avatar"`
