@@ -1,20 +1,22 @@
 package model
 
-import "gopkg.in/go-playground/validator.v9"
+import (
+	"gopkg.in/go-playground/validator.v9"
+)
 
 func (u *UserModel) TableName() string {
 	return "user"
 }
 
 // Update updates an user account information.
-func (u *UserModel) UpdateInfo(info *UserInfo) error {
+func (u *UserModel) updateInfo(info *UserInfo) error {
 	u.Avatar = info.Avatar
 	u.Username = info.Username
 	return DB.Self.Save(u).Error
 }
 
 // Get user info
-func (u *UserModel) GetInfo() *UserInfo {
+func (u *UserModel) getInfo() *UserInfo {
 	info := UserInfo{
 		Username: u.Username,
 		Avatar:   u.Avatar,
@@ -23,7 +25,7 @@ func (u *UserModel) GetInfo() *UserInfo {
 }
 
 // Validate the fields.
-func (u *UserModel) Validate() error {
+func (u *UserModel) validate() error {
 	validate := validator.New()
 	return validate.Struct(u)
 }
@@ -57,12 +59,34 @@ func GetUserById(id uint32) (*UserModel, error) {
 	return u, d.Error
 }
 
-// GetUserInfo gets user information by userId.
+// GetUserInfoById gets user information by userId.
 func GetUserInfoById(id uint32) (*UserInfo, error) {
 	u, err := GetUserById(id)
 	if err != nil {
 		return &UserInfo{}, err
 	}
-	info := u.GetInfo()
+	info := u.getInfo()
 	return info, nil
+}
+
+// GetUserInfoBySid gets user information by Sid
+func GetUserInfoBySid(sid string) (*UserInfo, error) {
+	u, err := GetUserBySid(sid)
+	if err != nil {
+		return &UserInfo{}, nil
+	}
+	info := u.getInfo()
+	return info, nil
+}
+
+// UpdateInfoById update user information by Id
+func UpdateInfoById(id uint32, info *UserInfo) error {
+	u, err := GetUserById(id)
+	if err != nil {
+		return err
+	}
+	if err = u.updateInfo(info); err != nil {
+		return err
+	}
+	return nil
 }
