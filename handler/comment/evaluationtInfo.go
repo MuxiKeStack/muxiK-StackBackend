@@ -18,7 +18,7 @@ func GetEvaluation(c *gin.Context) {
 		handler.SendError(c, err, nil, err.Error())
 	}
 
-	var userId uint64
+	var userId uint32
 	visitor := false
 	// 游客登录
 	if t := c.Request.Header.Get("token"); len(t) == 0 {
@@ -27,10 +27,10 @@ func GetEvaluation(c *gin.Context) {
 		if _, err := token.ParseRequest(c); err != nil {
 			handler.SendResponse(c, errno.ErrTokenInvalid, nil)
 		}
-		userId = c.MustGet("sid").(uint64)
+		userId = c.MustGet("id").(uint32)
 	}
 
-	data, err := model.GetEvaluationInfo(id, userId, visitor)
+	data, err := model.GetEvaluationInfo(uint32(id), userId, visitor)
 	if err != nil {
 		handler.SendError(c, err, nil, err.Error())
 	}

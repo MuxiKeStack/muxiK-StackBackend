@@ -12,13 +12,13 @@ import (
 )
 
 type commentListResponse struct {
-	ParentCommentNum  uint64                     `json:"parent_comment_num"`
+	ParentCommentNum  uint32                     `json:"parent_comment_num"`
 	ParentCommentList *[]model.ParentCommentInfo `json:"parent_comment_list"`
 }
 
 // 获取评论列表
 func GetComments(c *gin.Context) {
-	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
 		handler.SendError(c, err, nil, err.Error())
 	}
@@ -37,7 +37,7 @@ func GetComments(c *gin.Context) {
 		handler.SendError(c, err, nil, err.Error())
 	}
 
-	var userId uint64
+	var userId uint32
 	visitor := false
 	// 游客登录
 	if t := c.Request.Header.Get("token"); len(t) == 0 {
@@ -46,10 +46,10 @@ func GetComments(c *gin.Context) {
 		if _, err := token.ParseRequest(c); err != nil {
 			handler.SendResponse(c, errno.ErrTokenInvalid, nil)
 		}
-		userId = c.MustGet("sid").(uint64)
+		userId = c.MustGet("id").(uint32)
 	}
 
-	list, count, err := model.GetCommentList(id, lastId, size, userId, visitor)
+	list, count, err := model.GetCommentList(uint32(id), lastId, size, userId, visitor)
 	if err != nil {
 		handler.SendError(c, err, nil, err.Error())
 	}

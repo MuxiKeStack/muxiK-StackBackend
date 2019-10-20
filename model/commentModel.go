@@ -2,16 +2,16 @@ package model
 
 // 评课物理表
 type CourseEvaluationModel struct {
-	Id                  uint64 `gorm:"column:id; primary_key; AUTO_INCREMENT"`
+	Id                  uint32 `gorm:"column:id; primary_key; AUTO_INCREMENT"`
 	CourseId            string `gorm:"column:course_id"`             // 课程id
 	CourseName          string `gorm:"column:course_name"`           // 课程名称
-	UserId              uint64 `gorm:"column:user_id"`               // 用户id
+	UserId              uint32 `gorm:"column:user_id"`               // 用户id
 	Rate                uint8  `gorm:"column:rate"`                  // 评价星级
 	AttendanceCheckType uint8  `gorm:"column:attendance_check_type"` // 考勤方式
 	ExamCheckType       uint8  `gorm:"column:exam_check_type"`       // 考核方式
 	Content             string `gorm:"column:content"`               // 评课内容
-	LikeNum             uint64 `gorm:"column:like_num"`              // 点赞数
-	CommentNum          uint64 `gorm:"column:comment_num"`           // 一级评论数
+	LikeNum             uint32 `gorm:"column:like_num"`              // 点赞数
+	CommentNum          uint32 `gorm:"column:comment_num"`           // 一级评论数
 	Tags                string `gorm:"column:tags"`                  // 标签id列表，逗号分隔
 	IsAnonymous         bool   `gorm:"column:is_anonymous"`          // 是否匿名
 	IsValid             bool   `gorm:"column:is_valid"`              // 是否有效，未被折叠
@@ -20,28 +20,28 @@ type CourseEvaluationModel struct {
 
 // 评论物理表
 type CommentModel struct {
-	Id              uint64 `gorm:"column:id; primary_key; AUTO_INCREMENT"`
-	UserId          uint64 `gorm:"column:user_id"`
-	ParentId        uint64 `gorm:"column:parent_id"`
-	CommentTargetId uint64 `gorm:"column:comment_target_id"`
+	Id              uint32 `gorm:"column:id; primary_key; AUTO_INCREMENT"`
+	UserId          uint32 `gorm:"column:user_id"`
+	ParentId        uint32 `gorm:"column:parent_id"`
+	CommentTargetId uint32 `gorm:"column:comment_target_id"`
 	Content         string `gorm:"column:content"`
-	LikeNum         uint64 `gorm:"column:like_num"`
+	LikeNum         uint32 `gorm:"column:like_num"`
 	IsRoot          bool   `gorm:"column:is_root"`
 	Time            string `gorm:"column:time"`
-	SubCommentNum   uint64 `gorm:"column:sub_comment_num"`
+	SubCommentNum   uint32 `gorm:"column:sub_comment_num"`
 }
 
 type EvaluationLikeModel struct {
-	Id           uint64 `gorm:"column:id; primary_key; AUTO_INCREMENT"`
-	EvaluationId uint64 `gorm:"column:evaluation_id"`
-	UserId       uint64 `gorm:"column:user_id"`
+	Id           uint32 `gorm:"column:id; primary_key; AUTO_INCREMENT"`
+	EvaluationId uint32 `gorm:"column:evaluation_id"`
+	UserId       uint32 `gorm:"column:user_id"`
 }
 
 // 评论点赞中间表
 type CommentLikeModel struct {
-	Id        uint64 `gorm:"column:id; primary_key; AUTO_INCREMENT"`
-	CommentId uint64 `gorm:"column:comment_id"`
-	UserId    uint64 `gorm:"column:user_id"`
+	Id        uint32 `gorm:"column:id; primary_key; AUTO_INCREMENT"`
+	CommentId uint32 `gorm:"column:comment_id"`
+	UserId    uint32 `gorm:"column:user_id"`
 }
 
 // 发布评课
@@ -68,8 +68,8 @@ type EvaluationInfo struct {
 	Time                string    `json:"time"`
 	IsAnonymous         bool      `json:"is_anonymous"`
 	IsLike              bool      `json:"is_like"`
-	LikeNum             uint64    `json:"like_num"`
-	CommentNum          uint64    `json:"comment_num"`
+	LikeNum             uint32    `json:"like_num"`
+	CommentNum          uint32    `json:"comment_num"`
 	Tags                []uint8   `json:"tags"`
 	UserInfo            *UserInfo `json:"user_info"`
 }
@@ -77,7 +77,7 @@ type EvaluationInfo struct {
 // 评论信息
 type CommentInfo struct {
 	Content           string    `json:"content"`
-	LikeNum           uint64    `json:"like_num"`
+	LikeNum           uint32    `json:"like_num"`
 	IsLike            bool      `json:"is_like"`
 	Time              string    `json:"time"`
 	UserInfo          *UserInfo `json:"user_info"`
@@ -92,12 +92,12 @@ type NewCommentRequest struct {
 
 // 返回的评论列表，一级评论模型
 type ParentCommentInfo struct {
-	CommentId       uint64         `json:"comment_id"`
+	CommentId       uint32         `json:"comment_id"`
 	Content         string         `json:"content"`
-	LikeNum         uint64         `json:"like_num"`
+	LikeNum         uint32         `json:"like_num"`
 	IsLike          bool           `json:"is_like"`
 	Time            string         `json:"time"`
 	UserInfo        *UserInfo      `json:"user_info"`
-	SubCommentsNum  uint64         `json:"sub_comments_num"`
+	SubCommentsNum  uint32         `json:"sub_comments_num"`
 	SubCommentsList *[]CommentInfo `json:"sub_comments_list"`
 }
