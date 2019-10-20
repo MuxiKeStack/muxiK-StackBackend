@@ -16,13 +16,13 @@ func Reply(c *gin.Context) {
 		handler.SendError(c, err, nil, err.Error())
 	}
 
-	userId := c.MustGet("sid").(uint64)
+	userId := c.MustGet("id").(uint32)
 	commentTargetId, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
 		handler.SendError(c, err, nil, err.Error())
 	}
 
-	newCommentId, err := model.NewComment(&data, commentTargetId, false, userId)
+	newCommentId, err := model.NewComment(&data, uint32(commentTargetId), false, userId)
 	if err != nil {
 		handler.SendError(c, err, nil, err.Error())
 	}

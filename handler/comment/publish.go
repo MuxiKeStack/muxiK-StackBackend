@@ -8,7 +8,7 @@ import (
 )
 
 type responseData struct {
-	EvaluationId uint64 `json:"evaluation_id"`
+	EvaluationId uint32 `json:"evaluation_id"`
 }
 
 // 发布评课
@@ -18,13 +18,16 @@ func Publish(c *gin.Context) {
 		handler.SendError(c, err, nil, err.Error())
 	}
 
-	userId := c.MustGet("sid").(uint64)
+	userId := c.MustGet("id").(uint32)
 	evaluationId, err := model.NewEvaluation(&data, userId)
 	if err != nil {
 		handler.SendError(c, err, nil, err.Error())
 	}
 
-	// 还有对课程的数据库操作
+	// 更新数据库中课程的评分信息
+	if err := model.UpdateCourseByEva(evaluationId, data.Rate); err != nil {
+		handler.SendError(c, err, nil, err.Error())
+	}
 
 	handler.SendResponse(c, nil, &responseData{EvaluationId: evaluationId})
 }

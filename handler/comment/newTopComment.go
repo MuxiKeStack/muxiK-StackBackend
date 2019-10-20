@@ -16,13 +16,13 @@ func CreateTopComment(c *gin.Context) {
 		handler.SendError(c, err, nil, err.Error())
 	}
 
-	userId := c.MustGet("sid").(uint64)
+	userId := c.MustGet("id").(uint32)
 	evaluationId, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
 		handler.SendError(c, err, nil, err.Error())
 	}
 
-	newCommentId, err := model.NewComment(&data, evaluationId, true, userId)
+	newCommentId, err := model.NewComment(&data, uint32(evaluationId), true, userId)
 	if err != nil {
 		handler.SendError(c, err, nil, err.Error())
 	}

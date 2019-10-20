@@ -32,7 +32,7 @@ func EvaluationPlayground(c *gin.Context) {
 		handler.SendError(c, err, nil, err.Error())
 	}
 
-	var userId uint64
+	var userId uint32
 	visitor := false
 	// 游客登录
 	if t := c.Request.Header.Get("token"); len(t) == 0 {
@@ -41,7 +41,7 @@ func EvaluationPlayground(c *gin.Context) {
 		if _, err := token.ParseRequest(c); err != nil {
 			handler.SendResponse(c, errno.ErrTokenInvalid, nil)
 		}
-		userId = c.MustGet("sid").(uint64)
+		userId = c.MustGet("id").(uint32)
 	}
 
 	list, err := model.GetLatestEvaluationList(lastId, size, userId, visitor)
