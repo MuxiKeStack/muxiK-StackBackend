@@ -166,7 +166,7 @@ func LoginRequest(Sid, Password string) error {
 	}
 
 	if err := MakeAccountRequest(Sid, Password, params, &client); err != nil {
-		return errno.ErrPasswordIncorrect
+		return errno.ErrAuthFailed
 	}
 	return nil
 }
