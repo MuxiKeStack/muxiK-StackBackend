@@ -70,14 +70,14 @@ func GetUserInfoById(id uint32) (*UserInfo, error) {
 }
 
 // GetUserInfoBySid gets user information by Sid
-func GetUserInfoBySid(sid string) (*UserInfo, error) {
-	u, err := GetUserBySid(sid)
-	if err != nil {
-		return &UserInfo{}, nil
-	}
-	info := u.getInfo()
-	return info, nil
-}
+//func GetUserInfoBySid(sid string) (*UserInfo, error) {
+//	u, err := GetUserBySid(sid)
+//	if err != nil {
+//		return &UserInfo{}, nil
+//	}
+//	info := u.getInfo()
+//	return info, nil
+//}
 
 // UpdateInfoById update user information by Id
 func UpdateInfoById(id uint32, info *UserInfo) error {
