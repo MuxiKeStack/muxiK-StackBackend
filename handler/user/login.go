@@ -23,7 +23,7 @@ func Login(c *gin.Context) {
 	// Compare the login password with the user password.
 	// 业务逻辑异常，使用 SendResponse 发送 200 请求 + 自定义错误码
 	if err := util.LoginRequest(l.Sid, l.Password); err != nil {
-		SendResponse(c, errno.ErrPasswordIncorrect, nil)
+		SendResponse(c, errno.ErrAuthFailed, nil)
 		return
 	}
 

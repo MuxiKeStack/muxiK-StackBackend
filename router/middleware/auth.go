@@ -13,7 +13,7 @@ func AuthMiddleware() gin.HandlerFunc {
 		// Parse the json web token.
 		ctx, err := token.ParseRequest(c)
 		if err != nil {
-			handler.SendResponse(c, errno.ErrTokenInvalid, nil)
+			handler.SendUnauthorized(c, errno.ErrTokenInvalid, nil, err.Error())
 			c.Abort()
 			return
 		}

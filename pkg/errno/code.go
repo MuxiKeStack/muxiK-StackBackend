@@ -11,13 +11,12 @@ var (
 	ErrToken      = &Errno{Code: 20003, Message: "Error occurred while signing the JSON web token."}
 
 	// Auth errors
-	ErrAuthFailed        = &Errno{Code: 20101, Message: "The sid or password was incorrect."}
-	ErrPasswordIncorrect = &Errno{Code: 20102, Message: "The password was incorrect."}
+	ErrAuthFailed   = &Errno{Code: 20101, Message: "The sid or password was incorrect."}
+	ErrTokenInvalid = &Errno{Code: 20102, Message: "The token was invalid."}
 
 	// user errors
 	ErrCreateUser   = &Errno{Code: 20201, Message: "Error in creating user."}
 	ErrUpdateUser   = &Errno{Code: 20202, Message: "Error in updating user"}
 	ErrUserNotFound = &Errno{Code: 20203, Message: "The user was not found."}
-	ErrTokenInvalid = &Errno{Code: 20204, Message: "The token was invalid."}
-	ErrGetUserInfo  = &Errno{Code: 20205, Message: "Error in getting user info"}
+	ErrGetUserInfo  = &Errno{Code: 20204, Message: "Error in getting user info"}
 )

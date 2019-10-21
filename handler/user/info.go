@@ -20,7 +20,7 @@ func PostInfo(c *gin.Context) {
 	}
 	id, _ := c.Get("id")
 	if err := model.UpdateInfoById(id.(uint32), &info); err != nil {
-		SendBadRequest(c, errno.ErrUpdateUser, nil, err.Error())
+		SendError(c, errno.ErrUpdateUser, nil, err.Error())
 		return
 	}
 	SendResponse(c, errno.OK, nil)
