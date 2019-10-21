@@ -49,7 +49,7 @@ func GetComments(c *gin.Context) {
 		userId = c.MustGet("id").(uint32)
 	}
 
-	list, count, err := model.GetCommentList(uint32(id), lastId, size, userId, visitor)
+	list, count, err := model.GetCommentList(uint32(id), int32(lastId), int32(size), userId, visitor)
 	if err != nil {
 		handler.SendError(c, err, nil, err.Error())
 	}

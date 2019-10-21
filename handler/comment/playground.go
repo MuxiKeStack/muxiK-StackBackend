@@ -44,7 +44,7 @@ func EvaluationPlayground(c *gin.Context) {
 		userId = c.MustGet("id").(uint32)
 	}
 
-	list, err := model.GetLatestEvaluationList(lastId, size, userId, visitor)
+	list, err := model.GetLatestEvaluationList(int32(lastId), int32(size), userId, visitor)
 	if err != nil {
 		handler.SendError(c, err, nil, err.Error())
 	}
