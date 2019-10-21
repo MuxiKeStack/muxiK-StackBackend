@@ -1637,7 +1637,7 @@ definitions:
           avatar:
             type: string
             description: 头像
-      comment_target_info:
+      target_user_info:
         type: object
         description: 评课对象信息
         properties:
