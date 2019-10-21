@@ -58,6 +58,7 @@ type EvaluationPublish struct {
 
 // 评课信息
 type EvaluationInfo struct {
+	Id                  uint32    `json:"id"`
 	CourseId            string    `json:"course_id"`
 	CourseName          string    `json:"course_name"`
 	Teacher             string    `json:"teacher"`
@@ -76,12 +77,12 @@ type EvaluationInfo struct {
 
 // 评论信息
 type CommentInfo struct {
-	Content           string    `json:"content"`
-	LikeNum           uint32    `json:"like_num"`
-	IsLike            bool      `json:"is_like"`
-	Time              string    `json:"time"`
-	UserInfo          *UserInfo `json:"user_info"`
-	CommentTargetInfo *UserInfo `json:"comment_target_info"`
+	Content        string    `json:"content"`
+	LikeNum        uint32    `json:"like_num"`
+	IsLike         bool      `json:"is_like"`
+	Time           string    `json:"time"`
+	UserInfo       *UserInfo `json:"user_info"`
+	TargetUserInfo *UserInfo `json:"target_user_info"`
 }
 
 // 新增评论请求模型
@@ -92,6 +93,7 @@ type NewCommentRequest struct {
 
 // 返回的评论列表，一级评论模型
 type ParentCommentInfo struct {
+	Id              uint32         `json:"id"`
 	CommentId       uint32         `json:"comment_id"`
 	Content         string         `json:"content"`
 	LikeNum         uint32         `json:"like_num"`

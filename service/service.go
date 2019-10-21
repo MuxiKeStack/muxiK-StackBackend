@@ -1,57 +1,133 @@
 package service
 
 import (
-	"fmt"
 	"sync"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
-	"github.com/MuxiKeStack/muxiK-StackBackend/util"
 )
 
-func ListUser(username string, offset, limit int) ([]*model.UserInfo, uint64, error) {
-	infos := make([]*model.UserInfo, 0)
-	users, count, err := model.ListUser(username, offset, limit)
+type EvaluationInfoList struct {
+	Lock  *sync.Mutex
+	IdMap map[uint32]*model.EvaluationInfo
+}
+
+type CommentInfoList struct {
+	Lock  *sync.Mutex
+	IdMap map[uint32]*model.ParentCommentInfo
+}
+
+func EvaluationList(lastId, size int32, userId uint32, visitor bool) (*[]model.EvaluationInfo, error)  {
+	evaluations, err := model.GetEvaluations(lastId, size)
 	if err != nil {
-		return nil, count, err
+		return nil, err
 	}
 
-	ids := []uint64{}
-	for _, user := range users {
-		ids = append(ids, user.Id)
+	var ids []uint32
+	for _, evaluation := range *evaluations {
+		ids = append(ids, evaluation.Id)
+	}
+
+	evaluationInfoList := EvaluationInfoList{
+		Lock:  new(sync.Mutex),
+		IdMap: make(map[uint32]*model.EvaluationInfo, len(*evaluations)),
 	}
 
 	wg := sync.WaitGroup{}
-	userList := model.UserList{
-		Lock:  new(sync.Mutex),
-		IdMap: make(map[uint64]*model.UserInfo, len(users)),
-	}
-
-	errChan := make(chan error, 1)
 	finished := make(chan bool, 1)
+	errChan := make(chan error, 1)
 
-	// Improve query efficiency in parallel
-	for _, u := range users {
+	for _, evaluation := range *evaluations {
 		wg.Add(1)
-		go func(u *model.UserModel) {
+		go func(evaluation *model.CourseEvaluationModel) {
 			defer wg.Done()
 
-			shortId, err := util.GenShortId()
+			data, err := evaluation.GetInfo(userId, visitor)
 			if err != nil {
 				errChan <- err
 				return
 			}
 
-			userList.Lock.Lock()
-			defer userList.Lock.Unlock()
-			userList.IdMap[u.Id] = &model.UserInfo{
-				Id:        u.Id,
-				Username:  u.Username,
-				SayHello:  fmt.Sprintf("Hello %s", shortId),
-				Password:  u.Password,
-				CreatedAt: u.CreatedAt.Format("2006-01-02 15:04:05"),
-				UpdatedAt: u.UpdatedAt.Format("2006-01-02 15:04:05"),
+			evaluationInfoList.Lock.Lock()
+			defer evaluationInfoList.Lock.Unlock()
+
+			evaluationInfoList.IdMap[data.Id] = data
+
+		}(&evaluation)
+	}
+
+	go func() {
+		wg.Wait()
+		close(finished)
+	}()
+
+	select {
+	case <-finished:
+	case err := <-errChan:
+		return nil, err
+	}
+
+	var infos []model.EvaluationInfo
+	for _, id := range ids {
+		infos = append(infos, *evaluationInfoList.IdMap[id])
+	}
+
+	return &infos, nil
+}
+
+func CommentList(evaluationId uint32, lastId, size int32, userId uint32, visitor bool) (*[]model.ParentCommentInfo, uint32, error) {
+	parentComments, count, err := model.GetParentComments(evaluationId, lastId, size)
+	if err != nil {
+		return nil, count, err
+	}
+
+	var parentIds []uint32
+	for _, comment := range *parentComments {
+		parentIds = append(parentIds, comment.Id)
+	}
+
+	parentCommentInfoList := CommentInfoList{
+		Lock:  new(sync.Mutex),
+		IdMap: make(map[uint32]*model.ParentCommentInfo, len(*parentComments)),
+	}
+
+	wg := sync.WaitGroup{}
+	errChan := make(chan error, 1)
+	finished := make(chan bool, 1)
+
+	for _, parentComment := range *parentComments {
+		wg.Add(1)
+		go func(parentComment *model.CommentModel) {
+			defer wg.Done()
+
+			var subCommentInfoList []model.CommentInfo
+			subComments, err := model.GetSubComments(parentComment.Id)
+			if err != nil {
+				errChan <- err
+				return
 			}
-		}(u)
+
+			// 优化：并发
+			for _, subComment := range *subComments {
+				info, err := subComment.GetInfo(userId, visitor)
+				if err != nil {
+					errChan <- err
+					return
+				}
+				subCommentInfoList = append(subCommentInfoList, *info)
+			}
+
+			parentCommentInfo, err := parentComment.GetParentCommentInfo(userId, visitor, &subCommentInfoList)
+			if err != nil {
+				errChan <- err
+				return
+			}
+
+			parentCommentInfoList.Lock.Lock()
+			defer parentCommentInfoList.Lock.Unlock()
+
+			parentCommentInfoList.IdMap[parentCommentInfo.Id] = parentCommentInfo
+
+		}(&parentComment)
 	}
 
 	go func() {
@@ -65,9 +141,10 @@ func ListUser(username string, offset, limit int) ([]*model.UserInfo, uint64, er
 		return nil, count, err
 	}
 
-	for _, id := range ids {
-		infos = append(infos, userList.IdMap[id])
+	var infos []model.ParentCommentInfo
+	for _, id := range parentIds {
+		infos = append(infos, *parentCommentInfoList.IdMap[id])
 	}
 
-	return infos, count, nil
+	return &infos, count, nil
 }
