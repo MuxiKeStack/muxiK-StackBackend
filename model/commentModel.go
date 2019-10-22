@@ -44,18 +44,6 @@ type CommentLikeModel struct {
 	UserId    uint32 `gorm:"column:user_id"`
 }
 
-// 发布评课
-type EvaluationPublish struct {
-	CourseId            string  `json:"course_id"`
-	CourseName          string  `json:"course_name"`
-	Rate                uint8   `json:"rate"`
-	AttendanceCheckType uint8   `json:"attendance_check_type"`
-	ExamCheckType       uint8   `json:"exam_check_type"`
-	Content             string  `json:"content"`
-	IsAnonymous         bool    `json:"is_anonymous"`
-	Tags                []uint8 `json:"tags"`
-}
-
 // 评课信息
 type EvaluationInfo struct {
 	Id                  uint32    `json:"id"`
@@ -77,6 +65,7 @@ type EvaluationInfo struct {
 
 // 评论信息
 type CommentInfo struct {
+	Id             uint32    `json:"id"`
 	Content        string    `json:"content"`
 	LikeNum        uint32    `json:"like_num"`
 	IsLike         bool      `json:"is_like"`

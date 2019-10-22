@@ -7,6 +7,7 @@ import (
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/token"
+	"github.com/MuxiKeStack/muxiK-StackBackend/service"
 
 	"github.com/gin-gonic/gin"
 )
@@ -49,7 +50,7 @@ func GetComments(c *gin.Context) {
 		userId = c.MustGet("id").(uint32)
 	}
 
-	list, count, err := model.GetCommentList(uint32(id), int32(lastId), int32(size), userId, visitor)
+	list, count, err := service.CommentList(uint32(id), int32(lastId), int32(size), userId, visitor)
 	if err != nil {
 		handler.SendError(c, err, nil, err.Error())
 	}

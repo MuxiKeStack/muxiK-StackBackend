@@ -2,6 +2,7 @@ package comment
 
 import (
 	"strconv"
+	"time"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
@@ -22,12 +23,22 @@ func CreateTopComment(c *gin.Context) {
 		handler.SendError(c, err, nil, err.Error())
 	}
 
-	newCommentId, err := model.NewComment(&data, uint32(evaluationId), true, userId)
-	if err != nil {
+	var comment = &model.CommentModel{
+		UserId:          userId,
+		ParentId:        0,
+		CommentTargetId: uint32(evaluationId),
+		Content:         data.Content,
+		LikeNum:         0,
+		IsRoot:          true,
+		Time:            strconv.FormatInt(time.Now().Unix(), 10),
+		SubCommentNum:   0,
+	}
+
+	if err := comment.New(); err != nil {
 		handler.SendError(c, err, nil, err.Error())
 	}
 
-	commentInfo, err := model.GetCommentInfo(newCommentId, userId)
+	commentInfo, err := comment.GetInfo(userId, false)
 	if err != nil {
 		handler.SendError(c, err, nil, err.Error())
 	}

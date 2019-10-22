@@ -1,6 +1,7 @@
 package comment
 
 import (
+	"errors"
 	"strconv"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
@@ -9,12 +10,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type commentLikeResponse struct {
+type likeDataResponse struct {
 	IsLike  bool
 	LikeNum uint32
 }
 
-type likeResponse struct {
+type likeDataRequest struct {
 	IsLike bool
 }
 
@@ -26,23 +27,50 @@ func UpdateEvaluationLike(c *gin.Context) {
 		handler.SendError(c, err, nil, err.Error())
 	}
 
-	var d likeResponse
-	if err := c.BindJSON(&d); err != nil {
+	var bodyData likeDataRequest
+	if err := c.BindJSON(&bodyData); err != nil {
 		handler.SendError(c, err, nil, err.Error())
 	}
 
 	userId := c.MustGet("id").(uint32)
 
-	err = model.UpdateEvaluationLikeState(uint32(id), userId, d.IsLike)
+	var evaluation = &model.CourseEvaluationModel{Id: uint32(id)}
+	hasLiked := evaluation.HasLiked(userId)
 
-	data := &commentLikeResponse{
-		IsLike:  model.GetEvaluationLikeState(uint32(id), userId),
-		LikeNum: model.GetEvaluationLikeNum(uint32(id)),
+	// 取消点赞
+	if bodyData.IsLike {
+		if !hasLiked {
+			err = errors.New("Has not liked yet. ")
+			handler.SendResponse(c, err, nil)
+		}
+		err = evaluation.CancelLiking(userId)
+		if err != nil {
+			handler.SendError(c, err, nil, err.Error())
+		}
+		err = evaluation.UpdateLikeNum(-1)
+		if err != nil {
+			handler.SendError(c, err, nil, err.Error())
+		}
+	} else {
+		// 点赞
+
+		if hasLiked {
+			err = errors.New("Has already liked. ")
+			handler.SendResponse(c, err, nil)
+		}
+		err = evaluation.Like(userId)
+		if err != nil {
+			handler.SendError(c, err, nil, err.Error())
+		}
+		err = evaluation.UpdateLikeNum(1)
+		if err != nil {
+			handler.SendError(c, err, nil, err.Error())
+		}
 	}
 
-	// 数据库的点赞状态和请求的点赞状态相冲突
-	if err != nil {
-		handler.SendResponse(c, err, data)
+	data := &likeDataResponse{
+		IsLike:  !hasLiked,
+		LikeNum: evaluation.LikeNum,
 	}
 
 	handler.SendResponse(c, nil, data)
