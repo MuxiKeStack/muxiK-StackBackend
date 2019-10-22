@@ -652,18 +652,15 @@ paths:
           description: 游客登录则不需要此字段或为空
           type: string
         - in: query
-          name: pageNum
-          required: true
-          type: string
-        - in: query
           name: pageSize
           required: true
-          type: string
+          description: 期望的评课数量
+          type: integer
         - in: query
           name: lastEvaluationId
           required: true
-          description: 上一页请求的最后一个评课的id
-          type: string
+          description: 上一次请求的最后一个评课的id，若是初始请求则为-1
+          type: integer
       responses:
         "200":
           description: OK
@@ -843,6 +840,7 @@ paths:
         - in: header
           name: token
           required: false
+          description: 游客登录则不需要此字段或为空
           type: string
         - in: path
           name: id
@@ -850,18 +848,15 @@ paths:
           description: 评课id
           type: string
         - in: query
-          name: pageNum
-          required: true
-          type: string
-        - in: query
           name: pageSize
           required: true
-          type: string
+          description: 期望的一级评论数量
+          type: integer
         - in: query
           name: lastCommentId
           required: true
-          description: 上一页请求的最后一个评课的id
-          type: string
+          description: 上一次请求的最后一个一级评论的id，若是第一页（初始请求）则为-1
+          type: integer
       responses:
         "200":
           description: OK
@@ -885,6 +880,9 @@ paths:
                       type: object
                       description: 父评论内容
                       properties:
+                        id:
+                          type: integer
+                          description: 评课id
                         comment_id:
                           type: integer
                           description: 评论id
@@ -1562,6 +1560,9 @@ definitions:
     type: object
     description: 返回的评课信息模型
     properties:
+      id:
+        type: integer
+        description: 评课id
       course_id:
         type: string
       course_name:
@@ -1616,6 +1617,9 @@ definitions:
     type: object
     description: 评论信息
     properties:
+      id:
+        type: integer
+        description: 评论id
       content:
         type: string
         description: 评论内容
