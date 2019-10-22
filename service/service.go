@@ -11,9 +11,14 @@ type EvaluationInfoList struct {
 	IdMap map[uint32]*model.EvaluationInfo
 }
 
-type CommentInfoList struct {
+type ParentCommentInfoList struct {
 	Lock  *sync.Mutex
 	IdMap map[uint32]*model.ParentCommentInfo
+}
+
+type SubCommentInfoList struct {
+	Lock  *sync.Mutex
+	IdMap map[uint32]*model.CommentInfo
 }
 
 func EvaluationList(lastId, size int32, userId uint32, visitor bool) (*[]model.EvaluationInfo, error)  {
@@ -85,38 +90,78 @@ func CommentList(evaluationId uint32, lastId, size int32, userId uint32, visitor
 		parentIds = append(parentIds, comment.Id)
 	}
 
-	parentCommentInfoList := CommentInfoList{
+	parentCommentInfoList := ParentCommentInfoList{
 		Lock:  new(sync.Mutex),
 		IdMap: make(map[uint32]*model.ParentCommentInfo, len(*parentComments)),
 	}
 
-	wg := sync.WaitGroup{}
+	var wg1, wg2 *sync.WaitGroup
 	errChan := make(chan error, 1)
 	finished := make(chan bool, 1)
 
+	// 优化：并发
 	for _, parentComment := range *parentComments {
-		wg.Add(1)
+		wg1.Add(1)
 		go func(parentComment *model.CommentModel) {
-			defer wg.Done()
+			defer wg1.Done()
 
-			var subCommentInfoList []model.CommentInfo
 			subComments, err := model.GetSubComments(parentComment.Id)
 			if err != nil {
 				errChan <- err
 				return
 			}
 
-			// 优化：并发
-			for _, subComment := range *subComments {
-				info, err := subComment.GetInfo(userId, visitor)
-				if err != nil {
-					errChan <- err
-					return
-				}
-				subCommentInfoList = append(subCommentInfoList, *info)
+			var subCommentIds []uint32
+			for _, comment := range *subComments {
+				subCommentIds = append(subCommentIds, comment.Id)
 			}
 
-			parentCommentInfo, err := parentComment.GetParentCommentInfo(userId, visitor, &subCommentInfoList)
+			subCommentInfoList := SubCommentInfoList{
+				Lock:  new(sync.Mutex),
+				IdMap: make(map[uint32]*model.CommentInfo, len(*subComments)),
+			}
+
+			errChan2 := make(chan error, 1)
+			finished := make(chan bool, 1)
+
+			// 优化：并发
+			for _, subComment := range *subComments {
+				wg2.Add(1)
+				go func(subComment *model.CommentModel) {
+					defer wg2.Done()
+
+					info, err := subComment.GetInfo(userId, visitor)
+					if err != nil {
+						errChan2 <- err
+						return
+					}
+
+					subCommentInfoList.Lock.Lock()
+					defer subCommentInfoList.Lock.Unlock()
+
+					subCommentInfoList.IdMap[info.Id] = info
+
+				}(&subComment)
+			}
+
+			go func() {
+				wg2.Wait()
+				close(finished)
+			}()
+
+			select {
+			case <-finished:
+			case err := <-errChan2:
+				errChan <- err
+				return
+			}
+
+			var subCommentInfos []model.CommentInfo
+			for _, id := range subCommentIds {
+				subCommentInfos = append(subCommentInfos, *subCommentInfoList.IdMap[id])
+			}
+
+			parentCommentInfo, err := parentComment.GetParentCommentInfo(userId, visitor, &subCommentInfos)
 			if err != nil {
 				errChan <- err
 				return
@@ -131,7 +176,7 @@ func CommentList(evaluationId uint32, lastId, size int32, userId uint32, visitor
 	}
 
 	go func() {
-		wg.Wait()
+		wg1.Wait()
 		close(finished)
 	}()
 

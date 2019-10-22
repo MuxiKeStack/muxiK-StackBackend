@@ -2,60 +2,77 @@ package model
 
 import (
 	"errors"
-	"strconv"
-	"time"
 )
 
-/*--------------- Course Evaluation Operation -------------*/
+/*---------------------- Course Evaluation Operation ---------------------*/
 
-// 新增评课
-func NewEvaluation(data *EvaluationPublish, userId uint32) (uint32, error) {
-	tagStr := TagArrayToStr(data.Tags)
-
-	newEvaluation := &CourseEvaluationModel{
-		CourseId:            data.CourseId,
-		CourseName:          data.CourseName,
-		Rate:                data.Rate,
-		AttendanceCheckType: data.AttendanceCheckType,
-		ExamCheckType:       data.ExamCheckType,
-		Content:             data.Content,
-		IsAnonymous:         data.IsAnonymous,
-		UserId:              userId,
-		Tags:                tagStr,
-		LikeNum:             0,
-		CommentNum:          0,
-		IsValid:             true,
-		Time:                strconv.FormatInt(time.Now().Unix(), 10),
-	}
-
-	DB.Self.NewRecord(newEvaluation)
-
-	id, _ := getLastInsertId()
-
-	// 错误情况，未能获取id
-
-	return id, nil
+// Create new course evaluation.
+func (evaluation *CourseEvaluationModel) New() error {
+	d := DB.Self.Create(evaluation)
+	return d.Error
 }
 
-// 获取评课详情
-func GetEvaluationInfo(id, userId uint32, visitor bool) (*EvaluationInfo, error) {
-	var evaluation CourseEvaluationModel
-	DB.Self.Find(&evaluation, "id = ?", id)
-
-	data, err := evaluationSQLDataToResponseInfo(&evaluation, userId, visitor)
-	if err != nil {
-		return &EvaluationInfo{}, err
-	}
-
-	return data, nil
+// Delete course evaluation.
+func (evaluation *CourseEvaluationModel) Delete() error {
+	d := DB.Self.Delete(&evaluation)
+	return d.Error
 }
 
-// 评课表数据转换为返回的评课信息数据
-func evaluationSQLDataToResponseInfo(e *CourseEvaluationModel, userId uint32, visitor bool) (*EvaluationInfo, error) {
+// Judge whether a course evaluation has already liked by the current user.
+func (evaluation *CourseEvaluationModel) HasLiked(userId uint32) bool {
+	var data = &EvaluationLikeModel{
+		EvaluationId: evaluation.Id,
+		UserId:       userId,
+	}
+	var count int
+	DB.Self.Find(data).Count(&count)
+	return count > 0
+}
+
+// Like a course evaluation by the current user.
+func (evaluation *CourseEvaluationModel) Like(userId uint32) error {
+	var data = &EvaluationLikeModel{
+		EvaluationId: evaluation.Id,
+		UserId:       userId,
+	}
+	//if evaluation.HasLiked(userId) {
+	//	return errors.New("Has already liked. ")
+	//}
+	d := DB.Self.Create(data)
+	return d.Error
+}
+
+// Cancel liking a course evaluation by the current user.
+func (evaluation *CourseEvaluationModel) CancelLiking(userId uint32) error {
+	var data = &EvaluationLikeModel{
+		EvaluationId: evaluation.Id,
+		UserId:       userId,
+	}
+	//if !evaluation.HasLiked(userId) {
+	//	return errors.New("Has not liked yet. ")
+	//}
+	d := DB.Self.Delete(data)
+	return d.Error
+}
+
+// Update liked number of a course evaluation after liking or canceling it.
+func (evaluation *CourseEvaluationModel) UpdateLikeNum(num int) error {
+	likeNum := int(evaluation.LikeNum)
+	if likeNum == 0 {
+		return nil
+	}
+	likeNum += num
+	evaluation.LikeNum = uint32(likeNum)
+	d := DB.Self.Save(evaluation)
+	return d.Error
+}
+
+// Get the response data information of a course evaluation.
+func (evaluation *CourseEvaluationModel) GetInfo(userId uint32, visitor bool) (*EvaluationInfo, error) {
 	var err error
 	var u = &UserInfo{}
-	if !e.IsAnonymous {
-		u, err = GetUserInfoById(e.UserId)
+	if !evaluation.IsAnonymous {
+		u, err = GetUserInfoById(evaluation.UserId)
 		if err != nil {
 			return &EvaluationInfo{}, err
 		}
@@ -63,205 +80,142 @@ func evaluationSQLDataToResponseInfo(e *CourseEvaluationModel, userId uint32, vi
 
 	// 获取教师名
 	course := &UsingCourseModel{}
-	DB.Self.Find(course, "hash = ?", e.CourseId)
+	DB.Self.First(course, "hash = ?", evaluation.CourseId)
 
-	var data = &EvaluationInfo{
-		CourseId:            e.CourseId,
-		CourseName:          e.CourseName,
+	var isLike = false
+	if !visitor {
+		isLike = evaluation.HasLiked(userId)
+	}
+
+	var info = &EvaluationInfo{
+		Id:                  evaluation.Id,
+		CourseId:            evaluation.CourseId,
+		CourseName:          evaluation.CourseName,
 		Teacher:             course.Teacher,
-		Rate:                e.Rate,
-		AttendanceCheckType: e.AttendanceCheckType,
-		ExamCheckType:       e.ExamCheckType,
-		Content:             e.Content,
-		Time:                e.Time,
-		IsAnonymous:         e.IsAnonymous,
-		IsLike:              false,
-		LikeNum:             e.LikeNum,
-		CommentNum:          e.CommentNum,
-		Tags:                TagStrToArray(e.Tags),
+		Rate:                evaluation.Rate,
+		AttendanceCheckType: evaluation.AttendanceCheckType,
+		ExamCheckType:       evaluation.ExamCheckType,
+		Content:             evaluation.Content,
+		Time:                evaluation.Time,
+		IsAnonymous:         evaluation.IsAnonymous,
+		IsLike:              isLike,
+		LikeNum:             evaluation.LikeNum,
+		CommentNum:          evaluation.CommentNum,
+		Tags:                TagStrToArray(evaluation.Tags),
 		UserInfo:            u,
 	}
-	if !visitor {
-		data.IsLike = GetEvaluationLikeState(e.Id, userId)
-	}
-
-	return data, nil
+	return info, nil
 }
 
-// 获取最新的评课列表
-func GetLatestEvaluationList(lastId, size int32, userId uint32, visitor bool) (*[]EvaluationInfo, error) {
-	var result []EvaluationInfo
-	var data []CourseEvaluationModel
+// Get course evaluations.
+func GetEvaluations(lastId, size int32) (*[]CourseEvaluationModel, error) {
+	var evaluations *[]CourseEvaluationModel
 	if lastId != -1 {
-		DB.Self.Where("id < ?", lastId).Order("id desc").Find(&data).Limit(size)
+		DB.Self.Where("id < ?", lastId).Order("id desc").Find(evaluations).Limit(size)
 	} else {
-		DB.Self.Order("id desc").Find(&data).Limit(size)
+		DB.Self.Order("id desc").Find(evaluations).Limit(size)
 	}
 
-	// 待优化：并发
-	for _, e := range data {
-		d, err := evaluationSQLDataToResponseInfo(&e, userId, visitor)
+	return evaluations, nil
+}
+
+// Get course evaluation by evaluationId.
+func GetEvaluationById(id uint32) (*CourseEvaluationModel, error) {
+	var evaluation CourseEvaluationModel
+	d := DB.Self.First(&evaluation, "id = ?", id)
+	return &evaluation, d.Error
+}
+
+/*---------------------------- Comment Operation --------------------------*/
+
+// Create new comment.
+func (comment *CommentModel) New() error {
+	if comment.IsRoot {
+		comment.ParentId = 0
+	} else {
+		parentId, err := GetParentIdByCommentTargetId(comment.CommentTargetId)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		result = append(result, *d)
+		comment.ParentId = parentId
 	}
 
-	return &result, nil
+	d := DB.Self.Create(comment)
+	return d.Error
 }
 
-// 删除评课
-func DeleteEvaluation(id, userId uint32) error {
-	var e CourseEvaluationModel
-	DB.Self.Find(&e, "id = ?", id)
-
-	if e.UserId != userId {
-		return errors.New("Permission denied ")
+// Judge whether a comment has already liked by the current user.
+func (comment *CommentModel) HasLiked(userId uint32) bool {
+	var data = &CommentLikeModel{
+		CommentId: comment.Id,
+		UserId:    userId,
 	}
-	DB.Self.Delete(&e)
-	return nil
+	var count int
+	DB.Self.Find(data).Count(&count)
+	return count > 0
 }
 
-// 修改评课点赞状态
-func UpdateEvaluationLikeState(id, userId uint32, like bool) error {
-	d := &EvaluationLikeModel{
-		EvaluationId: id,
-		UserId:       userId,
+// Like a comment by the current user.
+func (comment *CommentModel) Like(userId uint32) error {
+	var data = &CommentLikeModel{
+		CommentId: comment.Id,
+		UserId:    userId,
 	}
-	var count uint32
-	DB.Self.Find(d).Count(&count)
-
-	// 点赞
-	if !like {
-		// 检查是否含有记录
-		if count != 0 {
-			return errors.New("Have liked already. ")
-		}
-		// 添加点赞记录
-		DB.Self.Create(d)
-		updateEvaluationLikeNum(id, 1)
-	} else {
-		if count == 0 {
-			return errors.New("Have not liked. ")
-		}
-		// 删除记录
-		DB.Self.Delete(d)
-		updateEvaluationLikeNum(id, -1)
+	if comment.HasLiked(userId) {
+		return errors.New("Have already liked ")
 	}
-
-	return nil
+	d := DB.Self.Create(data)
+	return d.Error
 }
 
-// 获取评课点赞状态
-func GetEvaluationLikeState(id, userId uint32) bool {
-	var data EvaluationLikeModel
-	DB.Self.Where("user_id = ? AND evaluation_id = ?", userId, id).Find(&data)
-	if data.Id != 0 {
-		return true
+// Cancel liking a course evaluation by the current user.
+func (comment *CommentModel) CancelLiking(userId uint32) error {
+	var data = &CommentLikeModel{
+		CommentId: comment.Id,
+		UserId:    userId,
 	}
-	return false
+	if !comment.HasLiked(userId) {
+		return errors.New("Have not liked ")
+	}
+	d := DB.Self.Delete(data)
+	return d.Error
 }
 
-// 获取评课点赞数
-func GetEvaluationLikeNum(id uint32) uint32 {
-	var count uint32
-	DB.Self.Where("id = ?", id).Find(&CourseEvaluationModel{}).Count(&count)
-
-	return count
+// Update liked number of a comment after liking or canceling it.
+func (comment *CommentModel) UpdateLikeNum(num int) error {
+	likeNum := int(comment.LikeNum)
+	if likeNum == 0 {
+		return nil
+	}
+	likeNum += num
+	comment.LikeNum = uint32(likeNum)
+	d := DB.Self.Save(comment)
+	return d.Error
 }
 
-// 修改评课点赞数
-func updateEvaluationLikeNum(id uint32, num int8) uint32 {
-	var d = &CourseEvaluationModel{}
-	DB.Self.Where("id = ?", id).Find(d)
-
-	if num < 0 {
-		if d.LikeNum < uint32(-num) {
-			d.LikeNum = 0
-		} else {
-			d.LikeNum -= uint32(-num)
-		}
-	} else {
-		d.LikeNum += uint32(num)
-	}
-	DB.Self.Save(d)
-
-	return d.LikeNum
-}
-
-/*--------------- Comment Operation -------------*/
-
-// 新增评论
-func NewComment(data *NewCommentRequest, id uint32, isRoot bool, userId uint32) (uint32, error) {
-	var newComment = &CommentModel{}
-	var newCommentId uint32
-
-	// 是否是评论评课
-	if isRoot {
-		newComment = &CommentModel{
-			UserId:          userId,
-			ParentId:        0,
-			CommentTargetId: id,
-			Content:         data.Content,
-			LikeNum:         0,
-			IsRoot:          true,
-			Time:            strconv.FormatInt(time.Now().Unix(), 10),
-			SubCommentNum:   0,
-		}
-
-		DB.Self.Create(newComment)
-	} else {
-		// 根据id查找父评论
-
-		parentId, err := getParentId(id)
-		if err != nil {
-			return 0, err
-		}
-		newComment = &CommentModel{
-			UserId:          userId,
-			ParentId:        parentId,
-			CommentTargetId: id,
-			Content:         data.Content,
-			LikeNum:         0,
-			IsRoot:          false,
-			Time:            strconv.FormatInt(time.Now().Unix(), 10),
-			SubCommentNum:   0,
-		}
-		DB.Self.Create(newComment)
-	}
-
-	newCommentId, _ = getLastInsertId()
-
-	// 错误情况，未能获取id
-
-	return newCommentId, nil
-}
-
-// 获取评论详情
-func GetCommentInfo(id, userId uint32) (*CommentInfo, error) {
-	var data = &CommentInfo{}
-	var c CommentModel
-
-	d := DB.Self.First(&c, "id = ?", id)
-	if d.Error != nil {
-		return nil, d.Error
-	}
-
-	commentUser, err := GetUserInfoById(c.UserId)
+// Get the response data information of a comment.
+func (comment *CommentModel) GetInfo(userId uint32, visitor bool) (*CommentInfo, error) {
+	commentUser, err := GetUserInfoById(comment.UserId)
 	if err != nil {
 		return nil, nil
 	}
 
-	targetUser, err := GetUserInfoById(c.CommentTargetId)
+	targetUser, err := GetUserInfoById(comment.CommentTargetId)
 	if err != nil {
 		return nil, nil
 	}
 
-	data = &CommentInfo{
-		Content:        c.Content,
-		LikeNum:        c.LikeNum,
-		IsLike:         GetCommentLikeState(id, userId),
-		Time:           c.Time,
+	var isLike = false
+	if !visitor {
+		isLike = comment.HasLiked(userId)
+	}
+
+	data := &CommentInfo{
+		Id:             comment.Id,
+		Content:        comment.Content,
+		LikeNum:        comment.LikeNum,
+		IsLike:         isLike,
+		Time:           comment.Time,
 		UserInfo:       commentUser,
 		TargetUserInfo: targetUser,
 	}
@@ -269,142 +223,81 @@ func GetCommentInfo(id, userId uint32) (*CommentInfo, error) {
 	return data, nil
 }
 
-// 获取评论列表
-func GetCommentList(id uint32, lastId, size int32, userId uint32, visitor bool) (*[]ParentCommentInfo, uint32, error) {
+// Get the response data information of a parentComment.
+func (comment *CommentModel) GetParentCommentInfo(userId uint32, visitor bool, subComments *[]CommentInfo) (*ParentCommentInfo, error)  {
+	userInfo, err := GetUserInfoById(comment.UserId)
+	if err != nil {
+		return nil, err
+	}
+
+	var isLike = false
+	if !visitor {
+		isLike = comment.HasLiked(userId)
+	}
+
+	info := &ParentCommentInfo{
+		CommentId:       comment.Id,
+		Content:         comment.Content,
+		LikeNum:         comment.LikeNum,
+		IsLike:          isLike,
+		Time:            comment.Time,
+		UserInfo:        userInfo,
+		SubCommentsNum:  comment.SubCommentNum,
+		SubCommentsList: subComments,
+	}
+	return info, nil
+}
+
+// Get parentComments by evaluationId.
+func GetParentComments(EvaluationId uint32, lastId, size int32) (*[]CommentModel, uint32, error) {
 	var count uint32
-	var list []ParentCommentInfo
-	var data []CommentModel
+	var comments []CommentModel
 
 	if lastId != -1 {
-		DB.Self.Where("is_root = ? AND comment_target_id = ?", true, id).
-			Find(&data).Count(&count).Limit(size)
+		DB.Self.Where("is_root = ? AND comment_target_id = ?", true, EvaluationId).
+			Find(&comments).Count(&count).Limit(size)
 	} else {
-		DB.Self.Where("id < ? AND is_root = ? AND comment_target_id = ?", lastId, true, id).
-			Find(&data).Count(&count).Limit(size)
+		DB.Self.Where("id < ? AND is_root = ? AND comment_target_id = ?", lastId, true, EvaluationId).
+			Find(&comments).Count(&count).Limit(size)
 	}
 
-	// 优化：并发
-	for _, i := range data {
-		var subComments []CommentInfo
-		var comments []CommentModel
-		DB.Self.Find(&comments, "parent_id = ?", i.Id)
-
-		// 优化：并发
-		for _, k := range comments {
-			commentUser, err := GetUserInfoById(k.UserId)
-			if err != nil {
-				return nil, 0, err
-			}
-
-			targetUser, err := GetUserInfoById(k.CommentTargetId)
-			if err != nil {
-				return nil, 0, err
-			}
-
-			isLiked := false
-			if !visitor {
-				isLiked = GetCommentLikeState(i.Id, userId)
-			}
-
-			subComments = append(subComments, CommentInfo{
-				Content:        k.Content,
-				LikeNum:        k.LikeNum,
-				IsLike:         isLiked,
-				Time:           k.Time,
-				UserInfo:       commentUser,
-				TargetUserInfo: targetUser,
-			})
-		}
-
-		userInfo, err := GetUserInfoById(i.UserId)
-		if err != nil {
-			return nil, 0, nil
-		}
-
-		isLiked := false
-		if !visitor {
-			isLiked = GetCommentLikeState(i.Id, userId)
-		}
-
-		list = append(list, ParentCommentInfo{
-			CommentId:       i.Id,
-			Content:         i.Content,
-			LikeNum:         i.LikeNum,
-			IsLike:          isLiked,
-			Time:            i.Time,
-			UserInfo:        userInfo,
-			SubCommentsNum:  i.SubCommentNum,
-			SubCommentsList: &subComments,
-		})
-	}
-
-	return &list, count, nil
+	return &comments, count, nil
 }
 
-// 修改评论点赞状态
-func UpdateCommentLikeState(id, userId uint32, like bool) error {
-	d := &CommentLikeModel{
-		CommentId: id,
-		UserId:    userId,
-	}
-	var count uint32
-	DB.Self.Find(d).Count(&count)
+// Get subComments by their parentId.
+func GetSubComments(ParentId uint32) (*[]CommentModel, error) {
+	var subComments []CommentModel
+	DB.Self.Find(&subComments, "parent_id = ?", ParentId)
+	return &subComments, nil
+}
 
-	// 点赞
-	if !like {
-		// 检查是否含有记录
-		if count != 0 {
-			return errors.New("Have liked already. ")
-		}
-		// 添加点赞记录
-		DB.Self.Create(d)
-		updateCommentLikeNum(id, 1)
-	} else {
-		if count == 0 {
-			return errors.New("Have not liked. ")
-		}
-		// 删除记录
-		DB.Self.Delete(d)
-		updateCommentLikeNum(id, -1)
-	}
+// Get a comment by its id.
+func GetCommentById(id uint32) (*CommentModel, error) {
+	var comment CommentModel
+	d := DB.Self.First(&comment, "id = ?", id)
+	return &comment, d.Error
+}
+
+// Get parentId by commentTargetId
+func GetParentIdByCommentTargetId(id uint32) (uint32, error) {
+	var data  CommentModel
+	d := DB.Self.Where("id = ?", id).First(&data)
+
+	return data.ParentId, d.Error
+}
+
+/*--------------- Course Operation -------------*/
+
+// 新增评课时更新课程的评课信息，先暂时放这里，避免冲突
+func UpdateCourseRateByEvaluation(id uint32, rate uint8) error {
+	var c UsingCourseModel
+	DB.Self.Find(&c, "id = ?", id)
+
+	c.Rate = (c.Rate*float32(c.StarsNum) + float32(rate)) / float32(c.StarsNum+1)
+	c.StarsNum++
+	DB.Self.Save(&c)
 
 	return nil
-}
-
-// 获取评论点赞状态
-func GetCommentLikeState(id, userId uint32) bool {
-	var data CommentLikeModel
-	var count int
-	DB.Self.Where("user_id = ? AND comment_id = ?", userId, id).Find(&data).Count(&count)
-
-	return count > 0
-}
-
-// 获取评论点赞数
-func GetCommentLikeNum(id uint32) uint32 {
-	var count uint32
-	DB.Self.Where("id = ?", id).Find(&CommentModel{}).Count(&count)
-
-	return count
-}
-
-// 修改评论数
-func updateCommentLikeNum(id uint32, num int8) uint32 {
-	var d = &CommentModel{}
-	DB.Self.Where("id = ?", id).Find(d)
-
-	if num < 0 {
-		if d.LikeNum < uint32(-num) {
-			d.LikeNum = 0
-		} else {
-			d.LikeNum -= uint32(-num)
-		}
-	} else {
-		d.LikeNum += uint32(num)
-	}
-	DB.Self.Save(d)
-
-	return d.LikeNum
 }
 
 /*--------------- Other Tools -------------*/
@@ -422,36 +315,4 @@ func getLastInsertId() (uint32, error) {
 		return 0, err
 	}
 	return id, nil
-}
-
-// 是否是一级评论
-func isTopComment(id uint32) bool {
-	var data CommentModel
-	DB.Self.First(&data, "id = ?", id)
-
-	// 还有数据不存在的情况
-
-	return data.IsRoot
-}
-
-// Get parentId by commentTargetId
-func getParentId(id uint32) (uint32, error) {
-	var data = new(CommentModel)
-	DB.Self.Where("id = ?", id).First(data)
-
-	// 还有数据不存在的情况
-
-	return data.ParentId, nil
-}
-
-// 新增评课时更新课程的评课信息，先暂时放这里，避免冲突
-func UpdateCourseByEva(id uint32, rate uint8) error {
-	var c UsingCourseModel
-	DB.Self.Find(&c, "id = ?", id)
-
-	c.Rate = (c.Rate*float32(c.StarsNum) + float32(rate)) / float32(c.StarsNum+1)
-	c.StarsNum++
-	DB.Self.Save(&c)
-
-	return nil
 }

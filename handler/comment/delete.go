@@ -1,6 +1,7 @@
 package comment
 
 import (
+	"errors"
 	"strconv"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
@@ -18,9 +19,15 @@ func Delete(c *gin.Context) {
 	}
 	userId := c.MustGet("id").(uint32)
 
-	err = model.DeleteEvaluation(uint32(id), userId)
+	evaluation, err := model.GetEvaluationById(uint32(id))
 	if err != nil {
 		handler.SendError(c, err, nil, err.Error())
 	}
+	if evaluation.UserId != userId {
+		err := errors.New("Permission denied ")
+		handler.SendError(c, err, nil, err.Error())
+	}
+	err = evaluation.Delete()
+
 	handler.SendResponse(c, nil, nil)
 }

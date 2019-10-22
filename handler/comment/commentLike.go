@@ -1,6 +1,7 @@
 package comment
 
 import (
+	"errors"
 	"strconv"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
@@ -16,21 +17,50 @@ func UpdateCommentLike(c *gin.Context) {
 		handler.SendError(c, err, nil, err.Error())
 	}
 
-	var d likeResponse
-	if err := c.BindJSON(&d); err != nil {
+	var bodyData likeDataRequest
+	if err := c.BindJSON(&bodyData); err != nil {
 		handler.SendError(c, err, nil, err.Error())
 	}
 
 	userId := c.MustGet("id").(uint32)
 
-	err = model.UpdateCommentLikeState(uint32(id), userId, d.IsLike)
-	if err != nil {
-		handler.SendError(c, err, nil, err.Error())
+	var comment = &model.CommentModel{Id: uint32(id)}
+	hasLiked := comment.HasLiked(userId)
+
+	// 取消点赞
+	if bodyData.IsLike {
+		if !hasLiked {
+			err = errors.New("Has not liked yet. ")
+			handler.SendResponse(c, err, nil)
+		}
+		err = comment.CancelLiking(userId)
+		if err != nil {
+			handler.SendError(c, err, nil, err.Error())
+		}
+		err = comment.UpdateLikeNum(-1)
+		if err != nil {
+			handler.SendError(c, err, nil, err.Error())
+		}
+	} else {
+		// 点赞
+
+		if hasLiked {
+			err = errors.New("Has already liked. ")
+			handler.SendResponse(c, err, nil)
+		}
+		err = comment.Like(userId)
+		if err != nil {
+			handler.SendError(c, err, nil, err.Error())
+		}
+		err = comment.UpdateLikeNum(1)
+		if err != nil {
+			handler.SendError(c, err, nil, err.Error())
+		}
 	}
 
-	data := &commentLikeResponse{
-		IsLike:  model.GetCommentLikeState(uint32(id), userId),
-		LikeNum: model.GetCommentLikeNum(uint32(id)),
+	data := &likeDataResponse{
+		IsLike:  !hasLiked,
+		LikeNum: comment.LikeNum,
 	}
 
 	handler.SendResponse(c, nil, data)

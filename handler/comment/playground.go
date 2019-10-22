@@ -1,6 +1,7 @@
 package comment
 
 import (
+	"github.com/MuxiKeStack/muxiK-StackBackend/service"
 	"strconv"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
@@ -19,7 +20,7 @@ type playgroundResponse struct {
 // 评课广场获取评课列表
 func EvaluationPlayground(c *gin.Context) {
 	pageSize := c.DefaultQuery("pageSize", "20")
-	size, err := strconv.ParseInt(pageSize, 10, 64)
+	size, err := strconv.ParseInt(pageSize, 10, 32)
 	if err != nil {
 		handler.SendError(c, err, nil, err.Error())
 	} else if size <= 0 {
@@ -27,14 +28,14 @@ func EvaluationPlayground(c *gin.Context) {
 	}
 
 	lastIdStr := c.DefaultQuery("lastEvaluationId", "-1")
-	lastId, err := strconv.ParseInt(lastIdStr, 10, 64)
+	lastId, err := strconv.ParseInt(lastIdStr, 10, 32)
 	if err != nil {
 		handler.SendError(c, err, nil, err.Error())
 	}
 
 	var userId uint32
 	visitor := false
-	// 游客登录
+	// 游客登录&用户登录
 	if t := c.Request.Header.Get("token"); len(t) == 0 {
 		visitor = true
 	} else {
@@ -44,7 +45,7 @@ func EvaluationPlayground(c *gin.Context) {
 		userId = c.MustGet("id").(uint32)
 	}
 
-	list, err := model.GetLatestEvaluationList(int32(lastId), int32(size), userId, visitor)
+	list, err := service.EvaluationList(int32(lastId), int32(size), userId, visitor)
 	if err != nil {
 		handler.SendError(c, err, nil, err.Error())
 	}
