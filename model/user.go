@@ -45,6 +45,13 @@ func HaveUser(sid string) uint8 {
 	return 0
 }
 
+// GetIdBySid gets a user id by user's sid
+func GetIdBySid(sid string) (uint32, error) {
+	u := &UserModel{}
+	d := DB.Self.Where("sid = ?", sid).First(&u)
+	return u.Id, d.Error
+}
+
 // GetUser gets an user by the student identifier.
 func GetUserBySid(sid string) (*UserModel, error) {
 	u := &UserModel{}
