@@ -70,7 +70,7 @@ func (evaluation *CourseEvaluationModel) UpdateLikeNum(num int) error {
 // Get the response data information of a course evaluation.
 func (evaluation *CourseEvaluationModel) GetInfo(userId uint32, visitor bool) (*EvaluationInfo, error) {
 	var err error
-	var u = &UserInfo{}
+	var u = &UserInfoResponse{}
 	if !evaluation.IsAnonymous {
 		u, err = GetUserInfoById(evaluation.UserId)
 		if err != nil {
@@ -224,7 +224,7 @@ func (comment *CommentModel) GetInfo(userId uint32, visitor bool) (*CommentInfo,
 }
 
 // Get the response data information of a parentComment.
-func (comment *CommentModel) GetParentCommentInfo(userId uint32, visitor bool, subComments *[]CommentInfo) (*ParentCommentInfo, error)  {
+func (comment *CommentModel) GetParentCommentInfo(userId uint32, visitor bool, subComments *[]CommentInfo) (*ParentCommentInfo, error) {
 	userInfo, err := GetUserInfoById(comment.UserId)
 	if err != nil {
 		return nil, err
@@ -280,7 +280,7 @@ func GetCommentById(id uint32) (*CommentModel, error) {
 
 // Get parentId by commentTargetId
 func GetParentIdByCommentTargetId(id uint32) (uint32, error) {
-	var data  CommentModel
+	var data CommentModel
 	d := DB.Self.Where("id = ?", id).First(&data)
 
 	return data.ParentId, d.Error

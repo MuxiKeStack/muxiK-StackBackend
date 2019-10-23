@@ -1,6 +1,9 @@
 package model
 
-import "strconv"
+import (
+	"strconv"
+	"strings"
+)
 
 // Get tag name
 func GetTagName(tagId uint64) string {
@@ -10,16 +13,20 @@ func GetTagName(tagId uint64) string {
 
 // Convert tags from string to array
 func TagStrToArray(s string) []uint8 {
-	var data []uint8
-
-	return data
+	var tagIds []uint8
+	tagsStr := strings.Split(s, ",")
+	for _, s := range tagsStr {
+		id, _ := strconv.Atoi(s)
+		tagIds = append(tagIds, uint8(id))
+	}
+	return tagIds
 }
 
 // Convert tags from array to string
-func TagArrayToStr(t []uint8) string {
+func TagArrayToStr(tagIds []uint8) string {
 	var s string
-	for _, i := range t {
-		s = strconv.FormatUint(uint64(i), 10) + ","
+	for _, id := range tagIds {
+		s = strconv.FormatUint(uint64(id), 10) + ","
 	}
 	return s
 }

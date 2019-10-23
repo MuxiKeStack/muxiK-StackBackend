@@ -46,32 +46,32 @@ type CommentLikeModel struct {
 
 // 评课信息
 type EvaluationInfo struct {
-	Id                  uint32    `json:"id"`
-	CourseId            string    `json:"course_id"`
-	CourseName          string    `json:"course_name"`
-	Teacher             string    `json:"teacher"`
-	Rate                uint8     `json:"rate"`
-	AttendanceCheckType uint8     `json:"attendance_check_type"`
-	ExamCheckType       uint8     `json:"exam_check_type"`
-	Content             string    `json:"content"`
-	Time                string    `json:"time"`
-	IsAnonymous         bool      `json:"is_anonymous"`
-	IsLike              bool      `json:"is_like"`
-	LikeNum             uint32    `json:"like_num"`
-	CommentNum          uint32    `json:"comment_num"`
-	Tags                []uint8   `json:"tags"`
-	UserInfo            *UserInfo `json:"user_info"`
+	Id                  uint32            `json:"id"`
+	CourseId            string            `json:"course_id"`
+	CourseName          string            `json:"course_name"`
+	Teacher             string            `json:"teacher"`
+	Rate                uint8             `json:"rate"`
+	AttendanceCheckType uint8             `json:"attendance_check_type"`
+	ExamCheckType       uint8             `json:"exam_check_type"`
+	Content             string            `json:"content"`
+	Time                string            `json:"time"`
+	IsAnonymous         bool              `json:"is_anonymous"`
+	IsLike              bool              `json:"is_like"`
+	LikeNum             uint32            `json:"like_num"`
+	CommentNum          uint32            `json:"comment_num"`
+	Tags                []uint8           `json:"tags"`
+	UserInfo            *UserInfoResponse `json:"user_info"`
 }
 
 // 评论信息
 type CommentInfo struct {
-	Id             uint32    `json:"id"`
-	Content        string    `json:"content"`
-	LikeNum        uint32    `json:"like_num"`
-	IsLike         bool      `json:"is_like"`
-	Time           string    `json:"time"`
-	UserInfo       *UserInfo `json:"user_info"`
-	TargetUserInfo *UserInfo `json:"target_user_info"`
+	Id             uint32            `json:"id"`
+	Content        string            `json:"content"`
+	LikeNum        uint32            `json:"like_num"`
+	IsLike         bool              `json:"is_like"`
+	Time           string            `json:"time"`
+	UserInfo       *UserInfoResponse `json:"user_info"`
+	TargetUserInfo *UserInfoResponse `json:"target_user_info"`
 }
 
 // 新增评论请求模型
@@ -82,13 +82,13 @@ type NewCommentRequest struct {
 
 // 返回的评论列表，一级评论模型
 type ParentCommentInfo struct {
-	Id              uint32         `json:"id"`
-	CommentId       uint32         `json:"comment_id"`
-	Content         string         `json:"content"`
-	LikeNum         uint32         `json:"like_num"`
-	IsLike          bool           `json:"is_like"`
-	Time            string         `json:"time"`
-	UserInfo        *UserInfo      `json:"user_info"`
-	SubCommentsNum  uint32         `json:"sub_comments_num"`
-	SubCommentsList *[]CommentInfo `json:"sub_comments_list"`
+	Id              uint32            `json:"id"`
+	CommentId       uint32            `json:"comment_id"`
+	Content         string            `json:"content"`
+	LikeNum         uint32            `json:"like_num"`
+	IsLike          bool              `json:"is_like"`
+	Time            string            `json:"time"`
+	UserInfo        *UserInfoResponse `json:"user_info"`
+	SubCommentsNum  uint32            `json:"sub_comments_num"`
+	SubCommentsList *[]CommentInfo    `json:"sub_comments_list"`
 }
