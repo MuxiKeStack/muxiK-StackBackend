@@ -15,8 +15,8 @@ import (
 var (
 	g           *gin.Engine
 	tokenString = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1NzE1ODEwMzMsImlkIjo0LCJuYmYiOjE1NzE1ODEwMzN9.KpY7KnvN7_6CIZU7_syxE70g0Qy-opq9W5QeBH9ZZrE"
-	password    string
-	sid         string
+	password    = "Yu@14796825550"
+	sid         = "2018212576"
 )
 
 func TestMain(m *testing.M) {
@@ -108,7 +108,7 @@ func TestLogin(t *testing.T) {
 func TestPostInfo(t *testing.T) {
 	g := getRouter(true)
 	uri := "api/v1/user/info"
-	info := CreatePostInfoRequest{model.UserInfo{
+	info := CreatePostInfoRequest{model.UserInfoRequest{
 		Username: "Bowser",
 		Avatar:   "https://www.gravatar.com/avatar/2af44a6505d5fa19f843ef83f1c61915?s=128&d=identicon",
 	}}

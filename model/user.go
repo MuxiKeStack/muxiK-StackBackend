@@ -9,17 +9,18 @@ func (u *UserModel) TableName() string {
 }
 
 // Update updates an user account information.
-func (u *UserModel) updateInfo(info *UserInfo) error {
+func (u *UserModel) updateInfo(info *UserInfoRequest) error {
 	u.Avatar = info.Avatar
 	u.Username = info.Username
 	return DB.Self.Save(u).Error
 }
 
 // Get user info
-func (u *UserModel) getInfo() *UserInfo {
-	info := UserInfo{
+func (u *UserModel) getInfo() *UserInfoResponse {
+	info := UserInfoResponse{
 		Username: u.Username,
 		Avatar:   u.Avatar,
+		Sid:      u.Sid,
 	}
 	return &info
 }
@@ -67,10 +68,10 @@ func GetUserById(id uint32) (*UserModel, error) {
 }
 
 // GetUserInfoById gets user information by userId.
-func GetUserInfoById(id uint32) (*UserInfo, error) {
+func GetUserInfoById(id uint32) (*UserInfoResponse, error) {
 	u, err := GetUserById(id)
 	if err != nil {
-		return &UserInfo{}, err
+		return &UserInfoResponse{}, err
 	}
 	info := u.getInfo()
 	return info, nil
@@ -87,7 +88,7 @@ func GetUserInfoById(id uint32) (*UserInfo, error) {
 //}
 
 // UpdateInfoById update user information by Id
-func UpdateInfoById(id uint32, info *UserInfo) error {
+func UpdateInfoById(id uint32, info *UserInfoRequest) error {
 	u, err := GetUserById(id)
 	if err != nil {
 		return err

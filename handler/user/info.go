@@ -13,7 +13,7 @@ import (
 // Update user info by token
 func PostInfo(c *gin.Context) {
 	log.Info("PostInfo function called.", lager.Data{"X-Request-Id": util.GetReqID(c)})
-	var info model.UserInfo
+	var info model.UserInfoRequest
 	if err := c.ShouldBindJSON(&info); err != nil {
 		SendBadRequest(c, errno.ErrBind, nil, err.Error())
 		return
@@ -35,8 +35,9 @@ func GetInfo(c *gin.Context) {
 		SendError(c, errno.ErrGetUserInfo, nil, err.Error())
 		return
 	}
-	SendResponse(c, errno.OK, model.UserInfo{
+	SendResponse(c, errno.OK, model.UserInfoResponse{
 		Username: info.Username,
 		Avatar:   info.Avatar,
+		Sid:      info.Sid,
 	})
 }

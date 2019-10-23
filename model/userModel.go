@@ -15,10 +15,17 @@ type UserModel struct {
 	IsBlocked uint8  `gorm:"column:is_blocked"`
 }
 
-// UserInfo represents a user's info
-type UserInfo struct {
+// UserInfoRequest represents a user's info for response
+type UserInfoRequest struct {
 	Username string `json:"username"`
 	Avatar   string `json:"avatar"`
+}
+
+// UserInfoResponse represents a user's info for request
+type UserInfoResponse struct {
+	Username string `json:"username"`
+	Avatar   string `json:"avatar"`
+	Sid      string `json:"sid"`
 }
 
 // AuthResponse represents a JSON web token.
