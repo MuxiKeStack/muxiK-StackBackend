@@ -9,7 +9,7 @@ type CreateLoginRequest struct {
 }
 
 type CreatePostInfoRequest struct {
-	model.UserInfo
+	model.UserInfoRequest
 }
 
 type LoginResponse struct {
@@ -19,7 +19,7 @@ type LoginResponse struct {
 }
 
 type InfoResponse struct {
-	Code    int            `json:"code"`
-	Message string         `json:"message"`
-	Data    model.UserInfo `json:"data"`
+	Code    int                    `json:"code"`
+	Message string                 `json:"message"`
+	Data    model.UserInfoResponse `json:"data"`
 }

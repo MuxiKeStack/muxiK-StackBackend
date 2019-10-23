@@ -118,7 +118,7 @@ paths:
           in: body
           required: true
           schema:
-            $ref: '#/definitions/user.UserInfo'
+            $ref: '#/definitions/user.UserInfoRequest'
         - name: token
           in: header
           required: true
@@ -1507,6 +1507,7 @@ definitions:
     required:
       - username
       - avatar
+      - sid
     properties:
       username:
         type: string
@@ -1514,7 +1515,21 @@ definitions:
       avatar:
         type: string
         description: the avatar of user
+      sid:
+        type: string
+        description: student's id
 
+  user.UserInfoRequest:
+    required:
+      - username
+      - avatar
+    properties:
+      username:
+        type: string
+        description: the name of user.
+      avatar:
+        type: string
+        description: the avatar of user
   user.UserInfoResponse:
     properties:
       code:
