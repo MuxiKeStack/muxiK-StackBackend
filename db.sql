@@ -43,6 +43,8 @@ CREATE TABLE `comment` (
   `like_num`          INT          NOT NULL DEFAULT 0 COMMENT "点赞数",
   `is_root`           TINYINT(1)   NOT NULL DEFAULT 0 COMMENT "是否是一级评论",
   `sub_comment_num`   INT          NOT NULL DEFAULT 0 COMMENT "子评论数",
+  `is_anonymous`      TINYINT(1)   NOT NULL DEFAULT 0 COMMENT "是否匿名",
+  `is_valid`          TINYINT(1)            DEFAULT 1 COMMENT "是否有效，未被折叠",
 
   `user_id`           INT          NOT NULL,
   `parent_id`         INT          NOT NULL,
@@ -77,7 +79,8 @@ CREATE TABLE `comment_like` (
 CREATE TABLE `class_table` (
   `id`      INT unsigned NOT NULL AUTO_INCREMENT,
   `user_id` INT          NOT NULL,
-  `courses` TEXT         NOT NULL COMMENT "课程 hash 列表，逗号分隔",
+  `name`    VARCHAR(20)  NOT NULL DEFAULT "课表",
+  `classes` TEXT         NOT NULL COMMENT "课堂 hash 列表，逗号分隔",
 
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`)
