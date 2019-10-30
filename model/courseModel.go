@@ -30,7 +30,7 @@ type UsingCourseModel struct {
 	Place2        string  `gorm:"column:place2"`            //上课地点2
 	Time3         string  `gorm:"column:time3"`             //上课时间3
 	Place3        string  `gorm:"column:place3"`            //上课地点3
-	Weeks         uint8   `gorm:"column:weeks"`             //上课周数
+	Weeks         string   `gorm:"column:weeks"`            //上课周数
 	Region        uint8   `gorm:"column:region"`            //上课地区，南湖，东区，西区。加索引（筛选条件）
 }
 
@@ -59,6 +59,6 @@ type UsingCourseInfo struct {
 	Place2        string
 	Time3         string
 	Place3        string
-	Weeks         uint8
+	Weeks         string
 	Region        uint8
 }
