@@ -898,6 +898,9 @@ paths:
                         time:
                           type: string
                           description: 评课时间（时间戳）
+                        is_anonymous:
+                          type: boolean
+                          description: 是否匿名
                         user_info:
                           type: object
                           description: 评论用户的信息
@@ -1347,10 +1350,16 @@ paths:
           required: true
           description: 课表id
           type: string
-        - in: query
-          name: classId
+        - in: body
+          name: data
           required: true
-          type: string
+          schema:
+            type: object
+            properties:
+              courseId:
+                type: string
+              classId:
+                type: integer
       responses:
         "200":
           description: OK
@@ -1395,10 +1404,16 @@ paths:
           required: true
           description: 课表id
           type: string
-        - in: query
-          name: classId
+        - in: body
+          name: data
           required: true
-          type: string
+          schema:
+            type: object
+            properties:
+              courseId:
+                type: string
+              classId:
+                type: integer
       responses:
         "200":
           description: OK
@@ -1632,6 +1647,9 @@ definitions:
       time:
         type: string
         description: 评课时间（时间戳）
+      is_anonymous:
+        type: boolean
+        description: 是否匿名
       user_info:
         type: object
         description: 用户信息
