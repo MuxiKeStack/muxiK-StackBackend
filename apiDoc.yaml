@@ -118,7 +118,7 @@ paths:
           in: body
           required: true
           schema:
-            $ref: '#/definitions/user.UserInfoRequest'
+            $ref: '#/definitions/user.UserInfo'
         - name: token
           in: header
           required: true
@@ -1395,7 +1395,7 @@ paths:
           required: true
           description: 课表id
           type: string
-        - in: path
+        - in: query
           name: classId
           required: true
           type: string
@@ -1507,7 +1507,6 @@ definitions:
     required:
       - username
       - avatar
-      - sid
     properties:
       username:
         type: string
@@ -1515,21 +1514,7 @@ definitions:
       avatar:
         type: string
         description: the avatar of user
-      sid:
-        type: string
-        description: student's id
 
-  user.UserInfoRequest:
-    required:
-      - username
-      - avatar
-    properties:
-      username:
-        type: string
-        description: the name of user.
-      avatar:
-        type: string
-        description: the avatar of user
   user.UserInfoResponse:
     properties:
       code:
@@ -1694,18 +1679,19 @@ definitions:
             start:
               type: integer
               description: 上课开始时间（start=3表示上午第三节开始）
-            during:
+            duration:
               type: integer
-              description: 上课持续时间（during=2表示持续2节课）
+              description: 上课持续时间（duration=2表示持续2节小课）
             day:
               type: integer
-              description: 上课星期
+              description: 哪一天上课
             weeks:
-              type: array
-              description: 上课周次如[1, 2, 3 ... 17]
-              example: [1,2,3, 4, 5,]
-              items:
-                type: integer
+              type: string
+              description: 上课周次
+              example: 2-17
+            week_state:
+              type: integer
+              description: 全周0/单周1/双周2
 
   ClassTable:
     type: object
@@ -1716,9 +1702,6 @@ definitions:
       table_name:
         type: string
         description: 课表名
-      rank:
-        type: integer
-        description: 课表优先级，排列顺序
       class_num:
         type: integer
         description: 课堂总数
@@ -1803,24 +1786,6 @@ definitions:
       course_place3:
         type: string
         description: 上课地点3
-      course_feature1:
-        type: integer
-        description: 生动有趣数
-      course_feature2:
-        type: integer
-        description: 干货满满数
-      course_feature3:
-        type: integer
-        description: 作业量少数
-      course_feature4:
-        type: integer
-        description: 老师很好数
-      course_feature5:
-        type: integer
-        description: 简单易学数
-      course_feature6:
-        type: integer
-        description: 云课堂资料全数
       course_grade70:
         type: integer
         description: 70以下人数
