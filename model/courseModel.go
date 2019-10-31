@@ -19,7 +19,7 @@ type UsingCourseModel struct {
 	Credit        float32 `gorm:"column:credit"`            //学分
 	Teacher       string  `gorm:"column:teacher"`           //教师性名
 	CourseId      uint64  `gorm:"column:course_id"`         //UI上需要展示
-	ClassId       uint64  `gorm:"column:class_id"`          //课堂编号，用于区分课堂
+	ClassId       uint8   `gorm:"column:class_id"`          //课堂编号，用于区分课堂
 	Type          uint8   `gorm:"column:type"`              //通识必修，通识选修，通识核心，专业必修，专业选修分别为 0/1/2/3/4
 	CreditType    uint8   `gorm:"column:credit_type"`       //学分类别，文科理科艺术之类的，加索引（筛选条件）
 	TotalScore    float32 `gorm:"column:total_score"`       //总评均分
