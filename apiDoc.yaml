@@ -1365,7 +1365,7 @@ paths:
                 type: object
                 properties:
                   table_id:
-                    type: string
+                    type: integer
                   class_info:
                     $ref: "#/definitions/Class"
         '400':
@@ -1786,6 +1786,24 @@ definitions:
       course_place3:
         type: string
         description: 上课地点3
+      course_feature1:
+        type: integer
+        description: 生动有趣数
+      course_feature2:
+        type: integer
+        description: 干货满满数
+      course_feature3:
+        type: integer
+        description: 作业量少数
+      course_feature4:
+        type: integer
+        description: 老师很好数
+      course_feature5:
+        type: integer
+        description: 简单易学数
+      course_feature6:
+        type: integer
+        description: 云课堂资料全数
       course_grade70:
         type: integer
         description: 70以下人数
