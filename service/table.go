@@ -36,8 +36,8 @@ func GetTableInfoByTableModel(table *model.ClassTableModel) (*model.ClassTableIn
 				return
 			}
 			classList.Lock.Lock()
+			defer classList.Lock.Unlock()
 			classList.list = append(classList.list, *classInfo)
-			classList.Lock.Unlock()
 
 		}(id)
 	}

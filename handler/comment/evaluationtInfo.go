@@ -4,9 +4,8 @@ import (
 	"strconv"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
-	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
-	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/token"
+	"github.com/MuxiKeStack/muxiK-StackBackend/service"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,25 +14,21 @@ import (
 func GetEvaluation(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
-		handler.SendError(c, err, nil, err.Error())
+		handler.SendBadRequest(c, errno.ErrGetParam, nil, err.Error())
+		return
 	}
 
-	var userId uint32
+	// userId获取与游客模式判断
 	visitor := false
-	// 游客登录&用户登录
-	if t := c.Request.Header.Get("token"); len(t) == 0 {
+	userId, ok := c.Get("id")
+	if !ok {
 		visitor = true
-	} else {
-		if _, err := token.ParseRequest(c); err != nil {
-			handler.SendResponse(c, errno.ErrTokenInvalid, nil)
-		}
-		userId = c.MustGet("id").(uint32)
 	}
 
-	var evaluation = &model.CourseEvaluationModel{Id: uint32(id)}
-	data, err := evaluation.GetInfo(userId, visitor)
+	data, err := service.GetEvaluationInfo(uint32(id), userId.(uint32), visitor)
 	if err != nil {
 		handler.SendError(c, err, nil, err.Error())
+		return
 	}
 
 	handler.SendResponse(c, nil, data)

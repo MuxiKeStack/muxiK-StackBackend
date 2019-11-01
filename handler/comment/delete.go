@@ -1,33 +1,42 @@
 package comment
 
 import (
-	"errors"
 	"strconv"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
+	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
 
 	"github.com/gin-gonic/gin"
 )
 
 // 删除评课
 func Delete(c *gin.Context) {
-	var err error
-	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
-		handler.SendError(c, err, nil, err.Error())
+		handler.SendBadRequest(c, errno.ErrGetParam, nil, err.Error())
+		return
 	}
+
 	userId := c.MustGet("id").(uint32)
 
-	evaluation, err := model.GetEvaluationById(uint32(id))
-	if err != nil {
+	// Get evaluation by id
+	evaluation := &model.CourseEvaluationModel{Id: uint32(id)}
+	if err := evaluation.GetById(); err != nil {
 		handler.SendError(c, err, nil, err.Error())
+		return
 	}
+
+	// 验证当前用户是否有删除此评课的权限
 	if evaluation.UserId != userId {
-		err := errors.New("Permission denied ")
-		handler.SendError(c, err, nil, err.Error())
+		handler.SendForbidden(c, errno.ErrDelete, nil, "Without permission to delete the evaluation. ")
+		return
 	}
-	err = evaluation.Delete()
+
+	if err = evaluation.Delete(); err != nil {
+		handler.SendError(c, err, nil, err.Error())
+		return
+	}
 
 	handler.SendResponse(c, nil, nil)
 }

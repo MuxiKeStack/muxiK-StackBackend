@@ -15,11 +15,13 @@ func UpdateCommentLike(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
 		handler.SendError(c, err, nil, err.Error())
+		return
 	}
 
 	var bodyData likeDataRequest
 	if err := c.BindJSON(&bodyData); err != nil {
 		handler.SendError(c, err, nil, err.Error())
+		return
 	}
 
 	userId := c.MustGet("id").(uint32)
@@ -32,14 +34,17 @@ func UpdateCommentLike(c *gin.Context) {
 		if !hasLiked {
 			err = errors.New("Has not liked yet. ")
 			handler.SendResponse(c, err, nil)
+			return
 		}
 		err = comment.CancelLiking(userId)
 		if err != nil {
 			handler.SendError(c, err, nil, err.Error())
+			return
 		}
 		err = comment.UpdateLikeNum(-1)
 		if err != nil {
 			handler.SendError(c, err, nil, err.Error())
+			return
 		}
 	} else {
 		// 点赞
@@ -47,14 +52,17 @@ func UpdateCommentLike(c *gin.Context) {
 		if hasLiked {
 			err = errors.New("Has already liked. ")
 			handler.SendResponse(c, err, nil)
+			return
 		}
 		err = comment.Like(userId)
 		if err != nil {
 			handler.SendError(c, err, nil, err.Error())
+			return
 		}
 		err = comment.UpdateLikeNum(1)
 		if err != nil {
 			handler.SendError(c, err, nil, err.Error())
+			return
 		}
 	}
 

@@ -26,11 +26,13 @@ func UpdateEvaluationLike(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
 		handler.SendError(c, err, nil, err.Error())
+		return
 	}
 
 	var bodyData likeDataRequest
 	if err := c.BindJSON(&bodyData); err != nil {
 		handler.SendError(c, err, nil, err.Error())
+		return
 	}
 
 	userId := c.MustGet("id").(uint32)
@@ -40,6 +42,7 @@ func UpdateEvaluationLike(c *gin.Context) {
 
 	if bodyData.IsLike && !hasLiked {
 		handler.SendResponse(c, errno.ErrNotLiked, nil)
+		return
 	}
 
 	// 点赞或者取消点赞
@@ -51,6 +54,7 @@ func UpdateEvaluationLike(c *gin.Context) {
 
 	if err != nil {
 		handler.SendError(c, err, nil, err.Error())
+		return
 	}
 
 	// 更新点赞数
@@ -62,27 +66,8 @@ func UpdateEvaluationLike(c *gin.Context) {
 
 	if err != nil {
 		handler.SendError(c, err, nil, err.Error())
+		return
 	}
-
-	// // 取消点赞
-	// if bodyData.IsLike {
-
-	// } else {
-	// 	// 点赞
-
-	// 	if hasLiked {
-	// 		err = errors.New("Has already liked. ")
-	// 		handler.SendResponse(c, err, nil)
-	// 	}
-
-	// 	if err != nil {
-	// 		handler.SendError(c, err, nil, err.Error())
-	// 	}
-	// 	err = evaluation.UpdateLikeNum(1)
-	// 	if err != nil {
-	// 		handler.SendError(c, err, nil, err.Error())
-	// 	}
-	// }
 
 	data := &likeDataResponse{
 		IsLike:  !hasLiked,

@@ -64,12 +64,16 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 	// 	course.DELETE("/:id/delete", course.DeleteHistoryCourse)
 	// }
 
-	// 评课
+
+	// Router for course evaluations
 
 	evaluation := g.Group("/api/v1/evaluation")
+	evaluation.Use(middleware.VisitorAuthMiddleware())
 	{
 		evaluation.GET("", comment.EvaluationPlayground)
 		evaluation.GET("/:id/", comment.GetEvaluation)
+
+		// router for getting comment list
 		evaluation.GET("/:id/comments", comment.GetComments)
 	}
 
@@ -82,8 +86,7 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 		evaluationWithAuth.POST("/:id/comment/", comment.CreateTopComment)
 	}
 
-	// 评论
-
+	// Router for comments
 	comments := g.Group("/api/v1/comment")
 	comments.Use(middleware.AuthMiddleware())
 	{
@@ -91,7 +94,7 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 		comments.PUT("/:id/like/", comment.UpdateCommentLike)
 	}
 
-	// 排课课表
+	// class table
 	tables := g.Group("/api/v1/table")
 	tables.Use(middleware.AuthMiddleware())
 	{

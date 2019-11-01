@@ -21,6 +21,7 @@ type SubCommentInfoList struct {
 	IdMap map[uint32]*model.CommentInfo
 }
 
+// Get course evaluation list.
 func EvaluationList(lastId, size int32, userId uint32, visitor bool) (*[]model.EvaluationInfo, error) {
 	evaluations, err := model.GetEvaluations(lastId, size)
 	if err != nil {
@@ -46,7 +47,7 @@ func EvaluationList(lastId, size int32, userId uint32, visitor bool) (*[]model.E
 		go func(evaluation *model.CourseEvaluationModel) {
 			defer wg.Done()
 
-			data, err := evaluation.GetInfo(userId, visitor)
+			data, err := GetEvaluationInfo(evaluation.Id, userId, visitor)
 			if err != nil {
 				errChan <- err
 				return
@@ -79,8 +80,10 @@ func EvaluationList(lastId, size int32, userId uint32, visitor bool) (*[]model.E
 	return &infos, nil
 }
 
-func CommentList(evaluationId uint32, lastId, size int32, userId uint32, visitor bool) (*[]model.ParentCommentInfo, uint32, error) {
-	parentComments, count, err := model.GetParentComments(evaluationId, lastId, size)
+// Get comment list.
+func CommentList(evaluationId uint32, limit, offset int32, userId uint32, visitor bool) (*[]model.ParentCommentInfo, uint32, error) {
+	// Get parent comments from database
+	parentComments, count, err := model.GetParentComments(evaluationId, limit, offset)
 	if err != nil {
 		return nil, count, err
 	}
@@ -99,7 +102,6 @@ func CommentList(evaluationId uint32, lastId, size int32, userId uint32, visitor
 	errChan := make(chan error, 1)
 	finished := make(chan bool, 1)
 
-	// 优化：并发
 	for _, parentComment := range *parentComments {
 		wg1.Add(1)
 		go func(parentComment *model.CommentModel) {
@@ -124,13 +126,14 @@ func CommentList(evaluationId uint32, lastId, size int32, userId uint32, visitor
 			errChan2 := make(chan error, 1)
 			finished := make(chan bool, 1)
 
-			// 优化：并发
+			// 并发获取子评论详情列表
 			for _, subComment := range *subComments {
 				wg2.Add(1)
+
 				go func(subComment *model.CommentModel) {
 					defer wg2.Done()
 
-					info, err := subComment.GetInfo(userId, visitor)
+					info, err := GetCommentInfo(subComment.Id, userId, visitor)
 					if err != nil {
 						errChan2 <- err
 						return
@@ -161,7 +164,8 @@ func CommentList(evaluationId uint32, lastId, size int32, userId uint32, visitor
 				subCommentInfos = append(subCommentInfos, *subCommentInfoList.IdMap[id])
 			}
 
-			parentCommentInfo, err := parentComment.GetParentCommentInfo(userId, visitor, &subCommentInfos)
+			// 获取父评论详情
+			parentCommentInfo, err := GetParentCommentInfoById(parentComment.Id ,userId, visitor, &subCommentInfos)
 			if err != nil {
 				errChan <- err
 				return
@@ -192,4 +196,128 @@ func CommentList(evaluationId uint32, lastId, size int32, userId uint32, visitor
 	}
 
 	return &infos, count, nil
+}
+
+// Get the response data information of a course evaluation.
+func GetEvaluationInfo(id, userId uint32, visitor bool) (*model.EvaluationInfo, error) {
+	var err error
+
+	// Get evaluation from Database
+	evaluation := &model.CourseEvaluationModel{Id: id}
+	if err := evaluation.GetById(); err != nil {
+		return nil, err
+	}
+
+	// Get evaluation user info if not anonymous
+	u := &model.UserInfoResponse{}
+	if !evaluation.IsAnonymous {
+		u, err = model.GetUserInfoById(evaluation.UserId)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	// Get teacher
+	teacher, err := model.GetTeacherByCourseId(evaluation.CourseId)
+	if err != nil {
+		return nil, err
+	}
+
+	// Get like state
+	var isLike = false
+	if !visitor {
+		isLike = evaluation.HasLiked(userId)
+	}
+
+	var info = &model.EvaluationInfo{
+		Id:                  evaluation.Id,
+		CourseId:            evaluation.CourseId,
+		CourseName:          evaluation.CourseName,
+		Teacher:             teacher,
+		Rate:                evaluation.Rate,
+		AttendanceCheckType: evaluation.AttendanceCheckType,
+		ExamCheckType:       evaluation.ExamCheckType,
+		Content:             evaluation.Content,
+		Time:                evaluation.Time,
+		IsAnonymous:         evaluation.IsAnonymous,
+		IsLike:              isLike,
+		LikeNum:             evaluation.LikeNum,
+		CommentNum:          evaluation.CommentNum,
+		Tags:                model.TagStrToArray(evaluation.Tags),
+		UserInfo:            u,
+	}
+
+	return info, nil
+}
+
+// Get the response data information of a comment.
+func GetCommentInfo(id, userId uint32, visitor bool) (*model.CommentInfo, error) {
+	// Get comment from Database
+	comment := &model.CommentModel{Id: id}
+	if err := comment.GetById(); err != nil {
+		return nil, err
+	}
+
+	// Get the user of the comment
+	commentUser, err := model.GetUserInfoById(comment.UserId)
+	if err != nil {
+		return nil, nil
+	}
+
+	// Get the target user of the comment
+	targetUser, err := model.GetUserInfoById(comment.CommentTargetId)
+	if err != nil {
+		return nil, nil
+	}
+
+	// Get like state
+	var isLike = false
+	if !visitor {
+		isLike = comment.HasLiked(userId)
+	}
+
+	data := &model.CommentInfo{
+		Id:             comment.Id,
+		Content:        comment.Content,
+		LikeNum:        comment.LikeNum,
+		IsLike:         isLike,
+		Time:           comment.Time,
+		UserInfo:       commentUser,
+		TargetUserInfo: targetUser,
+	}
+
+	return data, nil
+}
+
+// Get the response data information of a parentComment.
+func GetParentCommentInfoById(id, userId uint32, visitor bool, subComments *[]model.CommentInfo) (*model.ParentCommentInfo, error) {
+	// Get parent comment from Database
+	comment := &model.CommentModel{Id: id}
+	if err := comment.GetById(); err != nil {
+		return nil, err
+	}
+
+	// Get user info of the comment
+	userInfo, err := model.GetUserInfoById(comment.UserId)
+	if err != nil {
+		return nil, err
+	}
+
+	// Get like state
+	var isLike = false
+	if !visitor {
+		isLike = comment.HasLiked(userId)
+	}
+
+	info := &model.ParentCommentInfo{
+		CommentId:       comment.Id,
+		Content:         comment.Content,
+		LikeNum:         comment.LikeNum,
+		IsLike:          isLike,
+		Time:            comment.Time,
+		UserInfo:        userInfo,
+		SubCommentsNum:  comment.SubCommentNum,
+		SubCommentsList: subComments,
+	}
+	return info, nil
 }
