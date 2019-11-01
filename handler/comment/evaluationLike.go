@@ -1,8 +1,9 @@
 package comment
 
 import (
-	"errors"
 	"strconv"
+
+	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
@@ -37,36 +38,51 @@ func UpdateEvaluationLike(c *gin.Context) {
 	var evaluation = &model.CourseEvaluationModel{Id: uint32(id)}
 	hasLiked := evaluation.HasLiked(userId)
 
-	// 取消点赞
-	if bodyData.IsLike {
-		if !hasLiked {
-			err = errors.New("Has not liked yet. ")
-			handler.SendResponse(c, err, nil)
-		}
-		err = evaluation.CancelLiking(userId)
-		if err != nil {
-			handler.SendError(c, err, nil, err.Error())
-		}
-		err = evaluation.UpdateLikeNum(-1)
-		if err != nil {
-			handler.SendError(c, err, nil, err.Error())
-		}
-	} else {
-		// 点赞
-
-		if hasLiked {
-			err = errors.New("Has already liked. ")
-			handler.SendResponse(c, err, nil)
-		}
-		err = evaluation.Like(userId)
-		if err != nil {
-			handler.SendError(c, err, nil, err.Error())
-		}
-		err = evaluation.UpdateLikeNum(1)
-		if err != nil {
-			handler.SendError(c, err, nil, err.Error())
-		}
+	if bodyData.IsLike && !hasLiked {
+		handler.SendResponse(c, errno.ErrNotliked, nil)
 	}
+
+	// 点赞或者取消点赞
+	if bodyData.IsLike {
+		err = evaluation.CancelLiking(userId)
+	} else {
+		err = evaluation.Like(userId)
+	}
+
+	if err != nil {
+		handler.SendError(c, err, nil, err.Error())
+	}
+
+	// 更新点赞数
+	num := -1
+	if bodyData.IsLike {
+		num = 1
+	}
+	err = evaluation.UpdateLikeNum(num)
+
+	if err != nil {
+		handler.SendError(c, err, nil, err.Error())
+	}
+
+	// // 取消点赞
+	// if bodyData.IsLike {
+
+	// } else {
+	// 	// 点赞
+
+	// 	if hasLiked {
+	// 		err = errors.New("Has already liked. ")
+	// 		handler.SendResponse(c, err, nil)
+	// 	}
+
+	// 	if err != nil {
+	// 		handler.SendError(c, err, nil, err.Error())
+	// 	}
+	// 	err = evaluation.UpdateLikeNum(1)
+	// 	if err != nil {
+	// 		handler.SendError(c, err, nil, err.Error())
+	// 	}
+	// }
 
 	data := &likeDataResponse{
 		IsLike:  !hasLiked,

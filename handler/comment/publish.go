@@ -12,7 +12,7 @@ import (
 
 // 发布评课请求数据
 type EvaluationPublish struct {
-	CourseId            string  `json:"course_id"`
+	CourseId            string  `json:"course_id" binding:"required"` // FIX 加上 binding
 	CourseName          string  `json:"course_name"`
 	Rate                uint8   `json:"rate"`
 	AttendanceCheckType uint8   `json:"attendance_check_type"`
@@ -26,11 +26,18 @@ type responseData struct {
 	EvaluationId uint32 `json:"evaluation_id"`
 }
 
-// 发布评课
+// Publish ...
+// @Summary 发布评课
+// @Accept  json
+// @Produce  json
+// @Param evaluationPublish body comment.EvaluationPublish true "评课数据"
+// @Success 200 {array} responseData
+// @Router /evaluation [post]
 func Publish(c *gin.Context) {
 	var data EvaluationPublish
 	if err := c.ShouldBindJSON(&data); err != nil {
 		handler.SendError(c, err, nil, err.Error())
+		return
 	}
 
 	userId := c.MustGet("id").(uint32)

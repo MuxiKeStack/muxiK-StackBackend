@@ -29,6 +29,8 @@ type CommentModel struct {
 	IsRoot          bool   `gorm:"column:is_root"`
 	Time            string `gorm:"column:time"`
 	SubCommentNum   uint32 `gorm:"column:sub_comment_num"`
+	IsAnonymous     bool   `gorm:"column:is_anonymous"`
+	IsValid         bool   `gorm:"column:is_valid"`
 }
 
 type EvaluationLikeModel struct {
@@ -70,6 +72,7 @@ type CommentInfo struct {
 	LikeNum        uint32            `json:"like_num"`
 	IsLike         bool              `json:"is_like"`
 	Time           string            `json:"time"`
+	IsAnonymous    bool              `json:"is_anonymous"`
 	UserInfo       *UserInfoResponse `json:"user_info"`
 	TargetUserInfo *UserInfoResponse `json:"target_user_info"`
 }
@@ -88,6 +91,7 @@ type ParentCommentInfo struct {
 	LikeNum         uint32            `json:"like_num"`
 	IsLike          bool              `json:"is_like"`
 	Time            string            `json:"time"`
+	IsAnonymous     bool              `json:"is_anonymous"`
 	UserInfo        *UserInfoResponse `json:"user_info"`
 	SubCommentsNum  uint32            `json:"sub_comments_num"`
 	SubCommentsList *[]CommentInfo    `json:"sub_comments_list"`

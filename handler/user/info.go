@@ -10,7 +10,6 @@ import (
 	"github.com/lexkong/log/lager"
 )
 
-// Update user info by token
 func PostInfo(c *gin.Context) {
 	log.Info("PostInfo function called.", lager.Data{"X-Request-Id": util.GetReqID(c)})
 	var info model.UserInfoRequest

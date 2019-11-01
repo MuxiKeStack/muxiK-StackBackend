@@ -18,7 +18,7 @@ func CreateTopComment(c *gin.Context) {
 	}
 
 	userId := c.MustGet("id").(uint32)
-	evaluationId, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	evaluationId, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
 		handler.SendError(c, err, nil, err.Error())
 	}

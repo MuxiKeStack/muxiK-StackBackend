@@ -21,9 +21,12 @@ var (
 	ErrUserNotFound = &Errno{Code: 20203, Message: "The user was not found."}
 	ErrGetUserInfo  = &Errno{Code: 20204, Message: "Error in getting user info"}
 
+	// comment errors
+	ErrNotliked = &Errno{Code: 20301, Message: "User has not liked yet"}
+
 	// table errors
-	ErrTableExisting = &Errno{Code: 20401, Message: "The table is not existing "}
-	ErrClassExisting = &Errno{Code: 20402, Message: "The class is not existing "}
+	ErrTableExisting   = &Errno{Code: 20401, Message: "The table is not existing "}
+	ErrClassExisting   = &Errno{Code: 20402, Message: "The class is not existing "}
 	ErrClassIdRequired = &Errno{Code: 20403, Message: "The classId is required "}
-	ErrGetClassInfo = &Errno{Code: 20404, Message: "Error occurred in getting class info"}
+	ErrGetClassInfo    = &Errno{Code: 20404, Message: "Error occurred in getting class info"}
 )

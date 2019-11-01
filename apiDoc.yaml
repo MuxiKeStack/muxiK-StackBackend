@@ -1350,16 +1350,11 @@ paths:
           required: true
           description: 课表id
           type: string
-        - in: body
-          name: data
+        - in: query
+          name: classId
           required: true
-          schema:
-            type: object
-            properties:
-              courseId:
-                type: string
-              classId:
-                type: integer
+          description: 课堂id
+          type: string
       responses:
         "200":
           description: OK
@@ -1404,16 +1399,11 @@ paths:
           required: true
           description: 课表id
           type: string
-        - in: body
-          name: data
+        - in: query
+          name: classId
           required: true
-          schema:
-            type: object
-            properties:
-              courseId:
-                type: string
-              classId:
-                type: integer
+          description: 课堂id
+          type: string
       responses:
         "200":
           description: OK
