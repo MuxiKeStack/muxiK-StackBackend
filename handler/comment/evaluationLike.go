@@ -39,7 +39,7 @@ func UpdateEvaluationLike(c *gin.Context) {
 	hasLiked := evaluation.HasLiked(userId)
 
 	if bodyData.IsLike && !hasLiked {
-		handler.SendResponse(c, errno.ErrNotliked, nil)
+		handler.SendResponse(c, errno.ErrNotLiked, nil)
 	}
 
 	// 点赞或者取消点赞

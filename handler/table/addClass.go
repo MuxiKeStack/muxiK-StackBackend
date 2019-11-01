@@ -22,13 +22,13 @@ func AddClass(c *gin.Context) {
 
 	tableId, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
-		handler.SendBadRequest(c, err, nil, err.Error())
+		handler.SendBadRequest(c, errno.ErrGetParam, nil, err.Error())
 		return
 	}
 
 	classId := c.DefaultQuery("classId", "")
 	if classId == "" {
-		handler.SendBadRequest(c, errno.ErrClassIdRequired, nil, "")
+		handler.SendBadRequest(c, errno.ErrGetQuery, nil, "The classId is required.")
 		return
 	}
 
@@ -66,7 +66,7 @@ func AddClass(c *gin.Context) {
 	}
 
 	// 获取新课堂的信息
-	newClassInfo, err := service.GetClassInfoById(classId)
+	newClassInfo, err := service.GetClassInfoForTableById(classId)
 	if err != nil {
 		handler.SendError(c, errno.ErrGetClassInfo, nil, err.Error())
 		return
