@@ -47,7 +47,7 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 		course.DELETE("/:id/delete", course.DeleteCourse)
 		course.POST("/:id/favorite/", course.FavoriteCourse)
 	}
-	
+
 	// 云课堂课程
 	g.GET("/api/v1/course/history/home/", course.GetCourseInfo)
 	g.GET("/api/v1/course/history/:id/query/", course.QueryCourse)
@@ -58,7 +58,7 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 		course.POST("/:id/modify", course.ModifyHistoryCourse)
 		course.DELETE("/:id/delete", course.DeleteHistoryCourse)
 	}
-	
+
 	// 评课
 	g.GET("/api/v1/evaluation/list/", comment.EvaluationPlayground)
 	g.GET("/api/v1/evaluation/:id/", comment.GetEvaluation)
