@@ -1,0 +1,102 @@
+basePath: /api/v1
+definitions:
+  comment.EvaluationPublish:
+    properties:
+      attendance_check_type:
+        type: integer
+      content:
+        type: string
+      course_id:
+        type: string
+      course_name:
+        type: string
+      exam_check_type:
+        type: integer
+      is_anonymous:
+        type: boolean
+      rate:
+        type: integer
+      tags:
+        items:
+          type: integer
+        type: array
+    type: object
+  comment.responseData:
+    properties:
+      evaluation_id:
+        type: integer
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a sample server celler server.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Swagger Example API
+  version: "1.0"
+paths:
+  /evaluation:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 评课数据
+        in: body
+        name: evaluationPublish
+        required: true
+        schema:
+          $ref: '#/definitions/comment.EvaluationPublish'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/comment.responseData'
+            type: array
+      summary: 发布评课
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+  BasicAuth:
+    type: basic
+  OAuth2AccessCode:
+    authorizationUrl: https://example.com/oauth/authorize
+    flow: accessCode
+    scopes:
+      admin: ' Grants read and write access to administrative information'
+    tokenUrl: https://example.com/oauth/token
+    type: oauth2
+  OAuth2Application:
+    flow: application
+    scopes:
+      admin: ' Grants read and write access to administrative information'
+      write: ' Grants write access'
+    tokenUrl: https://example.com/oauth/token
+    type: oauth2
+  OAuth2Implicit:
+    authorizationUrl: https://example.com/oauth/authorize
+    flow: implicit
+    scopes:
+      admin: ' Grants read and write access to administrative information'
+      write: ' Grants write access'
+    type: oauth2
+  OAuth2Password:
+    flow: password
+    scopes:
+      admin: ' Grants read and write access to administrative information'
+      read: ' Grants read access'
+      write: ' Grants write access'
+    tokenUrl: https://example.com/oauth/token
+    type: oauth2
+swagger: "2.0"
+x-extension-openapi:
+  example: value on a json format

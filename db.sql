@@ -113,15 +113,14 @@ CREATE TABLE `course_list` (
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE `history_course` (
-  `id`             INT unsigned NOT NULL AUTO_INCREMENT,
-  `hash`           VARCHAR(50)  NOT NULL COMMENT "课程id + 教师名 hash 生成的唯一标识",
-  `name`           VARCHAR(50)  NOT NULL,
-  `teacher`        VARCHAR(20)  NOT NULL,
-  `type`           INT          NOT NULL COMMENT "课程类型（专业课，公共课）",
-  `rate`           FLOAT        NOT NULL DEFAULT 0 COMMENT "课程评价星级",
+  `id`      INT unsigned NOT NULL AUTO_INCREMENT,
+  `hash`    VARCHAR(50)  NOT NULL COMMENT "课程id + 教师名 hash 生成的唯一标识",
+  `name`    VARCHAR(50)  NOT NULL,
+  `teacher` VARCHAR(20)  NOT NULL,
+  `type`    INT          NOT NULL COMMENT "课程类型（专业课，公共课）",
+    `rate`           FLOAT        NOT NULL DEFAULT 0 COMMENT "课程评价星级",
   `stars_num`      INT          NOT NULL DEFAULT 0 COMMENT "参与评课人数",
-  `total_score`    FLOAT        NOT NULL DEFAULT 0 COMMENT "总评均分",
-  `ordinary_score` FLOAT        NOT NULL DEFAULT 0 COMMENT "平时均分",
+  `credit`         FLOAT        NOT NULL DEFAULT 0 COMMENT "学分",
 
   PRIMARY KEY (`id`),
   UNIQUE KEY `hash` (`hash`)
@@ -131,7 +130,6 @@ CREATE TABLE `using_course` (
   `id`             INT unsigned NOT NULL AUTO_INCREMENT,
   `hash`           VARCHAR(50)  NOT NULL           COMMENT "课程id + 教师名 hash 生成的唯一标识",
   `name`           VARCHAR(50)  NOT NULL,
-  `credit`         FLOAT        NOT NULL DEFAULT 0 COMMENT "学分",
   `teacher`        VARCHAR(20)  NOT NULL,
   `course_id`      INT          NOT NULL           COMMENT "课程号",
   `class_id`       INT          NOT NULL           COMMENT "教学班编号",
