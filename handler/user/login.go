@@ -20,6 +20,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
+	// FIX grpc 调 data_service
 	// Compare the login password with the user password.
 	// 业务逻辑异常，使用 SendResponse 发送 200 请求 + 自定义错误码
 	if err := util.LoginRequest(l.Sid, l.Password); err != nil {
@@ -37,7 +38,7 @@ func Login(c *gin.Context) {
 	}
 	u, err := model.GetUserBySid(l.Sid)
 	if err != nil {
-		SendError(c, errno.ErrUserNotFound, nil, err.Error())
+		SendResponse(c, errno.ErrUserNotFound, nil)
 		return
 	}
 

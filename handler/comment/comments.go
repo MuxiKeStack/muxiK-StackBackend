@@ -21,14 +21,16 @@ type commentListResponse struct {
 func GetComments(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
+		// FIX 入参错误，应该返回 401
 		handler.SendError(c, err, nil, err.Error())
 	}
 
+	// FIX 改成 limit
 	pageSize := c.DefaultQuery("pageSize", "20")
 	size, err := strconv.ParseInt(pageSize, 10, 64)
 	if err != nil {
 		handler.SendError(c, err, nil, err.Error())
-	} else if size <= 0 {
+	} else if size <= 0 { // FIX 不用处理负数情况
 		handler.SendBadRequest(c, err, nil, "PageSize error")
 	}
 
@@ -44,6 +46,7 @@ func GetComments(c *gin.Context) {
 	if t := c.Request.Header.Get("token"); len(t) == 0 {
 		visitor = true
 	} else {
+		// FIX 写一个新的中间件
 		if _, err := token.ParseRequest(c); err != nil {
 			handler.SendResponse(c, errno.ErrTokenInvalid, nil)
 		}
