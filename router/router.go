@@ -3,13 +3,15 @@ package router
 import (
 	"net/http"
 
+	_ "github.com/MuxiKeStack/muxiK-StackBackend/docs"
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler/comment"
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler/sd"
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler/table"
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler/user"
 	"github.com/MuxiKeStack/muxiK-StackBackend/router/middleware"
-
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 // Load loads the middlewares, routes, handlers.
@@ -36,44 +38,51 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 		u.GET("/info", user.GetInfo)
 	}
 
+	url := ginSwagger.URL("http://localhost:8080/swagger/doc.json") // The url pointing to API definition
+	g.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
+
 	// 选课手册课程
-	g.GET("/api/v1/course/using/home/", course.GetCourseInfo)
-	g.GET("/api/v1/course/using/:id/query/", course.QueryCourse)
-	course := g.Group("/api/v1/course/using")
-	course.Use(middleware.AuthMiddleware())
-	{
-		course.PUT("/:id/add", course.AddCourse)
-		course.POST("/:id/modify", course.ModifyCourse)
-		course.DELETE("/:id/delete", course.DeleteCourse)
-		course.POST("/:id/favorite/", course.FavoriteCourse)
-	}
-	
-	// 云课堂课程
-	g.GET("/api/v1/course/history/home/", course.GetCourseInfo)
-	g.GET("/api/v1/course/history/:id/query/", course.QueryCourse)
-	course := g.Group("/api/v1/course/history")
-	course.Use(middleware.AuthMiddleware())
-	{
-		course.PUT("/:id/add", course.AddHistoryCourse)
-		course.POST("/:id/modify", course.ModifyHistoryCourse)
-		course.DELETE("/:id/delete", course.DeleteHistoryCourse)
-	}
-	
+	// g.GET("/api/v1/course/using/home/", course.GetCourseInfo)
+	// g.GET("/api/v1/course/using/:id/query/", course.QueryCourse)
+	// course := g.Group("/api/v1/course/using")
+	// course.Use(middleware.AuthMiddleware())
+	// {
+	// 	course.PUT("/:id/add", course.AddCourse)
+	// 	course.POST("/:id/modify", course.ModifyCourse)
+	// 	course.DELETE("/:id/delete", course.DeleteCourse)
+	// 	course.POST("/:id/favorite/", course.FavoriteCourse)
+	// }
+
+	// // 云课堂课程
+	// g.GET("/api/v1/course/history/home/", course.GetCourseInfo)
+	// g.GET("/api/v1/course/history/:id/query/", course.QueryCourse)
+	// course := g.Group("/api/v1/course/history")
+	// course.Use(middleware.AuthMiddleware())
+	// {
+	// 	course.PUT("/:id/add", course.AddHistoryCourse)
+	// 	course.POST("/:id/modify", course.ModifyHistoryCourse)
+	// 	course.DELETE("/:id/delete", course.DeleteHistoryCourse)
+	// }
+
 	// 评课
-	g.GET("/api/v1/evaluation/list/", comment.EvaluationPlayground)
-	g.GET("/api/v1/evaluation/:id/", comment.GetEvaluation)
 
 	evaluation := g.Group("/api/v1/evaluation")
-	evaluation.Use(middleware.AuthMiddleware())
 	{
-		evaluation.POST("/", comment.Publish)
-		evaluation.POST("/:id/comment/", comment.CreateTopComment)
-		evaluation.DELETE("/:id/", comment.Delete)
-		evaluation.PUT("/:id/like/", comment.UpdateEvaluationLike)
+		evaluation.GET("", comment.EvaluationPlayground)
+		evaluation.GET("/:id/", comment.GetEvaluation)
+		evaluation.GET("/:id/comments", comment.GetComments)
+	}
+
+	evaluationWithAuth := g.Group("/api/v1/evaluation")
+	evaluationWithAuth.Use(middleware.AuthMiddleware())
+	{
+		evaluationWithAuth.POST("/", comment.Publish)
+		evaluationWithAuth.DELETE("/:id/", comment.Delete)
+		evaluationWithAuth.PUT("/:id/like/", comment.UpdateEvaluationLike)
+		evaluationWithAuth.POST("/:id/comment/", comment.CreateTopComment)
 	}
 
 	// 评论
-	g.GET("/api/v1/evaluation/:id/comments/", comment.GetComments)
 
 	comments := g.Group("/api/v1/comment")
 	comments.Use(middleware.AuthMiddleware())

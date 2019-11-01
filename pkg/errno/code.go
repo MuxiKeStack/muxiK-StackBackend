@@ -19,4 +19,6 @@ var (
 	ErrUpdateUser   = &Errno{Code: 20202, Message: "Error in updating user"}
 	ErrUserNotFound = &Errno{Code: 20203, Message: "The user was not found."}
 	ErrGetUserInfo  = &Errno{Code: 20204, Message: "Error in getting user info"}
+
+	ErrNotliked = &Errno{Code: 20301, Message: "User has not liked yet"}
 )

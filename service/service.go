@@ -21,7 +21,7 @@ type SubCommentInfoList struct {
 	IdMap map[uint32]*model.CommentInfo
 }
 
-func EvaluationList(lastId, size int32, userId uint32, visitor bool) (*[]model.EvaluationInfo, error)  {
+func EvaluationList(lastId, size int32, userId uint32, visitor bool) (*[]model.EvaluationInfo, error) {
 	evaluations, err := model.GetEvaluations(lastId, size)
 	if err != nil {
 		return nil, err
