@@ -1,12 +1,13 @@
 basePath: /api/v1
 definitions:
-  comment.EvaluationPublish:
+  comment.evaluationPublishRequest:
     properties:
       attendance_check_type:
         type: integer
       content:
         type: string
       course_id:
+        description: FIX 加上 binding
         type: string
       course_name:
         type: string
@@ -20,8 +21,10 @@ definitions:
         items:
           type: integer
         type: array
+    required:
+    - course_id
     type: object
-  comment.responseData:
+  comment.evaluationPublishResponse:
     properties:
       evaluation_id:
         type: integer
@@ -47,10 +50,11 @@ paths:
       parameters:
       - description: 评课数据
         in: body
-        name: evaluationPublish
+        name: evaluationPublishRequest
         required: true
         schema:
-          $ref: '#/definitions/comment.EvaluationPublish'
+          $ref: '#/definitions/comment.evaluationPublishRequest'
+          type: object
       produces:
       - application/json
       responses:
@@ -58,7 +62,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/comment.responseData'
+              $ref: '#/definitions/comment.evaluationPublishResponse'
             type: array
       summary: 发布评课
 securityDefinitions:

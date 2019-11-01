@@ -21,3 +21,14 @@ func AuthMiddleware() gin.HandlerFunc {
 		c.Next()
 	}
 }
+
+func VisitorAuthMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		// Parse the json web token.
+		ctx, err := token.ParseRequest(c)
+		if err == nil {
+			c.Set("id", ctx.Id)
+		}
+		c.Next()
+	}
+}

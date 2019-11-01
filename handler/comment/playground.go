@@ -1,13 +1,12 @@
 package comment
 
 import (
-	"github.com/MuxiKeStack/muxiK-StackBackend/service"
 	"strconv"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
-	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/token"
+	"github.com/MuxiKeStack/muxiK-StackBackend/service"
 
 	"github.com/gin-gonic/gin"
 )
@@ -20,34 +19,31 @@ type playgroundResponse struct {
 // 评课广场获取评课列表
 func EvaluationPlayground(c *gin.Context) {
 	pageSize := c.DefaultQuery("pageSize", "20")
-	size, err := strconv.ParseInt(pageSize, 10, 32)
+	limit, err := strconv.ParseInt(pageSize, 10, 32)
 	if err != nil {
-		handler.SendError(c, err, nil, err.Error())
-	} else if size <= 0 {
-		handler.SendBadRequest(c, err, nil, "PageSize error")
+		handler.SendBadRequest(c, errno.ErrGetQuery, nil, err.Error())
+		return
 	}
 
 	lastIdStr := c.DefaultQuery("lastEvaluationId", "-1")
 	lastId, err := strconv.ParseInt(lastIdStr, 10, 32)
 	if err != nil {
-		handler.SendError(c, err, nil, err.Error())
+		handler.SendBadRequest(c, errno.ErrGetQuery, nil, err.Error())
+		return
 	}
 
-	var userId uint32
+	// userId获取与游客模式判断
 	visitor := false
-	// 游客登录&用户登录
-	if t := c.Request.Header.Get("token"); len(t) == 0 {
+	userId, ok := c.Get("id")
+	if !ok {
 		visitor = true
-	} else {
-		if _, err := token.ParseRequest(c); err != nil {
-			handler.SendResponse(c, errno.ErrTokenInvalid, nil)
-		}
-		userId = c.MustGet("id").(uint32)
 	}
 
-	list, err := service.EvaluationList(int32(lastId), int32(size), userId, visitor)
+	// 获取评课列表
+	list, err := service.EvaluationList(int32(lastId), int32(limit), userId.(uint32), visitor)
 	if err != nil {
-		handler.SendError(c, err, nil, err.Error())
+		handler.SendError(c, errno.ErrEvaluationList, nil, err.Error())
+		return
 	}
 
 	data := playgroundResponse{

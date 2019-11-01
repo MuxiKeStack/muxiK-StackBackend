@@ -853,9 +853,9 @@ paths:
           description: 期望的一级评论数量
           type: integer
         - in: query
-          name: lastCommentId
+          name: pageNum
           required: true
-          description: 上一次请求的最后一个一级评论的id，若是第一页（初始请求）则为-1
+          description: 翻页页码，默认为0
           type: integer
       responses:
         "200":

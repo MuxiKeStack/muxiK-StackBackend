@@ -18,6 +18,32 @@ type CourseEvaluationModel struct {
 	Time                string `gorm:"column:time"`                  // 时间，时间戳
 }
 
+// 父评论物理表
+type ParentCommentModel struct {
+	Id            uint32 `gorm:"column:id; primary_key; AUTO_INCREMENT"`
+	UserId        uint32 `gorm:"column:user_id"`
+	EvaluationId  uint32 `gorm:"column:evaluation_id"`
+	Content       string `gorm:"column:content"`
+	LikeNum       uint32 `gorm:"column:like_num"`
+	Time          string `gorm:"column:time"`
+	SubCommentNum uint32 `gorm:"column:sub_comment_num"`
+	IsAnonymous   bool   `gorm:"column:is_anonymous"`
+	IsValid       bool   `gorm:"column:is_valid"`
+}
+
+// 子评论物理表
+type SubCommentModel struct {
+	Id              uint32 `gorm:"column:id; primary_key; AUTO_INCREMENT"`
+	UserId          uint32 `gorm:"column:user_id"`
+	ParentId        uint32 `gorm:"column:parent_id"`
+	CommentTargetId uint32 `gorm:"column:comment_target_id"`
+	Content         string `gorm:"column:content"`
+	LikeNum         uint32 `gorm:"column:like_num"`
+	Time            string `gorm:"column:time"`
+	IsAnonymous     bool   `gorm:"column:is_anonymous"`
+	IsValid         bool   `gorm:"column:is_valid"`
+}
+
 // 评论物理表
 type CommentModel struct {
 	Id              uint32 `gorm:"column:id; primary_key; AUTO_INCREMENT"`
@@ -75,12 +101,6 @@ type CommentInfo struct {
 	IsAnonymous    bool              `json:"is_anonymous"`
 	UserInfo       *UserInfoResponse `json:"user_info"`
 	TargetUserInfo *UserInfoResponse `json:"target_user_info"`
-}
-
-// 新增评论请求模型
-type NewCommentRequest struct {
-	Content     string `json:"content"`
-	IsAnonymous bool   `json:"is_anonymous"`
 }
 
 // 返回的评论列表，一级评论模型

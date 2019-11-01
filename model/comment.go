@@ -67,63 +67,22 @@ func (evaluation *CourseEvaluationModel) UpdateLikeNum(num int) error {
 	return d.Error
 }
 
-// Get the response data information of a course evaluation.
-func (evaluation *CourseEvaluationModel) GetInfo(userId uint32, visitor bool) (*EvaluationInfo, error) {
-	var err error
-	var u = &UserInfoResponse{}
-	if !evaluation.IsAnonymous {
-		u, err = GetUserInfoById(evaluation.UserId)
-		if err != nil {
-			return &EvaluationInfo{}, err
-		}
-	}
-
-	// 获取教师名
-	course := &UsingCourseModel{}
-	DB.Self.First(course, "hash = ?", evaluation.CourseId)
-
-	var isLike = false
-	if !visitor {
-		isLike = evaluation.HasLiked(userId)
-	}
-
-	var info = &EvaluationInfo{
-		Id:                  evaluation.Id,
-		CourseId:            evaluation.CourseId,
-		CourseName:          evaluation.CourseName,
-		Teacher:             course.Teacher,
-		Rate:                evaluation.Rate,
-		AttendanceCheckType: evaluation.AttendanceCheckType,
-		ExamCheckType:       evaluation.ExamCheckType,
-		Content:             evaluation.Content,
-		Time:                evaluation.Time,
-		IsAnonymous:         evaluation.IsAnonymous,
-		IsLike:              isLike,
-		LikeNum:             evaluation.LikeNum,
-		CommentNum:          evaluation.CommentNum,
-		Tags:                TagStrToArray(evaluation.Tags),
-		UserInfo:            u,
-	}
-	return info, nil
+// Get evaluation by its id.
+func (evaluation *CourseEvaluationModel) GetById() error {
+	d := DB.Self.First(evaluation)
+	return d.Error
 }
 
 // Get course evaluations.
-func GetEvaluations(lastId, size int32) (*[]CourseEvaluationModel, error) {
+func GetEvaluations(lastId, limit int32) (*[]CourseEvaluationModel, error) {
 	var evaluations *[]CourseEvaluationModel
 	if lastId != -1 {
-		DB.Self.Where("id < ?", lastId).Order("id desc").Find(evaluations).Limit(size)
+		DB.Self.Where("id < ?", lastId).Order("id desc").Find(evaluations).Limit(limit)
 	} else {
-		DB.Self.Order("id desc").Find(evaluations).Limit(size)
+		DB.Self.Order("id desc").Find(evaluations).Limit(limit)
 	}
 
 	return evaluations, nil
-}
-
-// Get course evaluation by evaluationId.
-func GetEvaluationById(id uint32) (*CourseEvaluationModel, error) {
-	var evaluation CourseEvaluationModel
-	d := DB.Self.First(&evaluation, "id = ?", id)
-	return &evaluation, d.Error
 }
 
 /*---------------------------- Comment Operation --------------------------*/
@@ -193,73 +152,19 @@ func (comment *CommentModel) UpdateLikeNum(num int) error {
 	return d.Error
 }
 
-// Get the response data information of a comment.
-func (comment *CommentModel) GetInfo(userId uint32, visitor bool) (*CommentInfo, error) {
-	commentUser, err := GetUserInfoById(comment.UserId)
-	if err != nil {
-		return nil, nil
-	}
-
-	targetUser, err := GetUserInfoById(comment.CommentTargetId)
-	if err != nil {
-		return nil, nil
-	}
-
-	var isLike = false
-	if !visitor {
-		isLike = comment.HasLiked(userId)
-	}
-
-	data := &CommentInfo{
-		Id:             comment.Id,
-		Content:        comment.Content,
-		LikeNum:        comment.LikeNum,
-		IsLike:         isLike,
-		Time:           comment.Time,
-		UserInfo:       commentUser,
-		TargetUserInfo: targetUser,
-	}
-
-	return data, nil
-}
-
-// Get the response data information of a parentComment.
-func (comment *CommentModel) GetParentCommentInfo(userId uint32, visitor bool, subComments *[]CommentInfo) (*ParentCommentInfo, error) {
-	userInfo, err := GetUserInfoById(comment.UserId)
-	if err != nil {
-		return nil, err
-	}
-
-	var isLike = false
-	if !visitor {
-		isLike = comment.HasLiked(userId)
-	}
-
-	info := &ParentCommentInfo{
-		CommentId:       comment.Id,
-		Content:         comment.Content,
-		LikeNum:         comment.LikeNum,
-		IsLike:          isLike,
-		Time:            comment.Time,
-		UserInfo:        userInfo,
-		SubCommentsNum:  comment.SubCommentNum,
-		SubCommentsList: subComments,
-	}
-	return info, nil
+// Get a comment by its id.
+func (comment *CommentModel) GetById() error {
+	d := DB.Self.First(comment)
+	return d.Error
 }
 
 // Get parentComments by evaluationId.
-func GetParentComments(EvaluationId uint32, lastId, size int32) (*[]CommentModel, uint32, error) {
+func GetParentComments(EvaluationId uint32, limit, offset int32) (*[]CommentModel, uint32, error) {
 	var count uint32
 	var comments []CommentModel
 
-	if lastId != -1 {
-		DB.Self.Where("is_root = ? AND comment_target_id = ?", true, EvaluationId).
-			Find(&comments).Count(&count).Limit(size)
-	} else {
-		DB.Self.Where("id < ? AND is_root = ? AND comment_target_id = ?", lastId, true, EvaluationId).
-			Find(&comments).Count(&count).Limit(size)
-	}
+	DB.Self.Where("is_root = ? AND comment_target_id = ?", true, EvaluationId).
+		Find(&comments).Limit(limit).Offset(offset).Count(&count)
 
 	return &comments, count, nil
 }
@@ -269,13 +174,6 @@ func GetSubComments(ParentId uint32) (*[]CommentModel, error) {
 	var subComments []CommentModel
 	DB.Self.Find(&subComments, "parent_id = ?", ParentId)
 	return &subComments, nil
-}
-
-// Get a comment by its id.
-func GetCommentById(id uint32) (*CommentModel, error) {
-	var comment CommentModel
-	d := DB.Self.First(&comment, "id = ?", id)
-	return &comment, d.Error
 }
 
 // Get parentId by commentTargetId
@@ -298,6 +196,13 @@ func UpdateCourseRateByEvaluation(id uint32, rate uint8) error {
 	DB.Self.Save(&c)
 
 	return nil
+}
+
+// 根据课程id获取教师名
+func GetTeacherByCourseId(id string) (string, error) {
+	var course HistoryCourseModel
+	d := DB.Self.First(&course, "hash = ?", id)
+	return course.Teacher, d.Error
 }
 
 /*--------------- Other Tools -------------*/

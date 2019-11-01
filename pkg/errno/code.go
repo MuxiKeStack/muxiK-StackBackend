@@ -11,6 +11,7 @@ var (
 	ErrToken      = &Errno{Code: 20003, Message: "Error occurred while signing the JSON web token."}
 	ErrGetQuery   = &Errno{Code: 20004, Message: "Error occurred while getting query. "}
 	ErrGetParam   = &Errno{Code: 20005, Message: "Error occurred while getting path params. "}
+	ErrDelete     = &Errno{Code: 20006, Message: "Error occurred while deleting sth. "}
 
 	// Auth errors
 	ErrAuthFailed   = &Errno{Code: 20101, Message: "The sid or password was incorrect."}
@@ -23,7 +24,10 @@ var (
 	ErrGetUserInfo  = &Errno{Code: 20204, Message: "Error in getting user info"}
 
 	// comment errors
-	ErrNotLiked = &Errno{Code: 20301, Message: "User has not liked yet. "}
+	ErrNotLiked       = &Errno{Code: 20301, Message: "User has not liked yet. "}
+	ErrEvaluationList = &Errno{Code: 20302, Message: "Error occurred while getting evaluation list. "}
+	ErrCommentList    = &Errno{Code: 20303, Message: "Error occurred while getting comment list. "}
+	//ErrGetEvaluationInfo = &Errno{Code: 20304, Message: "Error occurred while getting evaluation info. "}
 
 	// table errors
 	ErrTableExisting = &Errno{Code: 20401, Message: "The table is not existing. "}

@@ -30,11 +30,12 @@
                 "parameters": [
                     {
                         "description": "评课数据",
-                        "name": "evaluationPublish",
+                        "name": "evaluationPublishRequest",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/comment.EvaluationPublish"
+                            "type": "object",
+                            "$ref": "#/definitions/comment.evaluationPublishRequest"
                         }
                     }
                 ],
@@ -44,7 +45,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/comment.responseData"
+                                "$ref": "#/definitions/comment.evaluationPublishResponse"
                             }
                         }
                     }
@@ -53,8 +54,11 @@
         }
     },
     "definitions": {
-        "comment.EvaluationPublish": {
+        "comment.evaluationPublishRequest": {
             "type": "object",
+            "required": [
+                "course_id"
+            ],
             "properties": {
                 "attendance_check_type": {
                     "type": "integer"
@@ -63,6 +67,7 @@
                     "type": "string"
                 },
                 "course_id": {
+                    "description": "FIX 加上 binding",
                     "type": "string"
                 },
                 "course_name": {
@@ -85,7 +90,7 @@
                 }
             }
         },
-        "comment.responseData": {
+        "comment.evaluationPublishResponse": {
             "type": "object",
             "properties": {
                 "evaluation_id": {
