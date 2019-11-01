@@ -9,7 +9,8 @@ var (
 	ErrValidation = &Errno{Code: 20001, Message: "Validation failed."}
 	ErrDatabase   = &Errno{Code: 20002, Message: "Database error."}
 	ErrToken      = &Errno{Code: 20003, Message: "Error occurred while signing the JSON web token."}
-	ErrDelete     = &Errno{Code: 20004, Message: "Do not have this delete target"}
+	ErrGetQuery   = &Errno{Code: 20004, Message: "Error occurred while getting query. "}
+	ErrGetParam   = &Errno{Code: 20005, Message: "Error occurred while getting path params. "}
 
 	// Auth errors
 	ErrAuthFailed   = &Errno{Code: 20101, Message: "The sid or password was incorrect."}
@@ -22,11 +23,11 @@ var (
 	ErrGetUserInfo  = &Errno{Code: 20204, Message: "Error in getting user info"}
 
 	// comment errors
-	ErrNotliked = &Errno{Code: 20301, Message: "User has not liked yet"}
+	ErrNotLiked = &Errno{Code: 20301, Message: "User has not liked yet. "}
 
 	// table errors
-	ErrTableExisting   = &Errno{Code: 20401, Message: "The table is not existing "}
-	ErrClassExisting   = &Errno{Code: 20402, Message: "The class is not existing "}
-	ErrClassIdRequired = &Errno{Code: 20403, Message: "The classId is required "}
-	ErrGetClassInfo    = &Errno{Code: 20404, Message: "Error occurred in getting class info"}
+	ErrTableExisting = &Errno{Code: 20401, Message: "The table is not existing. "}
+	ErrClassExisting = &Errno{Code: 20402, Message: "The class is not existing. "}
+	ErrGetTableInfo  = &Errno{Code: 20403, Message: "Error occurred in getting table info. "}
+	ErrGetClassInfo  = &Errno{Code: 20404, Message: "Error occurred in getting class info."}
 )

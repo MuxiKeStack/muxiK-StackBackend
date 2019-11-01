@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type GetTablesResponse struct {
+type getTablesResponse struct {
 	TableNum  int                     `json:"table_num"`
 	TableList *[]model.ClassTableInfo `json:"table_list"`
 }
@@ -17,24 +17,29 @@ type GetTablesResponse struct {
 func Get(c *gin.Context) {
 	userId := c.MustGet("id").(uint32)
 
+	// 获取该用户所属的所有课表
 	tables, err := model.GetTablesByUserId(userId)
 	if err != nil {
 		handler.SendError(c, err, nil, err.Error())
+		return
 	}
 
+	// 将课表解析为要返回的课表详情
 	var tableInfoList []model.ClassTableInfo
 	for _, table := range *tables {
 		tableInfo, err := service.GetTableInfoByTableModel(&table)
 		if err != nil {
 			handler.SendError(c, err, nil, err.Error())
+			return
 		}
+
 		tableInfoList = append(tableInfoList, *tableInfo)
 	}
 
-	result := &GetTablesResponse{
+	data := &getTablesResponse{
 		TableNum:  len(tableInfoList),
 		TableList: &tableInfoList,
 	}
 
-	handler.SendResponse(c, nil, result)
+	handler.SendResponse(c, nil, data)
 }
