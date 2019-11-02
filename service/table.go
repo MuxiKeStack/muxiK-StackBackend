@@ -89,7 +89,16 @@ func GetClassInfoForTableById(id string) (*model.ClassInfo, error) {
 		places = append(places, class.Place3)
 	}
 
-	// 解析上课时间
+	// 获取上课周次和单双周状态
+	weeks := []string{class.Weeks1}
+	if class.Weeks2 != "" {
+		weeks = append(weeks, class.Place2)
+	}
+	if class.Weeks3 != "" {
+		weeks = append(weeks, class.Place3)
+	}
+
+	// 获取课堂上课时间
 	times := []string{class.Time1}
 	if class.Time2 != "" {
 		times = append(times, class.Time2)
@@ -98,8 +107,9 @@ func GetClassInfoForTableById(id string) (*model.ClassInfo, error) {
 		times = append(times, class.Time3)
 	}
 
+	// 解析上课时间详情
 	var timeInfos []model.ClassTimeInfo
-	for _, time := range times {
+	for i, time := range times {
 		split1 := strings.Index(time, "-")
 		split2 := strings.Index(time, "#")
 
@@ -113,14 +123,27 @@ func GetClassInfoForTableById(id string) (*model.ClassInfo, error) {
 			return nil, err
 		}
 
-		//...
+		// 上课星期
+		day, err := strconv.ParseInt(time[split2+1:], 10, 8)
+		if err != nil {
+			return nil, err
+		}
+
+		// 解析上课周次和单双周状态
+		week := weeks[i]
+		splitWeek := strings.Index(week, "#")
+
+		weekState, err := strconv.ParseInt(week[splitWeek+1:], 10, 8)
+		if err != nil {
+			return nil, err
+		}
 
 		timeInfos = append(timeInfos, model.ClassTimeInfo{
 			Start:     int8(start),
 			Duration:  int8(stop - start + 1),
-			Day:       0,
-			Weeks:     "",
-			WeekState: 0,
+			Day:       int8(day),
+			Weeks:     week[:splitWeek],
+			WeekState: int8(weekState),
 		})
 	}
 

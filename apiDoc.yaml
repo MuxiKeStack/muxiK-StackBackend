@@ -1669,8 +1669,6 @@ definitions:
       class_id:
         type: string
         description: 课堂id
-      course_name:
-        type: string
       class_name:
         type: string
       teacher:
@@ -1692,7 +1690,7 @@ definitions:
               description: 上课持续时间（duration=2表示持续2节小课）
             day:
               type: integer
-              description: 哪一天上课
+              description: 星期几上课，从1开始表示周一
             weeks:
               type: string
               description: 上课周次
