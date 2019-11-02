@@ -36,40 +36,40 @@ CREATE TABLE `course_evaluation` (
   KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
-CREATE TABLE `parent_comment` (
-  `id`                INT unsigned NOT NULL AUTO_INCREMENT,
-  `time`              VARCHAR(20)  NOT NULL           COMMENT "评课时间，时间戳",
-  `content`           TEXT         NOT NULl           COMMENT "评论内容",
-  `like_num`          INT          NOT NULL DEFAULT 0 COMMENT "点赞数",
-  `sub_comment_num`   INT          NOT NULL DEFAULT 0 COMMENT "子评论数",
-  `is_anonymous`      TINYINT(1)   NOT NULL DEFAULT 0 COMMENT "是否匿名",
-  `is_valid`          TINYINT(1)            DEFAULT 1 COMMENT "是否有效，未被折叠",
-
-  `user_id`           INT          NOT NULL,
-  `evaluation_id`     INT          NOT NULL COMMENT "评课id",
-
-  PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`),
-  KEY `evaluation_id` (`evaluation_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
-
-CREATE TABLE `sub_comment` (
-  `id`                INT unsigned NOT NULL AUTO_INCREMENT,
-  `time`              VARCHAR(20)  NOT NULL           COMMENT "评课时间，时间戳",
-  `content`           TEXT         NOT NULl           COMMENT "评论内容",
-  `like_num`          INT          NOT NULL DEFAULT 0 COMMENT "点赞数",
-  `is_anonymous`      TINYINT(1)   NOT NULL DEFAULT 0 COMMENT "是否匿名",
-  `is_valid`          TINYINT(1)            DEFAULT 1 COMMENT "是否有效，未被折叠",
-
-  `user_id`           INT          NOT NULL,
-  `parent_id`         INT          NOT NULL,
-  `comment_target_id` INT          NOT NULL COMMENT "评论对象id",
-
-  PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`),
-  KEY `parent_id` (`parent_id`),
-  KEY `comment_target_id` (`comment_target_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+-- CREATE TABLE `parent_comment` (
+--   `id`                INT unsigned NOT NULL AUTO_INCREMENT,
+--   `time`              VARCHAR(20)  NOT NULL           COMMENT "评课时间，时间戳",
+--   `content`           TEXT         NOT NULl           COMMENT "评论内容",
+--   `like_num`          INT          NOT NULL DEFAULT 0 COMMENT "点赞数",
+--   `sub_comment_num`   INT          NOT NULL DEFAULT 0 COMMENT "子评论数",
+--   `is_anonymous`      TINYINT(1)   NOT NULL DEFAULT 0 COMMENT "是否匿名",
+--   `is_valid`          TINYINT(1)            DEFAULT 1 COMMENT "是否有效，未被折叠",
+--
+--   `user_id`           INT          NOT NULL,
+--   `evaluation_id`     INT          NOT NULL COMMENT "评课id",
+--
+--   PRIMARY KEY (`id`),
+--   KEY `user_id` (`user_id`),
+--   KEY `evaluation_id` (`evaluation_id`)
+-- ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+--
+-- CREATE TABLE `sub_comment` (
+--   `id`                INT unsigned NOT NULL AUTO_INCREMENT,
+--   `time`              VARCHAR(20)  NOT NULL           COMMENT "评课时间，时间戳",
+--   `content`           TEXT         NOT NULl           COMMENT "评论内容",
+--   `like_num`          INT          NOT NULL DEFAULT 0 COMMENT "点赞数",
+--   `is_anonymous`      TINYINT(1)   NOT NULL DEFAULT 0 COMMENT "是否匿名",
+--   `is_valid`          TINYINT(1)            DEFAULT 1 COMMENT "是否有效，未被折叠",
+--
+--   `user_id`           INT          NOT NULL,
+--   `parent_id`         INT          NOT NULL,
+--   `comment_target_id` INT          NOT NULL COMMENT "评论对象id",
+--
+--   PRIMARY KEY (`id`),
+--   KEY `user_id` (`user_id`),
+--   KEY `parent_id` (`parent_id`),
+--   KEY `comment_target_id` (`comment_target_id`)
+-- ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE `comment` (
   `id`                INT unsigned NOT NULL AUTO_INCREMENT,

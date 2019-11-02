@@ -1,10 +1,8 @@
 package model
 
-import (
-	"errors"
-)
+import "errors"
 
-/*---------------------- Course Evaluation Operation ---------------------*/
+/*-------------------------- Course Evaluation Operation --------------------------*/
 
 // Create new course evaluation.
 func (evaluation *CourseEvaluationModel) New() error {
@@ -35,9 +33,7 @@ func (evaluation *CourseEvaluationModel) Like(userId uint32) error {
 		EvaluationId: evaluation.Id,
 		UserId:       userId,
 	}
-	//if evaluation.HasLiked(userId) {
-	//	return errors.New("Has already liked. ")
-	//}
+
 	d := DB.Self.Create(data)
 	return d.Error
 }
@@ -48,9 +44,7 @@ func (evaluation *CourseEvaluationModel) CancelLiking(userId uint32) error {
 		EvaluationId: evaluation.Id,
 		UserId:       userId,
 	}
-	//if !evaluation.HasLiked(userId) {
-	//	return errors.New("Has not liked yet. ")
-	//}
+
 	d := DB.Self.Delete(data)
 	return d.Error
 }
