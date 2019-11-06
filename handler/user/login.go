@@ -5,13 +5,20 @@ import (
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/token"
+	"github.com/MuxiKeStack/muxiK-StackBackend/service"
 	"github.com/MuxiKeStack/muxiK-StackBackend/util"
 
 	"github.com/gin-gonic/gin"
 )
 
-// Login generates the authentication token
-// if the password was matched with the specified account.
+// @Tags auth
+// @Summary 学号登录
+// @Description 用学号登录，返回token，如果isnew==1，就要post用户信息。
+// @Accept  json
+// @Produce  json
+// @Param data body model.LoginModel true "sid学号，password密码"
+// @Success 200  {object} model.AuthResponse
+// @Router /login [post]
 func Login(c *gin.Context) {
 	// Binding the data with the user struct.
 	var l model.LoginModel
@@ -29,14 +36,14 @@ func Login(c *gin.Context) {
 	}
 
 	// judge whether there is this user or not
-	IsNewUser := model.HaveUser(l.Sid)
+	IsNewUser := service.HaveUser(l.Sid)
 	if IsNewUser == 1 {
 		err := model.CreateUser(l.Sid)
 		if err != nil {
 			SendError(c, errno.ErrCreateUser, nil, err.Error())
 		}
 	}
-	u, err := model.GetUserBySid(l.Sid)
+	u, err := service.GetUserBySid(l.Sid)
 	if err != nil {
 		SendResponse(c, errno.ErrUserNotFound, nil)
 		return
