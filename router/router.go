@@ -1,6 +1,7 @@
 package router
 
 import (
+	"github.com/MuxiKeStack/muxiK-StackBackend/handler/message"
 	"net/http"
 
 	_ "github.com/MuxiKeStack/muxiK-StackBackend/docs"
@@ -36,6 +37,13 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 	{
 		u.POST("/info", user.PostInfo)
 		u.GET("/info", user.GetInfo)
+	}
+
+	// The message handlers, required authentication
+	m := g.Group("/api/v1/message")
+	m.Use(middleware.AuthMiddleware())
+	{
+		m.GET("/", message.Get)
 	}
 
 	url := ginSwagger.URL("http://localhost:8080/swagger/doc.json") // The url pointing to API definition
