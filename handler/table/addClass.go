@@ -17,6 +17,13 @@ type addClassResponseData struct {
 }
 
 // 添加课堂
+// @Summary 收藏的课堂加入课表
+// @Tags table
+// @Param token header string true "token"
+// @Param id path string true "课表id"
+// @Param classId query string true "课堂id"
+// @Success 200 {object} table.addClassResponseData
+// @Router /table/{id}/class/ [post]
 func AddClass(c *gin.Context) {
 	userId := c.MustGet("id").(uint32)
 
@@ -33,8 +40,8 @@ func AddClass(c *gin.Context) {
 	}
 
 	table := &model.ClassTableModel{
-		Id:      uint32(tableId),
-		UserId:  userId,
+		Id:     uint32(tableId),
+		UserId: userId,
 	}
 	// table是否存在
 	if !table.Existing() {

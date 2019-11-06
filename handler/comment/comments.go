@@ -17,6 +17,14 @@ type commentListResponse struct {
 }
 
 // 获取评论列表
+// @Summary 评论点赞/取消点赞
+// @Tags comment
+// @Param token header string false "游客登录则不需要此字段或为空"
+// @Param id path string true "评课id"
+// @Param pageSize query integer true "最大的一级评论数量"
+// @Param pageNum query integer true "翻页页码，默认为0"
+// @Success 200 {object} comment.commentListResponse
+// @Router /evaluation/{id}/comments/ [get]
 func GetComments(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {

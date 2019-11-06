@@ -26,19 +26,13 @@ type evaluationPublishResponse struct {
 	EvaluationId uint32 `json:"evaluation_id"`
 }
 
-type evaluationPublishAPIResponse struct {
-	Code    int32
-	Message string
-	Data    interface{}
-}
-
-// Publish ...
+// Publish a new  course evaluation.
 // @Summary 发布评课
-// @Accept  json
-// @Produce  json
-// @Param evaluationPublishRequest body comment.evaluationPublishRequest true "评课数据"
-// @Success 200 {array} evaluationPublishResponse
-// @Router /evaluation [post]
+// @Tags comment
+// @Param token header string true "token"
+// @Param data body comment.evaluationPublishRequest true "data"
+// @Success 200 {object} comment.evaluationPublishResponse
+// @Router /evaluation/ [post]
 func Publish(c *gin.Context) {
 	var data evaluationPublishRequest
 	if err := c.ShouldBindJSON(&data); err != nil {

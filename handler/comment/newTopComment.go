@@ -1,9 +1,10 @@
 package comment
 
 import (
-	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
 	"strconv"
 	"time"
+
+	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
@@ -13,14 +14,21 @@ import (
 )
 
 // 新增评论请求模型
-type NewCommentRequest struct {
+type newCommentRequest struct {
 	Content     string `json:"content"`
 	IsAnonymous bool   `json:"is_anonymous"`
 }
 
 // 评论评课
+// @Summary 评论评课
+// @Tags comment
+// @Param token header string true "token"
+// @Param id path string true "评课id"
+// @Param data body comment.newCommentRequest true "data"
+// @Success 200 {object} model.CommentInfo
+// @Router /evaluation/{id}/comment/ [post]
 func CreateTopComment(c *gin.Context) {
-	var data NewCommentRequest
+	var data newCommentRequest
 	if err := c.BindJSON(&data); err != nil {
 		handler.SendBadRequest(c, errno.ErrBind, nil, err.Error())
 		return

@@ -64,7 +64,6 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 	// 	course.DELETE("/:id/delete", course.DeleteHistoryCourse)
 	// }
 
-
 	// Router for course evaluations
 
 	evaluation := g.Group("/api/v1/evaluation")

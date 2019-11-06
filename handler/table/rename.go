@@ -1,11 +1,12 @@
 package table
 
 import (
+	"strconv"
+
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
 	"github.com/gin-gonic/gin"
-	"strconv"
 )
 
 type renameBodyData struct {
@@ -13,6 +14,13 @@ type renameBodyData struct {
 }
 
 // 课表重命名
+// @Summary 课表重命名
+// @Tags table
+// @Param token header string true "token"
+// @Param id path string true "课表id"
+// @Param data body table.renameBodyData true "data"
+// @Success 200 "OK"
+// @Router /table/{id}/rename/ [put]
 func Rename(c *gin.Context) {
 	userId := c.MustGet("id").(uint32)
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
@@ -27,8 +35,8 @@ func Rename(c *gin.Context) {
 	}
 
 	table := &model.ClassTableModel{
-		Id:      uint32(id),
-		UserId:  userId,
+		Id:     uint32(id),
+		UserId: userId,
 	}
 
 	// 检测课表是否存在

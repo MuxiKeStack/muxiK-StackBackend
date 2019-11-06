@@ -20,49 +20,28 @@ var (
 	cfg = pflag.StringP("config", "c", "", "apiserver config file path.")
 )
 
-// @title Swagger Example API
+// @title Muxi K-Stack
 // @version 1.0
-// @description This is a sample server celler server.
-// @termsOfService http://swagger.io/terms/
+// @description 木犀课栈
 
-// @contact.name API Support
-// @contact.url http://www.swagger.io/support
-// @contact.email support@swagger.io
-
-// @license.name Apache 2.0
-// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
-
-// @host localhost:8080
+// @host ...
 // @BasePath /api/v1
 
-// @securityDefinitions.basic BasicAuth
+// @Schemes https
 
-// @securityDefinitions.apikey ApiKeyAuth
-// @in header
-// @name Authorization
+// @tag.name user
+// @tag.description 用户相关
+// @tag.name message
+// @tag.description 消息提醒
+// @tag.name course
+// @tag.description 课程相关
+// @tag.name comment
+// @tag.description 评课&评论
+// @tag.name table
+// @tag.description 排课课表
+// @tag.name report
+// @tag.description 举报
 
-// @securitydefinitions.oauth2.application OAuth2Application
-// @tokenUrl https://example.com/oauth/token
-// @scope.write Grants write access
-// @scope.admin Grants read and write access to administrative information
-
-// @securitydefinitions.oauth2.implicit OAuth2Implicit
-// @authorizationurl https://example.com/oauth/authorize
-// @scope.write Grants write access
-// @scope.admin Grants read and write access to administrative information
-
-// @securitydefinitions.oauth2.password OAuth2Password
-// @tokenUrl https://example.com/oauth/token
-// @scope.read Grants read access
-// @scope.write Grants write access
-// @scope.admin Grants read and write access to administrative information
-
-// @securitydefinitions.oauth2.accessCode OAuth2AccessCode
-// @tokenUrl https://example.com/oauth/token
-// @authorizationurl https://example.com/oauth/authorize
-// @scope.admin Grants read and write access to administrative information
-
-// @x-extension-openapi {"example": "value on a json format"}
 func main() {
 	pflag.Parse()
 

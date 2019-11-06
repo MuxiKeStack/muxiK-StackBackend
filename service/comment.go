@@ -165,7 +165,7 @@ func CommentList(evaluationId uint32, limit, offset int32, userId uint32, visito
 			}
 
 			// 获取父评论详情
-			parentCommentInfo, err := GetParentCommentInfoById(parentComment.Id ,userId, visitor, &subCommentInfos)
+			parentCommentInfo, err := GetParentCommentInfoById(parentComment.Id, userId, visitor, &subCommentInfos)
 			if err != nil {
 				errChan <- err
 				return

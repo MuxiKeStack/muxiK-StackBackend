@@ -15,12 +15,12 @@ type ClassTableInfo struct {
 }
 
 type ClassInfo struct {
-	CourseId   string           `json:"course_id"`
-	ClassId    string           `json:"class_id"`
-	ClassName  string           `json:"class_name"`
-	Teacher    string           `json:"teacher"`
-	Places     *[]string        `json:"places"`
-	Times      *[]ClassTimeInfo `json:"times"`
+	CourseId  string           `json:"course_id"`
+	ClassId   string           `json:"class_id"`
+	ClassName string           `json:"class_name"`
+	Teacher   string           `json:"teacher"`
+	Places    *[]string        `json:"places"`
+	Times     *[]ClassTimeInfo `json:"times"`
 }
 
 type ClassTimeInfo struct {

@@ -11,6 +11,12 @@ import (
 )
 
 // 删除课表
+// @Summary 删除课表
+// @Tags table
+// @Param token header string true "token"
+// @Param id path string true "课表id"
+// @Success 200 "OK"
+// @Router /table/{id}/ [delete]
 func DeleteTable(c *gin.Context) {
 	userId := c.MustGet("id").(uint32)
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
@@ -20,8 +26,8 @@ func DeleteTable(c *gin.Context) {
 	}
 
 	table := &model.ClassTableModel{
-		Id:      uint32(id),
-		UserId:  userId,
+		Id:     uint32(id),
+		UserId: userId,
 	}
 
 	if !table.Existing() {
