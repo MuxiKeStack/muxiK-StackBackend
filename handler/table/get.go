@@ -14,6 +14,11 @@ type getTablesResponse struct {
 }
 
 // 获取课表
+// @Summary 获取课表
+// @Tags table
+// @Param token header string true "token"
+// @Success 200 {object} table.getTablesResponse
+// @Router /table/ [get]
 func Get(c *gin.Context) {
 	userId := c.MustGet("id").(uint32)
 

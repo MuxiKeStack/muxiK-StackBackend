@@ -12,6 +12,13 @@ import (
 )
 
 // 删除课堂
+// @Summary 删除课堂
+// @Tags table
+// @Param token header string true "token"
+// @Param id path string true "课表id"
+// @Param classId query string true "课堂id"
+// @Success 200 "OK"
+// @Router /table/{id}/class/ [delete]
 func DeleteClass(c *gin.Context) {
 	userId := c.MustGet("id").(uint32)
 
@@ -23,13 +30,13 @@ func DeleteClass(c *gin.Context) {
 
 	classId := c.DefaultQuery("classId", "")
 	if classId == "" {
-		handler.SendBadRequest(c,errno.ErrGetQuery, nil, "Table id is expected. ")
+		handler.SendBadRequest(c, errno.ErrGetQuery, nil, "Table id is expected. ")
 		return
 	}
 
 	table := &model.ClassTableModel{
-		Id:      uint32(tableId),
-		UserId:  userId,
+		Id:     uint32(tableId),
+		UserId: userId,
 	}
 
 	// 检测课表是否已经存在

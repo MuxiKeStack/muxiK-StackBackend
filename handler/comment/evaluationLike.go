@@ -4,7 +4,6 @@ import (
 	"strconv"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
-
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 
@@ -12,15 +11,22 @@ import (
 )
 
 type likeDataResponse struct {
-	IsLike  bool
-	LikeNum uint32
+	IsLike  bool   `json:"is_like"`
+	LikeNum uint32 `json:"like_num"`
 }
 
 type likeDataRequest struct {
-	IsLike bool
+	IsLike bool `json:"is_like"`
 }
 
 // 评课点赞/取消点赞
+// @Summary 评论点赞/取消点赞
+// @Tags comment
+// @Param token header string true "token"
+// @Param id path string true "点赞的评课id"
+// @Param data body comment.likeDataRequest true "data"
+// @Success 200 {object} comment.likeDataResponse
+// @Router /evaluation/{id}/like/ [put]
 func UpdateEvaluationLike(c *gin.Context) {
 	// 获取请求中当前的点赞状态
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)

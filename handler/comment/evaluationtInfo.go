@@ -11,6 +11,12 @@ import (
 )
 
 // 获取评课详情
+// @Summary 获取评课详情
+// @Tags comment
+// @Param token header string false "游客登录则不需要此字段或为空"
+// @Param id path string true "评课id"
+// @Success 200 {object} model.EvaluationInfo
+// @Router /evaluation/{id}/ [get]
 func GetEvaluation(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {

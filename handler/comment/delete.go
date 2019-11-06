@@ -11,6 +11,12 @@ import (
 )
 
 // 删除评课
+// @Summary 删除评课
+// @Tags comment
+// @Param token header string true "token"
+// @Param id path string true "评课id"
+// @Success 200 "OK"
+// @Router /evaluation/{id}/ [delete]
 func Delete(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {

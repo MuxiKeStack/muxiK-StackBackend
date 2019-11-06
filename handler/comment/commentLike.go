@@ -11,6 +11,13 @@ import (
 )
 
 // 评论点赞/取消点赞
+// @Summary 评论点赞/取消点赞
+// @Tags comment
+// @Param token header string true "token"
+// @Param id path string true "点赞评论id"
+// @Param data body comment.likeDataRequest true "data"
+// @Success 200 {object} comment.likeDataResponse
+// @Router /comment/{id}/like/ [put]
 func UpdateCommentLike(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {

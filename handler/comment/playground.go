@@ -17,6 +17,13 @@ type playgroundResponse struct {
 }
 
 // 评课广场获取评课列表
+// @Summary 评课广场获取评课列表
+// @Tags comment
+// @Param token header string false "游客登录则不需要此字段或为空"
+// @Param pageSize query integer true "最大的一级评论数量"
+// @Param lastEvaluationId query integer true "上一次请求的最后一个评课的id，若是初始请求则为空或-1"
+// @Success 200 {object} comment.playgroundResponse
+// @Router /evaluation/list/ [get]
 func EvaluationPlayground(c *gin.Context) {
 	pageSize := c.DefaultQuery("pageSize", "20")
 	limit, err := strconv.ParseInt(pageSize, 10, 32)
@@ -25,7 +32,7 @@ func EvaluationPlayground(c *gin.Context) {
 		return
 	}
 
-	lastIdStr := c.DefaultQuery("lastEvaluationId", "-1")
+	lastIdStr := c.DefaultQuery("lastEvaluationId", "")
 	lastId, err := strconv.ParseInt(lastIdStr, 10, 32)
 	if err != nil {
 		handler.SendBadRequest(c, errno.ErrGetQuery, nil, err.Error())

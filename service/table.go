@@ -148,13 +148,69 @@ func GetClassInfoForTableById(id string) (*model.ClassInfo, error) {
 	}
 
 	info := &model.ClassInfo{
-		CourseId:   string(class.CourseId),
-		ClassId:    id,
-		ClassName:  class.Name,
-		Teacher:    class.Teacher,
-		Places:     &places,
-		Times:      &timeInfos,
+		CourseId:  string(class.CourseId),
+		ClassId:   id,
+		ClassName: class.Name,
+		Teacher:   class.Teacher,
+		Places:    &places,
+		Times:     &timeInfos,
 	}
 
 	return info, nil
 }
+
+//func GetTableInfoByTableModel_2(table *model.ClassTableModel) (*model.ClassTableInfo, error) {
+//	ids := strings.Split(table.Classes, ",")
+//
+//	var classList []model.ClassInfo
+//
+//	wg := &sync.WaitGroup{}
+//	errChan := make(chan error, 1)
+//	finished := make(chan bool, 1)
+//	classChan := make(chan *model.ClassInfo, 20)
+//
+//	// 并发获取课堂列表
+//	for _, id := range ids {
+//		wg.Add(1)
+//
+//		go func(id string) {
+//			defer wg.Done()
+//
+//			classInfo, err := GetClassInfoForTableById(id)
+//			if err != nil {
+//				errChan <- err
+//				return
+//			}
+//			classChan <- classInfo
+//
+//		}(id)
+//	}
+//
+//	go func() {
+//		wg.Wait()
+//		close(classChan)
+//	}()
+//
+//	go func() {
+//		for class := range classChan {
+//			classList = append(classList, *class)
+//		}
+//		close(finished)
+//	}()
+//
+//	select {
+//	case <-finished:
+//	case err := <-errChan:
+//		for range classChan {}
+//		return nil, err
+//	}
+//
+//	info := &model.ClassTableInfo{
+//		TableId:   table.Id,
+//		TableName: table.Name,
+//		ClassNum:  uint32(len(ids)),
+//		ClassList: &classList,
+//	}
+//
+//	return info, nil
+//}

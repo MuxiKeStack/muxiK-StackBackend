@@ -13,8 +13,15 @@ import (
 )
 
 // 回复评论
+// @Summary 回复评论
+// @Tags comment
+// @Param token header string true "token"
+// @Param id path string true "评论id"
+// @Param data body comment.newCommentRequest true "data"
+// @Success 200 {object} model.CommentInfo
+// @Router /comment/{id}/ [post]
 func Reply(c *gin.Context) {
-	var data NewCommentRequest
+	var data newCommentRequest
 	if err := c.BindJSON(&data); err != nil {
 		handler.SendBadRequest(c, errno.ErrBind, nil, err.Error())
 		return

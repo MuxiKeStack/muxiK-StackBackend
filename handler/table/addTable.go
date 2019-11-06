@@ -12,6 +12,12 @@ import (
 )
 
 // 新建课表
+// @Summary 新建课表
+// @Tags table
+// @Param token header string true "token"
+// @Param id path string false "若是创建副本，则为课表副本id，若是添加新课表，则为空"
+// @Success 200 {object} model.ClassTableInfo
+// @Router /table/ [post]
 func AddTable(c *gin.Context) {
 	userId := c.MustGet("id").(uint32)
 	idStr := c.Param("id")
@@ -37,8 +43,8 @@ func AddTable(c *gin.Context) {
 		}
 
 		table := model.ClassTableModel{
-			Id:      uint32(id),
-			UserId:  userId,
+			Id:     uint32(id),
+			UserId: userId,
 		}
 
 		// 检验父课表存在
