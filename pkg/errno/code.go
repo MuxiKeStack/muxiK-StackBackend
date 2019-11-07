@@ -25,9 +25,10 @@ var (
 
 	// comment errors
 	ErrNotLiked       = &Errno{Code: 20301, Message: "User has not liked yet. "}
-	ErrEvaluationList = &Errno{Code: 20302, Message: "Error occurred while getting evaluation list. "}
-	ErrCommentList    = &Errno{Code: 20303, Message: "Error occurred while getting comment list. "}
-	//ErrGetEvaluationInfo = &Errno{Code: 20304, Message: "Error occurred while getting evaluation info. "}
+	ErrHasLiked       = &Errno{Code: 20302, Message: "User has already liked. "}
+	ErrEvaluationList = &Errno{Code: 20303, Message: "Error occurred while getting evaluation list. "}
+	ErrCommentList    = &Errno{Code: 20304, Message: "Error occurred while getting comment list. "}
+	//ErrGetEvaluationInfo = &Errno{Code: 20305, Message: "Error occurred while getting evaluation info. "}
 
 	// table errors
 	ErrTableExisting = &Errno{Code: 20401, Message: "The table is not existing. "}

@@ -3,9 +3,9 @@ package comment
 import (
 	"strconv"
 
-	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
+	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
 
 	"github.com/gin-gonic/gin"
 )
@@ -28,13 +28,13 @@ type likeDataRequest struct {
 // @Success 200 {object} comment.likeDataResponse
 // @Router /evaluation/{id}/like/ [put]
 func UpdateEvaluationLike(c *gin.Context) {
-	// 获取请求中当前的点赞状态
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
 		handler.SendError(c, err, nil, err.Error())
 		return
 	}
 
+	// 获取请求中当前的点赞状态
 	var bodyData likeDataRequest
 	if err := c.BindJSON(&bodyData); err != nil {
 		handler.SendError(c, err, nil, err.Error())
@@ -46,8 +46,15 @@ func UpdateEvaluationLike(c *gin.Context) {
 	var evaluation = &model.CourseEvaluationModel{Id: uint32(id)}
 	hasLiked := evaluation.HasLiked(userId)
 
+	// 判断点赞请求是否合理
+	// 未点赞
 	if bodyData.IsLike && !hasLiked {
 		handler.SendResponse(c, errno.ErrNotLiked, nil)
+		return
+	}
+	//	已点赞
+	if !bodyData.IsLike && hasLiked {
+		handler.SendResponse(c, errno.ErrHasLiked, nil)
 		return
 	}
 
@@ -64,12 +71,11 @@ func UpdateEvaluationLike(c *gin.Context) {
 	}
 
 	// 更新点赞数
-	num := -1
+	num := 1
 	if bodyData.IsLike {
-		num = 1
+		num = -1
 	}
 	err = evaluation.UpdateLikeNum(num)
-
 	if err != nil {
 		handler.SendError(c, err, nil, err.Error())
 		return

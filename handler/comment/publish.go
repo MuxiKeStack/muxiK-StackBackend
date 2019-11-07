@@ -10,11 +10,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// 发布评课请求数据
+// 发布评课的请求数据
 type evaluationPublishRequest struct {
 	CourseId            string  `json:"course_id" binding:"required"` // FIX 加上 binding
 	CourseName          string  `json:"course_name"`
-	Rate                uint8   `json:"rate"`
+	Rate                float32 `json:"rate"`
 	AttendanceCheckType uint8   `json:"attendance_check_type"`
 	ExamCheckType       uint8   `json:"exam_check_type"`
 	Content             string  `json:"content"`
