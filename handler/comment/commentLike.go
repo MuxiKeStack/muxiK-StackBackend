@@ -1,11 +1,10 @@
 package comment
 
 import (
-	"errors"
-	"strconv"
-
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
+	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
+	"github.com/MuxiKeStack/muxiK-StackBackend/service"
 
 	"github.com/gin-gonic/gin"
 )
@@ -19,12 +18,11 @@ import (
 // @Success 200 {object} comment.likeDataResponse
 // @Router /comment/{id}/like/ [put]
 func UpdateCommentLike(c *gin.Context) {
-	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
-	if err != nil {
-		handler.SendError(c, err, nil, err.Error())
-		return
-	}
+	var err error
 
+	id := c.Param("id")
+
+	// 获取请求中当前的点赞状态
 	var bodyData likeDataRequest
 	if err := c.BindJSON(&bodyData); err != nil {
 		handler.SendError(c, err, nil, err.Error())
@@ -33,49 +31,46 @@ func UpdateCommentLike(c *gin.Context) {
 
 	userId := c.MustGet("id").(uint32)
 
-	var comment = &model.CommentModel{Id: uint32(id)}
-	hasLiked := comment.HasLiked(userId)
+	hasLiked := model.CommentHasLiked(userId, id)
 
-	// 取消点赞
+	// 判断点赞请求是否合理
+	// 未点赞
+	if bodyData.IsLike && !hasLiked {
+		handler.SendResponse(c, errno.ErrNotLiked, nil)
+		return
+	}
+	// 已点赞
+	if !bodyData.IsLike && hasLiked {
+		handler.SendResponse(c, errno.ErrHasLiked, nil)
+		return
+	}
+
+	// 点赞&取消点赞
 	if bodyData.IsLike {
-		if !hasLiked {
-			err = errors.New("Has not liked yet. ")
-			handler.SendResponse(c, err, nil)
-			return
-		}
-		err = comment.CancelLiking(userId)
-		if err != nil {
-			handler.SendError(c, err, nil, err.Error())
-			return
-		}
-		err = comment.UpdateLikeNum(-1)
-		if err != nil {
-			handler.SendError(c, err, nil, err.Error())
-			return
-		}
+		err = model.CommentCancelLiking(userId, id);
 	} else {
-		// 点赞
+		err = model.CommentLike(userId, id)
+	}
 
-		if hasLiked {
-			err = errors.New("Has already liked. ")
-			handler.SendResponse(c, err, nil)
-			return
-		}
-		err = comment.Like(userId)
-		if err != nil {
-			handler.SendError(c, err, nil, err.Error())
-			return
-		}
-		err = comment.UpdateLikeNum(1)
-		if err != nil {
-			handler.SendError(c, err, nil, err.Error())
-			return
-		}
+	if err != nil {
+		handler.SendError(c, err, nil, err.Error())
+		return
+	}
+
+	// 更新点赞数
+	num := 1
+	if bodyData.IsLike {
+		num = -1
+	}
+	count, err := service.UpdateCommentLikeNum(id, num)
+	if err != nil {
+		handler.SendError(c, err, nil, err.Error())
+		return
 	}
 
 	data := &likeDataResponse{
 		IsLike:  !hasLiked,
-		LikeNum: comment.LikeNum,
+		LikeNum: count,
 	}
 
 	handler.SendResponse(c, nil, data)

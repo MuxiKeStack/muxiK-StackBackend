@@ -10,13 +10,14 @@ import (
 	"github.com/MuxiKeStack/muxiK-StackBackend/service"
 
 	"github.com/gin-gonic/gin"
+	uuid "github.com/satori/go.uuid"
 )
 
 // 回复评论
 // @Summary 回复评论
 // @Tags comment
 // @Param token header string true "token"
-// @Param id path string true "评论id"
+// @Param id path string true "回复的评论对象id"
 // @Param data body comment.newCommentRequest true "data"
 // @Success 200 {object} model.CommentInfo
 // @Router /comment/{id}/ [post]
@@ -28,37 +29,40 @@ func Reply(c *gin.Context) {
 	}
 
 	userId := c.MustGet("id").(uint32)
-	commentTargetId, err := strconv.ParseUint(c.Param("id"), 10, 32)
-	if err != nil {
-		handler.SendBadRequest(c, errno.ErrGetParam, nil, err.Error())
-		return
-	}
 
-	parentId, err := model.GetParentIdByCommentTargetId(uint32(commentTargetId))
+	commentTargetId := c.Param("id")
+
+	parentId, err := model.GetParentIdByCommentTargetId(commentTargetId)
 	if err != nil {
 		handler.SendError(c, err, nil, err.Error())
 		return
 	}
 
-	var comment = &model.CommentModel{
-		UserId:          userId,
-		ParentId:        parentId,
-		CommentTargetId: uint32(commentTargetId),
-		Content:         data.Content,
-		LikeNum:         0,
-		IsRoot:          false,
-		Time:            strconv.FormatInt(time.Now().Unix(), 10),
-		SubCommentNum:   0,
+	targetUserId, err := model.GetTargetUserIdByCommentTargetId(commentTargetId)
+	if err != nil {
+		handler.SendError(c, err, nil, err.Error())
 	}
 
-	// Create a new comment
+	var comment = &model.SubCommentModel{
+		Id:           uuid.NewV4().String(),
+		UserId:       userId,
+		ParentId:     parentId,
+		TargetUserId: targetUserId,
+		Content:      data.Content,
+		LikeNum:      0,
+		Time:         strconv.FormatInt(time.Now().Unix(), 10),
+		IsAnonymous:  data.IsAnonymous,
+		IsValid:      true,
+	}
+
+	// Create a new subComment
 	if err := comment.New(); err != nil {
 		handler.SendError(c, err, nil, err.Error())
 		return
 	}
 
 	// Get comment info
-	commentInfo, err := service.GetCommentInfo(comment.Id, userId, false)
+	commentInfo, err := service.GetSubCommentInfoById(comment.Id, userId, false)
 	if err != nil {
 		handler.SendError(c, err, nil, err.Error())
 		return

@@ -4,13 +4,13 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
-
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
+	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
 	"github.com/MuxiKeStack/muxiK-StackBackend/service"
 
 	"github.com/gin-gonic/gin"
+	uuid "github.com/satori/go.uuid"
 )
 
 // 新增评论请求模型
@@ -25,7 +25,7 @@ type newCommentRequest struct {
 // @Param token header string true "token"
 // @Param id path string true "评课id"
 // @Param data body comment.newCommentRequest true "data"
-// @Success 200 {object} model.CommentInfo
+// @Success 200 {object} model.ParentCommentInfo
 // @Router /evaluation/{id}/comment/ [post]
 func CreateTopComment(c *gin.Context) {
 	var data newCommentRequest
@@ -41,15 +41,16 @@ func CreateTopComment(c *gin.Context) {
 		return
 	}
 
-	var comment = &model.CommentModel{
+	var comment = &model.ParentCommentModel{
+		Id:              uuid.NewV4().String(),
 		UserId:          userId,
-		ParentId:        0,
-		CommentTargetId: uint32(evaluationId),
+		EvaluationId:    uint32(evaluationId),
 		Content:         data.Content,
-		LikeNum:         0,
-		IsRoot:          true,
 		Time:            strconv.FormatInt(time.Now().Unix(), 10),
+		LikeNum:         0,
 		SubCommentNum:   0,
+		IsAnonymous:     data.IsAnonymous,
+		IsValid:         true,
 	}
 
 	// Create new comment
@@ -59,7 +60,7 @@ func CreateTopComment(c *gin.Context) {
 	}
 
 	// Get comment info
-	commentInfo, err := service.GetCommentInfo(comment.Id, userId, false)
+	commentInfo, err := service.GetParentCommentInfo(comment.Id, userId, false)
 	if err != nil {
 		handler.SendError(c, err, nil, err.Error())
 		return
