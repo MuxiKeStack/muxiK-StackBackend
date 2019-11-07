@@ -83,7 +83,7 @@ func GetEvaluationInfo(id, userId uint32, visitor bool) (*model.EvaluationInfo, 
 	// Get evaluation user info if not anonymous
 	u := &model.UserInfoResponse{}
 	if !evaluation.IsAnonymous {
-		u, err = model.GetUserInfoById(evaluation.UserId)
+		u, err = GetUserInfoById(evaluation.UserId)
 		if err != nil {
 			return nil, err
 		}
