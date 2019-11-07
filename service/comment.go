@@ -86,7 +86,7 @@ func GetParentCommentInfo(id string, userId uint32, visitor bool) (*model.Parent
 	}
 
 	// Get the user of the parent comment
-	userInfo, err := model.GetUserInfoById(comment.UserId)
+	userInfo, err := GetUserInfoById(comment.UserId)
 	if err != nil {
 		return nil, err
 	}
@@ -190,13 +190,13 @@ func GetSubCommentInfoById(id string, userId uint32, visitor bool) (*model.Comme
 	}
 
 	// Get the user of the subComment
-	commentUser, err := model.GetUserInfoById(comment.UserId)
+	commentUser, err := GetUserInfoById(comment.UserId)
 	if err != nil {
 		return nil, err
 	}
 
 	// Get the target user of the subComment
-	targetUser, err := model.GetUserInfoById(comment.TargetUserId)
+	targetUser, err := GetUserInfoById(comment.TargetUserId)
 	if err != nil {
 		return nil, err
 	}
