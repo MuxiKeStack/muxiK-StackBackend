@@ -66,6 +66,20 @@ definitions:
       sum:
         type: integer
     type: object
+  message.messageListResponse:
+    properties:
+      messageList:
+        items:
+          $ref: '#/definitions/model.MessageSub'
+        type: array
+    type: object
+  model.AuthResponse:
+    properties:
+      is_new:
+        type: integer
+      token:
+        type: string
+    type: object
   model.ClassInfo:
     properties:
       class_id:
@@ -133,6 +147,15 @@ definitions:
         $ref: '#/definitions/model.UserInfoResponse'
         type: object
     type: object
+  model.CourseInfo:
+    properties:
+      comment:
+        type: string
+      comment_course_id:
+        type: integer
+      course_name:
+        type: string
+    type: object
   model.EvaluationInfo:
     properties:
       attendance_check_type:
@@ -169,6 +192,33 @@ definitions:
         $ref: '#/definitions/model.UserInfoResponse'
         type: object
     type: object
+  model.LoginModel:
+    properties:
+      password:
+        type: string
+      sid:
+        type: string
+    required:
+    - password
+    - sid
+    type: object
+  model.MessageSub:
+    properties:
+      course_info:
+        $ref: '#/definitions/model.CourseInfo'
+        type: object
+      is_like:
+        type: boolean
+      is_read:
+        type: boolean
+      reply:
+        type: string
+      time:
+        type: string
+      user_info:
+        $ref: '#/definitions/model.UserInfoRequest'
+        type: object
+    type: object
   model.ParentCommentInfo:
     properties:
       comment_id:
@@ -194,6 +244,13 @@ definitions:
       user_info:
         $ref: '#/definitions/model.UserInfoResponse'
         type: object
+    type: object
+  model.UserInfoRequest:
+    properties:
+      avatar:
+        type: string
+      username:
+        type: string
     type: object
   model.UserInfoResponse:
     properties:
@@ -462,6 +519,55 @@ paths:
       summary: 评课广场获取评课列表
       tags:
       - comment
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: 用学号登录，返回token，如果isnew==1，就要post用户信息。
+      parameters:
+      - description: sid学号，password密码
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.LoginModel'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.AuthResponse'
+      summary: 学号登录
+      tags:
+      - auth
+  /message/:
+    get:
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 页码
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: 每页最大数
+        in: query
+        name: limit
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/message.messageListResponse'
+      summary: 获取消息提醒
+      tags:
+      - message
   /table/:
     get:
       parameters:
@@ -591,6 +697,52 @@ paths:
       summary: 课表重命名
       tags:
       - table
+  /user/info:
+    get:
+      consumes:
+      - application/json
+      description: 带着token
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.UserInfoResponse'
+      summary: 获取用户信息
+      tags:
+      - user
+    post:
+      consumes:
+      - application/json
+      description: 带着token，上传用户的头像/avatar，名字/username.
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 用户信息
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.UserInfoRequest'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: 上传用户信息
+      tags:
+      - user
 schemes:
 - https
 swagger: "2.0"

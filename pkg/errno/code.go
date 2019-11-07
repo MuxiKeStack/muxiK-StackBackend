@@ -18,8 +18,8 @@ var (
 	ErrTokenInvalid = &Errno{Code: 20102, Message: "The token was invalid."}
 
 	// user errors
-	ErrCreateUser   = &Errno{Code: 20201, Message: "Error in creating user."}
-	ErrUpdateUser   = &Errno{Code: 20202, Message: "Error in updating user"}
+	ErrCreateUser   = &Errno{Code: 20201, Message: "Error occurred in creating user."}
+	ErrUpdateUser   = &Errno{Code: 20202, Message: "Error occurred in updating user"}
 	ErrUserNotFound = &Errno{Code: 20203, Message: "The user was not found."}
 	ErrGetUserInfo  = &Errno{Code: 20204, Message: "Error in getting user info"}
 
@@ -35,4 +35,7 @@ var (
 	ErrClassExisting = &Errno{Code: 20402, Message: "The class is not existing. "}
 	ErrGetTableInfo  = &Errno{Code: 20403, Message: "Error occurred in getting table info. "}
 	ErrGetClassInfo  = &Errno{Code: 20404, Message: "Error occurred in getting class info."}
+
+	// message errors
+	ErrGetMessage = &Errno{Code: 20501, Message: "Error occurred in getting message list"}
 )

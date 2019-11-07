@@ -15,8 +15,8 @@ import (
 var (
 	g           *gin.Engine
 	tokenString = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1NzE1ODEwMzMsImlkIjo0LCJuYmYiOjE1NzE1ODEwMzN9.KpY7KnvN7_6CIZU7_syxE70g0Qy-opq9W5QeBH9ZZrE"
-	password    = "Yu@14796825550"
-	sid         = "2018212576"
+	password    = ""
+	sid         = ""
 )
 
 func TestMain(m *testing.M) {

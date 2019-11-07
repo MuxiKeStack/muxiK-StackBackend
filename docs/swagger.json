@@ -357,6 +357,80 @@
                 }
             }
         },
+        "/login": {
+            "post": {
+                "description": "用学号登录，返回token，如果isnew==1，就要post用户信息。",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "学号登录",
+                "parameters": [
+                    {
+                        "description": "sid学号，password密码",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/model.LoginModel"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.AuthResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/message/": {
+            "get": {
+                "tags": [
+                    "message"
+                ],
+                "summary": "获取消息提醒",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "token",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "offset",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页最大数",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/message.messageListResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/table/": {
             "get": {
                 "tags": [
@@ -551,6 +625,75 @@
                     }
                 }
             }
+        },
+        "/user/info": {
+            "get": {
+                "description": "带着token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "获取用户信息",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "token",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.UserInfoResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "带着token，上传用户的头像/avatar，名字/username.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "上传用户信息",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "token",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "用户信息",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/model.UserInfoRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -656,6 +799,28 @@
                 }
             }
         },
+        "message.messageListResponse": {
+            "type": "object",
+            "properties": {
+                "messageList": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.MessageSub"
+                    }
+                }
+            }
+        },
+        "model.AuthResponse": {
+            "type": "object",
+            "properties": {
+                "is_new": {
+                    "type": "integer"
+                },
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
         "model.ClassInfo": {
             "type": "object",
             "properties": {
@@ -757,6 +922,20 @@
                 }
             }
         },
+        "model.CourseInfo": {
+            "type": "object",
+            "properties": {
+                "comment": {
+                    "type": "string"
+                },
+                "comment_course_id": {
+                    "type": "integer"
+                },
+                "course_name": {
+                    "type": "string"
+                }
+            }
+        },
         "model.EvaluationInfo": {
             "type": "object",
             "properties": {
@@ -811,6 +990,46 @@
                 }
             }
         },
+        "model.LoginModel": {
+            "type": "object",
+            "required": [
+                "password",
+                "sid"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "sid": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.MessageSub": {
+            "type": "object",
+            "properties": {
+                "course_info": {
+                    "type": "object",
+                    "$ref": "#/definitions/model.CourseInfo"
+                },
+                "is_like": {
+                    "type": "boolean"
+                },
+                "is_read": {
+                    "type": "boolean"
+                },
+                "reply": {
+                    "type": "string"
+                },
+                "time": {
+                    "type": "string"
+                },
+                "user_info": {
+                    "type": "object",
+                    "$ref": "#/definitions/model.UserInfoRequest"
+                }
+            }
+        },
         "model.ParentCommentInfo": {
             "type": "object",
             "properties": {
@@ -847,6 +1066,17 @@
                 "user_info": {
                     "type": "object",
                     "$ref": "#/definitions/model.UserInfoResponse"
+                }
+            }
+        },
+        "model.UserInfoRequest": {
+            "type": "object",
+            "properties": {
+                "avatar": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
                 }
             }
         },
