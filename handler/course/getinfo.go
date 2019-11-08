@@ -11,7 +11,7 @@ import (
 
 //获取课程信息
 func GetCourseInfo(c *gin.Context) {
-	courseId, err := strconv.ParseUint(c.Param("courseId"), 10, 32)
+	courseId, err := strconv.ParseUint(c.Param("courseId"), 10, 64)
 	if err != nil {
 		handler.SendBadRequest(c, errno.ErrGetParam, nil, err.Error())
 		return
