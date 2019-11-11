@@ -16,7 +16,6 @@ definitions:
       content:
         type: string
       course_id:
-        description: FIX 加上 binding
         type: string
       course_name:
         type: string
@@ -25,13 +24,20 @@ definitions:
       is_anonymous:
         type: boolean
       rate:
-        type: integer
+        type: number
       tags:
         items:
           type: integer
         type: array
     required:
+    - attendance_check_type
+    - content
     - course_id
+    - course_name
+    - exam_check_type
+    - is_anonymous
+    - rate
+    - tags
     type: object
   comment.evaluationPublishResponse:
     properties:
@@ -56,6 +62,9 @@ definitions:
         type: string
       is_anonymous:
         type: boolean
+    required:
+    - content
+    - is_anonymous
     type: object
   comment.playgroundResponse:
     properties:
@@ -131,7 +140,7 @@ definitions:
       content:
         type: string
       id:
-        type: integer
+        type: string
       is_anonymous:
         type: boolean
       is_like:
@@ -159,7 +168,7 @@ definitions:
   model.EvaluationInfo:
     properties:
       attendance_check_type:
-        type: integer
+        type: string
       comment_num:
         type: integer
       content:
@@ -169,7 +178,7 @@ definitions:
       course_name:
         type: string
       exam_check_type:
-        type: integer
+        type: string
       id:
         type: integer
       is_anonymous:
@@ -179,10 +188,10 @@ definitions:
       like_num:
         type: integer
       rate:
-        type: integer
+        type: number
       tags:
         items:
-          type: integer
+          type: string
         type: array
       teacher:
         type: string
@@ -221,12 +230,11 @@ definitions:
     type: object
   model.ParentCommentInfo:
     properties:
-      comment_id:
-        type: integer
       content:
         type: string
       id:
-        type: integer
+        description: 父评论id
+        type: string
       is_anonymous:
         type: boolean
       is_like:
@@ -283,6 +291,15 @@ definitions:
       new_name:
         type: string
     type: object
+  tag.tagGetResponse:
+    properties:
+      list:
+        items:
+          type: string
+        type: array
+      sum:
+        type: integer
+    type: object
 host: '...'
 info:
   contact: {}
@@ -299,7 +316,7 @@ paths:
         name: token
         required: true
         type: string
-      - description: 评论id
+      - description: 回复的评论对象id
         in: path
         name: id
         required: true
@@ -432,7 +449,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.CommentInfo'
+            $ref: '#/definitions/model.ParentCommentInfo'
       summary: 评论评课
       tags:
       - comment
@@ -697,6 +714,16 @@ paths:
       summary: 课表重命名
       tags:
       - table
+  /tag/:
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/tag.tagGetResponse'
+      summary: 获取课程评价标签列表
+      tags:
+      - tag
   /user/info:
     get:
       consumes:
@@ -759,3 +786,5 @@ tags:
   name: table
 - description: 举报
   name: report
+- description: 课程评价标签
+  name: tag

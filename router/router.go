@@ -2,6 +2,7 @@ package router
 
 import (
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler/message"
+	"github.com/MuxiKeStack/muxiK-StackBackend/handler/tag"
 	"net/http"
 
 	_ "github.com/MuxiKeStack/muxiK-StackBackend/docs"
@@ -112,6 +113,9 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 		tables.DELETE("/:id/", table.DeleteTable)
 		tables.DELETE("/:id/class/", table.DeleteClass)
 	}
+
+	// tag
+	g.GET("/api/v1/tag/", tag.Get)
 
 	// The health check handlers
 	svcd := g.Group("/sd")

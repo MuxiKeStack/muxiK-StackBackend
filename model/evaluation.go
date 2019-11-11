@@ -80,9 +80,9 @@ func GetEvaluations(lastId, limit int32) (*[]CourseEvaluationModel, error) {
 /*--------------- Course Operation -------------*/
 
 // 新增评课时更新课程的评课信息，先暂时放这里，避免冲突
-func UpdateCourseRateByEvaluation(id uint32, rate float32) error {
-	var c UsingCourseModel
-	DB.Self.Find(&c, "id = ?", id)
+func UpdateCourseRateByEvaluation(id string, rate float32) error {
+	var c HistoryCourseModel
+	DB.Self.Find(&c, "hash = ?", id)
 
 	c.Rate = (c.Rate*float32(c.StarsNum) + rate) / float32(c.StarsNum+1)
 	c.StarsNum++

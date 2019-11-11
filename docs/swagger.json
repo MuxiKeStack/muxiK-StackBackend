@@ -29,7 +29,7 @@
                     },
                     {
                         "type": "string",
-                        "description": "评论id",
+                        "description": "回复的评论对象id",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -264,7 +264,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.CommentInfo"
+                            "$ref": "#/definitions/model.ParentCommentInfo"
                         }
                     }
                 }
@@ -626,6 +626,22 @@
                 }
             }
         },
+        "/tag/": {
+            "get": {
+                "tags": [
+                    "tag"
+                ],
+                "summary": "获取课程评价标签列表",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/tag.tagGetResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/user/info": {
             "get": {
                 "description": "带着token",
@@ -714,7 +730,14 @@
         "comment.evaluationPublishRequest": {
             "type": "object",
             "required": [
-                "course_id"
+                "attendance_check_type",
+                "content",
+                "course_id",
+                "course_name",
+                "exam_check_type",
+                "is_anonymous",
+                "rate",
+                "tags"
             ],
             "properties": {
                 "attendance_check_type": {
@@ -724,7 +747,6 @@
                     "type": "string"
                 },
                 "course_id": {
-                    "description": "FIX 加上 binding",
                     "type": "string"
                 },
                 "course_name": {
@@ -737,7 +759,7 @@
                     "type": "boolean"
                 },
                 "rate": {
-                    "type": "integer"
+                    "type": "number"
                 },
                 "tags": {
                     "type": "array",
@@ -776,6 +798,10 @@
         },
         "comment.newCommentRequest": {
             "type": "object",
+            "required": [
+                "content",
+                "is_anonymous"
+            ],
             "properties": {
                 "content": {
                     "type": "string"
@@ -898,7 +924,7 @@
                     "type": "string"
                 },
                 "id": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "is_anonymous": {
                     "type": "boolean"
@@ -940,7 +966,7 @@
             "type": "object",
             "properties": {
                 "attendance_check_type": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "comment_num": {
                     "type": "integer"
@@ -955,7 +981,7 @@
                     "type": "string"
                 },
                 "exam_check_type": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "id": {
                     "type": "integer"
@@ -970,12 +996,12 @@
                     "type": "integer"
                 },
                 "rate": {
-                    "type": "integer"
+                    "type": "number"
                 },
                 "tags": {
                     "type": "array",
                     "items": {
-                        "type": "integer"
+                        "type": "string"
                     }
                 },
                 "teacher": {
@@ -1033,14 +1059,12 @@
         "model.ParentCommentInfo": {
             "type": "object",
             "properties": {
-                "comment_id": {
-                    "type": "integer"
-                },
                 "content": {
                     "type": "string"
                 },
                 "id": {
-                    "type": "integer"
+                    "description": "父评论id",
+                    "type": "string"
                 },
                 "is_anonymous": {
                     "type": "boolean"
@@ -1127,6 +1151,20 @@
                     "type": "string"
                 }
             }
+        },
+        "tag.tagGetResponse": {
+            "type": "object",
+            "properties": {
+                "list": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "sum": {
+                    "type": "integer"
+                }
+            }
         }
     },
     "tags": [
@@ -1153,6 +1191,10 @@
         {
             "description": "举报",
             "name": "report"
+        },
+        {
+            "description": "课程评价标签",
+            "name": "tag"
         }
     ]
 }

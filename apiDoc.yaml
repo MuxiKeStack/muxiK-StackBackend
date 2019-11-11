@@ -1433,6 +1433,24 @@ paths:
           schema:
             $ref: '#/definitions/CodeResponse'
 
+  /tag/:
+    get:
+      summary: 获取课程评价标签列表
+      tags:
+      - tag
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+            properties:
+              sum:
+                type: integer
+              list:
+                type: array
+                items:
+                  type: string
+
 definitions:
   auth.UserModel:
     required:
@@ -1579,17 +1597,16 @@ definitions:
         type: integer
         description: 评价星级
       attendance_check_type:
-        type: integer
-        description: 考勤方式，经常点名/偶尔点名/签到点名，标识为 0/1/2
+        type: string
+        description: 考勤方式，经常点名/偶尔点名/签到点名
       exam_check_type:
-        type: integer
-        description: 考核方式，无考核/闭卷考试/开卷考试/论文考核，标识为 0/1/2/3
+        type: string
+        description: 考核方式，无考核/闭卷考试/开卷考试/论文考核
       tags:
         type: array
-        description: 课程特点标签id列表
-        example: [0,1,2]
+        description: 课程特点标签
         items:
-          type: integer
+          type: string
       content:
         type: string
         description: 评课内容

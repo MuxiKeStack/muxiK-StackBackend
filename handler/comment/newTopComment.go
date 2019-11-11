@@ -15,8 +15,8 @@ import (
 
 // 新增评论请求模型
 type newCommentRequest struct {
-	Content     string `json:"content"`
-	IsAnonymous bool   `json:"is_anonymous"`
+	Content     string `json:"content" binding:"required"`
+	IsAnonymous bool   `json:"is_anonymous" binding:"required"`
 }
 
 // 评论评课
@@ -42,15 +42,15 @@ func CreateTopComment(c *gin.Context) {
 	}
 
 	var comment = &model.ParentCommentModel{
-		Id:              uuid.NewV4().String(),
-		UserId:          userId,
-		EvaluationId:    uint32(evaluationId),
-		Content:         data.Content,
-		Time:            strconv.FormatInt(time.Now().Unix(), 10),
-		LikeNum:         0,
-		SubCommentNum:   0,
-		IsAnonymous:     data.IsAnonymous,
-		IsValid:         true,
+		Id:            uuid.NewV4().String(),
+		UserId:        userId,
+		EvaluationId:  uint32(evaluationId),
+		Content:       data.Content,
+		Time:          strconv.FormatInt(time.Now().Unix(), 10),
+		LikeNum:       0,
+		SubCommentNum: 0,
+		IsAnonymous:   data.IsAnonymous,
+		IsValid:       true,
 	}
 
 	// Create new comment
