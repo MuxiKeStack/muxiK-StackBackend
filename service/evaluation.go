@@ -107,17 +107,45 @@ func GetEvaluationInfo(id, userId uint32, visitor bool) (*model.EvaluationInfo, 
 		CourseName:          evaluation.CourseName,
 		Teacher:             teacher,
 		Rate:                evaluation.Rate,
-		AttendanceCheckType: evaluation.AttendanceCheckType,
-		ExamCheckType:       evaluation.ExamCheckType,
+		AttendanceCheckType: GetAttendanceCheckTypeByCode(evaluation.AttendanceCheckType),
+		ExamCheckType:       GetExamCheckTypeByCode(evaluation.ExamCheckType),
 		Content:             evaluation.Content,
 		Time:                evaluation.Time,
 		IsAnonymous:         evaluation.IsAnonymous,
 		IsLike:              isLike,
 		LikeNum:             evaluation.LikeNum,
 		CommentNum:          evaluation.CommentNum,
-		Tags:                model.TagStrToArray(evaluation.Tags),
+		Tags:                GetTagNamesByIdStr(evaluation.Tags),
 		UserInfo:            u,
 	}
 
 	return info, nil
+}
+
+// Get attendance-check type name by identifier code.
+func GetAttendanceCheckTypeByCode(code uint8) string {
+	switch code {
+	case 0:
+		return "经常点名"
+	case 1:
+		return "偶尔点名"
+	case 2:
+		return "签到点名"
+	}
+	return ""
+}
+
+// Get exam-check type name by identifier code.
+func GetExamCheckTypeByCode(code uint8) string {
+	switch code {
+	case 0:
+		return "无考核"
+	case 1:
+		return "闭卷考试"
+	case 2:
+		return "开卷考试"
+	case 3:
+		return "论文考核"
+	}
+	return ""
 }

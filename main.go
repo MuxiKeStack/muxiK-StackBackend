@@ -41,6 +41,8 @@ var (
 // @tag.description 排课课表
 // @tag.name report
 // @tag.description 举报
+// @tag.name tag
+// @tag.description 课程评价标签
 
 func main() {
 	pflag.Parse()

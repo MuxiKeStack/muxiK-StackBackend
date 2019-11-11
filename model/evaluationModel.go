@@ -32,14 +32,14 @@ type EvaluationInfo struct {
 	CourseName          string            `json:"course_name"`
 	Teacher             string            `json:"teacher"`
 	Rate                float32           `json:"rate"`
-	AttendanceCheckType uint8             `json:"attendance_check_type"`
-	ExamCheckType       uint8             `json:"exam_check_type"`
+	AttendanceCheckType string            `json:"attendance_check_type"`
+	ExamCheckType       string            `json:"exam_check_type"`
 	Content             string            `json:"content"`
 	Time                string            `json:"time"`
 	IsAnonymous         bool              `json:"is_anonymous"`
 	IsLike              bool              `json:"is_like"`
 	LikeNum             uint32            `json:"like_num"`
 	CommentNum          uint32            `json:"comment_num"`
-	Tags                []uint8           `json:"tags"`
+	Tags                []string          `json:"tags"`
 	UserInfo            *UserInfoResponse `json:"user_info"`
 }

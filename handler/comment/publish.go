@@ -6,20 +6,21 @@ import (
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
+	"github.com/MuxiKeStack/muxiK-StackBackend/service"
 
 	"github.com/gin-gonic/gin"
 )
 
 // 发布评课的请求数据
 type evaluationPublishRequest struct {
-	CourseId            string  `json:"course_id" binding:"required"` // FIX 加上 binding
-	CourseName          string  `json:"course_name"`
-	Rate                float32 `json:"rate"`
-	AttendanceCheckType uint8   `json:"attendance_check_type"`
-	ExamCheckType       uint8   `json:"exam_check_type"`
-	Content             string  `json:"content"`
-	IsAnonymous         bool    `json:"is_anonymous"`
-	Tags                []uint8 `json:"tags"`
+	CourseId            string  `json:"course_id" binding:"required"`
+	CourseName          string  `json:"course_name" binding:"required"`
+	Rate                float32 `json:"rate" binding:"required"`
+	AttendanceCheckType uint8   `json:"attendance_check_type" binding:"required"`
+	ExamCheckType       uint8   `json:"exam_check_type" binding:"required"`
+	Content             string  `json:"content" binding:"required"`
+	IsAnonymous         bool    `json:"is_anonymous" binding:"required"`
+	Tags                []uint8 `json:"tags" binding:"required"`
 }
 
 type evaluationPublishResponse struct {
@@ -52,7 +53,7 @@ func Publish(c *gin.Context) {
 		Content:             data.Content,
 		LikeNum:             0,
 		CommentNum:          0,
-		Tags:                model.TagArrayToStr(data.Tags),
+		Tags:                service.TagArrayToStr(data.Tags),
 		IsAnonymous:         data.IsAnonymous,
 		IsValid:             true,
 		Time:                strconv.FormatInt(time.Now().Unix(), 10),
@@ -64,7 +65,7 @@ func Publish(c *gin.Context) {
 	}
 
 	// 更新数据库中课程的评分信息
-	if err := model.UpdateCourseRateByEvaluation(evaluation.Id, data.Rate); err != nil {
+	if err := model.UpdateCourseRateByEvaluation(evaluation.CourseId, data.Rate); err != nil {
 		handler.SendError(c, err, nil, err.Error())
 		return
 	}
