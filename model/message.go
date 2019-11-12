@@ -23,6 +23,6 @@ func CreateMessage(pub *MessagePub) error {
 
 func GetMessages(offset, limit, uid uint32) (*[]Message, error) {
 	var messages []Message
-	DB.Self.Where("user_id = ?", uid).Find(&messages).Limit(limit).Offset(offset)
+	DB.Self.Where("user_id = ?", uid).Find(&messages).Limit(limit).Offset(offset * limit)
 	return &messages, nil
 }
