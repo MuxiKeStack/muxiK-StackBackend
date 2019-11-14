@@ -659,7 +659,7 @@ paths:
         - in: query
           name: lastEvaluationId
           required: true
-          description: 上一次请求的最后一个评课的id，若是初始请求则为-1
+          description: 上一次请求的最后一个评课的id，若是初始请求则为0
           type: integer
       responses:
         "200":

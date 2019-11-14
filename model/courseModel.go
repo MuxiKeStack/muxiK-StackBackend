@@ -9,6 +9,7 @@ type HistoryCourseModel struct {
 	Type          uint8  `gorm:"column:type"`             //课程类型，公共课为0，专业课为1
 	Rate          float32 `gorm:"column:rate"`             //课程评价星级
 	StarsNum      uint32  `gorm:"column:stars_num"`        //参与评分人数
+	Credit        float32 `gorm:"column:credit"`
 }
 
 //选课手册课堂物理表

@@ -4,6 +4,7 @@ import (
 	"sync"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
+	"github.com/lexkong/log"
 )
 
 type EvaluationInfoList struct {
@@ -13,6 +14,8 @@ type EvaluationInfoList struct {
 
 // Get course evaluation list.
 func EvaluationList(lastId, size int32, userId uint32, visitor bool) (*[]model.EvaluationInfo, error) {
+	log.Infof("EvaluationList is called")
+
 	evaluations, err := model.GetEvaluations(lastId, size)
 	if err != nil {
 		return nil, err
@@ -67,6 +70,7 @@ func EvaluationList(lastId, size int32, userId uint32, visitor bool) (*[]model.E
 		infos = append(infos, *evaluationInfoList.IdMap[id])
 	}
 
+	log.Infof("EvaluationList is returned.")
 	return &infos, nil
 }
 

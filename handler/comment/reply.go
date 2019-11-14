@@ -23,7 +23,7 @@ import (
 // @Router /comment/{id}/ [post]
 func Reply(c *gin.Context) {
 	var data newCommentRequest
-	if err := c.BindJSON(&data); err != nil {
+	if err := c.ShouldBindJSON(&data); err != nil {
 		handler.SendBadRequest(c, errno.ErrBind, nil, err.Error())
 		return
 	}

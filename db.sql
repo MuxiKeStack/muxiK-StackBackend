@@ -22,7 +22,8 @@ CREATE TABLE `message` (
   `is_read`     TINYINT(1)   NOT NULL  DEFAULT 0,
   `reply`       VARCHAR(255), 
   `time`        VARCHAR(20)  NOT NULL,
-  `course_info` VARCHAR(255) NOT NULL, 
+  `course_info` VARCHAR(255) NOT NULL,
+
   PRIMARY KEY (`id`) 
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
@@ -140,14 +141,14 @@ CREATE TABLE `course_list` (
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE `history_course` (
-  `id`      INT unsigned NOT NULL AUTO_INCREMENT,
-  `hash`    VARCHAR(50)  NOT NULL COMMENT "课程id + 教师名 hash 生成的唯一标识",
-  `name`    VARCHAR(50)  NOT NULL,
-  `teacher` VARCHAR(20)  NOT NULL,
-  `type`    INT          NOT NULL COMMENT "课程类型（专业课，公共课）",
-  `rate`           FLOAT        NOT NULL DEFAULT 0 COMMENT "课程评价星级",
-  `stars_num`      INT          NOT NULL DEFAULT 0 COMMENT "参与评课人数",
-  `credit`         FLOAT        NOT NULL DEFAULT 0 COMMENT "学分",
+  `id`        INT unsigned NOT NULL AUTO_INCREMENT,
+  `hash`      VARCHAR(50)  NOT NULL COMMENT "课程id + 教师名 hash 生成的唯一标识",
+  `name`      VARCHAR(50)  NOT NULL,
+  `teacher`   VARCHAR(20)  NOT NULL,
+  `type`      INT          NOT NULL COMMENT "课程类型（专业课，公共课）",
+  `rate`      FLOAT        NOT NULL DEFAULT 0 COMMENT "课程评价星级",
+  `stars_num` INT          NOT NULL DEFAULT 0 COMMENT "参与评课人数",
+  `credit`    FLOAT        NOT NULL DEFAULT 0 COMMENT "学分",
 
   PRIMARY KEY (`id`),
   UNIQUE KEY `hash` (`hash`)
@@ -156,21 +157,25 @@ CREATE TABLE `history_course` (
 CREATE TABLE `using_course` (
   `id`             INT unsigned NOT NULL AUTO_INCREMENT,
   `hash`           VARCHAR(50)  NOT NULL           COMMENT "课程id + 教师名 hash 生成的唯一标识",
-  `name`           VARCHAR(50)  NOT NULL,
-  `teacher`        VARCHAR(20)  NOT NULL,
+  `name`           VARCHAR(50)  NOT NULL DEFAULT "",
+  `teacher`        VARCHAR(20)  NOT NULL DEFAULT "",
   `course_id`      INT          NOT NULL           COMMENT "课程号",
   `class_id`       INT          NOT NULL           COMMENT "教学班编号",
   `type`           INT          NOT NULL           COMMENT "通识必修，通识选修，通识核心，专业必修，专业选修分别为 0/1/2/3/4",
   `credit_type`    INT          NOT NULL           COMMENT "学分类别，文科理科艺术之类的，加索引（筛选条件）",
-  `time1`          VARCHAR(20)  NOT NULL,
-  `place1`         VARCHAR(20)  NOT NULL,
-  `time2`          VARCHAR(20)  NOT NULL,
-  `place2`         VARCHAR(20)  NOT NULL,
-  `time3`          VARCHAR(20)  NOT NULL,
-  `place3`         VARCHAR(20)  NOT NULL,
-  `weeks`          VARCHAR(20)  NOT NULL,
+  `time1`          VARCHAR(20)  NOT NULL DEFAULT "",
+  `place1`         VARCHAR(20)  NOT NULL DEFAULT "",
+  `time2`          VARCHAR(20)  NOT NULL DEFAULT "",
+  `place2`         VARCHAR(20)  NOT NULL DEFAULT "",
+  `time3`          VARCHAR(20)  NOT NULL DEFAULT "",
+  `place3`         VARCHAR(20)  NOT NULL DEFAULT "",
+  `weeks1`         VARCHAR(20)  NOT NULL DEFAULT "",
+  `weeks2`         VARCHAR(20)  NOT NULL DEFAULT "",
+  `weeks3`         VARCHAR(20)  NOT NULL DEFAULT "",
   `region`         INT          NOT NULL COMMENT "上课地区，南湖，东区，西区。加索引（筛选条件）",
 
   PRIMARY KEY (`id`),
   UNIQUE KEY `hash` (`hash`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+
+INSERT INTO `tag` (tag_name) VALUES ("简单易学"), ("干货满满"), ("生动有趣"), ("作业量少"), ("老师温柔"), ("云课堂资料全");

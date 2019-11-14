@@ -29,7 +29,7 @@ type newCommentRequest struct {
 // @Router /evaluation/{id}/comment/ [post]
 func CreateTopComment(c *gin.Context) {
 	var data newCommentRequest
-	if err := c.BindJSON(&data); err != nil {
+	if err := c.ShouldBindJSON(&data); err != nil {
 		handler.SendBadRequest(c, errno.ErrBind, nil, err.Error())
 		return
 	}

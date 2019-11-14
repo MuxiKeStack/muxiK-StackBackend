@@ -98,6 +98,42 @@
             }
         },
         "/evaluation/": {
+            "get": {
+                "tags": [
+                    "comment"
+                ],
+                "summary": "评课广场获取评课列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "游客登录则不需要此字段或为空",
+                        "name": "token",
+                        "in": "header"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "最大的一级评论数量",
+                        "name": "pageSize",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "上一次请求的最后一个评课的id，若是初始请求则为0",
+                        "name": "lastEvaluationId",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/comment.playgroundResponse"
+                        }
+                    }
+                }
+            },
             "post": {
                 "tags": [
                     "comment"
@@ -127,44 +163,6 @@
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/comment.evaluationPublishResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/evaluation/list/": {
-            "get": {
-                "tags": [
-                    "comment"
-                ],
-                "summary": "评课广场获取评课列表",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "游客登录则不需要此字段或为空",
-                        "name": "token",
-                        "in": "header"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "最大的一级评论数量",
-                        "name": "pageSize",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "上一次请求的最后一个评课的id，若是初始请求则为空或-1",
-                        "name": "lastEvaluationId",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/comment.playgroundResponse"
                         }
                     }
                 }
@@ -1093,6 +1091,17 @@
                 }
             }
         },
+        "model.TagModel": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "tagName": {
+                    "type": "string"
+                }
+            }
+        },
         "model.UserInfoRequest": {
             "type": "object",
             "properties": {
@@ -1158,7 +1167,7 @@
                 "list": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "$ref": "#/definitions/model.TagModel"
                     }
                 },
                 "sum": {
