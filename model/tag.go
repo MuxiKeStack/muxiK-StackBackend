@@ -15,15 +15,9 @@ func GetTagSum() int {
 	return count
 }
 
-// Get all tag names.
-func GetTagNames() ([]string, error) {
+// Get all tags including ids and names.
+func GetTags() ([]TagModel, error) {
 	var tags []TagModel
-	var names []string
 	d := DB.Self.Find(&tags)
-
-	for _, tag := range tags {
-		names = append(names, tag.TagName)
-	}
-
-	return names, d.Error
+	return tags, d.Error
 }

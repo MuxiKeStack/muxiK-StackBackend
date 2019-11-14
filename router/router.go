@@ -115,7 +115,7 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 	}
 
 	// tag
-	g.GET("/api/v1/tag/", tag.Get)
+	g.GET("/api/v1/tags/", tag.Get)
 
 	// The health check handlers
 	svcd := g.Group("/sd")
