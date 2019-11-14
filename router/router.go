@@ -30,7 +30,7 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 	})
 
 	// api for authentication functionalities
-	g.POST("/login", user.Login)
+	g.POST("api/v1/login", user.Login)
 
 	// The user handlers, requiring authentication
 	u := g.Group("/api/v1/user")
