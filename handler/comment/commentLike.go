@@ -24,7 +24,7 @@ func UpdateCommentLike(c *gin.Context) {
 
 	// 获取请求中当前的点赞状态
 	var bodyData likeDataRequest
-	if err := c.BindJSON(&bodyData); err != nil {
+	if err := c.ShouldBindJSON(&bodyData); err != nil {
 		handler.SendError(c, err, nil, err.Error())
 		return
 	}

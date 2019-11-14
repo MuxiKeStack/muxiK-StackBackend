@@ -34,6 +34,9 @@ func openDB(username, password, addr, name string) *gorm.DB {
 	// set for db connection
 	setupDB(db)
 
+	// global disable table name plurals
+	db.SingularTable(true)
+
 	return db
 }
 

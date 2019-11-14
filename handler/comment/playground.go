@@ -21,9 +21,9 @@ type playgroundResponse struct {
 // @Tags comment
 // @Param token header string false "游客登录则不需要此字段或为空"
 // @Param pageSize query integer true "最大的一级评论数量"
-// @Param lastEvaluationId query integer true "上一次请求的最后一个评课的id，若是初始请求则为空或-1"
+// @Param lastEvaluationId query integer true "上一次请求的最后一个评课的id，若是初始请求则为0"
 // @Success 200 {object} comment.playgroundResponse
-// @Router /evaluation/list/ [get]
+// @Router /evaluation/ [get]
 func EvaluationPlayground(c *gin.Context) {
 	pageSize := c.DefaultQuery("pageSize", "20")
 	limit, err := strconv.ParseInt(pageSize, 10, 32)
@@ -32,7 +32,7 @@ func EvaluationPlayground(c *gin.Context) {
 		return
 	}
 
-	lastIdStr := c.DefaultQuery("lastEvaluationId", "")
+	lastIdStr := c.DefaultQuery("lastEvaluationId", "0")
 	lastId, err := strconv.ParseInt(lastIdStr, 10, 32)
 	if err != nil {
 		handler.SendBadRequest(c, errno.ErrGetQuery, nil, err.Error())
@@ -40,14 +40,39 @@ func EvaluationPlayground(c *gin.Context) {
 	}
 
 	// userId获取与游客模式判断
+	var userId uint32
 	visitor := false
-	userId, ok := c.Get("id")
+
+	userIdInterface, ok := c.Get("id")
 	if !ok {
 		visitor = true
+	} else {
+		userId = userIdInterface.(uint32)
 	}
 
+	//if _, ok := userId.(uint32); !ok {
+	//	log.Print("userId get failed.")
+	//	return
+	//}
+
+	//switch u := userId.(type) {
+	//case uint32:
+	//	log.Print("uint32")
+	//	return
+	//case int32:
+	//	log.Print("int32")
+	//	return
+	//case string:
+	//	log.Print("string")
+	//	return
+	//default:
+	//	log.Print("others")
+	//	log.Print(u)
+	//	return
+	//}
+
 	// 获取评课列表
-	list, err := service.EvaluationList(int32(lastId), int32(limit), userId.(uint32), visitor)
+	list, err := service.EvaluationList(int32(lastId), int32(limit), userId, visitor)
 	if err != nil {
 		handler.SendError(c, errno.ErrEvaluationList, nil, err.Error())
 		return

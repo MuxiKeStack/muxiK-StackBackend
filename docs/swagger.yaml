@@ -253,6 +253,13 @@ definitions:
         $ref: '#/definitions/model.UserInfoResponse'
         type: object
     type: object
+  model.TagModel:
+    properties:
+      id:
+        type: integer
+      tagName:
+        type: string
+    type: object
   model.UserInfoRequest:
     properties:
       avatar:
@@ -295,7 +302,7 @@ definitions:
     properties:
       list:
         items:
-          type: string
+          $ref: '#/definitions/model.TagModel'
         type: array
       sum:
         type: integer
@@ -365,6 +372,30 @@ paths:
       tags:
       - comment
   /evaluation/:
+    get:
+      parameters:
+      - description: 游客登录则不需要此字段或为空
+        in: header
+        name: token
+        type: string
+      - description: 最大的一级评论数量
+        in: query
+        name: pageSize
+        required: true
+        type: integer
+      - description: 上一次请求的最后一个评课的id，若是初始请求则为0
+        in: query
+        name: lastEvaluationId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/comment.playgroundResponse'
+      summary: 评课广场获取评课列表
+      tags:
+      - comment
     post:
       parameters:
       - description: token
@@ -509,31 +540,6 @@ paths:
           schema:
             $ref: '#/definitions/comment.likeDataResponse'
       summary: 评论点赞/取消点赞
-      tags:
-      - comment
-  /evaluation/list/:
-    get:
-      parameters:
-      - description: 游客登录则不需要此字段或为空
-        in: header
-        name: token
-        type: string
-      - description: 最大的一级评论数量
-        in: query
-        name: pageSize
-        required: true
-        type: integer
-      - description: 上一次请求的最后一个评课的id，若是初始请求则为空或-1
-        in: query
-        name: lastEvaluationId
-        required: true
-        type: integer
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/comment.playgroundResponse'
-      summary: 评课广场获取评课列表
       tags:
       - comment
   /login:

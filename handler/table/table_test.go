@@ -18,8 +18,8 @@ import (
 var (
 	g *gin.Engine
 	token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1NzM1Mjc1OTEsImlkIjoxLCJuYmYiOjE1NzM1Mjc1OTF9.1CZFz2OVeDfDnvEXwCpQjqNGpSCIRoZOgMkRpuPIgc8"
-	tableId = ""
-	classId = ""
+	tableId uint32
+	classId = "sadf23432234dfa"
 )
 
 func TestMain(m *testing.M) {
@@ -36,6 +36,7 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
+// Test: create new blank table
 func TestAddTable(t *testing.T) {
 	g := getRouter(true)
 	uri := "/api/v1/table/"
@@ -46,26 +47,14 @@ func TestAddTable(t *testing.T) {
 		t.Errorf("Test Error: Creat A New Table Error; Json Unmarshal Error: %s", err.Error())
 	}
 
-	if w.Code != http.StatusOK {
-		t.Errorf("Test Error: StatusCode Error: %d", w.Code)
-	}
-}
-
-func TestAddTable2(t *testing.T) {
-	g := getRouter(true)
-	uri := fmt.Sprintf("/api/v1/table/?id=%s", tableId)
-	w := util.PerformRequest(http.MethodPost, g, uri, token)
-
-	var data model.ClassTableInfo
-	if err := json.Unmarshal([]byte(w.Body.String()), &data); err != nil {
-		t.Errorf("Test Error: Creat A New Table Error; Json Unmarshal Error: %s", err.Error())
-	}
+	tableId = data.TableId
 
 	if w.Code != http.StatusOK {
 		t.Errorf("Test Error: StatusCode Error: %d", w.Code)
 	}
 }
 
+// Test: add a class into a table
 func TestAddClass(t *testing.T) {
 	g := getRouter(true)
 	uri := fmt.Sprintf("/api/v1/table/%s/class/?classId=%s", tableId, classId)
@@ -81,6 +70,23 @@ func TestAddClass(t *testing.T) {
 	}
 }
 
+// Test: create new table copied by a existing table
+func TestAddTable2(t *testing.T) {
+	g := getRouter(true)
+	uri := fmt.Sprintf("/api/v1/table/?id=%s", tableId)
+	w := util.PerformRequest(http.MethodPost, g, uri, token)
+
+	var data model.ClassTableInfo
+	if err := json.Unmarshal([]byte(w.Body.String()), &data); err != nil {
+		t.Errorf("Test Error: Creat A New Table Error; Json Unmarshal Error: %s", err.Error())
+	}
+
+	if w.Code != http.StatusOK {
+		t.Errorf("Test Error: StatusCode Error: %d", w.Code)
+	}
+}
+
+// Test: get table information
 func TestGet(t *testing.T) {
 	g := getRouter(true)
 	uri := "/api/v1/table/"
@@ -96,6 +102,7 @@ func TestGet(t *testing.T) {
 	}
 }
 
+// Test: change table's name
 func TestRename(t *testing.T) {
 	g := getRouter(true)
 	uri := fmt.Sprintf("/api/v1/table/%s/rename/", tableId)
@@ -103,7 +110,7 @@ func TestRename(t *testing.T) {
 
 	jsonByte, err := json.Marshal(body)
 	if err != nil {
-		t.Errorf("Test Error: %s", err.Error())
+		t.Errorf("Test Error: Json Marshal Error: %s", err.Error())
 	}
 
 	w := util.PerformRequestWithBody(http.MethodPut, g, uri, jsonByte, token)
@@ -118,6 +125,7 @@ func TestRename(t *testing.T) {
 	}
 }
 
+// Test: remove a class from a table
 func TestDeleteClass(t *testing.T) {
 	g := getRouter(true)
 	uri := fmt.Sprintf("/api/v1/table/%s/class/?classId=%s", tableId, classId)
@@ -128,6 +136,7 @@ func TestDeleteClass(t *testing.T) {
 	}
 }
 
+// Test: delete a table
 func TestDeleteTable(t *testing.T) {
 	g := getRouter(true)
 	uri := fmt.Sprintf("/api/v1/table/%s/", tableId)

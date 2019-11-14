@@ -78,7 +78,7 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 	evaluation := g.Group("/api/v1/evaluation")
 	evaluation.Use(middleware.VisitorAuthMiddleware())
 	{
-		evaluation.GET("", comment.EvaluationPlayground)
+		evaluation.GET("/", comment.EvaluationPlayground)
 		evaluation.GET("/:id/", comment.GetEvaluation)
 
 		// router for getting comment list

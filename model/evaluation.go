@@ -1,5 +1,7 @@
 package model
 
+import "github.com/jinzhu/gorm"
+
 /*-------------------------- Course Evaluation Operation --------------------------*/
 
 // Create new course evaluation.
@@ -67,14 +69,15 @@ func (evaluation *CourseEvaluationModel) GetById() error {
 
 // Get course evaluations.
 func GetEvaluations(lastId, limit int32) (*[]CourseEvaluationModel, error) {
-	var evaluations *[]CourseEvaluationModel
-	if lastId != -1 {
-		DB.Self.Where("id < ?", lastId).Order("id desc").Find(evaluations).Limit(limit)
+	var evaluations []CourseEvaluationModel
+	var d *gorm.DB
+	if lastId != 0 {
+		d = DB.Self.Where("id < ?", lastId).Order("id desc").Find(&evaluations).Limit(limit)
 	} else {
-		DB.Self.Order("id desc").Find(evaluations).Limit(limit)
+		d = DB.Self.Order("id desc").Find(&evaluations).Limit(limit)
 	}
 
-	return evaluations, nil
+	return &evaluations, d.Error
 }
 
 /*--------------- Course Operation -------------*/
