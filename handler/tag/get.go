@@ -8,8 +8,8 @@ import (
 )
 
 type tagGetResponse struct {
-	Sum  int      `json:"sum"`
-	List []string `json:"list"`
+	Sum  int              `json:"sum"`
+	List []model.TagModel `json:"list"`
 }
 
 // @Summary 获取课程评价标签列表
@@ -17,7 +17,7 @@ type tagGetResponse struct {
 // @Success 200 {object} tag.tagGetResponse
 // @Router /tag/ [get]
 func Get(c *gin.Context) {
-	tags, err := model.GetTagNames()
+	tags, err := model.GetTags()
 	if err != nil {
 		handler.SendError(c, err, nil, err.Error())
 	}

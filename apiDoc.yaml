@@ -1433,11 +1433,11 @@ paths:
           schema:
             $ref: '#/definitions/CodeResponse'
 
-  /tag/:
+  /tags/:
     get:
       summary: 获取课程评价标签列表
       tags:
-      - tag
+        - tag
       responses:
         "200":
           description: OK
@@ -1449,7 +1449,12 @@ paths:
               list:
                 type: array
                 items:
-                  type: string
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    tag_name:
+                      type: string
 
 definitions:
   auth.UserModel:
