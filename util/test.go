@@ -22,7 +22,7 @@ func PerformRequestWithBody(method string, r http.Handler, path string, body []b
 	req, _ := http.NewRequest(method, path, bytes.NewReader(body))
 	req.Header.Set("Content-Type", "application/json")
 	if token != "" {
-		req.Header.Set("token", "Bearer "+token)
+		req.Header.Set("token", token)
 	}
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)

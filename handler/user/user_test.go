@@ -2,6 +2,7 @@ package user
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/MuxiKeStack/muxiK-StackBackend/config"
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/router/middleware"
@@ -14,9 +15,9 @@ import (
 
 var (
 	g           *gin.Engine
-	tokenString = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1NzE1ODEwMzMsImlkIjo0LCJuYmYiOjE1NzE1ODEwMzN9.KpY7KnvN7_6CIZU7_syxE70g0Qy-opq9W5QeBH9ZZrE"
-	password    = ""
-	sid         = ""
+	tokenString = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1NzM4MTc4NTksImlkIjoxLCJuYmYiOjE1NzM4MTc4NTl9.gfdq_WGp10Pxk3iGqRDascQ1wcSHaF37kMK3PCvYBlg"
+	password    = "Yu@14796825550"
+	sid         = "2018212576"
 )
 
 func TestMain(m *testing.M) {
@@ -99,6 +100,7 @@ func TestLogin(t *testing.T) {
 		t.Errorf("Test error: Get LoginResponse Error:%s", err.Error())
 	}
 	tokenString = data.Data.Token
+	fmt.Println(tokenString)
 	if w.Code != http.StatusOK {
 		t.Errorf("Test Error: StatusCode Error:%d", w.Code)
 	}
