@@ -4,6 +4,10 @@ import (
 	"encoding/json"
 )
 
+func (m *Message) TableName() string {
+	return "message"
+}
+
 func CreateMessage(pub *MessagePub) error {
 	courseJson, err := json.Marshal(pub.CourseInfo)
 	if err != nil {
