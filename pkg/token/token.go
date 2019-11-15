@@ -69,7 +69,7 @@ func ParseRequest(c *gin.Context) (*Context, error) {
 
 	var t string
 	// Parse the header to get the token part.
-	fmt.Sscanf(header, "Bearer %s", &t)
+	fmt.Sscanf(header, "%s", &t)
 	return Parse(t, secret)
 }
 
