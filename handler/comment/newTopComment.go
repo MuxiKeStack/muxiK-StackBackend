@@ -2,12 +2,12 @@ package comment
 
 import (
 	"strconv"
-	"time"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
 	"github.com/MuxiKeStack/muxiK-StackBackend/service"
+	"github.com/MuxiKeStack/muxiK-StackBackend/util"
 
 	"github.com/gin-gonic/gin"
 	uuid "github.com/satori/go.uuid"
@@ -16,7 +16,7 @@ import (
 // 新增评论请求模型
 type newCommentRequest struct {
 	Content     string `json:"content" binding:"required"`
-	IsAnonymous bool   `json:"is_anonymous" binding:"required"`
+	IsAnonymous bool   `json:"is_anonymous" binding:"-"`
 }
 
 // 评论评课
@@ -46,8 +46,7 @@ func CreateTopComment(c *gin.Context) {
 		UserId:        userId,
 		EvaluationId:  uint32(evaluationId),
 		Content:       data.Content,
-		Time:          strconv.FormatInt(time.Now().Unix(), 10),
-		LikeNum:       0,
+		Time:          util.GetCurrentTime(),
 		SubCommentNum: 0,
 		IsAnonymous:   data.IsAnonymous,
 		IsValid:       true,
@@ -55,14 +54,26 @@ func CreateTopComment(c *gin.Context) {
 
 	// Create new comment
 	if err := comment.New(); err != nil {
-		handler.SendError(c, err, nil, err.Error())
+		handler.SendError(c, errno.ErrDatabase, nil, err.Error())
+		return
+	}
+
+	// Add one to the evaluation's comment sum
+	evaluation := &model.CourseEvaluationModel{Id: uint32(evaluationId)}
+	if err := evaluation.GetById(); err != nil {
+		handler.SendError(c, errno.ErrDatabase, nil, err.Error())
+		return
+	}
+
+	if err := evaluation.UpdateCommentNum(1); err != nil {
+		handler.SendError(c, errno.ErrDatabase, nil, err.Error())
 		return
 	}
 
 	// Get comment info
 	commentInfo, err := service.GetParentCommentInfo(comment.Id, userId, false)
 	if err != nil {
-		handler.SendError(c, err, nil, err.Error())
+		handler.SendError(c, errno.ErrGetParentCommentInfo, nil, err.Error())
 		return
 	}
 

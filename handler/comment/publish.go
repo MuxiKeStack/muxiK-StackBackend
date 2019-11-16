@@ -1,14 +1,13 @@
 package comment
 
 import (
-	"strconv"
-	"time"
-
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
+	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
 	"github.com/MuxiKeStack/muxiK-StackBackend/service"
-
+	"github.com/MuxiKeStack/muxiK-StackBackend/util"
 	"github.com/gin-gonic/gin"
+	"github.com/lexkong/log"
 )
 
 // 发布评课的请求数据
@@ -16,11 +15,11 @@ type evaluationPublishRequest struct {
 	CourseId            string  `json:"course_id" binding:"required"`
 	CourseName          string  `json:"course_name" binding:"required"`
 	Rate                float32 `json:"rate" binding:"required"`
-	AttendanceCheckType uint8   `json:"attendance_check_type" binding:"required"`
-	ExamCheckType       uint8   `json:"exam_check_type" binding:"required"`
-	Content             string  `json:"content" binding:"required"`
-	IsAnonymous         bool    `json:"is_anonymous" binding:"required"`
-	Tags                []uint8 `json:"tags" binding:"required"`
+	AttendanceCheckType uint8   `json:"attendance_check_type" binding:"-"` // 经常点名/偶尔点名/签到点名，标识为 1/2/3
+	ExamCheckType       uint8   `json:"exam_check_type" binding:"-"` // 无考核/闭卷考试/开卷考试/论文考核，标识为 1/2/3/4
+	Content             string  `json:"content" binding:"-"`
+	IsAnonymous         bool    `json:"is_anonymous" binding:"-"` // 若binding为required那么就不能接受false值
+	Tags                []uint8 `json:"tags" binding:"-"`
 }
 
 type evaluationPublishResponse struct {
@@ -35,9 +34,11 @@ type evaluationPublishResponse struct {
 // @Success 200 {object} comment.evaluationPublishResponse
 // @Router /evaluation/ [post]
 func Publish(c *gin.Context) {
+	log.Info("Evaluation Publish function is called.")
+
 	var data evaluationPublishRequest
 	if err := c.ShouldBindJSON(&data); err != nil {
-		handler.SendError(c, err, nil, err.Error())
+		handler.SendError(c, errno.ErrBind, nil, err.Error())
 		return
 	}
 
@@ -51,12 +52,11 @@ func Publish(c *gin.Context) {
 		AttendanceCheckType: data.AttendanceCheckType,
 		ExamCheckType:       data.ExamCheckType,
 		Content:             data.Content,
-		LikeNum:             0,
 		CommentNum:          0,
 		Tags:                service.TagArrayToStr(data.Tags),
 		IsAnonymous:         data.IsAnonymous,
 		IsValid:             true,
-		Time:                strconv.FormatInt(time.Now().Unix(), 10),
+		Time:                util.GetCurrentTime(),
 	}
 
 	if err := evaluation.New(); err != nil {

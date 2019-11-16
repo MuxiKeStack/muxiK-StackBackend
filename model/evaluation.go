@@ -2,6 +2,14 @@ package model
 
 import "github.com/jinzhu/gorm"
 
+func (evaluation *CourseEvaluationModel) TableName() string {
+	return "course_evaluation"
+}
+
+func (data *EvaluationLikeModel) TableName() string {
+	return "course_evaluation_like"
+}
+
 /*-------------------------- Course Evaluation Operation --------------------------*/
 
 // Create new course evaluation.
@@ -12,59 +20,72 @@ func (evaluation *CourseEvaluationModel) New() error {
 
 // Delete course evaluation.
 func (evaluation *CourseEvaluationModel) Delete() error {
-	d := DB.Self.Delete(&evaluation)
+	d := DB.Self.Delete(evaluation)
 	return d.Error
 }
 
 // Judge whether a course evaluation has already liked by the current user.
 func (evaluation *CourseEvaluationModel) HasLiked(userId uint32) bool {
-	var data = &EvaluationLikeModel{
-		EvaluationId: evaluation.Id,
-		UserId:       userId,
-	}
+	var data EvaluationLikeModel
 	var count int
-	DB.Self.Find(data).Count(&count)
+	DB.Self.Where("user_id = ? AND evaluation_id = ? ", userId, evaluation.Id).Find(&data).Count(&count)
 	return count > 0
 }
 
 // Like a course evaluation by the current user.
 func (evaluation *CourseEvaluationModel) Like(userId uint32) error {
-	var data = &EvaluationLikeModel{
+	var data = EvaluationLikeModel{
 		EvaluationId: evaluation.Id,
 		UserId:       userId,
 	}
 
-	d := DB.Self.Create(data)
+	d := DB.Self.Create(&data)
 	return d.Error
 }
 
 // Cancel liking a course evaluation by the current user.
 func (evaluation *CourseEvaluationModel) CancelLiking(userId uint32) error {
-	var data = &EvaluationLikeModel{
+	var data = EvaluationLikeModel{
 		EvaluationId: evaluation.Id,
 		UserId:       userId,
 	}
 
-	d := DB.Self.Delete(data)
+	d := DB.Self.Delete(&data)
 	return d.Error
 }
 
 // Update liked number of a course evaluation after liking or canceling it.
-func (evaluation *CourseEvaluationModel) UpdateLikeNum(num int) error {
-	likeNum := int(evaluation.LikeNum)
-	if likeNum == 0 {
-		return nil
-	}
-	likeNum += num
-	evaluation.LikeNum = uint32(likeNum)
-	d := DB.Self.Save(evaluation)
-	return d.Error
-}
+//func (evaluation *CourseEvaluationModel) UpdateLikeNum(num int) error {
+//	likeNum := int(evaluation.LikeSum)
+//	if likeNum == 0 && num == -1 {
+//		return nil
+//	}
+//	likeNum += num
+//	d := DB.Self.Model(evaluation).Update("like_sum", likeNum)
+//	return d.Error
+//}
 
 // Get evaluation by its id.
 func (evaluation *CourseEvaluationModel) GetById() error {
-	d := DB.Self.First(evaluation)
+	d := DB.Self.First(evaluation, "id = ?", evaluation.Id)
 	return d.Error
+}
+
+func (evaluation *CourseEvaluationModel) UpdateCommentNum(n int) error {
+	num := int(evaluation.CommentNum)
+	if num == 0 && n == -1 {
+		return nil
+	}
+	num += n
+	d := DB.Self.Model(evaluation).Update("comment_num", num)
+	return d.Error
+}
+
+// Get evaluation's total like account by id.
+func GetEvaluationLikeSum(id uint32) (count uint32) {
+	var data EvaluationLikeModel
+	DB.Self.Where("evaluation_id = ?", id).Find(&data).Count(&count)
+	return
 }
 
 // Get course evaluations.
@@ -82,16 +103,22 @@ func GetEvaluations(lastId, limit int32) (*[]CourseEvaluationModel, error) {
 
 /*--------------- Course Operation -------------*/
 
+func (course *HistoryCourseModel) TableName() string {
+	return "history_course"
+}
+
 // 新增评课时更新课程的评课信息，先暂时放这里，避免冲突
 func UpdateCourseRateByEvaluation(id string, rate float32) error {
 	var c HistoryCourseModel
-	DB.Self.Find(&c, "hash = ?", id)
+	if d := DB.Self.Find(&c, "hash = ?", id); d.Error != nil {
+		return d.Error
+	}
 
 	c.Rate = (c.Rate*float32(c.StarsNum) + rate) / float32(c.StarsNum+1)
 	c.StarsNum++
-	DB.Self.Save(&c)
 
-	return nil
+	d := DB.Self.Save(&c)
+	return d.Error
 }
 
 // 根据课程id获取教师名
@@ -99,21 +126,4 @@ func GetTeacherByCourseId(id string) (string, error) {
 	var course HistoryCourseModel
 	d := DB.Self.First(&course, "hash = ?", id)
 	return course.Teacher, d.Error
-}
-
-/*--------------- Other Tools -------------*/
-
-// 获取最新插入数据的id
-func getLastInsertId() (uint32, error) {
-	rows, err := DB.Self.Raw("select last_insert_id()").Rows()
-	if err != nil {
-		return 0, err
-	}
-	defer rows.Close()
-
-	var id uint32
-	if err := DB.Self.ScanRows(rows, id); err != nil {
-		return 0, err
-	}
-	return id, nil
 }

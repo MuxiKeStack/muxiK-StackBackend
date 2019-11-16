@@ -1,13 +1,15 @@
 package model
 
+import "time"
+
 // 父评论物理表
 type ParentCommentModel struct {
 	Id            string `gorm:"column:id; primary_key"` // uuid
 	UserId        uint32 `gorm:"column:user_id"`
 	EvaluationId  uint32 `gorm:"column:evaluation_id"`
 	Content       string `gorm:"column:content"`
-	Time          string `gorm:"column:time"`
-	LikeNum       uint32 `gorm:"column:like_num"`
+	Time          *time.Time `gorm:"column:time"`
+	//LikeSum       uint32 `gorm:"column:like_sum"`
 	SubCommentNum uint32 `gorm:"column:sub_comment_num"`
 	IsAnonymous   bool   `gorm:"column:is_anonymous"`
 	IsValid       bool   `gorm:"column:is_valid"`
@@ -20,8 +22,8 @@ type SubCommentModel struct {
 	TargetUserId uint32 `gorm:"column:target_user_id"` // 回复的用户id
 	ParentId     string `gorm:"column:parent_id"`
 	Content      string `gorm:"column:content"`
-	LikeNum      uint32 `gorm:"column:like_num"`
-	Time         string `gorm:"column:time"`
+	//LikeSum      uint32 `gorm:"column:like_sum"`
+	Time         *time.Time `gorm:"column:time"`
 	IsAnonymous  bool   `gorm:"column:is_anonymous"`
 	IsValid      bool   `gorm:"column:is_valid"`
 }
@@ -37,9 +39,9 @@ type CommentLikeModel struct {
 type CommentInfo struct {
 	Id             string            `json:"id"`
 	Content        string            `json:"content"`
-	LikeNum        uint32            `json:"like_num"`
+	LikeSum        uint32            `json:"like_sum"`
 	IsLike         bool              `json:"is_like"`
-	Time           string            `json:"time"`
+	Time           int64             `json:"time"`
 	IsAnonymous    bool              `json:"is_anonymous"`
 	UserInfo       *UserInfoResponse `json:"user_info"`
 	TargetUserInfo *UserInfoResponse `json:"target_user_info"`
@@ -49,9 +51,9 @@ type CommentInfo struct {
 type ParentCommentInfo struct {
 	Id              string            `json:"id"`               // 父评论id
 	Content         string            `json:"content"`
-	LikeNum         uint32            `json:"like_num"`
+	LikeSum         uint32            `json:"like_sum"`
 	IsLike          bool              `json:"is_like"`
-	Time            string            `json:"time"`
+	Time            int64             `json:"time"`
 	IsAnonymous     bool              `json:"is_anonymous"`
 	UserInfo        *UserInfoResponse `json:"user_info"`
 	SubCommentsNum  uint32            `json:"sub_comments_num"`

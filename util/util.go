@@ -3,6 +3,7 @@ package util
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/teris-io/shortid"
+	"time"
 )
 
 func GenShortId() (string, error) {
@@ -18,4 +19,10 @@ func GetReqID(c *gin.Context) string {
 		return requestID
 	}
 	return ""
+}
+
+func GetCurrentTime() *time.Time {
+	var t time.Time
+	t =  time.Now()
+	return &t
 }

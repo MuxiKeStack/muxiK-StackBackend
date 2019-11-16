@@ -82,7 +82,7 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 		evaluation.GET("/:id/", comment.GetEvaluation)
 
 		// router for getting comment list
-		evaluation.GET("/:id/comments", comment.GetComments)
+		evaluation.GET("/:id/comments/", comment.GetComments)
 	}
 
 	evaluationWithAuth := g.Group("/api/v1/evaluation")

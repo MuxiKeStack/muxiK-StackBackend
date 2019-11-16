@@ -28,7 +28,9 @@ var (
 	ErrHasLiked       = &Errno{Code: 20302, Message: "User has already liked. "}
 	ErrEvaluationList = &Errno{Code: 20303, Message: "Error occurred while getting evaluation list. "}
 	ErrCommentList    = &Errno{Code: 20304, Message: "Error occurred while getting comment list. "}
-	//ErrGetEvaluationInfo = &Errno{Code: 20305, Message: "Error occurred while getting evaluation info. "}
+	ErrCommentNotExist = &Errno{Code: 20305, Message: "The comment does not exist. "}
+	ErrGetSubCommentInfo = &Errno{Code: 20306, Message: "Error occurred while getting subComment info"}
+	ErrGetParentCommentInfo = &Errno{Code: 20307, Message: "Error occurred while getting parent comment info"}
 
 	// table errors
 	ErrTableExisting = &Errno{Code: 20401, Message: "The table is not existing. "}

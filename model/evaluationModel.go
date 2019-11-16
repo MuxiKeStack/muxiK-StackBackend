@@ -1,5 +1,7 @@
 package model
 
+import "time"
+
 // 评课物理表
 type CourseEvaluationModel struct {
 	Id                  uint32  `gorm:"column:id; primary_key; AUTO_INCREMENT"`
@@ -10,12 +12,11 @@ type CourseEvaluationModel struct {
 	AttendanceCheckType uint8   `gorm:"column:attendance_check_type"` // 考勤方式
 	ExamCheckType       uint8   `gorm:"column:exam_check_type"`       // 考核方式
 	Content             string  `gorm:"column:content"`               // 评课内容
-	LikeNum             uint32  `gorm:"column:like_num"`              // 点赞数
 	CommentNum          uint32  `gorm:"column:comment_num"`           // 一级评论数
 	Tags                string  `gorm:"column:tags"`                  // 标签id列表，逗号分隔
 	IsAnonymous         bool    `gorm:"column:is_anonymous"`          // 是否匿名
 	IsValid             bool    `gorm:"column:is_valid"`              // 是否有效，未被折叠
-	Time                string  `gorm:"column:time"`                  // 时间，时间戳
+	Time                *time.Time `gorm:"column:time"`                  // 时间，时间戳
 }
 
 // 评课点赞中间表
@@ -35,11 +36,12 @@ type EvaluationInfo struct {
 	AttendanceCheckType string            `json:"attendance_check_type"`
 	ExamCheckType       string            `json:"exam_check_type"`
 	Content             string            `json:"content"`
-	Time                string            `json:"time"`
+	Time                int64             `json:"time"`
 	IsAnonymous         bool              `json:"is_anonymous"`
 	IsLike              bool              `json:"is_like"`
-	LikeNum             uint32            `json:"like_num"`
+	LikeSum             uint32            `json:"like_sum"`
 	CommentNum          uint32            `json:"comment_num"`
 	Tags                []string          `json:"tags"`
 	UserInfo            *UserInfoResponse `json:"user_info"`
+	IsValid             bool              `json:"is_valid"`
 }

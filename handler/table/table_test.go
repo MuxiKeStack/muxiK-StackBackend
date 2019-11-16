@@ -16,8 +16,8 @@ import (
 )
 
 var (
-	g *gin.Engine
-	token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1NzM1Mjc1OTEsImlkIjoxLCJuYmYiOjE1NzM1Mjc1OTF9.1CZFz2OVeDfDnvEXwCpQjqNGpSCIRoZOgMkRpuPIgc8"
+	g       *gin.Engine
+	token   = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1NzM1Mjc1OTEsImlkIjoxLCJuYmYiOjE1NzM1Mjc1OTF9.1CZFz2OVeDfDnvEXwCpQjqNGpSCIRoZOgMkRpuPIgc8"
 	tableId uint32
 	classId = "sadf23432234dfa"
 )

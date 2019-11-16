@@ -11,12 +11,12 @@ import (
 )
 
 type likeDataResponse struct {
-	IsLike  bool   `json:"is_like"`
-	LikeNum uint32 `json:"like_num"`
+	LikeState  bool `json:"like_state"`
+	LikeSum uint32  `json:"like_sum"`
 }
 
 type likeDataRequest struct {
-	IsLike bool `json:"is_like"`
+	LikeState bool `json:"like_state"`
 }
 
 // 评课点赞/取消点赞
@@ -24,20 +24,20 @@ type likeDataRequest struct {
 // @Tags comment
 // @Param token header string true "token"
 // @Param id path string true "点赞的评课id"
-// @Param data body comment.likeDataRequest true "data"
+// @Param data body comment.likeDataRequest true "当前点赞状态"
 // @Success 200 {object} comment.likeDataResponse
 // @Router /evaluation/{id}/like/ [put]
 func UpdateEvaluationLike(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
-		handler.SendError(c, err, nil, err.Error())
+		handler.SendError(c, errno.ErrGetParam, nil, err.Error())
 		return
 	}
 
 	// 获取请求中当前的点赞状态
 	var bodyData likeDataRequest
-	if err := c.ShouldBindJSON(&bodyData); err != nil {
-		handler.SendError(c, err, nil, err.Error())
+	if err := c.BindJSON(&bodyData); err != nil {
+		handler.SendError(c, errno.ErrBind, nil, err.Error())
 		return
 	}
 
@@ -48,18 +48,18 @@ func UpdateEvaluationLike(c *gin.Context) {
 
 	// 判断点赞请求是否合理
 	// 未点赞
-	if bodyData.IsLike && !hasLiked {
+	if bodyData.LikeState && !hasLiked {
 		handler.SendResponse(c, errno.ErrNotLiked, nil)
 		return
 	}
 	//	已点赞
-	if !bodyData.IsLike && hasLiked {
+	if !bodyData.LikeState && hasLiked {
 		handler.SendResponse(c, errno.ErrHasLiked, nil)
 		return
 	}
 
 	// 点赞或者取消点赞
-	if bodyData.IsLike {
+	if bodyData.LikeState {
 		err = evaluation.CancelLiking(userId)
 	} else {
 		err = evaluation.Like(userId)
@@ -70,21 +70,8 @@ func UpdateEvaluationLike(c *gin.Context) {
 		return
 	}
 
-	// 更新点赞数
-	num := 1
-	if bodyData.IsLike {
-		num = -1
-	}
-	err = evaluation.UpdateLikeNum(num)
-	if err != nil {
-		handler.SendError(c, err, nil, err.Error())
-		return
-	}
-
-	data := &likeDataResponse{
-		IsLike:  !hasLiked,
-		LikeNum: evaluation.LikeNum,
-	}
-
-	handler.SendResponse(c, nil, data)
+	handler.SendResponse(c, nil, likeDataResponse{
+		LikeState: !hasLiked,
+		LikeSum:   model.GetEvaluationLikeSum(uint32(id)),
+	})
 }

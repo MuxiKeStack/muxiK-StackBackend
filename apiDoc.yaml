@@ -870,7 +870,7 @@ paths:
               data:
                 type: object
                 properties:
-                  parent_comment_num:
+                  parent_comment_sum:
                     type: integer
                     description: 一级评论数
                   parent_comments_list:
@@ -889,7 +889,7 @@ paths:
                         content:
                           type: string
                           description: 评论内容
-                        like_num:
+                        like_sum:
                           type: integer
                           description: 点赞数
                         is_like:
@@ -974,7 +974,7 @@ paths:
                   is_like:
                     type: boolean
                     description: 点赞状态
-                  like_num:
+                  like_sum:
                     type: integer
                     description: 点赞数
         '400':
@@ -1141,7 +1141,7 @@ paths:
                   is_like:
                     type: boolean
                     description: 点赞状态
-                  like_num:
+                  like_sum:
                     type: integer
                     description: 点赞数
         '400':
@@ -1618,7 +1618,7 @@ definitions:
       is_anonymous:
         type: boolean
         description: 是否匿名
-      like_num:
+      like_sum:
         type: integer
         description: 点赞数
       is_like:
@@ -1650,7 +1650,7 @@ definitions:
       content:
         type: string
         description: 评论内容
-      like_num:
+      like_sum:
         type: integer
         description: 点赞数
       is_like:

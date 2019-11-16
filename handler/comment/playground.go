@@ -1,6 +1,7 @@
 package comment
 
 import (
+	"github.com/lexkong/log"
 	"strconv"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
@@ -25,6 +26,8 @@ type playgroundResponse struct {
 // @Success 200 {object} comment.playgroundResponse
 // @Router /evaluation/ [get]
 func EvaluationPlayground(c *gin.Context) {
+	log.Info("EvaluationPlayground function is called.")
+
 	pageSize := c.DefaultQuery("pageSize", "20")
 	limit, err := strconv.ParseInt(pageSize, 10, 32)
 	if err != nil {
@@ -48,28 +51,8 @@ func EvaluationPlayground(c *gin.Context) {
 		visitor = true
 	} else {
 		userId = userIdInterface.(uint32)
+		log.Info("User auth successful.")
 	}
-
-	//if _, ok := userId.(uint32); !ok {
-	//	log.Print("userId get failed.")
-	//	return
-	//}
-
-	//switch u := userId.(type) {
-	//case uint32:
-	//	log.Print("uint32")
-	//	return
-	//case int32:
-	//	log.Print("int32")
-	//	return
-	//case string:
-	//	log.Print("string")
-	//	return
-	//default:
-	//	log.Print("others")
-	//	log.Print(u)
-	//	return
-	//}
 
 	// 获取评课列表
 	list, err := service.EvaluationList(int32(lastId), int32(limit), userId, visitor)
@@ -78,10 +61,8 @@ func EvaluationPlayground(c *gin.Context) {
 		return
 	}
 
-	data := playgroundResponse{
+	handler.SendResponse(c, nil, playgroundResponse{
 		Sum:  len(*list),
 		List: list,
-	}
-
-	handler.SendResponse(c, nil, data)
+	})
 }
