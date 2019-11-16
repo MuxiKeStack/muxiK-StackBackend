@@ -35,10 +35,9 @@ CREATE TABLE `course_evaluation` (
   `exam_check_type`       INT          NOT NULL DEFAULT 0 COMMENT "考核方式，无考核/闭卷考试/开卷考试/论文考核，标识为 0/1/2/3",
   `content`               TEXT                            COMMENT "评课内容",
   `is_anonymous`          TINYINT(1)   NOT NULL DEFAULT 0 COMMENT "是否匿名评课",
-  `like_num`              INT          NOT NULL DEFAULT 0 COMMENT "点赞数",
   `comment_num`           INT          NOT NULL DEFAULT 0 COMMENT "一级评论数",
-  `tags`                  VARCHAR(255) NOT NULL           COMMENT "标签id列表，逗号分隔",
-  `time`                  VARCHAR(20)  NOT NULL           COMMENT "评课时间，时间戳",
+  `tags`                  VARCHAR(255)                    COMMENT "标签id列表，逗号分隔",
+  `time`                  DATETIME     NOT NULL           COMMENT "评课时间",
   `is_valid`              TINYINT(1)            DEFAULT 1 COMMENT "是否有效，未被折叠",
 
   `course_id`             VARCHAR(50)  NOT NULL,
@@ -51,9 +50,8 @@ CREATE TABLE `course_evaluation` (
 
 CREATE TABLE `parent_comment` (
   `id`                VARCHAR(40) NOT NULL           COMMENT "uuid",
-  `time`              VARCHAR(20) NOT NULL           COMMENT "评课时间，时间戳",
+  `time`              DATETIME    NOT NULL           COMMENT "评课时间",
   `content`           TEXT                           COMMENT "评论内容",
-  `like_num`          INT         NOT NULL DEFAULT 0 COMMENT "点赞数",
   `sub_comment_num`   INT         NOT NULL DEFAULT 0 COMMENT "子评论数",
   `is_anonymous`      TINYINT(1)  NOT NULL DEFAULT 0 COMMENT "是否匿名",
   `is_valid`          TINYINT(1)  NOT NULL DEFAULT 1 COMMENT "是否有效，未被折叠",
@@ -68,13 +66,12 @@ CREATE TABLE `parent_comment` (
 
 CREATE TABLE `sub_comment` (
   `id`             VARCHAR(40) NOT NULL           COMMENT "uuid",
-  `time`           VARCHAR(20) NOT NULL           COMMENT "评课时间，时间戳",
+  `time`           DATETIME    NOT NULL           COMMENT "评课时间",
   `content`        TEXT                           COMMENT "评论内容",
-  `like_num`       INT         NOT NULL DEFAULT 0 COMMENT "点赞数",
   `is_anonymous`   TINYINT(1)  NOT NULL DEFAULT 0 COMMENT "是否匿名",
   `is_valid`       TINYINT(1)  NOT NULL DEFAULT 1 COMMENT "是否有效，未被折叠",
 
-  `parent_id`      INT         NOT NULL,
+  `parent_id`      VARCHAR(40) NOT NULL,
   `user_id`        INT         NOT NULL,
   `target_user_id` INT         NOT NULL COMMENT "评论的目标用户id",
 
@@ -114,9 +111,9 @@ CREATE TABLE `class_table` (
   KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
-CREATE TABLE `tag` (
+CREATE TABLE `tags` (
   `id`       INT unsigned NOT NULL AUTO_INCREMENT,
-  `tag_name` VARCHAR(20)  NOT NULL,
+  `name` VARCHAR(20)  NOT NULL,
 
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
@@ -178,4 +175,4 @@ CREATE TABLE `using_course` (
   UNIQUE KEY `hash` (`hash`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
-INSERT INTO `tag` (tag_name) VALUES ("简单易学"), ("干货满满"), ("生动有趣"), ("作业量少"), ("老师温柔"), ("云课堂资料全");
+INSERT INTO `tags` (name) VALUES ("简单易学"), ("干货满满"), ("生动有趣"), ("作业量少"), ("老师温柔"), ("云课堂资料全");

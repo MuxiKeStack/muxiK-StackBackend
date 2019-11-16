@@ -1,8 +1,16 @@
 package model
 
-import (
-	"errors"
-)
+func (comment *ParentCommentModel) TableName() string {
+	return "parent_comment"
+}
+
+func (comment *SubCommentModel) TableName() string {
+	return "sub_comment"
+}
+
+func (data *CommentLikeModel) TableName() string {
+	return "comment_like"
+}
 
 /*---------------------------- Parent Comment Operation --------------------------*/
 
@@ -13,20 +21,20 @@ func (comment *ParentCommentModel) New() error {
 }
 
 // Update liked number of a parent comment after liking or canceling it.
-func (comment *ParentCommentModel) UpdateLikeNum(num int) error {
-	likeNum := int(comment.LikeNum)
-	if likeNum == 0 {
-		return nil
-	}
-	likeNum += num
-	comment.LikeNum = uint32(likeNum)
-	d := DB.Self.Save(comment)
-	return d.Error
-}
+//func (comment *ParentCommentModel) UpdateLikeNum(num int) error {
+//	likeNum := int(comment.LikeSum)
+//	if likeNum == 0 && num == -1 {
+//		return nil
+//	}
+//	likeNum += num
+//	fmt.Println(likeNum)
+//	d := DB.Self.Model(comment).Update("like_sum", likeNum)
+//	return d.Error
+//}
 
 // Get a parent comment by its id.
 func (comment *ParentCommentModel) GetById() error {
-	d := DB.Self.First(comment)
+	d := DB.Self.First(comment, "id = ?", comment.Id)
 	return d.Error
 }
 
@@ -36,9 +44,20 @@ func GetParentComments(EvaluationId uint32, limit, offset int32) (*[]ParentComme
 	var comments []ParentCommentModel
 
 	d := DB.Self.Where("evaluation_id = ?", EvaluationId).
-		Find(&comments).Limit(limit).Offset(offset).Count(&count)
+		Order("time").Find(&comments).Limit(limit).Offset(offset).Count(&count)
 
 	return &comments, count, d.Error
+}
+
+// Update parentComment's the total number of subComment
+func (comment *ParentCommentModel) UpdateSubCommentNum(n int) error {
+	num := int(comment.SubCommentNum)
+	if num == 0 && n == -1 {
+		return nil
+	}
+	num += n
+	d := DB.Self.Model(comment).Update("sub_comment_num", num)
+	return d.Error
 }
 
 /*---------------------------- SubComment Operation --------------------------*/
@@ -50,49 +69,43 @@ func (comment *SubCommentModel) New() error {
 }
 
 // Update liked number of a subComment after liking or canceling it.
-func (comment *SubCommentModel) UpdateLikeNum(num int) error {
-	likeNum := int(comment.LikeNum)
-	if likeNum == 0 {
-		return nil
-	}
-	likeNum += num
-	comment.LikeNum = uint32(likeNum)
-	d := DB.Self.Save(comment)
-	return d.Error
-}
+//func (comment *SubCommentModel) UpdateLikeNum(num int) error {
+//	likeNum := int(comment.LikeSum)
+//	if likeNum == 0 && num == -1 {
+//		return nil
+//	}
+//	likeNum += num
+//	d := DB.Self.Model(comment).Update("like_sum", likeNum)
+//	return d.Error
+//}
 
 // Get a subComment by its id.
 func (comment *SubCommentModel) GetById() error {
-	d := DB.Self.First(comment)
+	d := DB.Self.First(comment, "id = ?", comment.Id)
 	return d.Error
 }
 
 // Get subComments by their parentId.
 func GetSubCommentsByParentId(ParentId string) (*[]SubCommentModel, error) {
 	var subComments []SubCommentModel
-	DB.Self.Find(&subComments, "parent_id = ?", ParentId)
-	return &subComments, nil
+	d := DB.Self.Where("parent_id = ?", ParentId).Order("time").Find(&subComments)
+	return &subComments, d.Error
 }
 
 // Judge whether it is a subComment by id, if so then also return the subComment.
 func IsSubComment(id string) (*SubCommentModel, bool) {
 	var comment SubCommentModel
 	DB.Self.Where("id = ?", id).First(&comment)
-	if comment.Id == "" {
+	if comment.Id != "" {
 		return &comment, true
 	}
 	return nil, false
 }
 
-
 /*---------------------------- Other Comment Operations --------------------------*/
 
 // Like a comment by the current user.
-func CommentLike(userId uint32, commentId string) error {
-	if CommentHasLiked(userId, commentId) {
-		return errors.New("Have already liked ")
-	}
-
+func CommentLiking(userId uint32, commentId string) error {
 	var data = &CommentLikeModel{
 		UserId:    userId,
 		CommentId: commentId,
@@ -103,10 +116,6 @@ func CommentLike(userId uint32, commentId string) error {
 
 // Cancel liking a comment by the current user.
 func CommentCancelLiking(userId uint32, commentId string) error {
-	if !CommentHasLiked(userId, commentId) {
-		return errors.New("Have not liked ")
-	}
-
 	var data = &CommentLikeModel{
 		UserId:    userId,
 		CommentId: commentId,
@@ -117,39 +126,49 @@ func CommentCancelLiking(userId uint32, commentId string) error {
 
 // Judge whether a comment has already liked by the current user.
 func CommentHasLiked(userId uint32, commentId string) bool {
-	var data = &CommentLikeModel{
-		UserId:    userId,
-		CommentId: commentId,
-	}
+	var data CommentLikeModel
 	var count int
-	DB.Self.First(data).Count(&count)
-	return count == 1
+	DB.Self.Where("user_id = ? AND comment_id = ?", userId, commentId).Find(&data).Count(&count)
+	return count > 0
+}
+
+// Get comment's total like account by commentId.
+func GetCommentLikeSum(commentId string) (count uint32) {
+	var data CommentLikeModel
+	DB.Self.Where("comment_id = ?", commentId).Find(&data).Count(&count)
+	return
 }
 
 // Get parentId by commentTargetId.
-func GetParentIdByCommentTargetId(id string) (string, error) {
+func GetParentIdByCommentTargetId(id string) (string, bool) {
 	var comment SubCommentModel
-	d := DB.Self.Where("id = ?", id).First(&comment)
-	if d.Error != nil || comment.ParentId != "" {
-		return comment.ParentId, d.Error
+	DB.Self.Where("id = ?", id).First(&comment)
+	if comment.ParentId != "" {
+		return comment.ParentId, true
 	}
 
 	// The comment target is a parentComment instead of a subComment
 	var parentComment ParentCommentModel
-	d = DB.Self.Where("id = ?", id).Find(&parentComment)
-	return parentComment.Id, d.Error
+	DB.Self.Where("id = ?", id).First(&parentComment)
+	if parentComment.Id != "" {
+		return parentComment.Id, true
+	}
+	return "", false
 }
 
 // Get comment target user's id by the commentTargetId.
-func GetTargetUserIdByCommentTargetId(id string) (uint32, error) {
+func GetTargetUserIdByCommentTargetId(id string) (uint32, bool) {
 	var comment SubCommentModel
-	d := DB.Self.Where("id = ?", id).First(&comment)
-	if d.Error != nil || comment.Id == "" {
-		return comment.UserId, d.Error
+	DB.Self.Where("id = ?", id).First(&comment)
+	if comment.Id != "" {
+		return comment.UserId, true
 	}
 
 	// The comment target is a parentComment instead of a subComment
 	var parentComment ParentCommentModel
-	d = DB.Self.Where("id = ?", id).Find(&parentComment)
-	return parentComment.UserId, d.Error
+	DB.Self.Where("id = ?", id).First(&parentComment)
+	if parentComment.Id != "" {
+		return parentComment.UserId, true
+	}
+	return 0, false
 }

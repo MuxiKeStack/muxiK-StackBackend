@@ -16,12 +16,12 @@ import (
 )
 
 var (
-	g *gin.Engine
-	tokenStr = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1NzM1Mjc1OTEsImlkIjoxLCJuYmYiOjE1NzM1Mjc1OTF9.1CZFz2OVeDfDnvEXwCpQjqNGpSCIRoZOgMkRpuPIgc8"
-	courseId = "112d34testsvggase"
-	courseName = "高等数学A"
+	g            *gin.Engine
+	tokenStr     = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1NzM1Mjc1OTEsImlkIjoxLCJuYmYiOjE1NzM1Mjc1OTF9.1CZFz2OVeDfDnvEXwCpQjqNGpSCIRoZOgMkRpuPIgc8"
+	courseId     = "112d34testsvggase"
+	courseName   = "高等数学A"
 	evaluationId uint32
-	commentId string
+	commentId    string
 )
 
 func TestMain(m *testing.M) {
@@ -75,7 +75,7 @@ func TestPublish(t *testing.T) {
 // Test: get an evaluation information by a specific user
 func TestGetEvaluation(t *testing.T) {
 	g := getRouter(true)
-	uri := fmt.Sprintf("api/v1/evaluation/%s/", evaluationId)
+	uri := fmt.Sprintf("api/v1/evaluation/%s/", string(evaluationId))
 	w := util.PerformRequest(http.MethodGet, g, uri, tokenStr)
 
 	var data model.EvaluationInfo
@@ -91,7 +91,7 @@ func TestGetEvaluation(t *testing.T) {
 // Test: get an evaluation information by a visitor
 func TestGetEvaluation2(t *testing.T) {
 	g := getRouter(true)
-	uri := fmt.Sprintf("api/v1/evaluation/%s/", evaluationId)
+	uri := fmt.Sprintf("api/v1/evaluation/%s/", string(evaluationId))
 	w := util.PerformRequest(http.MethodGet, g, uri, "")
 
 	var data model.EvaluationInfo
@@ -139,7 +139,7 @@ func TestEvaluationPlayground2(t *testing.T) {
 // Test: create a new top comment
 func TestCreateTopComment(t *testing.T) {
 	g := getRouter(true)
-	uri := fmt.Sprintf("api/v1/evaluation/%s/comment/", evaluationId)
+	uri := fmt.Sprintf("api/v1/evaluation/%s/comment/", string(evaluationId))
 	body := newCommentRequest{
 		Content:     "Great",
 		IsAnonymous: false,
@@ -193,7 +193,7 @@ func TestReply(t *testing.T) {
 // Test: get comments by a specific user
 func TestGetComments(t *testing.T) {
 	g := getRouter(true)
-	uri := fmt.Sprintf("api/v1//evaluation/%s/comments/?pageSize=20&pageNum=0", evaluationId)
+	uri := fmt.Sprintf("api/v1//evaluation/%s/comments/?pageSize=20&pageNum=0", string(evaluationId))
 	w := util.PerformRequest(http.MethodGet, g, uri, tokenStr)
 
 	var data commentListResponse
@@ -209,7 +209,7 @@ func TestGetComments(t *testing.T) {
 // Test: get comments by a visitor
 func TestGetComments2(t *testing.T) {
 	g := getRouter(true)
-	uri := fmt.Sprintf("api/v1//evaluation/%s/comments/?pageSize=20&pageNum=0", evaluationId)
+	uri := fmt.Sprintf("api/v1//evaluation/%s/comments/?pageSize=20&pageNum=0", string(evaluationId))
 	w := util.PerformRequest(http.MethodGet, g, uri, "")
 
 	var data commentListResponse
@@ -225,8 +225,8 @@ func TestGetComments2(t *testing.T) {
 // Test: change an evaluation's like state by a user
 func TestUpdateEvaluationLike(t *testing.T) {
 	g := getRouter(true)
-	uri := fmt.Sprintf("api/v1/evaluation/%s/like/", evaluationId)
-	body := likeDataRequest{IsLike:true}
+	uri := fmt.Sprintf("api/v1/evaluation/%s/like/", string(evaluationId))
+	body := likeDataRequest{IsLike: true}
 
 	jsonByte, err := json.Marshal(body)
 	if err != nil {
@@ -249,7 +249,7 @@ func TestUpdateEvaluationLike(t *testing.T) {
 func TestUpdateCommentLike(t *testing.T) {
 	g := getRouter(true)
 	uri := fmt.Sprintf("api/v1/comment/%s/like/", commentId)
-	body := likeDataRequest{IsLike:true}
+	body := likeDataRequest{IsLike: true}
 
 	jsonByte, err := json.Marshal(body)
 	if err != nil {

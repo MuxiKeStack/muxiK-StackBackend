@@ -6,12 +6,13 @@ definitions:
         items:
           $ref: '#/definitions/model.ParentCommentInfo'
         type: array
-      parent_comment_num:
+      parent_comment_sum:
         type: integer
     type: object
   comment.evaluationPublishRequest:
     properties:
       attendance_check_type:
+        description: 经常点名/偶尔点名/签到点名，标识为 1/2/3
         type: integer
       content:
         type: string
@@ -20,8 +21,10 @@ definitions:
       course_name:
         type: string
       exam_check_type:
+        description: 无考核/闭卷考试/开卷考试/论文考核，标识为 1/2/3/4
         type: integer
       is_anonymous:
+        description: 若binding为required那么就不能接受false值
         type: boolean
       rate:
         type: number
@@ -30,14 +33,9 @@ definitions:
           type: integer
         type: array
     required:
-    - attendance_check_type
-    - content
     - course_id
     - course_name
-    - exam_check_type
-    - is_anonymous
     - rate
-    - tags
     type: object
   comment.evaluationPublishResponse:
     properties:
@@ -46,14 +44,14 @@ definitions:
     type: object
   comment.likeDataRequest:
     properties:
-      is_like:
+      like_state:
         type: boolean
     type: object
   comment.likeDataResponse:
     properties:
-      is_like:
+      like_state:
         type: boolean
-      like_num:
+      like_sum:
         type: integer
     type: object
   comment.newCommentRequest:
@@ -64,7 +62,6 @@ definitions:
         type: boolean
     required:
     - content
-    - is_anonymous
     type: object
   comment.playgroundResponse:
     properties:
@@ -145,13 +142,13 @@ definitions:
         type: boolean
       is_like:
         type: boolean
-      like_num:
+      like_sum:
         type: integer
       target_user_info:
         $ref: '#/definitions/model.UserInfoResponse'
         type: object
       time:
-        type: string
+        type: integer
       user_info:
         $ref: '#/definitions/model.UserInfoResponse'
         type: object
@@ -185,7 +182,9 @@ definitions:
         type: boolean
       is_like:
         type: boolean
-      like_num:
+      is_valid:
+        type: boolean
+      like_sum:
         type: integer
       rate:
         type: number
@@ -196,7 +195,7 @@ definitions:
       teacher:
         type: string
       time:
-        type: string
+        type: integer
       user_info:
         $ref: '#/definitions/model.UserInfoResponse'
         type: object
@@ -239,7 +238,7 @@ definitions:
         type: boolean
       is_like:
         type: boolean
-      like_num:
+      like_sum:
         type: integer
       sub_comments_list:
         items:
@@ -248,7 +247,7 @@ definitions:
       sub_comments_num:
         type: integer
       time:
-        type: string
+        type: integer
       user_info:
         $ref: '#/definitions/model.UserInfoResponse'
         type: object
@@ -257,7 +256,7 @@ definitions:
     properties:
       id:
         type: integer
-      tagName:
+      name:
         type: string
     type: object
   model.UserInfoRequest:
@@ -323,9 +322,14 @@ paths:
         name: token
         required: true
         type: string
-      - description: 回复的评论对象id
+      - description: 一级评论id
         in: path
         name: id
+        required: true
+        type: string
+      - description: 评论回复的目标用户的sid，若是匿名用户，则为'0'
+        in: query
+        name: sid
         required: true
         type: string
       - description: data
@@ -356,7 +360,7 @@ paths:
         name: id
         required: true
         type: string
-      - description: data
+      - description: 当前点赞状态
         in: body
         name: data
         required: true
@@ -511,7 +515,7 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/comment.commentListResponse'
-      summary: 评论点赞/取消点赞
+      summary: 获取评论列表
       tags:
       - comment
   /evaluation/{id}/like/:
@@ -527,7 +531,7 @@ paths:
         name: id
         required: true
         type: string
-      - description: data
+      - description: 当前点赞状态
         in: body
         name: data
         required: true

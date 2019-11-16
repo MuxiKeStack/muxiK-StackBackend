@@ -9,15 +9,16 @@ import (
 	"github.com/MuxiKeStack/muxiK-StackBackend/service"
 
 	"github.com/gin-gonic/gin"
+	"github.com/lexkong/log"
 )
 
 type commentListResponse struct {
-	ParentCommentNum  uint32                     `json:"parent_comment_num"`
+	ParentCommentSum  uint32                     `json:"parent_comment_sum"`
 	ParentCommentList *[]model.ParentCommentInfo `json:"parent_comment_list"`
 }
 
 // 获取评论列表
-// @Summary 评论点赞/取消点赞
+// @Summary 获取评论列表
 // @Tags comment
 // @Param token header string false "游客登录则不需要此字段或为空"
 // @Param id path string true "评课id"
@@ -26,6 +27,8 @@ type commentListResponse struct {
 // @Success 200 {object} comment.commentListResponse
 // @Router /evaluation/{id}/comments/ [get]
 func GetComments(c *gin.Context) {
+	log.Info("GetComments function is called.")
+
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
 		handler.SendBadRequest(c, errno.ErrGetParam, nil, err.Error())
@@ -46,22 +49,25 @@ func GetComments(c *gin.Context) {
 	}
 
 	// userId获取与游客模式判断
+	var userId uint32
 	visitor := false
-	userId, ok := c.Get("id")
+
+	userIdInterface, ok := c.Get("id")
 	if !ok {
 		visitor = true
+	} else {
+		userId = userIdInterface.(uint32)
+		log.Info("User auth successful.")
 	}
 
-	list, count, err := service.CommentList(uint32(id), int32(size), int32(num*size), userId.(uint32), visitor)
+	list, count, err := service.CommentList(uint32(id), int32(size), int32(num*size), userId, visitor)
 	if err != nil {
 		handler.SendError(c, errno.ErrCommentList, nil, err.Error())
 		return
 	}
 
-	data := commentListResponse{
-		ParentCommentNum:  count,
+	handler.SendResponse(c, nil, commentListResponse{
+		ParentCommentSum:  count,
 		ParentCommentList: list,
-	}
-
-	handler.SendResponse(c, nil, data)
+	})
 }

@@ -4,6 +4,7 @@ import (
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/token"
+	"github.com/lexkong/log"
 
 	"github.com/gin-gonic/gin"
 )
@@ -26,9 +27,12 @@ func VisitorAuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Parse the json web token.
 		ctx, err := token.ParseRequest(c)
-		if err == nil {
+		if err != nil {
+			log.Info("Token is invalid. Entry visitor mode.")
+		} else {
 			c.Set("id", ctx.Id)
 		}
+
 		c.Next()
 	}
 }

@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/lexkong/log"
 	"sync"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
@@ -18,9 +19,12 @@ type SubCommentInfoList struct {
 
 // Get comment list.
 func CommentList(evaluationId uint32, limit, offset int32, userId uint32, visitor bool) (*[]model.ParentCommentInfo, uint32, error) {
+	log.Info("CommentList function is called")
+
 	// Get parent comments from database
 	parentComments, count, err := model.GetParentComments(evaluationId, limit, offset)
 	if err != nil {
+		log.Error("GetParentComments", err)
 		return nil, count, err
 	}
 
@@ -40,12 +44,13 @@ func CommentList(evaluationId uint32, limit, offset int32, userId uint32, visito
 
 	for _, parentComment := range *parentComments {
 		wg.Add(1)
-		go func(parentComment *model.ParentCommentModel) {
+		go func(parentComment model.ParentCommentModel) {
 			defer wg.Done()
 
 			// 获取父评论详情
 			parentCommentInfo, err := GetParentCommentInfo(parentComment.Id, userId, visitor)
 			if err != nil {
+				log.Error("GetParentCommentInfo function error", err)
 				errChan <- err
 				return
 			}
@@ -55,7 +60,7 @@ func CommentList(evaluationId uint32, limit, offset int32, userId uint32, visito
 
 			parentCommentInfoList.IdMap[parentCommentInfo.Id] = parentCommentInfo
 
-		}(&parentComment)
+		}(parentComment)
 	}
 
 	go func() {
@@ -85,10 +90,15 @@ func GetParentCommentInfo(id string, userId uint32, visitor bool) (*model.Parent
 		return nil, err
 	}
 
-	// Get the user of the parent comment
-	userInfo, err := GetUserInfoById(comment.UserId)
-	if err != nil {
-		return nil, err
+	// Get the user of the parent comment if not anonymous
+	var userInfo *model.UserInfoResponse
+	var err error
+	if !comment.IsAnonymous {
+		userInfo, err = GetUserInfoById(comment.UserId)
+		if err != nil {
+			log.Error("GetUserInfoById function is called", err)
+			return nil, err
+		}
 	}
 
 	// Get like state
@@ -106,9 +116,9 @@ func GetParentCommentInfo(id string, userId uint32, visitor bool) (*model.Parent
 	data := &model.ParentCommentInfo{
 		Id:              comment.Id,
 		Content:         comment.Content,
-		LikeNum:         comment.LikeNum,
+		LikeSum:         model.GetCommentLikeSum(comment.Id),
 		IsLike:          isLike,
-		Time:            comment.Time,
+		Time:            comment.Time.Unix(),
 		IsAnonymous:     comment.IsAnonymous,
 		UserInfo:        userInfo,
 		SubCommentsNum:  comment.SubCommentNum,
@@ -123,6 +133,7 @@ func GetSubCommentInfosByParentId(id string, userId uint32, visitor bool) (*[]mo
 	// Get subComments from Database
 	comments, err := model.GetSubCommentsByParentId(id)
 	if err != nil {
+		log.Error("GetSubCommentsByParentId function error", err)
 		return nil, err
 	}
 
@@ -144,12 +155,13 @@ func GetSubCommentInfosByParentId(id string, userId uint32, visitor bool) (*[]mo
 	for _, comment := range *comments {
 		wg.Add(1)
 
-		go func(comment *model.SubCommentModel) {
+		go func(comment model.SubCommentModel) {
 			defer wg.Done()
 
 			// Get a subComment's info by its id
 			info, err := GetSubCommentInfoById(comment.Id, userId, visitor)
 			if err != nil {
+				log.Error("GetSubCommentInfoById function error", err)
 				errChan <- err
 				return
 			}
@@ -159,7 +171,7 @@ func GetSubCommentInfosByParentId(id string, userId uint32, visitor bool) (*[]mo
 
 			subCommentInfoList.IdMap[info.Id] = info
 
-		}(&comment)
+		}(comment) //传址会panic
 	}
 
 	go func() {
@@ -186,20 +198,31 @@ func GetSubCommentInfoById(id string, userId uint32, visitor bool) (*model.Comme
 	// Get comment from Database
 	comment := &model.SubCommentModel{Id: id}
 	if err := comment.GetById(); err != nil {
+		log.Error("comment.GetById function error", err)
 		return nil, err
 	}
 
-	// Get the user of the subComment
-	commentUser, err := GetUserInfoById(comment.UserId)
-	if err != nil {
-		return nil, err
+	// Get the user of the subComment if not anonymous
+	var commentUser *model.UserInfoResponse
+	var err error
+	if !comment.IsAnonymous {
+		commentUser, err = GetUserInfoById(comment.UserId)
+		if err != nil {
+			log.Error("GetUserInfoById function error", err)
+			return nil, err
+		}
 	}
 
-	// Get the target user of the subComment
-	targetUser, err := GetUserInfoById(comment.TargetUserId)
-	if err != nil {
-		return nil, err
+	// Get the target user of the subComment if not anonymous (identified by 0)
+	var targetUser *model.UserInfoResponse
+	if comment.TargetUserId != 0 {
+		targetUser, err = GetUserInfoById(comment.TargetUserId)
+		if err != nil {
+			log.Error("GetUserInfoById function error", err)
+			return nil, err
+		}
 	}
+
 
 	// Get like state
 	var isLike = false
@@ -210,9 +233,9 @@ func GetSubCommentInfoById(id string, userId uint32, visitor bool) (*model.Comme
 	data := &model.CommentInfo{
 		Id:             comment.Id,
 		Content:        comment.Content,
-		LikeNum:        comment.LikeNum,
+		LikeSum:        model.GetCommentLikeSum(comment.Id),
 		IsLike:         isLike,
-		Time:           comment.Time,
+		Time:           comment.Time.Unix(),
 		UserInfo:       commentUser,
 		TargetUserInfo: targetUser,
 	}
@@ -221,18 +244,21 @@ func GetSubCommentInfoById(id string, userId uint32, visitor bool) (*model.Comme
 }
 
 // Update liked number of a comment after liking or canceling it.
-func UpdateCommentLikeNum(commentId string, num int) (uint32, error) {
-	subComment, ok := model.IsSubComment(commentId)
-	if ok {
-		err := subComment.UpdateLikeNum(num)
-		return subComment.LikeNum, err
-	}
-
-	parentComment := &model.ParentCommentModel{Id: commentId}
-	if err := parentComment.GetById(); err != nil {
-		return 0, err
-	}
-
-	err := parentComment.UpdateLikeNum(num)
-	return parentComment.LikeNum, err
-}
+//func UpdateCommentLikeNum(commentId string, num int) (uint32, error) {
+//	log.Info("UpdateCommentLikeNum function is called")
+//
+//	subComment, ok := model.IsSubComment(commentId)
+//	if ok {
+//		err := subComment.UpdateLikeNum(num)
+//		return subComment.LikeSum, err
+//	}
+//
+//	parentComment := &model.ParentCommentModel{Id: commentId}
+//	if err := parentComment.GetById(); err != nil {
+//		log.Error("parentComment.GetById function error", err)
+//		return 0, err
+//	}
+//
+//	err := parentComment.UpdateLikeNum(num)
+//	return parentComment.LikeSum, err
+//}

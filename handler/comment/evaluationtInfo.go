@@ -1,6 +1,7 @@
 package comment
 
 import (
+	"github.com/lexkong/log"
 	"strconv"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
@@ -25,13 +26,18 @@ func GetEvaluation(c *gin.Context) {
 	}
 
 	// userId获取与游客模式判断
+	var userId uint32
 	visitor := false
-	userId, ok := c.Get("id")
+
+	userIdInterface, ok := c.Get("id")
 	if !ok {
 		visitor = true
+	} else {
+		userId = userIdInterface.(uint32)
+		log.Info("User auth successful.")
 	}
 
-	data, err := service.GetEvaluationInfo(uint32(id), userId.(uint32), visitor)
+	data, err := service.GetEvaluationInfo(uint32(id), userId, visitor)
 	if err != nil {
 		handler.SendError(c, err, nil, err.Error())
 		return

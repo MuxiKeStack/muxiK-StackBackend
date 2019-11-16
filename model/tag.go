@@ -1,10 +1,14 @@
 package model
 
+func (tag *TagModel) TableName() string {
+	return "tags"
+}
+
 // Get tag name by id.
-func GetTagNameById(id int) string {
+func GetTagNameById(id int) (string, error) {
 	var tag TagModel
-	DB.Self.Where("id = ?", id).First(&tag)
-	return tag.TagName
+	d := DB.Self.Where("id = ?", id).First(&tag)
+	return tag.Name, d.Error
 }
 
 // Get tag total number.
@@ -16,8 +20,8 @@ func GetTagSum() int {
 }
 
 // Get all tags including ids and names.
-func GetTags() ([]TagModel, error) {
+func GetTags() *[]TagModel {
 	var tags []TagModel
-	d := DB.Self.Find(&tags)
-	return tags, d.Error
+	DB.Self.Find(&tags)
+	return &tags
 }

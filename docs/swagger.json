@@ -29,9 +29,16 @@
                     },
                     {
                         "type": "string",
-                        "description": "回复的评论对象id",
+                        "description": "一级评论id",
                         "name": "id",
                         "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "评论回复的目标用户的sid，若是匿名用户，则为'0'",
+                        "name": "sid",
+                        "in": "query",
                         "required": true
                     },
                     {
@@ -77,7 +84,7 @@
                         "required": true
                     },
                     {
-                        "description": "data",
+                        "description": "当前点赞状态",
                         "name": "data",
                         "in": "body",
                         "required": true,
@@ -273,7 +280,7 @@
                 "tags": [
                     "comment"
                 ],
-                "summary": "评论点赞/取消点赞",
+                "summary": "获取评论列表",
                 "parameters": [
                     {
                         "type": "string",
@@ -335,7 +342,7 @@
                         "required": true
                     },
                     {
-                        "description": "data",
+                        "description": "当前点赞状态",
                         "name": "data",
                         "in": "body",
                         "required": true,
@@ -720,7 +727,7 @@
                         "$ref": "#/definitions/model.ParentCommentInfo"
                     }
                 },
-                "parent_comment_num": {
+                "parent_comment_sum": {
                     "type": "integer"
                 }
             }
@@ -728,17 +735,13 @@
         "comment.evaluationPublishRequest": {
             "type": "object",
             "required": [
-                "attendance_check_type",
-                "content",
                 "course_id",
                 "course_name",
-                "exam_check_type",
-                "is_anonymous",
-                "rate",
-                "tags"
+                "rate"
             ],
             "properties": {
                 "attendance_check_type": {
+                    "description": "经常点名/偶尔点名/签到点名，标识为 1/2/3",
                     "type": "integer"
                 },
                 "content": {
@@ -751,9 +754,11 @@
                     "type": "string"
                 },
                 "exam_check_type": {
+                    "description": "无考核/闭卷考试/开卷考试/论文考核，标识为 1/2/3/4",
                     "type": "integer"
                 },
                 "is_anonymous": {
+                    "description": "若binding为required那么就不能接受false值",
                     "type": "boolean"
                 },
                 "rate": {
@@ -778,7 +783,7 @@
         "comment.likeDataRequest": {
             "type": "object",
             "properties": {
-                "is_like": {
+                "like_state": {
                     "type": "boolean"
                 }
             }
@@ -786,10 +791,10 @@
         "comment.likeDataResponse": {
             "type": "object",
             "properties": {
-                "is_like": {
+                "like_state": {
                     "type": "boolean"
                 },
-                "like_num": {
+                "like_sum": {
                     "type": "integer"
                 }
             }
@@ -797,8 +802,7 @@
         "comment.newCommentRequest": {
             "type": "object",
             "required": [
-                "content",
-                "is_anonymous"
+                "content"
             ],
             "properties": {
                 "content": {
@@ -930,7 +934,7 @@
                 "is_like": {
                     "type": "boolean"
                 },
-                "like_num": {
+                "like_sum": {
                     "type": "integer"
                 },
                 "target_user_info": {
@@ -938,7 +942,7 @@
                     "$ref": "#/definitions/model.UserInfoResponse"
                 },
                 "time": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "user_info": {
                     "type": "object",
@@ -990,7 +994,10 @@
                 "is_like": {
                     "type": "boolean"
                 },
-                "like_num": {
+                "is_valid": {
+                    "type": "boolean"
+                },
+                "like_sum": {
                     "type": "integer"
                 },
                 "rate": {
@@ -1006,7 +1013,7 @@
                     "type": "string"
                 },
                 "time": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "user_info": {
                     "type": "object",
@@ -1070,7 +1077,7 @@
                 "is_like": {
                     "type": "boolean"
                 },
-                "like_num": {
+                "like_sum": {
                     "type": "integer"
                 },
                 "sub_comments_list": {
@@ -1083,7 +1090,7 @@
                     "type": "integer"
                 },
                 "time": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "user_info": {
                     "type": "object",
@@ -1097,7 +1104,7 @@
                 "id": {
                     "type": "integer"
                 },
-                "tagName": {
+                "name": {
                     "type": "string"
                 }
             }

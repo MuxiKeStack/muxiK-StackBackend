@@ -4,7 +4,7 @@ import (
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
-	"github.com/MuxiKeStack/muxiK-StackBackend/service"
+	"github.com/lexkong/log"
 
 	"github.com/gin-gonic/gin"
 )
@@ -14,18 +14,18 @@ import (
 // @Tags comment
 // @Param token header string true "token"
 // @Param id path string true "点赞评论id"
-// @Param data body comment.likeDataRequest true "data"
+// @Param data body comment.likeDataRequest true "当前点赞状态"
 // @Success 200 {object} comment.likeDataResponse
 // @Router /comment/{id}/like/ [put]
 func UpdateCommentLike(c *gin.Context) {
+	log.Info("UpdateCommentLike function is called.")
 	var err error
-
 	id := c.Param("id")
 
-	// 获取请求中当前的点赞状态
+	// 获取请求中的点赞状态
 	var bodyData likeDataRequest
-	if err := c.ShouldBindJSON(&bodyData); err != nil {
-		handler.SendError(c, err, nil, err.Error())
+	if err := c.BindJSON(&bodyData); err != nil {
+		handler.SendError(c, errno.ErrBind, nil, err.Error())
 		return
 	}
 
@@ -35,42 +35,31 @@ func UpdateCommentLike(c *gin.Context) {
 
 	// 判断点赞请求是否合理
 	// 未点赞
-	if bodyData.IsLike && !hasLiked {
+	if bodyData.LikeState && !hasLiked {
 		handler.SendResponse(c, errno.ErrNotLiked, nil)
 		return
 	}
 	// 已点赞
-	if !bodyData.IsLike && hasLiked {
+	if !bodyData.LikeState && hasLiked {
 		handler.SendResponse(c, errno.ErrHasLiked, nil)
 		return
 	}
 
 	// 点赞&取消点赞
-	if bodyData.IsLike {
+	if bodyData.LikeState {
 		err = model.CommentCancelLiking(userId, id);
 	} else {
-		err = model.CommentLike(userId, id)
+		err = model.CommentLiking(userId, id)
 	}
 
-	if err != nil {
-		handler.SendError(c, err, nil, err.Error())
-		return
-	}
-
-	// 更新点赞数
-	num := 1
-	if bodyData.IsLike {
-		num = -1
-	}
-	count, err := service.UpdateCommentLikeNum(id, num)
 	if err != nil {
 		handler.SendError(c, err, nil, err.Error())
 		return
 	}
 
 	data := &likeDataResponse{
-		IsLike:  !hasLiked,
-		LikeNum: count,
+		LikeState: !hasLiked,
+		LikeSum:   model.GetCommentLikeSum(id),
 	}
 
 	handler.SendResponse(c, nil, data)

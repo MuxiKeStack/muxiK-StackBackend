@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -8,25 +9,36 @@ import (
 )
 
 // Get tag real names by id string.
-func GetTagNamesByIdStr(s string) []string {
+func GetTagNamesByIdStr(s string) ([]string, error) {
 	var tagNames []string
+	if s == "" {
+		return tagNames, nil
+	}
+
 	tagsStr := strings.Split(s, ",")
 
 	for _, idStr := range tagsStr {
 		id, _ := strconv.Atoi(idStr)
-		name := model.GetTagNameById(id)
+		name, err := model.GetTagNameById(id)
+		if err != nil {
+			return nil, err
+		}
 
 		tagNames = append(tagNames, name)
 	}
 
-	return tagNames
+	return tagNames, nil
 }
 
 // Convert tags from array to string
 func TagArrayToStr(tagIds []uint8) string {
 	var s string
-	for _, id := range tagIds {
-		s = strconv.FormatUint(uint64(id), 10) + ","
+	for i, id := range tagIds {
+		if i > 0 {
+			s = fmt.Sprintf("%s,%d", s, id)
+			continue
+		}
+		s = fmt.Sprintf("%d", id)
 	}
 	return s
 }
