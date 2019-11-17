@@ -1,12 +1,13 @@
 package service
 
 import (
-	"github.com/lexkong/log"
 	"strconv"
 	"strings"
 	"sync"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
+
+	"github.com/lexkong/log"
 )
 
 type classInfoList struct {
@@ -16,8 +17,6 @@ type classInfoList struct {
 
 // 根据课表model获取课表返回详情
 func GetTableInfoByTableModel_2(table *model.ClassTableModel) (*model.ClassTableInfo, error) {
-	log.Info("GetTableInfoByTableModel function is called.")
-
 	// return if has no class
 	if table.Classes == "" {
 		return &model.ClassTableInfo{
@@ -89,9 +88,16 @@ func GetTableInfoById(id uint32) (*model.ClassTableInfo, error) {
 
 // 根据id获取课表所用的课堂详情
 func GetClassInfoForTableById(id string) (*model.ClassInfo, error) {
-	class, err := model.GetClassById(id)
+	class, err := model.GetClassByHashId(id)
 	if err != nil {
-		log.Error("GetClassById function error", err)
+		log.Error("GetClassByHashId function error", err)
+		return nil, err
+	}
+
+	// Get course's hash id
+	couseId, err := model.GetCourseHashIdById(class.CourseId)
+	if err != nil {
+		log.Error("GetCourseHashIdById function err", err)
 		return nil, err
 	}
 
@@ -163,7 +169,7 @@ func GetClassInfoForTableById(id string) (*model.ClassInfo, error) {
 	}
 
 	info := &model.ClassInfo{
-		CourseId:  string(class.CourseId),
+		CourseId:  couseId,
 		ClassId:   id,
 		ClassName: class.Name,
 		Teacher:   class.Teacher,
@@ -176,8 +182,6 @@ func GetClassInfoForTableById(id string) (*model.ClassInfo, error) {
 
 // 根据课表model获取课表返回详情
 func GetTableInfoByTableModel(table *model.ClassTableModel) (*model.ClassTableInfo, error) {
-	log.Info("GetTableInfoByTableModel function is called.")
-
 	// return if has no class
 	if table.Classes == "" {
 		return &model.ClassTableInfo{

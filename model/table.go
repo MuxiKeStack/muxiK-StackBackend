@@ -58,8 +58,14 @@ func IsClassExisting(id string) bool {
 	return count == 1
 }
 
-func GetClassById(id string) (*UsingCourseModel, error) {
+func GetClassByHashId(id string) (*UsingCourseModel, error) {
 	var class UsingCourseModel
 	d := DB.Self.Where("hash = ?", id).First(&class)
 	return &class, d.Error
+}
+
+func GetCourseHashIdById(id uint64) (string, error) {
+	var course HistoryCourseModel
+	d := DB.Self.Where("id = ?", id).First(&course)
+	return course.Hash, d.Error
 }

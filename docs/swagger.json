@@ -475,9 +475,9 @@
                     },
                     {
                         "type": "string",
-                        "description": "若是创建副本，则为课表副本id，若是添加新课表，则为空",
+                        "description": "若是创建副本，则为课表副本id，若是添加新课表，则为0",
                         "name": "id",
-                        "in": "path"
+                        "in": "query"
                     }
                 ],
                 "responses": {
