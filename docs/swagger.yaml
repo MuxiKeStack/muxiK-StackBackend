@@ -618,8 +618,8 @@ paths:
         name: token
         required: true
         type: string
-      - description: 若是创建副本，则为课表副本id，若是添加新课表，则为空
-        in: path
+      - description: 若是创建副本，则为课表副本id，若是添加新课表，则为0
+        in: query
         name: id
         type: string
       responses:
