@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/lexkong/log"
 	"strconv"
 	"strings"
 	"sync"
@@ -14,7 +15,17 @@ type classInfoList struct {
 }
 
 // 根据课表model获取课表返回详情
-func GetTableInfoByTableModel(table *model.ClassTableModel) (*model.ClassTableInfo, error) {
+func GetTableInfoByTableModel_2(table *model.ClassTableModel) (*model.ClassTableInfo, error) {
+	log.Info("GetTableInfoByTableModel function is called.")
+
+	// return if has no class
+	if table.Classes == "" {
+		return &model.ClassTableInfo{
+			TableId: table.Id,
+			TableName: table.Name,
+		}, nil
+	}
+
 	ids := strings.Split(table.Classes, ",")
 
 	var classList classInfoList
@@ -65,8 +76,11 @@ func GetTableInfoByTableModel(table *model.ClassTableModel) (*model.ClassTableIn
 
 // 根据id获取课表详情
 func GetTableInfoById(id uint32) (*model.ClassTableInfo, error) {
+	log.Info("GetTableInfoById function is called")
+
 	table := &model.ClassTableModel{Id: id}
 	if err := table.GetById(); err != nil {
+		log.Error("table.GetById function error", err)
 		return nil, err
 	}
 
@@ -77,6 +91,7 @@ func GetTableInfoById(id uint32) (*model.ClassTableInfo, error) {
 func GetClassInfoForTableById(id string) (*model.ClassInfo, error) {
 	class, err := model.GetClassById(id)
 	if err != nil {
+		log.Error("GetClassById function error", err)
 		return nil, err
 	}
 
@@ -159,58 +174,70 @@ func GetClassInfoForTableById(id string) (*model.ClassInfo, error) {
 	return info, nil
 }
 
-//func GetTableInfoByTableModel_2(table *model.ClassTableModel) (*model.ClassTableInfo, error) {
-//	ids := strings.Split(table.Classes, ",")
-//
-//	var classList []model.ClassInfo
-//
-//	wg := &sync.WaitGroup{}
-//	errChan := make(chan error, 1)
-//	finished := make(chan bool, 1)
-//	classChan := make(chan *model.ClassInfo, 20)
-//
-//	// 并发获取课堂列表
-//	for _, id := range ids {
-//		wg.Add(1)
-//
-//		go func(id string) {
-//			defer wg.Done()
-//
-//			classInfo, err := GetClassInfoForTableById(id)
-//			if err != nil {
-//				errChan <- err
-//				return
-//			}
-//			classChan <- classInfo
-//
-//		}(id)
-//	}
-//
-//	go func() {
-//		wg.Wait()
-//		close(classChan)
-//	}()
-//
-//	go func() {
-//		for class := range classChan {
-//			classList = append(classList, *class)
-//		}
-//		close(finished)
-//	}()
-//
-//	select {
-//	case <-finished:
-//	case err := <-errChan:
-//		for range classChan {}
-//		return nil, err
-//	}
-//
-//	info := &model.ClassTableInfo{
-//		TableId:   table.Id,
-//		TableName: table.Name,
-//		ClassNum:  uint32(len(ids)),
-//		ClassList: &classList,
-//	}
-//
-//	return info, nil
-//}
+// 根据课表model获取课表返回详情
+func GetTableInfoByTableModel(table *model.ClassTableModel) (*model.ClassTableInfo, error) {
+	log.Info("GetTableInfoByTableModel function is called.")
+
+	// return if has no class
+	if table.Classes == "" {
+		return &model.ClassTableInfo{
+			TableId: table.Id,
+			TableName: table.Name,
+		}, nil
+	}
+
+	ids := strings.Split(table.Classes, ",")
+
+	var classList []model.ClassInfo
+
+	wg := &sync.WaitGroup{}
+	errChan := make(chan error, 1)
+	finished := make(chan bool, 1)
+	classChan := make(chan *model.ClassInfo, 20)
+
+	// 并发获取课堂列表
+	for _, id := range ids {
+		wg.Add(1)
+
+		go func(id string) {
+			defer wg.Done()
+
+			classInfo, err := GetClassInfoForTableById(id)
+			if err != nil {
+				errChan <- err
+				return
+			}
+			classChan <- classInfo
+
+		}(id)
+	}
+
+	go func() {
+		wg.Wait()
+		close(classChan)
+	}()
+
+	go func() {
+		for class := range classChan {
+			classList = append(classList, *class)
+		}
+		close(finished)
+	}()
+
+	select {
+	case <-finished:
+	case err := <-errChan:
+		// 会不会goroutine泄露
+		//for range classChan {}
+		return nil, err
+	}
+
+	info := &model.ClassTableInfo{
+		TableId:   table.Id,
+		TableName: table.Name,
+		ClassNum:  uint32(len(ids)),
+		ClassList: &classList,
+	}
+
+	return info, nil
+}

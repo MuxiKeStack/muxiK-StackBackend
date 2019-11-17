@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/lexkong/log"
 	"sync"
@@ -109,6 +110,7 @@ func GetEvaluationInfo(id, userId uint32, visitor bool) (*model.EvaluationInfo, 
 	// Get tag names
 	tagNames, err := GetTagNamesByIdStr(evaluation.Tags)
 	if err != nil {
+		fmt.Println(tagNames, evaluation.Tags)
 		log.Info("GetTagNamesByIdStr function error.")
 		return nil, err
 	}

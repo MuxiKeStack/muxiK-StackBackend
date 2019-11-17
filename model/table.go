@@ -1,5 +1,9 @@
 package model
 
+func (table *ClassTableModel) TableName() string {
+	return "class_table"
+}
+
 func (table *ClassTableModel) New() error {
 	d := DB.Self.Create(table)
 	return d.Error
@@ -11,7 +15,8 @@ func (table *ClassTableModel) Delete() error {
 }
 
 func (table *ClassTableModel) GetById() error {
-	d := DB.Self.First(table)
+	d := DB.Self.First(table, "id = ?", table.Id)
+	//d := DB.Self.First(table)
 	return d.Error
 }
 
@@ -41,6 +46,10 @@ func GetTablesByUserId(userId uint32) (*[]ClassTableModel, error) {
 }
 
 /*--------- Class Operation -----------*/
+
+func (class *UsingCourseModel) TableName() string {
+	return "using_course"
+}
 
 func IsClassExisting(id string) bool {
 	var class UsingCourseModel
