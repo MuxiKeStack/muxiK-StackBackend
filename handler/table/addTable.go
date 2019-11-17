@@ -23,7 +23,8 @@ func AddTable(c *gin.Context) {
 	idStr := c.Param("id")
 
 	newTable := model.ClassTableModel{
-		UserId: userId,
+		UserId:  userId,
+		Name:    "新课表",
 	}
 
 	// id为空，新建空白课表

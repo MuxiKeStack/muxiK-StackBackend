@@ -18,6 +18,11 @@ func GetTagNamesByIdStr(s string) ([]string, error) {
 	tagsStr := strings.Split(s, ",")
 
 	for _, idStr := range tagsStr {
+		// id should not be zero, skip it
+		if idStr == "0" {
+			continue
+		}
+
 		id, _ := strconv.Atoi(idStr)
 		name, err := model.GetTagNameById(id)
 		if err != nil {
@@ -34,6 +39,11 @@ func GetTagNamesByIdStr(s string) ([]string, error) {
 func TagArrayToStr(tagIds []uint8) string {
 	var s string
 	for i, id := range tagIds {
+		// tagId should not be zero, skip it
+		if id == 0 {
+			continue
+		}
+
 		if i > 0 {
 			s = fmt.Sprintf("%s,%d", s, id)
 			continue

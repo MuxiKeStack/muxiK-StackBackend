@@ -22,6 +22,7 @@ var (
 	courseName   = "高等数学A"
 	evaluationId uint32
 	commentId    string
+	sid          = "2018214830"
 )
 
 func TestMain(m *testing.M) {
@@ -50,7 +51,7 @@ func TestPublish(t *testing.T) {
 		ExamCheckType:       2,
 		Content:             "老师讲课很棒",
 		IsAnonymous:         false,
-		Tags:                []uint8{0, 1},
+		Tags:                []uint8{5 ,2, 1},
 	}
 
 	jsonByte, err := json.Marshal(body)
@@ -60,12 +61,18 @@ func TestPublish(t *testing.T) {
 
 	w := util.PerformRequestWithBody(http.MethodPost, g, uri, jsonByte, tokenStr)
 
-	var data evaluationPublishResponse
+	var data struct {
+		Code    int
+		Message string
+		Data    *evaluationPublishResponse
+	}
+
 	if err := json.Unmarshal([]byte(w.Body.String()), &data); err != nil {
 		t.Errorf("Test Error: Publish New Evaluation Error; Json Unmarshal Error: %s", err.Error())
 	}
 
-	evaluationId = data.EvaluationId
+	evaluationId = data.Data.EvaluationId
+	fmt.Printf("--- evaluationId = %d\n", evaluationId)
 
 	if w.Code != http.StatusOK {
 		t.Errorf("Test Error: StatusCode Error: %d", w.Code)
@@ -75,10 +82,14 @@ func TestPublish(t *testing.T) {
 // Test: get an evaluation information by a specific user
 func TestGetEvaluation(t *testing.T) {
 	g := getRouter(true)
-	uri := fmt.Sprintf("api/v1/evaluation/%s/", string(evaluationId))
+	uri := fmt.Sprintf("api/v1/evaluation/%d/", evaluationId)
 	w := util.PerformRequest(http.MethodGet, g, uri, tokenStr)
 
-	var data model.EvaluationInfo
+	var data struct {
+		Code int
+		Message string
+		Data model.EvaluationInfo
+	}
 	if err := json.Unmarshal([]byte(w.Body.String()), &data); err != nil {
 		t.Errorf("Test Error: Get Evaluation Info Error; Json Unmarshal Error: %s", err.Error())
 	}
@@ -91,10 +102,14 @@ func TestGetEvaluation(t *testing.T) {
 // Test: get an evaluation information by a visitor
 func TestGetEvaluation2(t *testing.T) {
 	g := getRouter(true)
-	uri := fmt.Sprintf("api/v1/evaluation/%s/", string(evaluationId))
+	uri := fmt.Sprintf("api/v1/evaluation/%d/", evaluationId)
 	w := util.PerformRequest(http.MethodGet, g, uri, "")
 
-	var data model.EvaluationInfo
+	var data struct {
+		Code int
+		Message string
+		Data model.EvaluationInfo
+	}
 	if err := json.Unmarshal([]byte(w.Body.String()), &data); err != nil {
 		t.Errorf("Test Error: Get Evaluation Info Error; Json Unmarshal Error: %s", err.Error())
 	}
@@ -107,10 +122,14 @@ func TestGetEvaluation2(t *testing.T) {
 // Test: get evaluations at evaluation playground by a specific user
 func TestEvaluationPlayground(t *testing.T) {
 	g := getRouter(true)
-	uri := "api/v1/evaluation/list/?pageSize=20&lastEvaluationId="
+	uri := "api/v1/evaluation/?pageSize=20&lastEvaluationId=0"
 	w := util.PerformRequest(http.MethodGet, g, uri, tokenStr)
 
-	var data playgroundResponse
+	var data struct {
+		Code int
+		Message string
+		Data playgroundResponse
+	}
 	if err := json.Unmarshal([]byte(w.Body.String()), &data); err != nil {
 		t.Errorf("Test Error: Get Evaluation List Error; Json Unmarshal Error: %s", err.Error())
 	}
@@ -123,10 +142,14 @@ func TestEvaluationPlayground(t *testing.T) {
 // Test: get evaluations at evaluation playground by a visitor
 func TestEvaluationPlayground2(t *testing.T) {
 	g := getRouter(true)
-	uri := "api/v1/evaluation/list/"
+	uri := "api/v1/evaluation/"
 	w := util.PerformRequest(http.MethodGet, g, uri, "")
 
-	var data playgroundResponse
+	var data struct {
+		Code int
+		Message string
+		Data playgroundResponse
+	}
 	if err := json.Unmarshal([]byte(w.Body.String()), &data); err != nil {
 		t.Errorf("Test Error: Get Evaluation List Error; Json Unmarshal Error: %s", err.Error())
 	}
@@ -139,7 +162,7 @@ func TestEvaluationPlayground2(t *testing.T) {
 // Test: create a new top comment
 func TestCreateTopComment(t *testing.T) {
 	g := getRouter(true)
-	uri := fmt.Sprintf("api/v1/evaluation/%s/comment/", string(evaluationId))
+	uri := fmt.Sprintf("api/v1/evaluation/%d/comment/", evaluationId)
 	body := newCommentRequest{
 		Content:     "Great",
 		IsAnonymous: false,
@@ -152,12 +175,16 @@ func TestCreateTopComment(t *testing.T) {
 
 	w := util.PerformRequestWithBody(http.MethodPost, g, uri, jsonByte, tokenStr)
 
-	var data model.ParentCommentInfo
+	var data struct {
+		Code int
+		Message string
+		Data model.ParentCommentInfo
+	}
 	if err := json.Unmarshal([]byte(w.Body.String()), &data); err != nil {
 		t.Errorf("Test Error: Create New Top Comment Error; Json Unmarshal Error: %s", err.Error())
 	}
 
-	commentId = data.Id
+	commentId = data.Data.Id
 
 	if w.Code != http.StatusOK {
 		t.Errorf("Test Error: StatusCode Error: %d", w.Code)
@@ -167,7 +194,7 @@ func TestCreateTopComment(t *testing.T) {
 // Test: create a new subComment
 func TestReply(t *testing.T) {
 	g := getRouter(true)
-	uri := fmt.Sprintf("api/v1/comment/%s/", commentId)
+	uri := fmt.Sprintf("api/v1/comment/%s/?sid=%s", commentId, sid)
 	body := newCommentRequest{
 		Content:     "Great",
 		IsAnonymous: false,
@@ -180,7 +207,11 @@ func TestReply(t *testing.T) {
 
 	w := util.PerformRequestWithBody(http.MethodPost, g, uri, jsonByte, tokenStr)
 
-	var data model.CommentInfo
+	var data struct {
+		Code int
+		Message string
+		Data *model.CommentInfo
+	}
 	if err := json.Unmarshal([]byte(w.Body.String()), &data); err != nil {
 		t.Errorf("Test Error: Create New SubComment Error; Json Unmarshal Error: %s", err.Error())
 	}
@@ -193,10 +224,14 @@ func TestReply(t *testing.T) {
 // Test: get comments by a specific user
 func TestGetComments(t *testing.T) {
 	g := getRouter(true)
-	uri := fmt.Sprintf("api/v1//evaluation/%s/comments/?pageSize=20&pageNum=0", string(evaluationId))
+	uri := fmt.Sprintf("api/v1//evaluation/%d/comments/?pageSize=20&pageNum=0", evaluationId)
 	w := util.PerformRequest(http.MethodGet, g, uri, tokenStr)
 
-	var data commentListResponse
+	var data struct {
+		Code int
+		Message string
+		Data commentListResponse
+	}
 	if err := json.Unmarshal([]byte(w.Body.String()), &data); err != nil {
 		t.Errorf("Test Error: Get Comment List Error; Json Unmarshal Error: %s", err.Error())
 	}
@@ -209,10 +244,14 @@ func TestGetComments(t *testing.T) {
 // Test: get comments by a visitor
 func TestGetComments2(t *testing.T) {
 	g := getRouter(true)
-	uri := fmt.Sprintf("api/v1//evaluation/%s/comments/?pageSize=20&pageNum=0", string(evaluationId))
+	uri := fmt.Sprintf("api/v1//evaluation/%d/comments/?pageSize=20&pageNum=0", evaluationId)
 	w := util.PerformRequest(http.MethodGet, g, uri, "")
 
-	var data commentListResponse
+	var data struct {
+		Code int
+		Message string
+		Data commentListResponse
+	}
 	if err := json.Unmarshal([]byte(w.Body.String()), &data); err != nil {
 		t.Errorf("Test Error: Get Comment List Error; Json Unmarshal Error: %s", err.Error())
 	}
@@ -225,17 +264,21 @@ func TestGetComments2(t *testing.T) {
 // Test: change an evaluation's like state by a user
 func TestUpdateEvaluationLike(t *testing.T) {
 	g := getRouter(true)
-	uri := fmt.Sprintf("api/v1/evaluation/%s/like/", string(evaluationId))
-	body := likeDataRequest{IsLike: true}
+	uri := fmt.Sprintf("api/v1/evaluation/%d/like/", evaluationId)
+	body := likeDataRequest{LikeState: true}
 
 	jsonByte, err := json.Marshal(body)
 	if err != nil {
 		t.Errorf("Test Error: Json Marshal Error: %s", err.Error())
 	}
 
-	w := util.PerformRequestWithBody(http.MethodPost, g, uri, jsonByte, tokenStr)
+	w := util.PerformRequestWithBody(http.MethodPut, g, uri, jsonByte, tokenStr)
 
-	var data likeDataResponse
+	var data struct {
+		Code int
+		Message string
+		Data likeDataResponse
+	}
 	if err := json.Unmarshal([]byte(w.Body.String()), &data); err != nil {
 		t.Errorf("Test Error: Update Evaluation Like State Error; Json Unmarshal Error: %s", err.Error())
 	}
@@ -249,16 +292,21 @@ func TestUpdateEvaluationLike(t *testing.T) {
 func TestUpdateCommentLike(t *testing.T) {
 	g := getRouter(true)
 	uri := fmt.Sprintf("api/v1/comment/%s/like/", commentId)
-	body := likeDataRequest{IsLike: true}
+	body := likeDataRequest{LikeState: true}
 
 	jsonByte, err := json.Marshal(body)
 	if err != nil {
 		t.Errorf("Test Error: Json Marshal Error: %s", err.Error())
 	}
 
-	w := util.PerformRequestWithBody(http.MethodPost, g, uri, jsonByte, tokenStr)
+	w := util.PerformRequestWithBody(http.MethodPut, g, uri, jsonByte, tokenStr)
 
-	var data likeDataResponse
+	var data struct {
+		Code int
+		Message string
+		Data likeDataResponse
+	}
+
 	if err := json.Unmarshal([]byte(w.Body.String()), &data); err != nil {
 		t.Errorf("Test Error: Update comment Like State Error; Json Unmarshal Error: %s", err.Error())
 	}
@@ -271,7 +319,7 @@ func TestUpdateCommentLike(t *testing.T) {
 // Test: Delete a evaluation
 func TestDelete(t *testing.T) {
 	g := getRouter(true)
-	uri := fmt.Sprintf("api/v1/evaluation/%s/", string(evaluationId))
+	uri := fmt.Sprintf("api/v1/evaluation/%d/", evaluationId)
 	w := util.PerformRequest(http.MethodDelete, g, uri, tokenStr)
 
 	if w.Code != http.StatusOK {
@@ -311,11 +359,11 @@ func loadRouters(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 	evaluation := g.Group("/api/v1/evaluation")
 	evaluation.Use(middleware.VisitorAuthMiddleware())
 	{
-		evaluation.GET("", EvaluationPlayground)
+		evaluation.GET("/", EvaluationPlayground)
 		evaluation.GET("/:id/", GetEvaluation)
 
 		// router for getting comment list
-		evaluation.GET("/:id/comments", GetComments)
+		evaluation.GET("/:id/comments/", GetComments)
 	}
 
 	evaluationWithAuth := g.Group("/api/v1/evaluation")

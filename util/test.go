@@ -10,7 +10,7 @@ import (
 func PerformRequest(method string, r http.Handler, path string, token string) *httptest.ResponseRecorder {
 	req, _ := http.NewRequest(method, path, nil)
 	if token != "" {
-		req.Header.Set("token", "Bearer "+token)
+		req.Header.Set("token", token)
 	}
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
