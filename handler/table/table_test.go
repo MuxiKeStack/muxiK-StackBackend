@@ -42,10 +42,10 @@ func TestAddTable(t *testing.T) {
 	uri := "/api/v1/table/"
 	w := util.PerformRequest(http.MethodPost, g, uri, token)
 
-	var data struct{
-		Code int
+	var data struct {
+		Code    int
 		Message string
-		Data model.ClassTableInfo
+		Data    model.ClassTableInfo
 	}
 
 	if err := json.Unmarshal([]byte(w.Body.String()), &data); err != nil {
@@ -65,10 +65,10 @@ func TestAddClass(t *testing.T) {
 	uri := fmt.Sprintf("/api/v1/table/%d/class/?classId=%s", tableId, classId)
 	w := util.PerformRequest(http.MethodPost, g, uri, token)
 
-	var data struct{
-		Code int
+	var data struct {
+		Code    int
 		Message string
-		Data addClassResponseData
+		Data    addClassResponseData
 	}
 
 	if err := json.Unmarshal([]byte(w.Body.String()), &data); err != nil {
@@ -104,10 +104,10 @@ func TestAddTable2(t *testing.T) {
 	uri := fmt.Sprintf("/api/v1/table/?id=%d", tableId)
 	w := util.PerformRequest(http.MethodPost, g, uri, token)
 
-	var data struct{
-		Code int
+	var data struct {
+		Code    int
 		Message string
-		Data model.ClassTableInfo
+		Data    model.ClassTableInfo
 	}
 
 	if err := json.Unmarshal([]byte(w.Body.String()), &data); err != nil {
@@ -125,10 +125,10 @@ func TestGet(t *testing.T) {
 	uri := "/api/v1/table/"
 	w := util.PerformRequest(http.MethodGet, g, uri, token)
 
-	var data struct{
-		Code int
+	var data struct {
+		Code    int
 		Message string
-		Data getTablesResponse
+		Data    getTablesResponse
 	}
 
 	if err := json.Unmarshal([]byte(w.Body.String()), &data); err != nil {

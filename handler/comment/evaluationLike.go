@@ -11,8 +11,8 @@ import (
 )
 
 type likeDataResponse struct {
-	LikeState  bool `json:"like_state"`
-	LikeSum uint32  `json:"like_sum"`
+	LikeState bool   `json:"like_state"`
+	LikeSum   uint32 `json:"like_sum"`
 }
 
 type likeDataRequest struct {

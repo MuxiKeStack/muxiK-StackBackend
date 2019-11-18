@@ -22,8 +22,8 @@ func AddTable(c *gin.Context) {
 	userId := c.MustGet("id").(uint32)
 
 	newTable := model.ClassTableModel{
-		UserId:  userId,
-		Name:    "新课表",
+		UserId: userId,
+		Name:   "新课表",
 	}
 
 	idStr, ok := c.GetQuery("id")

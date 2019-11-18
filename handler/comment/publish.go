@@ -6,6 +6,7 @@ import (
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
 	"github.com/MuxiKeStack/muxiK-StackBackend/service"
 	"github.com/MuxiKeStack/muxiK-StackBackend/util"
+
 	"github.com/gin-gonic/gin"
 	"github.com/lexkong/log"
 )
@@ -16,7 +17,7 @@ type evaluationPublishRequest struct {
 	CourseName          string  `json:"course_name" binding:"required"`
 	Rate                float32 `json:"rate" binding:"required"`
 	AttendanceCheckType uint8   `json:"attendance_check_type" binding:"-"` // 经常点名/偶尔点名/签到点名，标识为 1/2/3
-	ExamCheckType       uint8   `json:"exam_check_type" binding:"-"` // 无考核/闭卷考试/开卷考试/论文考核，标识为 1/2/3/4
+	ExamCheckType       uint8   `json:"exam_check_type" binding:"-"`       // 无考核/闭卷考试/开卷考试/论文考核，标识为 1/2/3/4
 	Content             string  `json:"content" binding:"-"`
 	IsAnonymous         bool    `json:"is_anonymous" binding:"-"` // 若binding为required那么就不能接受false值
 	Tags                []uint8 `json:"tags" binding:"-"`

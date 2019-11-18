@@ -8,7 +8,7 @@ import (
 )
 
 type tagGetResponse struct {
-	Sum  int              `json:"sum"`
+	Sum  int               `json:"sum"`
 	List *[]model.TagModel `json:"list"`
 }
 

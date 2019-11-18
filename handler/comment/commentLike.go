@@ -47,7 +47,7 @@ func UpdateCommentLike(c *gin.Context) {
 
 	// 点赞&取消点赞
 	if bodyData.LikeState {
-		err = model.CommentCancelLiking(userId, id);
+		err = model.CommentCancelLiking(userId, id)
 	} else {
 		err = model.CommentLiking(userId, id)
 	}

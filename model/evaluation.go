@@ -54,23 +54,13 @@ func (evaluation *CourseEvaluationModel) CancelLiking(userId uint32) error {
 	return d.Error
 }
 
-// Update liked number of a course evaluation after liking or canceling it.
-//func (evaluation *CourseEvaluationModel) UpdateLikeNum(num int) error {
-//	likeNum := int(evaluation.LikeSum)
-//	if likeNum == 0 && num == -1 {
-//		return nil
-//	}
-//	likeNum += num
-//	d := DB.Self.Model(evaluation).Update("like_sum", likeNum)
-//	return d.Error
-//}
-
 // Get evaluation by its id.
 func (evaluation *CourseEvaluationModel) GetById() error {
 	d := DB.Self.First(evaluation, "id = ?", evaluation.Id)
 	return d.Error
 }
 
+// Update evaluation's total comment account.
 func (evaluation *CourseEvaluationModel) UpdateCommentNum(n int) error {
 	num := int(evaluation.CommentNum)
 	if num == 0 && n == -1 {

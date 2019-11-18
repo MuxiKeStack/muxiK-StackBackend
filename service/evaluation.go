@@ -2,9 +2,11 @@ package service
 
 import (
 	"fmt"
-	"github.com/MuxiKeStack/muxiK-StackBackend/model"
-	"github.com/lexkong/log"
 	"sync"
+
+	"github.com/MuxiKeStack/muxiK-StackBackend/model"
+
+	"github.com/lexkong/log"
 )
 
 type EvaluationInfoList struct {
