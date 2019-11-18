@@ -20,7 +20,7 @@ func GetTableInfoByTableModel_2(table *model.ClassTableModel) (*model.ClassTable
 	// return if has no class
 	if table.Classes == "" {
 		return &model.ClassTableInfo{
-			TableId: table.Id,
+			TableId:   table.Id,
 			TableName: table.Name,
 		}, nil
 	}
@@ -185,7 +185,7 @@ func GetTableInfoByTableModel(table *model.ClassTableModel) (*model.ClassTableIn
 	// return if has no class
 	if table.Classes == "" {
 		return &model.ClassTableInfo{
-			TableId: table.Id,
+			TableId:   table.Id,
 			TableName: table.Name,
 		}, nil
 	}

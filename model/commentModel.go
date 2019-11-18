@@ -4,28 +4,26 @@ import "time"
 
 // 父评论物理表
 type ParentCommentModel struct {
-	Id            string `gorm:"column:id; primary_key"` // uuid
-	UserId        uint32 `gorm:"column:user_id"`
-	EvaluationId  uint32 `gorm:"column:evaluation_id"`
-	Content       string `gorm:"column:content"`
+	Id            string     `gorm:"column:id; primary_key"` // uuid
+	UserId        uint32     `gorm:"column:user_id"`
+	EvaluationId  uint32     `gorm:"column:evaluation_id"`
+	Content       string     `gorm:"column:content"`
 	Time          *time.Time `gorm:"column:time"`
-	//LikeSum       uint32 `gorm:"column:like_sum"`
-	SubCommentNum uint32 `gorm:"column:sub_comment_num"`
-	IsAnonymous   bool   `gorm:"column:is_anonymous"`
-	IsValid       bool   `gorm:"column:is_valid"`
+	SubCommentNum uint32     `gorm:"column:sub_comment_num"`
+	IsAnonymous   bool       `gorm:"column:is_anonymous"`
+	IsValid       bool       `gorm:"column:is_valid"`
 }
 
 // 子评论物理表
 type SubCommentModel struct {
-	Id           string `gorm:"column:id; primary_key"` // uuid
-	UserId       uint32 `gorm:"column:user_id"`
-	TargetUserId uint32 `gorm:"column:target_user_id"` // 回复的用户id
-	ParentId     string `gorm:"column:parent_id"`
-	Content      string `gorm:"column:content"`
-	//LikeSum      uint32 `gorm:"column:like_sum"`
+	Id           string     `gorm:"column:id; primary_key"` // uuid
+	UserId       uint32     `gorm:"column:user_id"`
+	TargetUserId uint32     `gorm:"column:target_user_id"` // 回复的用户id
+	ParentId     string     `gorm:"column:parent_id"`
+	Content      string     `gorm:"column:content"`
 	Time         *time.Time `gorm:"column:time"`
-	IsAnonymous  bool   `gorm:"column:is_anonymous"`
-	IsValid      bool   `gorm:"column:is_valid"`
+	IsAnonymous  bool       `gorm:"column:is_anonymous"`
+	IsValid      bool       `gorm:"column:is_valid"`
 }
 
 // 评论点赞中间表
@@ -49,7 +47,7 @@ type CommentInfo struct {
 
 // 返回的评论列表，一级评论模型
 type ParentCommentInfo struct {
-	Id              string            `json:"id"`               // 父评论id
+	Id              string            `json:"id"` // 父评论id
 	Content         string            `json:"content"`
 	LikeSum         uint32            `json:"like_sum"`
 	IsLike          bool              `json:"is_like"`

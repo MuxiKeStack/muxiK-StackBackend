@@ -1,7 +1,6 @@
 package comment
 
 import (
-	"github.com/lexkong/log"
 	"strconv"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
@@ -9,6 +8,7 @@ import (
 	"github.com/MuxiKeStack/muxiK-StackBackend/service"
 
 	"github.com/gin-gonic/gin"
+	"github.com/lexkong/log"
 )
 
 // 获取评课详情

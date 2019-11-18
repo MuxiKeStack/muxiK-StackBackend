@@ -20,18 +20,6 @@ func (comment *ParentCommentModel) New() error {
 	return d.Error
 }
 
-// Update liked number of a parent comment after liking or canceling it.
-//func (comment *ParentCommentModel) UpdateLikeNum(num int) error {
-//	likeNum := int(comment.LikeSum)
-//	if likeNum == 0 && num == -1 {
-//		return nil
-//	}
-//	likeNum += num
-//	fmt.Println(likeNum)
-//	d := DB.Self.Model(comment).Update("like_sum", likeNum)
-//	return d.Error
-//}
-
 // Get a parent comment by its id.
 func (comment *ParentCommentModel) GetById() error {
 	d := DB.Self.First(comment, "id = ?", comment.Id)

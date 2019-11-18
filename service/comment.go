@@ -1,10 +1,11 @@
 package service
 
 import (
-	"github.com/lexkong/log"
 	"sync"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
+
+	"github.com/lexkong/log"
 )
 
 type ParentCommentInfoList struct {
@@ -222,7 +223,6 @@ func GetSubCommentInfoById(id string, userId uint32, visitor bool) (*model.Comme
 			return nil, err
 		}
 	}
-
 
 	// Get like state
 	var isLike = false

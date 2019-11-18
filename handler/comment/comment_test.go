@@ -51,7 +51,7 @@ func TestPublish(t *testing.T) {
 		ExamCheckType:       2,
 		Content:             "老师讲课很棒",
 		IsAnonymous:         false,
-		Tags:                []uint8{5 ,2, 1},
+		Tags:                []uint8{5, 2, 1},
 	}
 
 	jsonByte, err := json.Marshal(body)
@@ -86,9 +86,9 @@ func TestGetEvaluation(t *testing.T) {
 	w := util.PerformRequest(http.MethodGet, g, uri, tokenStr)
 
 	var data struct {
-		Code int
+		Code    int
 		Message string
-		Data model.EvaluationInfo
+		Data    model.EvaluationInfo
 	}
 	if err := json.Unmarshal([]byte(w.Body.String()), &data); err != nil {
 		t.Errorf("Test Error: Get Evaluation Info Error; Json Unmarshal Error: %s", err.Error())
@@ -106,9 +106,9 @@ func TestGetEvaluation2(t *testing.T) {
 	w := util.PerformRequest(http.MethodGet, g, uri, "")
 
 	var data struct {
-		Code int
+		Code    int
 		Message string
-		Data model.EvaluationInfo
+		Data    model.EvaluationInfo
 	}
 	if err := json.Unmarshal([]byte(w.Body.String()), &data); err != nil {
 		t.Errorf("Test Error: Get Evaluation Info Error; Json Unmarshal Error: %s", err.Error())
@@ -126,9 +126,9 @@ func TestEvaluationPlayground(t *testing.T) {
 	w := util.PerformRequest(http.MethodGet, g, uri, tokenStr)
 
 	var data struct {
-		Code int
+		Code    int
 		Message string
-		Data playgroundResponse
+		Data    playgroundResponse
 	}
 	if err := json.Unmarshal([]byte(w.Body.String()), &data); err != nil {
 		t.Errorf("Test Error: Get Evaluation List Error; Json Unmarshal Error: %s", err.Error())
@@ -146,9 +146,9 @@ func TestEvaluationPlayground2(t *testing.T) {
 	w := util.PerformRequest(http.MethodGet, g, uri, "")
 
 	var data struct {
-		Code int
+		Code    int
 		Message string
-		Data playgroundResponse
+		Data    playgroundResponse
 	}
 	if err := json.Unmarshal([]byte(w.Body.String()), &data); err != nil {
 		t.Errorf("Test Error: Get Evaluation List Error; Json Unmarshal Error: %s", err.Error())
@@ -176,9 +176,9 @@ func TestCreateTopComment(t *testing.T) {
 	w := util.PerformRequestWithBody(http.MethodPost, g, uri, jsonByte, tokenStr)
 
 	var data struct {
-		Code int
+		Code    int
 		Message string
-		Data model.ParentCommentInfo
+		Data    model.ParentCommentInfo
 	}
 	if err := json.Unmarshal([]byte(w.Body.String()), &data); err != nil {
 		t.Errorf("Test Error: Create New Top Comment Error; Json Unmarshal Error: %s", err.Error())
@@ -208,9 +208,9 @@ func TestReply(t *testing.T) {
 	w := util.PerformRequestWithBody(http.MethodPost, g, uri, jsonByte, tokenStr)
 
 	var data struct {
-		Code int
+		Code    int
 		Message string
-		Data *model.CommentInfo
+		Data    *model.CommentInfo
 	}
 	if err := json.Unmarshal([]byte(w.Body.String()), &data); err != nil {
 		t.Errorf("Test Error: Create New SubComment Error; Json Unmarshal Error: %s", err.Error())
@@ -228,9 +228,9 @@ func TestGetComments(t *testing.T) {
 	w := util.PerformRequest(http.MethodGet, g, uri, tokenStr)
 
 	var data struct {
-		Code int
+		Code    int
 		Message string
-		Data commentListResponse
+		Data    commentListResponse
 	}
 	if err := json.Unmarshal([]byte(w.Body.String()), &data); err != nil {
 		t.Errorf("Test Error: Get Comment List Error; Json Unmarshal Error: %s", err.Error())
@@ -248,9 +248,9 @@ func TestGetComments2(t *testing.T) {
 	w := util.PerformRequest(http.MethodGet, g, uri, "")
 
 	var data struct {
-		Code int
+		Code    int
 		Message string
-		Data commentListResponse
+		Data    commentListResponse
 	}
 	if err := json.Unmarshal([]byte(w.Body.String()), &data); err != nil {
 		t.Errorf("Test Error: Get Comment List Error; Json Unmarshal Error: %s", err.Error())
@@ -275,9 +275,9 @@ func TestUpdateEvaluationLike(t *testing.T) {
 	w := util.PerformRequestWithBody(http.MethodPut, g, uri, jsonByte, tokenStr)
 
 	var data struct {
-		Code int
+		Code    int
 		Message string
-		Data likeDataResponse
+		Data    likeDataResponse
 	}
 	if err := json.Unmarshal([]byte(w.Body.String()), &data); err != nil {
 		t.Errorf("Test Error: Update Evaluation Like State Error; Json Unmarshal Error: %s", err.Error())
@@ -302,9 +302,9 @@ func TestUpdateCommentLike(t *testing.T) {
 	w := util.PerformRequestWithBody(http.MethodPut, g, uri, jsonByte, tokenStr)
 
 	var data struct {
-		Code int
+		Code    int
 		Message string
-		Data likeDataResponse
+		Data    likeDataResponse
 	}
 
 	if err := json.Unmarshal([]byte(w.Body.String()), &data); err != nil {

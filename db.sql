@@ -14,17 +14,17 @@ CREATE TABLE `user` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
-CREATE TABLE `message` ( 
-  `id`          INT UNSIGNED NOT NULL auto_increment, 
+CREATE TABLE `message` (
+  `id`          INT UNSIGNED NOT NULL auto_increment,
   `pub_user_id` INT UNSIGNED NOT NULL DEFAULT 0,
   `sub_user_id` INT UNSIGNED NOT NULL DEFAULT 0,
   `is_like`     TINYINT(1),
   `is_read`     TINYINT(1)   NOT NULL  DEFAULT 0,
-  `reply`       VARCHAR(255), 
+  `reply`       VARCHAR(255),
   `time`        VARCHAR(20)  NOT NULL,
   `course_info` VARCHAR(255) NOT NULL,
 
-  PRIMARY KEY (`id`) 
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE `course_evaluation` (

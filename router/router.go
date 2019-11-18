@@ -1,16 +1,17 @@
 package router
 
 import (
-	"github.com/MuxiKeStack/muxiK-StackBackend/handler/message"
-	"github.com/MuxiKeStack/muxiK-StackBackend/handler/tag"
 	"net/http"
 
 	_ "github.com/MuxiKeStack/muxiK-StackBackend/docs"
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler/comment"
+	"github.com/MuxiKeStack/muxiK-StackBackend/handler/message"
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler/sd"
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler/table"
+	"github.com/MuxiKeStack/muxiK-StackBackend/handler/tag"
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler/user"
 	"github.com/MuxiKeStack/muxiK-StackBackend/router/middleware"
+
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
