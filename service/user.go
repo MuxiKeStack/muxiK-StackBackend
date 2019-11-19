@@ -45,6 +45,7 @@ func GetUserInfoById(id uint32) (*UserInfoResponse, error) {
 	return info, nil
 }
 
+//return UserInfoRequest
 func GetUserInfoRById(id uint32) (*UserInfoRequest, error) {
 	u, err := GetUserById(id)
 	if err != nil {
