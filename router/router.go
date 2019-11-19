@@ -46,6 +46,8 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 	m.Use(middleware.AuthMiddleware())
 	{
 		m.GET("/", message.Get)
+		m.GET("/count", message.Count)
+		m.POST("/readall", message.ReadAll)
 	}
 
 	url := ginSwagger.URL("http://localhost:8080/swagger/doc.json") // The url pointing to API definition

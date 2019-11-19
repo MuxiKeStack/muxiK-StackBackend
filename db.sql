@@ -24,7 +24,8 @@ CREATE TABLE `message` (
   `time`        VARCHAR(20)  NOT NULL,
   `course_info` VARCHAR(255) NOT NULL,
 
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY sub_user_id (`sub_user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE `course_evaluation` (

@@ -39,3 +39,7 @@ type MessageSub struct {
 	Time       string          `json:"time"`
 	CourseInfo CourseInfo      `json:"course_info"`
 }
+
+type CountModel struct {
+	Count uint32 `json:"count"`
+}
