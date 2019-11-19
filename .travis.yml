@@ -15,7 +15,7 @@ dist: bionic
 #    packages:
 #      - mysql-server
 
-sudo: required
+#sudo: required
 
 before_script:
-  - mysql -u muxi --password="muxi" < db.sql
+  - mysql -u root --password="" < db.sql
