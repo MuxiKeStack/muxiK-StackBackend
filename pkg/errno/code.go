@@ -37,6 +37,7 @@ var (
 	ErrClassExisting = &Errno{Code: 20402, Message: "The class is not existing. "}
 	ErrGetTableInfo  = &Errno{Code: 20403, Message: "Error occurred in getting table info. "}
 	ErrGetClassInfo  = &Errno{Code: 20404, Message: "Error occurred in getting class info."}
+	ErrClassHasExisted = &Errno{Code: 20405, Message: "Class has existed in the table."}
 
 	// message errors
 	ErrGetMessage = &Errno{Code: 20501, Message: "Error occurred in getting message list"}

@@ -245,3 +245,9 @@ func GetTableInfoByTableModel(table *model.ClassTableModel) (*model.ClassTableIn
 
 	return info, nil
 }
+
+// 判断class在table内是否有时间段上的冲突
+func ClassConflictInTable(table *model.ClassTableModel, classId string) (bool, error) {
+
+	return false, nil
+}

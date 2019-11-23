@@ -9,6 +9,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type likeDataRequest struct {
+	LikeState bool `json:"like_state"`
+}
+
+type likeDataResponse struct {
+	LikeState bool   `json:"like_state"`
+	LikeSum   uint32 `json:"like_sum"`
+}
+
 // 评论点赞/取消点赞
 // @Summary 评论点赞/取消点赞
 // @Tags comment
