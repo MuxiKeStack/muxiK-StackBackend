@@ -563,7 +563,7 @@ paths:
         type: string
       - description: 最大的一级评论数量
         in: query
-        name: pageSize
+        name: limit
         required: true
         type: integer
       - description: 翻页页码，默认为0
