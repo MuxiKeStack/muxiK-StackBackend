@@ -16,7 +16,7 @@ type evaluationsOfCourseResponse struct {
 }
 
 // @Summary 课程所有评课
-// @Tags comment
+// @Tags evaluation
 // @Param token header string false "游客登录则不需要此字段或为空"
 // @Param id path string true "课程id"
 // @Param limit query integer true "评课数"

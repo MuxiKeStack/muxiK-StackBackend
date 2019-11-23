@@ -117,7 +117,7 @@ func GetParentCommentInfo(id string, userId uint32, visitor bool) (*model.Parent
 	data := &model.ParentCommentInfo{
 		Id:              comment.Id,
 		Content:         comment.Content,
-		LikeSum:         model.GetCommentLikeSum(comment.Id),
+		LikeNum:         model.GetCommentLikeSum(comment.Id),
 		IsLike:          isLike,
 		Time:            comment.Time.Unix(),
 		IsAnonymous:     comment.IsAnonymous,
@@ -233,7 +233,7 @@ func GetSubCommentInfoById(id string, userId uint32, visitor bool) (*model.Comme
 	data := &model.CommentInfo{
 		Id:             comment.Id,
 		Content:        comment.Content,
-		LikeSum:        model.GetCommentLikeSum(comment.Id),
+		LikeNum:        model.GetCommentLikeSum(comment.Id),
 		IsLike:         isLike,
 		Time:           comment.Time.Unix(),
 		UserInfo:       commentUser,
@@ -250,7 +250,7 @@ func GetSubCommentInfoById(id string, userId uint32, visitor bool) (*model.Comme
 //	subComment, ok := model.IsSubComment(commentId)
 //	if ok {
 //		err := subComment.UpdateLikeNum(num)
-//		return subComment.LikeSum, err
+//		return subComment.LikeNum, err
 //	}
 //
 //	parentComment := &model.ParentCommentModel{Id: commentId}
@@ -260,5 +260,5 @@ func GetSubCommentInfoById(id string, userId uint32, visitor bool) (*model.Comme
 //	}
 //
 //	err := parentComment.UpdateLikeNum(num)
-//	return parentComment.LikeSum, err
+//	return parentComment.LikeNum, err
 //}

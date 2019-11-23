@@ -16,10 +16,10 @@ definitions:
     type: object
   comment.likeDataResponse:
     properties:
+      like_num:
+        type: integer
       like_state:
         type: boolean
-      like_sum:
-        type: integer
     type: object
   comment.newCommentRequest:
     properties:
@@ -79,10 +79,10 @@ definitions:
     type: object
   evaluation.likeDataResponse:
     properties:
+      like_num:
+        type: integer
       like_state:
         type: boolean
-      like_sum:
-        type: integer
     type: object
   evaluation.playgroundResponse:
     properties:
@@ -163,7 +163,7 @@ definitions:
         type: boolean
       is_like:
         type: boolean
-      like_sum:
+      like_num:
         type: integer
       target_user_info:
         $ref: '#/definitions/model.UserInfoResponse'
@@ -210,7 +210,7 @@ definitions:
         type: boolean
       is_valid:
         type: boolean
-      like_sum:
+      like_num:
         type: integer
       rate:
         type: number
@@ -264,7 +264,7 @@ definitions:
         type: boolean
       is_like:
         type: boolean
-      like_sum:
+      like_num:
         type: integer
       sub_comments_list:
         items:
@@ -306,8 +306,6 @@ definitions:
       class_info:
         $ref: '#/definitions/model.ClassInfo'
         type: object
-      conflict:
-        type: boolean
       table_id:
         type: integer
     type: object
@@ -437,7 +435,7 @@ paths:
             $ref: '#/definitions/evaluation.evaluationsOfCourseResponse'
       summary: 课程所有评课
       tags:
-      - comment
+      - evaluation
   /evaluation/:
     get:
       parameters:
@@ -462,7 +460,7 @@ paths:
             $ref: '#/definitions/evaluation.playgroundResponse'
       summary: 评课广场获取评课列表
       tags:
-      - comment
+      - evaluation
     post:
       parameters:
       - description: token
@@ -484,7 +482,7 @@ paths:
             $ref: '#/definitions/evaluation.evaluationPublishResponse'
       summary: 发布评课
       tags:
-      - comment
+      - evaluation
   /evaluation/{id}/:
     delete:
       parameters:
@@ -503,7 +501,7 @@ paths:
           description: OK
       summary: 删除评课
       tags:
-      - comment
+      - evaluation
     get:
       parameters:
       - description: 游客登录则不需要此字段或为空
@@ -522,7 +520,7 @@ paths:
             $ref: '#/definitions/model.EvaluationInfo'
       summary: 获取评课详情
       tags:
-      - comment
+      - evaluation
   /evaluation/{id}/comment/:
     post:
       parameters:
@@ -608,7 +606,7 @@ paths:
             $ref: '#/definitions/evaluation.likeDataResponse'
       summary: 评论点赞/取消点赞
       tags:
-      - comment
+      - evaluation
   /login:
     post:
       consumes:
@@ -883,7 +881,9 @@ tags:
   name: message
 - description: 课程相关
   name: course
-- description: 评课&评论
+- description: 评课
+  name: evaluation
+- description: 评论
   name: comment
 - description: 排课课表
   name: table

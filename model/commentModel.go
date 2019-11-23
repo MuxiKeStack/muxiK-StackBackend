@@ -37,7 +37,7 @@ type CommentLikeModel struct {
 type CommentInfo struct {
 	Id             string            `json:"id"`
 	Content        string            `json:"content"`
-	LikeSum        uint32            `json:"like_sum"`
+	LikeNum        uint32            `json:"like_num"`
 	IsLike         bool              `json:"is_like"`
 	Time           int64             `json:"time"`
 	IsAnonymous    bool              `json:"is_anonymous"`
@@ -49,7 +49,7 @@ type CommentInfo struct {
 type ParentCommentInfo struct {
 	Id              string            `json:"id"` // 父评论id
 	Content         string            `json:"content"`
-	LikeSum         uint32            `json:"like_sum"`
+	LikeNum         uint32            `json:"like_num"`
 	IsLike          bool              `json:"is_like"`
 	Time            int64             `json:"time"`
 	IsAnonymous     bool              `json:"is_anonymous"`

@@ -19,7 +19,7 @@ type playgroundResponse struct {
 
 // 评课广场获取评课列表
 // @Summary 评课广场获取评课列表
-// @Tags comment
+// @Tags evaluation
 // @Param token header string false "游客登录则不需要此字段或为空"
 // @Param limit query integer true "最大的一级评论数量"
 // @Param lastId query integer true "上一次请求的最后一个评课的id，若是初始请求则为0"

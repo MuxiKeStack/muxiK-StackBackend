@@ -35,8 +35,10 @@ var (
 // @tag.description 消息提醒
 // @tag.name course
 // @tag.description 课程相关
+// @tag.name evaluation
+// @tag.description 评课
 // @tag.name comment
-// @tag.description 评课&评论
+// @tag.description 评论
 // @tag.name table
 // @tag.description 排课课表
 // @tag.name report

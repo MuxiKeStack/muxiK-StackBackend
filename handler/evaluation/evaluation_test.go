@@ -158,6 +158,7 @@ func TestEvaluationPlayground2(t *testing.T) {
 	}
 }
 
+// Test: get a course's evaluations order by hot state by a specific user
 func TestEvaluationsOfOneCourse(t *testing.T) {
 	g := getRouter(true)
 	uri := fmt.Sprintf("api/v1/course/%s/evaluations/?limit=10&lastId=0&sort=hot", courseId)
@@ -178,6 +179,7 @@ func TestEvaluationsOfOneCourse(t *testing.T) {
 	}
 }
 
+// Test: get a course's evaluations order by time by a visitor
 func TestEvaluationsOfOneCourse2(t *testing.T) {
 	g := getRouter(true)
 	uri := fmt.Sprintf("api/v1/course/%s/evaluations/?limit=10&lastId=0&sort=time", courseId)
@@ -202,7 +204,7 @@ func TestEvaluationsOfOneCourse2(t *testing.T) {
 func TestUpdateEvaluationLike(t *testing.T) {
 	g := getRouter(true)
 	uri := fmt.Sprintf("api/v1/evaluation/%d/like/", evaluationId)
-	body := likeDataRequest{LikeState: true}
+	body := likeDataRequest{LikeState: false}
 
 	jsonByte, err := json.Marshal(body)
 	if err != nil {

@@ -15,7 +15,7 @@ type likeDataRequest struct {
 
 type likeDataResponse struct {
 	LikeState bool   `json:"like_state"`
-	LikeSum   uint32 `json:"like_sum"`
+	LikeNum   uint32 `json:"like_num"`
 }
 
 // 评论点赞/取消点赞
@@ -68,7 +68,7 @@ func UpdateCommentLike(c *gin.Context) {
 
 	data := &likeDataResponse{
 		LikeState: !hasLiked,
-		LikeSum:   model.GetCommentLikeSum(id),
+		LikeNum:   model.GetCommentLikeSum(id),
 	}
 
 	handler.SendResponse(c, nil, data)

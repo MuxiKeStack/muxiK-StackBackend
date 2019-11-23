@@ -29,7 +29,7 @@ type evaluationPublishResponse struct {
 
 // Publish a new  course evaluation.
 // @Summary 发布评课
-// @Tags comment
+// @Tags evaluation
 // @Param token header string true "token"
 // @Param data body evaluation.evaluationPublishRequest true "data"
 // @Success 200 {object} evaluation.evaluationPublishResponse

@@ -12,7 +12,7 @@ import (
 
 type likeDataResponse struct {
 	LikeState bool   `json:"like_state"`
-	LikeSum   uint32 `json:"like_sum"`
+	LikeNum   uint32 `json:"like_num"`
 }
 
 type likeDataRequest struct {
@@ -21,7 +21,7 @@ type likeDataRequest struct {
 
 // 评课点赞/取消点赞
 // @Summary 评论点赞/取消点赞
-// @Tags comment
+// @Tags evaluation
 // @Param token header string true "token"
 // @Param id path string true "点赞的评课id"
 // @Param data body evaluation.likeDataRequest true "当前点赞状态"
@@ -66,12 +66,23 @@ func UpdateEvaluationLike(c *gin.Context) {
 	}
 
 	if err != nil {
-		handler.SendError(c, err, nil, err.Error())
+		handler.SendError(c, errno.ErrDatabase, nil, err.Error())
+		return
+	}
+
+	// 更新点赞数
+	num := 1
+	if bodyData.LikeState {
+		num = -1
+	}
+	if err := evaluation.UpdateLikeNum(num); err != nil {
+		handler.SendError(c, errno.ErrDatabase, nil, err.Error())
 		return
 	}
 
 	handler.SendResponse(c, nil, likeDataResponse{
 		LikeState: !hasLiked,
-		LikeSum:   model.GetEvaluationLikeSum(uint32(id)),
+		//LikeNum:   model.GetEvaluationLikeSum(uint32(id)),
+		LikeNum:   evaluation.LikeNum,
 	})
 }
