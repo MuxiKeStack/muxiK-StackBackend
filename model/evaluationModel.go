@@ -12,6 +12,7 @@ type CourseEvaluationModel struct {
 	AttendanceCheckType uint8   `gorm:"column:attendance_check_type"` // 考勤方式
 	ExamCheckType       uint8   `gorm:"column:exam_check_type"`       // 考核方式
 	Content             string  `gorm:"column:content"`               // 评课内容
+	LikeNum             uint32  `gorm:"colum:like_num"`               // 点赞数
 	CommentNum          uint32  `gorm:"column:comment_num"`           // 一级评论数
 	Tags                string  `gorm:"column:tags"`                  // 标签id列表，逗号分隔
 	IsAnonymous         bool    `gorm:"column:is_anonymous"`          // 是否匿名
@@ -39,21 +40,21 @@ type EvaluationInfo struct {
 	Time                int64             `json:"time"`
 	IsAnonymous         bool              `json:"is_anonymous"`
 	IsLike              bool              `json:"is_like"`
-	LikeSum             uint32            `json:"like_sum"`
+	LikeNum             uint32            `json:"like_num"`
 	CommentNum          uint32            `json:"comment_num"`
 	Tags                []string          `json:"tags"`
 	UserInfo            *UserInfoResponse `json:"user_info"`
 	IsValid             bool              `json:"is_valid"`
 }
 
-type EvaInfos []EvaluationInfo
-
-func (infos EvaInfos) Len() int { return len(infos) }
-
-func (infos EvaInfos) Less(i, j int) bool {
-	return infos[i].LikeSum < infos[j].LikeSum
-}
-
-func (infos EvaInfos) Swap(i, j int) {
-	infos[i], infos[j] = infos[j], infos[i]
-}
+//type EvaInfos []EvaluationInfo
+//
+//func (infos EvaInfos) Len() int { return len(infos) }
+//
+//func (infos EvaInfos) Less(i, j int) bool {
+//	return infos[i].LikeNum > infos[j].LikeNum
+//}
+//
+//func (infos EvaInfos) Swap(i, j int) {
+//	infos[i], infos[j] = infos[j], infos[i]
+//}

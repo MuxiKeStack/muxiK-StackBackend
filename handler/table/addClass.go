@@ -15,7 +15,6 @@ import (
 type addClassResponseData struct {
 	TableId   uint32           `json:"table_id"`
 	ClassInfo *model.ClassInfo `json:"class_info"`
-	Conflict  bool             `json:"conflict"`
 }
 
 // 添加课堂
@@ -87,17 +86,9 @@ func AddClass(c *gin.Context) {
 		return
 	}
 
-	// 判断该时间段是否有课堂冲突
-	//conflict, err := service.ClassConflictInTable(table, )
-	//if err != nil {
-	//	//handler.SendError(c, errno., nil, err.Error())
-	//	return
-	//}
-
 	data := addClassResponseData{
 		TableId:   uint32(tableId),
 		ClassInfo: newClassInfo,
-		//Conflict:  conflict,
 	}
 
 	handler.SendResponse(c, nil, data)

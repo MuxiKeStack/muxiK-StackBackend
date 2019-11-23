@@ -1,6 +1,8 @@
 package model
 
-import "github.com/jinzhu/gorm"
+import (
+	"github.com/jinzhu/gorm"
+)
 
 func (evaluation *CourseEvaluationModel) TableName() string {
 	return "course_evaluation"
@@ -71,6 +73,17 @@ func (evaluation *CourseEvaluationModel) UpdateCommentNum(n int) error {
 	return d.Error
 }
 
+// Update evaluation's total like account.
+func (evaluation *CourseEvaluationModel) UpdateLikeNum(n int) error {
+	num := int(evaluation.LikeNum)
+	if num == 0 && n == -1 {
+		return nil
+	}
+	num += n
+	d := DB.Self.Model(evaluation).Update("like_num", num)
+	return d.Error
+}
+
 // Get evaluation's total like account by id.
 func GetEvaluationLikeSum(id uint32) (count uint32) {
 	var data EvaluationLikeModel
@@ -91,14 +104,27 @@ func GetEvaluations(lastId, limit int32) (*[]CourseEvaluationModel, error) {
 	return &evaluations, d.Error
 }
 
-// Get a course's all evaluations by id.
-func GetEvaluationsByCourseId(id string,lastId, limit int32) (*[]CourseEvaluationModel, error) {
+// Get a course's all evaluations by id order by time.
+func GetEvaluationsByCourseIdOrderByTime(id string,lastId, limit int32) (*[]CourseEvaluationModel, error) {
 	var evaluations []CourseEvaluationModel
 	var d *gorm.DB
 	if lastId != 0 {
-		d = DB.Self.Where("id < ? AND course_id = ?", lastId, id).Order("id desc").Find(&evaluations).Limit(limit)
+		d = DB.Self.Where("id < ? AND course_id = ?", lastId, id).Order("id desc").Limit(limit).Find(&evaluations)
 	} else {
-		d = DB.Self.Where("course_id = ?", id).Order("id desc").Find(&evaluations).Limit(limit)
+		d = DB.Self.Where("course_id = ?", id).Order("id desc").Limit(limit).Find(&evaluations)
+	}
+
+	return &evaluations, d.Error
+}
+
+// Get a course's all evaluations by id order by likeNum.
+func GetEvaluationsByCourseIdOrderByLikeNum(id string,lastId, limit int32) (*[]CourseEvaluationModel, error) {
+	var evaluations []CourseEvaluationModel
+	var d *gorm.DB
+	if lastId != 0 {
+		d = DB.Self.Where("id < ? AND course_id = ?", lastId, id).Order("like_num desc").Limit(limit).Find(&evaluations)
+	} else {
+		d = DB.Self.Where("course_id = ?", id).Order("like_num desc").Limit(limit).Find(&evaluations)
 	}
 
 	return &evaluations, d.Error

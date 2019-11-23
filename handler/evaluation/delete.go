@@ -13,7 +13,7 @@ import (
 
 // 删除评课
 // @Summary 删除评课
-// @Tags comment
+// @Tags evaluation
 // @Param token header string true "token"
 // @Param id path string true "评课id"
 // @Success 200 "OK"

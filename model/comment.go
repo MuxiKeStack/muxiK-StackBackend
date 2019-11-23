@@ -58,12 +58,12 @@ func (comment *SubCommentModel) New() error {
 
 // Update liked number of a subComment after liking or canceling it.
 //func (comment *SubCommentModel) UpdateLikeNum(num int) error {
-//	likeNum := int(comment.LikeSum)
+//	likeNum := int(comment.LikeNum)
 //	if likeNum == 0 && num == -1 {
 //		return nil
 //	}
 //	likeNum += num
-//	d := DB.Self.Model(comment).Update("like_sum", likeNum)
+//	d := DB.Self.Model(comment).Update("like_num", likeNum)
 //	return d.Error
 //}
 

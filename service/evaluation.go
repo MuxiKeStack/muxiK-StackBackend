@@ -2,7 +2,6 @@ package service
 
 import (
 	"fmt"
-	"sort"
 	"sync"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
@@ -28,23 +27,21 @@ func GetEvaluationsForPlayground(lastId, limit int32, userId uint32, visitor boo
 
 // Get evaluations of one course.
 func GetEvaluationsOfOneCourse(lastId, limit int32, userId uint32, visitor bool, courseId, sortKey string) (*[]model.EvaluationInfo, error) {
-	evaluations, err := model.GetEvaluationsByCourseId(courseId, lastId, limit)
-	if err != nil {
-		log.Info("GetEvaluationsByCourseId function error.")
-		return nil, err
-	}
-
-	infos, err := GetEvaluationInfosByOriginModels(evaluations, userId, visitor)
-	if err != nil {
-		log.Info("GetEvaluationInfosByOriginModels function error.")
-		return nil, err
-	}
+	var evaluations *[]model.CourseEvaluationModel
+	var err error
 
 	if sortKey == "hot" {
-		sort.Sort(model.EvaInfos(*infos))
+		evaluations, err = model.GetEvaluationsByCourseIdOrderByLikeNum(courseId, lastId, limit)
+	} else {
+		evaluations, err = model.GetEvaluationsByCourseIdOrderByTime(courseId, lastId, limit)
 	}
 
-	return infos, nil
+	if err != nil {
+		log.Info("GetEvaluationsByCourseId* function error.")
+		return nil, err
+	}
+
+	return GetEvaluationInfosByOriginModels(evaluations, userId, visitor)
 }
 
 func GetEvaluationInfosByOriginModels(evaluations *[]model.CourseEvaluationModel, userId uint32, visitor bool) (*[]model.EvaluationInfo, error) {
@@ -155,7 +152,7 @@ func GetEvaluationInfo(id, userId uint32, visitor bool) (*model.EvaluationInfo, 
 		Time:                evaluation.Time.Unix(),
 		IsAnonymous:         evaluation.IsAnonymous,
 		IsLike:              isLike,
-		LikeSum:             model.GetEvaluationLikeSum(evaluation.Id),
+		LikeNum:             evaluation.LikeNum,
 		CommentNum:          evaluation.CommentNum,
 		Tags:                tagNames,
 		UserInfo:            u,
