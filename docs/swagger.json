@@ -350,7 +350,7 @@
                     {
                         "type": "integer",
                         "description": "最大的一级评论数量",
-                        "name": "pageSize",
+                        "name": "limit",
                         "in": "query",
                         "required": true
                     },

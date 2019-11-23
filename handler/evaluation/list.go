@@ -1,13 +1,15 @@
 package evaluation
 
 import (
+	"strconv"
+
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
 	"github.com/MuxiKeStack/muxiK-StackBackend/service"
+
 	"github.com/gin-gonic/gin"
 	"github.com/lexkong/log"
-	"strconv"
 )
 
 type evaluationsOfCourseResponse struct {
@@ -25,6 +27,8 @@ type evaluationsOfCourseResponse struct {
 // @Success 200 {object} evaluationsOfCourseResponse
 // @Router /course/{id}/evaluations/ [get]
 func EvaluationsOfOneCourse(c *gin.Context) {
+	log.Info("EvaluationsOfOneCourse function is called.")
+
 	size := c.DefaultQuery("limit", "20")
 	limit, err := strconv.ParseInt(size, 10, 32)
 	if err != nil {
