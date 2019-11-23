@@ -1,4 +1,4 @@
-package comment
+package evaluation
 
 import (
 	"strconv"

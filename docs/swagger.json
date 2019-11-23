@@ -104,6 +104,58 @@
                 }
             }
         },
+        "/course/{id}/evaluations/": {
+            "get": {
+                "tags": [
+                    "comment"
+                ],
+                "summary": "课程所有评课",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "游客登录则不需要此字段或为空",
+                        "name": "token",
+                        "in": "header"
+                    },
+                    {
+                        "type": "string",
+                        "description": "课程id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "评课数",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "上一次请求的最后一个评课的id，若是初始请求则为0",
+                        "name": "lastId",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "排序关键词：hot/time",
+                        "name": "sort",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/evaluation.evaluationsOfCourseResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/evaluation/": {
             "get": {
                 "tags": [
@@ -120,14 +172,14 @@
                     {
                         "type": "integer",
                         "description": "最大的一级评论数量",
-                        "name": "pageSize",
+                        "name": "limit",
                         "in": "query",
                         "required": true
                     },
                     {
                         "type": "integer",
                         "description": "上一次请求的最后一个评课的id，若是初始请求则为0",
-                        "name": "lastEvaluationId",
+                        "name": "lastId",
                         "in": "query",
                         "required": true
                     }
@@ -136,7 +188,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/comment.playgroundResponse"
+                            "$ref": "#/definitions/evaluation.playgroundResponse"
                         }
                     }
                 }
@@ -161,7 +213,7 @@
                         "required": true,
                         "schema": {
                             "type": "object",
-                            "$ref": "#/definitions/comment.evaluationPublishRequest"
+                            "$ref": "#/definitions/evaluation.evaluationPublishRequest"
                         }
                     }
                 ],
@@ -169,7 +221,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/comment.evaluationPublishResponse"
+                            "$ref": "#/definitions/evaluation.evaluationPublishResponse"
                         }
                     }
                 }
@@ -348,7 +400,7 @@
                         "required": true,
                         "schema": {
                             "type": "object",
-                            "$ref": "#/definitions/comment.likeDataRequest"
+                            "$ref": "#/definitions/evaluation.likeDataRequest"
                         }
                     }
                 ],
@@ -356,7 +408,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/comment.likeDataResponse"
+                            "$ref": "#/definitions/evaluation.likeDataResponse"
                         }
                     }
                 }
@@ -432,6 +484,53 @@
                         "schema": {
                             "$ref": "#/definitions/message.messageListResponse"
                         }
+                    }
+                }
+            }
+        },
+        "/message/count/": {
+            "get": {
+                "tags": [
+                    "message"
+                ],
+                "summary": "获取消息提醒的个数",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "token",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.CountModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/message/readall/": {
+            "post": {
+                "tags": [
+                    "message"
+                ],
+                "summary": "读取消息提醒",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "token",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
                     }
                 }
             }
@@ -732,7 +831,40 @@
                 }
             }
         },
-        "comment.evaluationPublishRequest": {
+        "comment.likeDataRequest": {
+            "type": "object",
+            "properties": {
+                "like_state": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "comment.likeDataResponse": {
+            "type": "object",
+            "properties": {
+                "like_state": {
+                    "type": "boolean"
+                },
+                "like_sum": {
+                    "type": "integer"
+                }
+            }
+        },
+        "comment.newCommentRequest": {
+            "type": "object",
+            "required": [
+                "content"
+            ],
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "is_anonymous": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "evaluation.evaluationPublishRequest": {
             "type": "object",
             "required": [
                 "course_id",
@@ -772,7 +904,7 @@
                 }
             }
         },
-        "comment.evaluationPublishResponse": {
+        "evaluation.evaluationPublishResponse": {
             "type": "object",
             "properties": {
                 "evaluation_id": {
@@ -780,7 +912,21 @@
                 }
             }
         },
-        "comment.likeDataRequest": {
+        "evaluation.evaluationsOfCourseResponse": {
+            "type": "object",
+            "properties": {
+                "list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.EvaluationInfo"
+                    }
+                },
+                "sum": {
+                    "type": "integer"
+                }
+            }
+        },
+        "evaluation.likeDataRequest": {
             "type": "object",
             "properties": {
                 "like_state": {
@@ -788,7 +934,7 @@
                 }
             }
         },
-        "comment.likeDataResponse": {
+        "evaluation.likeDataResponse": {
             "type": "object",
             "properties": {
                 "like_state": {
@@ -799,21 +945,7 @@
                 }
             }
         },
-        "comment.newCommentRequest": {
-            "type": "object",
-            "required": [
-                "content"
-            ],
-            "properties": {
-                "content": {
-                    "type": "string"
-                },
-                "is_anonymous": {
-                    "type": "boolean"
-                }
-            }
-        },
-        "comment.playgroundResponse": {
+        "evaluation.playgroundResponse": {
             "type": "object",
             "properties": {
                 "list": {
@@ -947,6 +1079,14 @@
                 "user_info": {
                     "type": "object",
                     "$ref": "#/definitions/model.UserInfoResponse"
+                }
+            }
+        },
+        "model.CountModel": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
                 }
             }
         },
@@ -1140,6 +1280,9 @@
                 "class_info": {
                     "type": "object",
                     "$ref": "#/definitions/model.ClassInfo"
+                },
+                "conflict": {
+                    "type": "boolean"
                 },
                 "table_id": {
                     "type": "integer"

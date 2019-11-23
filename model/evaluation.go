@@ -78,7 +78,7 @@ func GetEvaluationLikeSum(id uint32) (count uint32) {
 	return
 }
 
-// Get course evaluations.
+// Get all course evaluations.
 func GetEvaluations(lastId, limit int32) (*[]CourseEvaluationModel, error) {
 	var evaluations []CourseEvaluationModel
 	var d *gorm.DB
@@ -86,6 +86,19 @@ func GetEvaluations(lastId, limit int32) (*[]CourseEvaluationModel, error) {
 		d = DB.Self.Where("id < ?", lastId).Order("id desc").Find(&evaluations).Limit(limit)
 	} else {
 		d = DB.Self.Order("id desc").Find(&evaluations).Limit(limit)
+	}
+
+	return &evaluations, d.Error
+}
+
+// Get a course's all evaluations by id.
+func GetEvaluationsByCourseId(id string,lastId, limit int32) (*[]CourseEvaluationModel, error) {
+	var evaluations []CourseEvaluationModel
+	var d *gorm.DB
+	if lastId != 0 {
+		d = DB.Self.Where("id < ? AND course_id = ?", lastId, id).Order("id desc").Find(&evaluations).Limit(limit)
+	} else {
+		d = DB.Self.Where("course_id = ?", id).Order("id desc").Find(&evaluations).Limit(limit)
 	}
 
 	return &evaluations, d.Error

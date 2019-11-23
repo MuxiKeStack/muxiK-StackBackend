@@ -2,6 +2,7 @@ package table
 
 import (
 	"strconv"
+	"strings"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
@@ -14,6 +15,7 @@ import (
 type addClassResponseData struct {
 	TableId   uint32           `json:"table_id"`
 	ClassInfo *model.ClassInfo `json:"class_info"`
+	Conflict  bool             `json:"conflict"`
 }
 
 // 添加课堂
@@ -60,6 +62,12 @@ func AddClass(c *gin.Context) {
 		return
 	}
 
+	// 验证该class在table中是否已存在
+	if ok := strings.Contains(table.Classes, classId); ok {
+		handler.SendBadRequest(c, errno.ErrClassHasExisted, nil, "")
+		return
+	}
+
 	// 添加新课堂id
 	var newClasses string
 	if table.Classes == "" {
@@ -79,9 +87,17 @@ func AddClass(c *gin.Context) {
 		return
 	}
 
+	// 判断该时间段是否有课堂冲突
+	//conflict, err := service.ClassConflictInTable(table, )
+	//if err != nil {
+	//	//handler.SendError(c, errno., nil, err.Error())
+	//	return
+	//}
+
 	data := addClassResponseData{
 		TableId:   uint32(tableId),
 		ClassInfo: newClassInfo,
+		//Conflict:  conflict,
 	}
 
 	handler.SendResponse(c, nil, data)

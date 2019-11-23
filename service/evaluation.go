@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+	"sort"
 	"sync"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
@@ -14,14 +15,39 @@ type EvaluationInfoList struct {
 	IdMap map[uint32]*model.EvaluationInfo
 }
 
-// Get course evaluation list.
-func EvaluationList(lastId, size int32, userId uint32, visitor bool) (*[]model.EvaluationInfo, error) {
-	evaluations, err := model.GetEvaluations(lastId, size)
+// Get course evaluation list for evaluation playground.
+func GetEvaluationsForPlayground(lastId, limit int32, userId uint32, visitor bool) (*[]model.EvaluationInfo, error) {
+	evaluations, err := model.GetEvaluations(lastId, limit)
 	if err != nil {
 		log.Info("GetEvaluations function error.")
 		return nil, err
 	}
 
+	return GetEvaluationInfosByOriginModels(evaluations, userId, visitor)
+}
+
+// Get evaluations of one course.
+func GetEvaluationsOfOneCourse(lastId, limit int32, userId uint32, visitor bool, courseId, sortKey string) (*[]model.EvaluationInfo, error) {
+	evaluations, err := model.GetEvaluationsByCourseId(courseId, lastId, limit)
+	if err != nil {
+		log.Info("GetEvaluationsByCourseId function error.")
+		return nil, err
+	}
+
+	infos, err := GetEvaluationInfosByOriginModels(evaluations, userId, visitor)
+	if err != nil {
+		log.Info("GetEvaluationInfosByOriginModels function error.")
+		return nil, err
+	}
+
+	if sortKey == "hot" {
+		sort.Sort(model.EvaInfos(*infos))
+	}
+
+	return infos, nil
+}
+
+func GetEvaluationInfosByOriginModels(evaluations *[]model.CourseEvaluationModel, userId uint32, visitor bool) (*[]model.EvaluationInfo, error) {
 	var ids []uint32
 	for _, evaluation := range *evaluations {
 		ids = append(ids, evaluation.Id)

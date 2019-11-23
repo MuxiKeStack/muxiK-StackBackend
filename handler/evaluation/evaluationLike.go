@@ -1,4 +1,4 @@
-package comment
+package evaluation
 
 import (
 	"strconv"
@@ -24,8 +24,8 @@ type likeDataRequest struct {
 // @Tags comment
 // @Param token header string true "token"
 // @Param id path string true "点赞的评课id"
-// @Param data body comment.likeDataRequest true "当前点赞状态"
-// @Success 200 {object} comment.likeDataResponse
+// @Param data body evaluation.likeDataRequest true "当前点赞状态"
+// @Success 200 {object} evaluation.likeDataResponse
 // @Router /evaluation/{id}/like/ [put]
 func UpdateEvaluationLike(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)

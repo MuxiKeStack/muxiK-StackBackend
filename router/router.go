@@ -5,6 +5,7 @@ import (
 
 	_ "github.com/MuxiKeStack/muxiK-StackBackend/docs"
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler/comment"
+	eva "github.com/MuxiKeStack/muxiK-StackBackend/handler/evaluation"
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler/message"
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler/sd"
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler/table"
@@ -81,19 +82,22 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 	evaluation := g.Group("/api/v1/evaluation")
 	evaluation.Use(middleware.VisitorAuthMiddleware())
 	{
-		evaluation.GET("/", comment.EvaluationPlayground)
-		evaluation.GET("/:id/", comment.GetEvaluation)
+		evaluation.GET("/", eva.EvaluationPlayground)
+		evaluation.GET("/:id/", eva.GetEvaluation)
+		//evaluation.GET("/list/course/:id/", eva.EvaluationsOfOneCourse)
 
 		// router for getting comment list
 		evaluation.GET("/:id/comments/", comment.GetComments)
 	}
 
+	g.GET("/api/v1/course/:id/evaluations/", eva.EvaluationsOfOneCourse).Use(middleware.VisitorAuthMiddleware())
+
 	evaluationWithAuth := g.Group("/api/v1/evaluation")
 	evaluationWithAuth.Use(middleware.AuthMiddleware())
 	{
-		evaluationWithAuth.POST("/", comment.Publish)
-		evaluationWithAuth.DELETE("/:id/", comment.Delete)
-		evaluationWithAuth.PUT("/:id/like/", comment.UpdateEvaluationLike)
+		evaluationWithAuth.POST("/", eva.Publish)
+		evaluationWithAuth.DELETE("/:id/", eva.Delete)
+		evaluationWithAuth.PUT("/:id/like/", eva.UpdateEvaluationLike)
 		evaluationWithAuth.POST("/:id/comment/", comment.CreateTopComment)
 	}
 

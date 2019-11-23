@@ -1,4 +1,4 @@
-package comment
+package evaluation
 
 import (
 	"strconv"
@@ -21,21 +21,21 @@ type playgroundResponse struct {
 // @Summary 评课广场获取评课列表
 // @Tags comment
 // @Param token header string false "游客登录则不需要此字段或为空"
-// @Param pageSize query integer true "最大的一级评论数量"
-// @Param lastEvaluationId query integer true "上一次请求的最后一个评课的id，若是初始请求则为0"
-// @Success 200 {object} comment.playgroundResponse
+// @Param limit query integer true "最大的一级评论数量"
+// @Param lastId query integer true "上一次请求的最后一个评课的id，若是初始请求则为0"
+// @Success 200 {object} evaluation.playgroundResponse
 // @Router /evaluation/ [get]
 func EvaluationPlayground(c *gin.Context) {
 	log.Info("EvaluationPlayground function is called.")
 
-	pageSize := c.DefaultQuery("pageSize", "20")
-	limit, err := strconv.ParseInt(pageSize, 10, 32)
+	size := c.DefaultQuery("limit", "20")
+	limit, err := strconv.ParseInt(size, 10, 32)
 	if err != nil {
 		handler.SendBadRequest(c, errno.ErrGetQuery, nil, err.Error())
 		return
 	}
 
-	lastIdStr := c.DefaultQuery("lastEvaluationId", "0")
+	lastIdStr := c.DefaultQuery("lastId", "0")
 	lastId, err := strconv.ParseInt(lastIdStr, 10, 32)
 	if err != nil {
 		handler.SendBadRequest(c, errno.ErrGetQuery, nil, err.Error())
@@ -55,7 +55,7 @@ func EvaluationPlayground(c *gin.Context) {
 	}
 
 	// 获取评课列表
-	list, err := service.EvaluationList(int32(lastId), int32(limit), userId, visitor)
+	list, err := service.GetEvaluationsForPlayground(int32(lastId), int32(limit), userId, visitor)
 	if err != nil {
 		handler.SendError(c, errno.ErrEvaluationList, nil, err.Error())
 		return

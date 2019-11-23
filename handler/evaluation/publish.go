@@ -1,4 +1,4 @@
-package comment
+package evaluation
 
 import (
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
@@ -31,8 +31,8 @@ type evaluationPublishResponse struct {
 // @Summary 发布评课
 // @Tags comment
 // @Param token header string true "token"
-// @Param data body comment.evaluationPublishRequest true "data"
-// @Success 200 {object} comment.evaluationPublishResponse
+// @Param data body evaluation.evaluationPublishRequest true "data"
+// @Success 200 {object} evaluation.evaluationPublishResponse
 // @Router /evaluation/ [post]
 func Publish(c *gin.Context) {
 	log.Info("Evaluation Publish function is called.")
