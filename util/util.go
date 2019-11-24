@@ -23,6 +23,6 @@ func GetReqID(c *gin.Context) string {
 
 func GetCurrentTime() *time.Time {
 	var t time.Time
-	t =  time.Now()
+	t = time.Now()
 	return &t
 }

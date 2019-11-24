@@ -11,5 +11,5 @@ import (
 
 //增加一个课程
 func AddCourse(c *gin.Context) {
-	
+
 }
