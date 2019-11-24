@@ -46,15 +46,3 @@ type EvaluationInfo struct {
 	UserInfo            *UserInfoResponse `json:"user_info"`
 	IsValid             bool              `json:"is_valid"`
 }
-
-//type EvaInfos []EvaluationInfo
-//
-//func (infos EvaInfos) Len() int { return len(infos) }
-//
-//func (infos EvaInfos) Less(i, j int) bool {
-//	return infos[i].LikeNum > infos[j].LikeNum
-//}
-//
-//func (infos EvaInfos) Swap(i, j int) {
-//	infos[i], infos[j] = infos[j], infos[i]
-//}

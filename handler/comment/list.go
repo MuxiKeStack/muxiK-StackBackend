@@ -23,7 +23,7 @@ type commentListResponse struct {
 // @Param token header string false "游客登录则不需要此字段或为空"
 // @Param id path string true "评课id"
 // @Param limit query integer true "最大的一级评论数量"
-// @Param pageNum query integer true "翻页页码，默认为0"
+// @Param page query integer true "分页页码，默认为1"
 // @Success 200 {object} comment.commentListResponse
 // @Router /evaluation/{id}/comments/ [get]
 func GetComments(c *gin.Context) {
@@ -41,8 +41,8 @@ func GetComments(c *gin.Context) {
 		return
 	}
 
-	pageNum := c.DefaultQuery("pageNum", "0")
-	num, err := strconv.ParseInt(pageNum, 10, 32)
+	pageNum := c.DefaultQuery("page", "1")
+	page, err := strconv.ParseInt(pageNum, 10, 32)
 	if err != nil {
 		handler.SendBadRequest(c, errno.ErrGetQuery, nil, err.Error())
 		return
@@ -60,7 +60,7 @@ func GetComments(c *gin.Context) {
 		log.Info("User auth successful.")
 	}
 
-	list, count, err := service.CommentList(uint32(id), int32(limit), int32(num*limit), userId, visitor)
+	list, count, err := service.CommentList(uint32(id), int32(limit), int32(page*limit), userId, visitor)
 	if err != nil {
 		handler.SendError(c, errno.ErrCommentList, nil, err.Error())
 		return

@@ -566,9 +566,9 @@ paths:
         name: limit
         required: true
         type: integer
-      - description: 翻页页码，默认为0
+      - description: 翻页页码，默认为1
         in: query
-        name: pageNum
+        name: page
         required: true
         type: integer
       responses:
