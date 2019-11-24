@@ -105,7 +105,7 @@ func GetEvaluations(lastId, limit int32) (*[]CourseEvaluationModel, error) {
 }
 
 // Get a course's all evaluations by id order by time.
-func GetEvaluationsByCourseIdOrderByTime(id string,lastId, limit int32) (*[]CourseEvaluationModel, error) {
+func GetEvaluationsByCourseIdOrderByTime(id string, lastId, limit int32) (*[]CourseEvaluationModel, error) {
 	var evaluations []CourseEvaluationModel
 	var d *gorm.DB
 	if lastId != 0 {
@@ -118,7 +118,7 @@ func GetEvaluationsByCourseIdOrderByTime(id string,lastId, limit int32) (*[]Cour
 }
 
 // Get a course's all evaluations by id order by likeNum.
-func GetEvaluationsByCourseIdOrderByLikeNum(id string,lastId, limit int32) (*[]CourseEvaluationModel, error) {
+func GetEvaluationsByCourseIdOrderByLikeNum(id string, lastId, limit int32) (*[]CourseEvaluationModel, error) {
 	var evaluations []CourseEvaluationModel
 	var d *gorm.DB
 	if lastId != 0 {
