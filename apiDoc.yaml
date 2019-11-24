@@ -1843,24 +1843,18 @@ definitions:
         type: object
 
   ClassInfo:
-    type: object
+    type: array
     description: 返回的教学班信息
+    items:
+      $ref: "#/definitions/TimePlaceInfo"
+    
+  TimePlaceInfo:
+    type: object
+    description: 上课的时间和地点（最多3个）
     properties:
-      course_time1:
+      course_time:
         type: string
-        description: 上课时间1
-      course_place1:
+        description: 上课时间
+      course_place:
         type: string
-        description: 上课地点1
-      course_time2:
-        type: string
-        description: 上课时间2
-      course_place2:
-        type: string
-        description: 上课地点2
-      course_time3:
-        type: string
-        description: 上课时间3
-      course_place3:
-        type: string
-        description: 上课地点3
+        description: 上课地点
