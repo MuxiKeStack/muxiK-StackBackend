@@ -356,8 +356,8 @@
                     },
                     {
                         "type": "integer",
-                        "description": "翻页页码，默认为0",
-                        "name": "pageNum",
+                        "description": "翻页页码，默认为1",
+                        "name": "page",
                         "in": "query",
                         "required": true
                     }
