@@ -24,19 +24,19 @@ var (
 	ErrGetUserInfo  = &Errno{Code: 20204, Message: "Error in getting user info"}
 
 	// comment errors
-	ErrNotLiked       = &Errno{Code: 20301, Message: "User has not liked yet. "}
-	ErrHasLiked       = &Errno{Code: 20302, Message: "User has already liked. "}
-	ErrEvaluationList = &Errno{Code: 20303, Message: "Error occurred while getting evaluation list. "}
-	ErrCommentList    = &Errno{Code: 20304, Message: "Error occurred while getting comment list. "}
-	ErrCommentNotExist = &Errno{Code: 20305, Message: "The comment does not exist. "}
-	ErrGetSubCommentInfo = &Errno{Code: 20306, Message: "Error occurred while getting subComment info"}
+	ErrNotLiked             = &Errno{Code: 20301, Message: "User has not liked yet. "}
+	ErrHasLiked             = &Errno{Code: 20302, Message: "User has already liked. "}
+	ErrEvaluationList       = &Errno{Code: 20303, Message: "Error occurred while getting evaluation list. "}
+	ErrCommentList          = &Errno{Code: 20304, Message: "Error occurred while getting comment list. "}
+	ErrCommentNotExist      = &Errno{Code: 20305, Message: "The comment does not exist. "}
+	ErrGetSubCommentInfo    = &Errno{Code: 20306, Message: "Error occurred while getting subComment info"}
 	ErrGetParentCommentInfo = &Errno{Code: 20307, Message: "Error occurred while getting parent comment info"}
 
 	// table errors
-	ErrTableExisting = &Errno{Code: 20401, Message: "The table is not existing. "}
-	ErrClassExisting = &Errno{Code: 20402, Message: "The class is not existing. "}
-	ErrGetTableInfo  = &Errno{Code: 20403, Message: "Error occurred in getting table info. "}
-	ErrGetClassInfo  = &Errno{Code: 20404, Message: "Error occurred in getting class info."}
+	ErrTableExisting   = &Errno{Code: 20401, Message: "The table is not existing. "}
+	ErrClassExisting   = &Errno{Code: 20402, Message: "The class is not existing. "}
+	ErrGetTableInfo    = &Errno{Code: 20403, Message: "Error occurred in getting table info. "}
+	ErrGetClassInfo    = &Errno{Code: 20404, Message: "Error occurred in getting class info."}
 	ErrClassHasExisted = &Errno{Code: 20405, Message: "Class has existed in the table."}
 
 	// message errors

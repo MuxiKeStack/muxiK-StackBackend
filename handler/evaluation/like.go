@@ -83,6 +83,6 @@ func UpdateEvaluationLike(c *gin.Context) {
 	handler.SendResponse(c, nil, likeDataResponse{
 		LikeState: !hasLiked,
 		//LikeNum:   model.GetEvaluationLikeSum(uint32(id)),
-		LikeNum:   evaluation.LikeNum,
+		LikeNum: evaluation.LikeNum,
 	})
 }

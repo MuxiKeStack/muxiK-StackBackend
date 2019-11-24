@@ -16,7 +16,7 @@ func GetCourseInfo(c *gin.Context) {
 		handler.SendBadRequest(c, errno.ErrGetParam, nil, err.Error())
 		return
 	}
-	
+
 	courseInfo, err := service.GetCourseInfo(courseid)
 	if err != nil {
 		handler.SendError(c, err, nil, err.Error())

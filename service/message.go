@@ -5,8 +5,8 @@ import (
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 )
 
-func MessageList(offset, limit, uid uint32) (*[]model.MessageSub, error) {
-	messages, err := model.GetMessages(offset, limit, uid)
+func MessageList(page, limit, uid uint32) (*[]model.MessageSub, error) {
+	messages, err := model.GetMessages(page, limit, uid)
 	if err != nil {
 		return nil, nil
 	}
