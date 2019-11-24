@@ -13,7 +13,7 @@ import (
 )
 
 type evaluationsOfCourseResponse struct {
-	Sum int `json:"sum"`
+	Sum  int                     `json:"sum"`
 	List *[]model.EvaluationInfo `json:"list"`
 }
 

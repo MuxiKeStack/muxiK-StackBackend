@@ -227,7 +227,6 @@ func TestUpdateEvaluationLike(t *testing.T) {
 	}
 }
 
-
 // Test: Delete a evaluation
 func TestDelete(t *testing.T) {
 	g := getRouter(true)
