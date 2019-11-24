@@ -16,14 +16,14 @@ type messageListResponse struct {
 // @Summary 获取消息提醒
 // @Tags message
 // @Param token header string true "token"
-// @Param offset query integer true "页码"
+// @Param page query integer true "页码"
 // @Param limit query integer true "每页最大数"
 // @Success 200 {object} message.messageListResponse
 // @Router /message/ [get]
 func Get(c *gin.Context) {
 	uid, _ := c.Get("id")
-	offsetStr := c.DefaultQuery("offset", "0")
-	offset, err := strconv.ParseUint(offsetStr, 10, 32)
+	pageStr := c.DefaultQuery("page", "1")
+	page, err := strconv.ParseUint(pageStr, 10, 32)
 	if err != nil {
 		handler.SendBadRequest(c, errno.ErrGetQuery, nil, err.Error())
 		return
@@ -34,7 +34,7 @@ func Get(c *gin.Context) {
 		handler.SendBadRequest(c, errno.ErrGetQuery, nil, err.Error())
 		return
 	}
-	messageList, err := service.MessageList(uint32(offset), uint32(limit), uid.(uint32))
+	messageList, err := service.MessageList(uint32(page), uint32(limit), uid.(uint32))
 	if err != nil {
 		handler.SendError(c, errno.ErrGetMessage, nil, err.Error())
 	}
