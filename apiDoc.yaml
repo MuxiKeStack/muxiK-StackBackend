@@ -1796,24 +1796,11 @@ definitions:
       inspection4:
         type: integer
         description: 无考核数
-      course_time1:
-        type: string
-        description: 上课时间1
-      course_place1:
-        type: string
-        description: 上课地点1
-      course_time2:
-        type: string
-        description: 上课时间2
-      course_place2:
-        type: string
-        description: 上课地点2
-      course_time3:
-        type: string
-        description: 上课时间3
-      course_place3:
-        type: string
-        description: 上课地点3
+      class_info:
+        type: array
+        description: 教学班信息数组
+        items: 
+          $ref: "#/definitions/ClassInfo"
       course_feature1:
         type: integer
         description: 生动有趣数
@@ -1854,3 +1841,26 @@ definitions:
         type: string
       data:
         type: object
+
+  ClassInfo:
+    type: object
+    description: 返回的教学班信息
+    properties:
+      course_time1:
+        type: string
+        description: 上课时间1
+      course_place1:
+        type: string
+        description: 上课地点1
+      course_time2:
+        type: string
+        description: 上课时间2
+      course_place2:
+        type: string
+        description: 上课地点2
+      course_time3:
+        type: string
+        description: 上课时间3
+      course_place3:
+        type: string
+        description: 上课地点3
