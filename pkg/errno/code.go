@@ -41,4 +41,7 @@ var (
 
 	// message errors
 	ErrGetMessage = &Errno{Code: 20501, Message: "Error occurred in getting message list"}
+
+	// search errors
+	ErrSearchCourse = &Errno{Code: 20601, Message: "Error occured in searching courses."}
 )
