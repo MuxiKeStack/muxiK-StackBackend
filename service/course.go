@@ -11,6 +11,7 @@ import (
 
 // Get course info.
 // Fixed by shiina orez at 2019.11.24, add default return value in function body
-func CourseList(id, userId uint32) (*model.CourseInfo, error) {
+// Fixed by shiina orez at 2019.11.25, change function name `CourseList` to `ListCourse`
+func ListCourse(id, userId uint32) (*model.CourseInfo, error) {
 	return nil, nil
 }

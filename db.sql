@@ -130,13 +130,13 @@ CREATE TABLE `report` (
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE `course_list` (
-  `id`        INT unsigned NOT NULL AUTO_INCREMENT,
-  `user_id`   INT          NOT NULL,
-  `course_id` VARCHAR(50)  NOT NULL,
+  `id`             INT unsigned NOT NULL AUTO_INCREMENT,
+  `user_id`        INT          NOT NULL,
+  `course_hash_id` VARCHAR(50)  NOT NULL,
 
   PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`),
-  KEY `course_id` (`course_id`)
+  KEY `idx_user_id` (`user_id`),
+  KEY `idx_course_hash_id` (`course_hash_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE `history_course` (
@@ -158,7 +158,7 @@ CREATE TABLE `using_course` (
   `hash`           VARCHAR(50)  NOT NULL           COMMENT "课程id + 教师名 hash 生成的唯一标识",
   `name`           VARCHAR(50)  NOT NULL DEFAULT "",
   `teacher`        VARCHAR(20)  NOT NULL DEFAULT "",
-  `course_id`      INT          NOT NULL           COMMENT "课程号",
+  `course_id`      VARCHAR(8)   NOT NULL           COMMENT "课程号",
   `class_id`       INT          NOT NULL           COMMENT "教学班编号",
   `type`           INT          NOT NULL           COMMENT "通识必修，通识选修，通识核心，专业必修，专业选修分别为 0/1/2/3/4",
   `credit_type`    INT          NOT NULL           COMMENT "学分类别，文科理科艺术之类的，加索引（筛选条件）",
@@ -174,7 +174,8 @@ CREATE TABLE `using_course` (
   `region`         INT          NOT NULL COMMENT "上课地区，南湖，东区，西区。加索引（筛选条件）",
 
   PRIMARY KEY (`id`),
-  UNIQUE KEY `hash` (`hash`)
+  UNIQUE KEY `hash` (`hash`),
+  FULLTEXT KEY (`name`, `course_id`, `teacher`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 INSERT INTO `tags` (name) VALUES ("简单易学"), ("干货满满"), ("生动有趣"), ("作业量少"), ("老师温柔"), ("云课堂资料全");

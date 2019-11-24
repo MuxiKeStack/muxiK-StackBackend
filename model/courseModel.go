@@ -19,7 +19,7 @@ type UsingCourseModel struct {
 	Name          string  `gorm:"column:name"`             //课程名称
 	Credit        float32 `gorm:"column:credit"`           //学分
 	Teacher       string  `gorm:"column:teacher"`          //教师性名
-	CourseId      uint64  `gorm:"column:course_id"`        //UI上需要展示
+	CourseId      string  `gorm:"column:course_id"`        //课程号, UI上需要展示
 	ClassId       uint64  `gorm:"column:class_id"`         //课堂编号，用于区分课堂
 	Type          uint8   `gorm:"column:type"`             //通识必修，通识选修，通识核心，专业必修，专业选修分别为 0/1/2/3/4
 	CreditType    uint8   `gorm:"column:credit_type"`      //学分类别，文科理科艺术之类的，加索引（筛选条件）
@@ -35,6 +35,13 @@ type UsingCourseModel struct {
 	Weeks2        string  `gorm:"column:weeks2"`           //上课周数
 	Weeks3        string  `gorm:"column:weeks3"`           //上课周数
 	Region        uint8   `gorm:"column:region"`           //上课地区，南湖，东区，西区。加索引（筛选条件）
+}
+
+// 用户课堂表
+type CourseList struct {
+	Id           uint32 `gorm:"column:id; primary_key"` //主键
+	UserId       uint32 `gorm:"column:user_id"`         //用户ID
+	CourseHashId string `gorm:"column:course_hash_id"`  //课堂HashID
 }
 
 type HistoryCourseInfo struct {

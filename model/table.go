@@ -64,7 +64,7 @@ func GetClassByHashId(id string) (*UsingCourseModel, error) {
 	return &class, d.Error
 }
 
-func GetCourseHashIdById(id uint64) (string, error) {
+func GetCourseHashIdById(id string) (string, error) {
 	var course HistoryCourseModel
 	d := DB.Self.Where("id = ?", id).First(&course)
 	return course.Hash, d.Error
