@@ -4,8 +4,8 @@ import (
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
 	_ "github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
-	_ "github.com/MuxiKeStack/muxiK-StackBackend/service"
 	_ "github.com/MuxiKeStack/muxiK-StackBackend/pkg/token"
+	_ "github.com/MuxiKeStack/muxiK-StackBackend/service"
 
 	"github.com/gin-gonic/gin"
 )
