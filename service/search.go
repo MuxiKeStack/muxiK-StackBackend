@@ -16,7 +16,7 @@ type SearchCourseInfo struct {
 	CreditType uint8   //学分类型
 }
 
-func SearchCourses(keyword string, page, limit int) ([]SearchCourseInfo, error) {
+func SearchCourses(keyword string, page, limit uint64) ([]SearchCourseInfo, error) {
 	courses := make([]SearchCourseInfo, 0)
 	courseRows, err := model.AgainstAndMatchCourses(keyword, page, limit)
 	if err != nil {
