@@ -2,5 +2,5 @@ FROM golang:latest
 RUN mkdir /app 
 ADD . /app/ 
 WORKDIR /app 
-RUN go build --mod vendor -o main . 
+RUN make
 CMD ["/app/main", "-c", "conf/config.yaml"]
