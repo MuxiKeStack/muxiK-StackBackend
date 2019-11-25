@@ -19,7 +19,7 @@ type evaluationPublishRequest struct {
 	AttendanceCheckType uint8   `json:"attendance_check_type" binding:"-"` // 经常点名/偶尔点名/签到点名，标识为 1/2/3
 	ExamCheckType       uint8   `json:"exam_check_type" binding:"-"`       // 无考核/闭卷考试/开卷考试/论文考核，标识为 1/2/3/4
 	Content             string  `json:"content" binding:"-"`
-	IsAnonymous         bool    `json:"is_anonymous" binding:"-"` // 若binding为required那么就不能接受false值
+	IsAnonymous         bool    `json:"is_anonymous" binding:"-"`
 	Tags                []uint8 `json:"tags" binding:"-"`
 }
 
