@@ -78,7 +78,7 @@ func (course *UsingCourseModel) Unfavorite() error {
 
 // Search course by name, courseId or teacher
 // Use fulltext search, against and match
-func AgainstAndMatchCourses(kw string, page, limit int) (*sql.Rows, error) {
+func AgainstAndMatchCourses(kw string, page, limit uint64) (*sql.Rows, error) {
 	rows, err := DB.Self.Exec("SELECT name, course_id, teacher FROM using_course WHERE MATCH (name, courseId, teacher) AGAINST (?) LIMIT ? OFFSET ?;", kw, limit, (page-1)*limit).Rows()
 	if err != nil {
 		return nil, err

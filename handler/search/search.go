@@ -13,7 +13,7 @@ import (
 type searchResponse struct {
 	Courses []service.SearchCourseInfo
 	Length  int
-	Page    int
+	Page    uint64
 }
 
 // SearchCourse API means to search the courses by courseName, courseID and teacherName
