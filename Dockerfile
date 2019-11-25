@@ -1,6 +1,5 @@
 FROM golang:latest 
-RUN mkdir /app 
-ADD . /app/ 
-WORKDIR /app 
+WORKDIR $GOPATH/src/github.com/MuxiKeStack/muxiK-StackBackend
+COPY . $GOPATH/src/github.com/MuxiKeStack/muxiK-StackBackend
 RUN make
-CMD ["/app/main", "-c", "conf/config.yaml"]
+CMD ["./main", "-c", "conf/config.yaml"]
