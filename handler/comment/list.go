@@ -60,7 +60,7 @@ func GetComments(c *gin.Context) {
 		log.Info("User auth successful.")
 	}
 
-	list, count, err := service.CommentList(uint32(id), int32(limit), int32(page*limit), userId, visitor)
+	list, count, err := service.CommentList(uint32(id), int32(limit), int32((page-1)*limit), userId, visitor)
 	if err != nil {
 		handler.SendError(c, errno.ErrCommentList, nil, err.Error())
 		return
