@@ -95,7 +95,7 @@ func GetClassInfoForTableById(id string) (*model.ClassInfo, error) {
 	}
 
 	// Get course's hash id
-	couseId, err := model.GetCourseHashIdById(class.CourseId)
+	courseId, err := model.GetCourseHashIdById(class.CourseId)
 	if err != nil {
 		log.Error("GetCourseHashIdById function err", err)
 		return nil, err
@@ -169,7 +169,7 @@ func GetClassInfoForTableById(id string) (*model.ClassInfo, error) {
 	}
 
 	info := &model.ClassInfo{
-		CourseId:  couseId,
+		CourseId:  courseId,
 		ClassId:   id,
 		ClassName: class.Name,
 		Teacher:   class.Teacher,
@@ -244,10 +244,4 @@ func GetTableInfoByTableModel(table *model.ClassTableModel) (*model.ClassTableIn
 	}
 
 	return info, nil
-}
-
-// 判断class在table内是否有时间段上的冲突
-func ClassConflictInTable(table *model.ClassTableModel, classId string) (bool, error) {
-
-	return false, nil
 }
