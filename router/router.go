@@ -129,6 +129,7 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 	searchGroup := g.Group("/api/v1/search")
 	{
 		searchGroup.GET("/course/", search.SearchCourse)
+		searchGroup.GET("/historyCourse/", search.SearchHistoryCourse)
 	}
 
 	// The health check handlers
