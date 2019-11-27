@@ -160,7 +160,8 @@ CREATE TABLE `history_course` (
   `credit`    FLOAT        NOT NULL DEFAULT 0 COMMENT "学分",
 
   PRIMARY KEY (`id`),
-  UNIQUE KEY `hash` (`hash`)
+  UNIQUE KEY `hash` (`hash`),
+  FULLTEXT KEY (`name`, `teacher`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE `using_course` (

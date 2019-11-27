@@ -8,6 +8,7 @@ import (
 	eva "github.com/MuxiKeStack/muxiK-StackBackend/handler/evaluation"
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler/message"
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler/sd"
+	"github.com/MuxiKeStack/muxiK-StackBackend/handler/search"
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler/table"
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler/tag"
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler/user"
@@ -51,7 +52,7 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 		m.POST("/readall", message.ReadAll)
 	}
 
-	url := ginSwagger.URL("http://localhost:8080/swagger/doc.json") // The url pointing to API definition
+	url := ginSwagger.URL("http://kstack.test.muxi-tech.xyz/swagger/doc.json") // The url pointing to API definition
 	g.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
 
 	// 选课手册课程
@@ -123,6 +124,13 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 
 	// tag
 	g.GET("/api/v1/tags/", tag.Get)
+
+	// search
+	searchGroup := g.Group("/api/v1/search")
+	{
+		searchGroup.GET("/course/", search.SearchCourse)
+		searchGroup.GET("/historyCourse/", search.SearchHistoryCourse)
+	}
 
 	// The health check handlers
 	svcd := g.Group("/sd")

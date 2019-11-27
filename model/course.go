@@ -5,6 +5,10 @@ import (
 	_ "github.com/jinzhu/gorm"
 )
 
+const (
+	thSQL = " AND LOCATE('5', `course_id`, 3) = 1 "
+)
+
 // Add a new course.
 func (course *UsingCourseModel) Add() error {
 	d := DB.Self.Create(course)
@@ -78,10 +82,44 @@ func (course *UsingCourseModel) Unfavorite() error {
 
 // Search course by name, courseId or teacher
 // Use fulltext search, against and match
-func AgainstAndMatchCourses(kw string, page, limit uint64) (*sql.Rows, error) {
-	rows, err := DB.Self.Exec("SELECT name, course_id, teacher FROM using_course WHERE MATCH (name, courseId, teacher) AGAINST (?) LIMIT ? OFFSET ?;", kw, limit, (page-1)*limit).Rows()
+func AgainstAndMatchCourses(kw string, page, limit uint64, th bool) (*sql.Rows, error) {
+	var err error
+	var rows *sql.Rows
+	if th {
+		rows, err = DB.Self.Exec("SELECT * FROM using_course WHERE MATCH (name, course_id, teacher) AGAINST (?) LIMIT ? OFFSET ?;", kw, limit, (page-1)*limit).Rows()
+	} else {
+		rows, err = DB.Self.Exec("SELECT * FROM using_course WHERE MATCH (name, course_id, teacher) AGAINST (?)"+thSQL+"LIMIT ? OFFSET ?;", kw, limit, (page-1)*limit).Rows()
+	}
 	if err != nil {
 		return nil, err
 	}
 	return rows, nil
+}
+
+// Search history course by name or teacher
+// Use fulltext search, against and match
+func AgainstAndMatchHistoryCourses(kw string, page, limit uint64) (*sql.Rows, error) {
+	rows, err := DB.Self.Exec("SELECT * FROM history_course WHERE MATCH (name, teacher) AGAINST (?) LIMIT ? OFFSET ?;", kw, limit, (page-1)*limit).Rows()
+	if err != nil {
+		return nil, err
+	}
+	return rows, nil
+}
+
+// Get all courses
+func AllCourses(page, limit uint64, th bool) ([]*UsingCourseModel, error) {
+	courses := []*UsingCourseModel{}
+	if th {
+		DB.Self.Where("LOCATE ('5', `course_id`, 3) = 1").Find(&courses).Limit(limit).Offset((page - 1) * limit)
+	} else {
+		DB.Self.Find(&courses).Limit(limit).Offset((page - 1) * limit)
+	}
+	return courses, nil
+}
+
+// Get all history courses
+func AllHistoryCourses(page, limit uint64) ([]*HistoryCourseModel, error) {
+	courses := []*HistoryCourseModel{}
+	DB.Self.Find(&courses).Limit(limit).Offset((page - 1) * limit)
+	return courses, nil
 }
