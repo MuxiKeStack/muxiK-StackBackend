@@ -8,6 +8,7 @@ import (
 	eva "github.com/MuxiKeStack/muxiK-StackBackend/handler/evaluation"
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler/message"
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler/sd"
+	"github.com/MuxiKeStack/muxiK-StackBackend/handler/search"
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler/table"
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler/tag"
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler/user"
@@ -123,6 +124,12 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 
 	// tag
 	g.GET("/api/v1/tags/", tag.Get)
+
+	// search
+	searchGroup := g.Group("/api/v1/search")
+	{
+		searchGroup.GET("/course/", search.SearchCourse)
+	}
 
 	// The health check handlers
 	svcd := g.Group("/sd")
