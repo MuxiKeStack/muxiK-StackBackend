@@ -16,9 +16,9 @@ type SearchCourseInfo struct {
 	CreditType uint8   //学分类型
 }
 
-func SearchCourses(keyword string, page, limit uint64) ([]SearchCourseInfo, error) {
+func SearchCourses(keyword string, page, limit uint64, th bool) ([]SearchCourseInfo, error) {
 	courses := make([]SearchCourseInfo, 0)
-	courseRows, err := model.AgainstAndMatchCourses(keyword, page, limit)
+	courseRows, err := model.AgainstAndMatchCourses(keyword, page, limit, th)
 	if err != nil {
 		return courses, err
 	}
@@ -28,6 +28,27 @@ func SearchCourses(keyword string, page, limit uint64) ([]SearchCourseInfo, erro
 		var course SearchCourseInfo
 		courseRows.Scan(&course)
 		courses = append(courses, course)
+	}
+	return courses, nil
+}
+
+func GetAllCourses(page, limit uint64, th bool) ([]SearchCourseInfo, error) {
+	courseRows, err := model.AllCourses(page, limit, th)
+	if err != nil {
+		return nil, err
+	}
+	courses := make([]SearchCourseInfo, len(courseRows))
+	for i, row := range courseRows {
+		courses[i] = SearchCourseInfo{
+			Id:         row.Id,
+			Name:       row.Name,
+			Credit:     row.Credit,
+			Teacher:    row.Teacher,
+			CourseId:   row.CourseId,
+			ClassId:    row.ClassId,
+			Type:       row.Type,
+			CreditType: row.CreditType,
+		}
 	}
 	return courses, nil
 }
