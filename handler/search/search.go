@@ -20,6 +20,7 @@ type searchResponse struct {
 // @Summary 搜索课程接口
 // @Tags search
 // @Param keyword query string true "关键字"
+// @Param th query string false "是否为通核, 0或者不给表示不筛选"
 // @Param page query integer true "页码"
 // @Param limit query integer true "每页最大数"
 // @Success 200 {object} search.searchResponse
@@ -37,7 +38,17 @@ func SearchCourse(c *gin.Context) {
 		handler.SendBadRequest(c, errno.ErrGetQuery, nil, err.Error())
 	}
 	keyword := c.DefaultQuery("keyword", "")
-	courseList, err := service.SearchCourses(keyword, page, limit)
+	thStr := c.DefaultQuery("th", "0")
+	th := false
+	if thStr == "1" {
+		th = true
+	}
+	courseList := []service.SearchCourseInfo{}
+	if keyword == "" {
+		courseList, err = service.SearchCourses(keyword, page, limit, th)
+	} else {
+		courseList, err = service.GetAllCourses(page, limit, th)
+	}
 	if err != nil {
 		handler.SendError(c, errno.ErrSearchCourse, nil, err.Error())
 	}

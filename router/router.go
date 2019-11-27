@@ -51,7 +51,7 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 		m.POST("/readall", message.ReadAll)
 	}
 
-	url := ginSwagger.URL("http://localhost:8080/swagger/doc.json") // The url pointing to API definition
+	url := ginSwagger.URL("http://localhost:4096/swagger/doc.json") // The url pointing to API definition
 	g.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
 
 	// 选课手册课程
