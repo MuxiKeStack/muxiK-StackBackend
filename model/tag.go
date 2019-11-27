@@ -4,6 +4,10 @@ func (tag *TagModel) TableName() string {
 	return "tags"
 }
 
+func (data *CourseTagModel) TableName() string  {
+	return "course_tags"
+}
+
 // Get tag name by id.
 func GetTagNameById(id int) (string, error) {
 	var tag TagModel

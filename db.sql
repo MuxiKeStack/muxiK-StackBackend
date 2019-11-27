@@ -114,10 +114,20 @@ CREATE TABLE `class_table` (
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE `tags` (
-  `id`       INT unsigned NOT NULL AUTO_INCREMENT,
+  `id`   INT unsigned NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(20)  NOT NULL,
 
   PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+
+CREATE TABLE `course_tags` (
+  `id`        INT unsigned NOT NULL AUTO_INCREMENT,
+  `tag_id`    INT          NOT NULL,
+  `course_id` VARCHAR(50)  NOT NULL,
+
+  PRIMARY KEY (`id`),
+  KEY `tag_id` (`tag_id`),
+  KEY `course_id` (`course_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE `report` (
