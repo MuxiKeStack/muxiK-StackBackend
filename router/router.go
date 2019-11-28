@@ -85,7 +85,6 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 	{
 		evaluation.GET("/", eva.EvaluationPlayground)
 		evaluation.GET("/:id/", eva.GetEvaluation)
-		//evaluation.GET("/list/course/:id/", eva.EvaluationsOfOneCourse)
 
 		// router for getting comment list
 		evaluation.GET("/:id/comments/", comment.GetComments)
