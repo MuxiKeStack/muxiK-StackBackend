@@ -6,14 +6,13 @@ import (
 
 // 课堂信息
 type SearchCourseInfo struct {
-	Id         uint32  `json:"id"`          //主键
-	Name       string  `json:"name"`        //课程名称
-	Credit     float32 `json:"credit"`      //学分
-	Teacher    string  `json:"teacher"`     //任课教师姓名
-	CourseId   string  `json:"course_id"`   //课程编号
-	ClassId    uint64  `json:"class_id"`    //课堂编号
-	Type       uint8   `json:"type"`        //课程类型
-	CreditType uint8   `json:"credit_type"` //学分类型
+	Id       uint32  `json:"id"`        //主键
+	Name     string  `json:"name"`      //课程名称
+	Credit   float32 `json:"credit"`    //学分
+	Teacher  string  `json:"teacher"`   //任课教师姓名
+	CourseId string  `json:"course_id"` //课程编号
+	ClassId  uint64  `json:"class_id"`  //课堂编号
+	Type     uint8   `json:"type"`      //课程类型
 }
 
 // 历史课堂信息
@@ -68,14 +67,13 @@ func GetAllCourses(page, limit uint64, th bool) ([]SearchCourseInfo, error) {
 	courses := make([]SearchCourseInfo, len(courseRows))
 	for i, row := range courseRows {
 		courses[i] = SearchCourseInfo{
-			Id:         row.Id,
-			Name:       row.Name,
-			Credit:     row.Credit,
-			Teacher:    row.Teacher,
-			CourseId:   row.CourseId,
-			ClassId:    row.ClassId,
-			Type:       row.Type,
-			CreditType: row.CreditType,
+			Id:       row.Id,
+			Name:     row.Name,
+			Credit:   row.Credit,
+			Teacher:  row.Teacher,
+			CourseId: row.CourseId,
+			ClassId:  row.ClassId,
+			Type:     row.Type,
 		}
 	}
 	return courses, nil
