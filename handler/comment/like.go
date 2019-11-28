@@ -4,9 +4,9 @@ import (
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
-	"github.com/lexkong/log"
 
 	"github.com/gin-gonic/gin"
+	"github.com/lexkong/log"
 )
 
 type likeDataRequest struct {
@@ -34,7 +34,7 @@ func UpdateCommentLike(c *gin.Context) {
 	// 获取请求中的点赞状态
 	var bodyData likeDataRequest
 	if err := c.BindJSON(&bodyData); err != nil {
-		handler.SendError(c, errno.ErrBind, nil, err.Error())
+		handler.SendBadRequest(c, errno.ErrBind, nil, err.Error())
 		return
 	}
 

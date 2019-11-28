@@ -39,7 +39,7 @@ func Publish(c *gin.Context) {
 
 	var data evaluationPublishRequest
 	if err := c.ShouldBindJSON(&data); err != nil {
-		handler.SendError(c, errno.ErrBind, nil, err.Error())
+		handler.SendBadRequest(c, errno.ErrBind, nil, err.Error())
 		return
 	}
 
