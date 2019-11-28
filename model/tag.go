@@ -4,7 +4,7 @@ func (tag *TagModel) TableName() string {
 	return "tags"
 }
 
-func (data *CourseTagModel) TableName() string  {
+func (data *CourseTagModel) TableName() string {
 	return "course_tags"
 }
 
