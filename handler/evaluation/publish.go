@@ -15,7 +15,7 @@ import (
 type evaluationPublishRequest struct {
 	CourseId            string  `json:"course_id" binding:"required"`
 	CourseName          string  `json:"course_name" binding:"required"`
-	Rate                float32 `json:"rate" binding:"required"`
+	Rate                float32 `json:"rate" binding:"-"`
 	AttendanceCheckType uint8   `json:"attendance_check_type" binding:"-"` // 经常点名/偶尔点名/签到点名，标识为 1/2/3
 	ExamCheckType       uint8   `json:"exam_check_type" binding:"-"`       // 无考核/闭卷考试/开卷考试/论文考核，标识为 1/2/3/4
 	Content             string  `json:"content" binding:"-"`
