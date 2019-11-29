@@ -10,8 +10,9 @@ services:
 dist: bionic
 
 env:
-  - MUXIKSTACK_DB_USERNAME=root
-  - MUXIKSTACK_DB_PASSWORD=''
+  global:
+    - MUXIKSTACK_DB_USERNAME=root
+    - MUXIKSTACK_DB_PASSWORD=''
 
 before_script:
   - mysql -u root --password="" < db.sql
