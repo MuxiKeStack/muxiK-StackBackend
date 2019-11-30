@@ -72,7 +72,7 @@ func (class *UsingCourseModel) GetByName() error {
 // Get course by its courseid.(course assistant)
 // Fixed by shiina orez at 2019.11.24 `int time` =>> `time int`, `int place` =>> `place int`
 func (class *UsingCourseModel) GetByCourseId(time int, place int) error { //int为映射，作为筛选条件
-	d := DB.Self.Find(class, "courseid = ?", class.CourseId)
+	d := DB.Self.Find(class, "course_id = ?", class.CourseId)
 	return d.Error
 }
 
@@ -94,9 +94,9 @@ func AgainstAndMatchCourses(kw string, page, limit uint64, th bool) (*sql.Rows, 
 	var err error
 	var rows *sql.Rows
 	if th {
-		rows, err = DB.Self.Table("using_course").Where("MATCH (name, course_id, teacher) AGAINST (?) ", kw).Limit(limit).Offset((page - 1) * limit).Rows()
+		rows, err = DB.Self.Table("using_course").Where("MATCH (`name`, `course_id`, `teacher`) AGAINST ('" + kw + "') ").Limit(limit).Offset((page - 1) * limit).Rows()
 	} else {
-		rows, err = DB.Self.Table("using_course").Where("MATCH (name, course_id, teacher) AGAINST (?)"+thSQL, kw).Limit(limit).Offset((page - 1) * limit).Rows()
+		rows, err = DB.Self.Table("using_course").Where("MATCH (`name`, `course_id`, `teacher`) AGAINST ('" + kw + "')" + thSQL).Limit(limit).Offset((page - 1) * limit).Rows()
 	}
 	if err != nil {
 		return nil, err
@@ -107,7 +107,7 @@ func AgainstAndMatchCourses(kw string, page, limit uint64, th bool) (*sql.Rows, 
 // Search history course by name or teacher
 // Use fulltext search, against and match
 func AgainstAndMatchHistoryCourses(kw string, page, limit uint64) (*sql.Rows, error) {
-	rows, err := DB.Self.Table("history_course").Where("MATCH (name, teacher) AGAINST (?) ", kw).Limit(limit).Offset((page - 1) * limit).Rows()
+	rows, err := DB.Self.Table("history_course").Where("MATCH (`name`, `teacher`) AGAINST ('" + kw + "') ").Limit(limit).Offset((page - 1) * limit).Rows()
 	if err != nil {
 		return nil, err
 	}
