@@ -12,8 +12,8 @@ import (
 )
 
 type historyEvaluationsResponse struct {
-	Sum      int                     `json:"sum"`
-	List     *[]model.EvaluationInfo `json:"list"`
+	Sum  int                     `json:"sum"`
+	List *[]model.EvaluationInfo `json:"list"`
 }
 
 // @Summary 个人历史评课
@@ -47,7 +47,7 @@ func GetHistoryEvaluations(c *gin.Context) {
 	}
 
 	handler.SendResponse(c, nil, historyEvaluationsResponse{
-		Sum:      len(*list),
-		List:     list,
+		Sum:  len(*list),
+		List: list,
 	})
 }

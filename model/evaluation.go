@@ -159,11 +159,11 @@ func (course *HistoryCourseModel) TableName() string {
 // 新增评课时更新课程的评课信息，先暂时放这里，避免冲突
 func UpdateCourseRateByEvaluation(id string, rate float32) error {
 	var c HistoryCourseModel
-	if d := DB.Self.Find(&c, "hash = ?", id); d.Error != nil {
+	if d := DB.Self.First(&c, "hash = ?", id); d.Error != nil {
 		return d.Error
 	}
 
-	c.Rate = (c.Rate*float32(c.StarsNum) + rate) / float32(c.StarsNum+1)
+	c.Rate = (c.Rate * float32(c.StarsNum) + rate) / float32(c.StarsNum + 1)
 	c.StarsNum++
 
 	d := DB.Self.Save(&c)
