@@ -46,4 +46,8 @@ var (
 
 	// search errors
 	ErrSearchCourse = &Errno{Code: 20601, Message: "Error occured in searching courses."}
+
+	// upload errors
+	ErrGetFile    = &Errno{Code: 20701, Message: "Error occurred in getting file from FormFile()"}
+	ErrUploadFile = &Errno{Code: 20702, Message: "Error occurred in uploading file to oss"}
 )
