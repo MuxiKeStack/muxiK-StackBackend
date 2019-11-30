@@ -1,6 +1,7 @@
 package router
 
 import (
+	"github.com/MuxiKeStack/muxiK-StackBackend/handler/upload"
 	"net/http"
 
 	_ "github.com/MuxiKeStack/muxiK-StackBackend/docs"
@@ -41,6 +42,13 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 	{
 		u.POST("/info", user.PostInfo)
 		u.GET("/info", user.GetInfo)
+	}
+
+	// Upload image to oss
+	up := g.Group("api/v1/upload")
+	up.Use(middleware.AuthMiddleware())
+	{
+		up.POST("/", upload.Image)
 	}
 
 	// The message handlers, required authentication
