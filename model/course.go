@@ -10,42 +10,42 @@ const (
 )
 
 // Add a new course.
-func (course *UsingCourseModel) Add() error {
-	d := DB.Self.Create(course)
+func (class *UsingCourseModel) Add() error {
+	d := DB.Self.Create(class)
 	return d.Error
 }
 
 // Delete a course.
 // Fixed by shiina orez at 2019.11.24 evaluation =>> course
-func (course *UsingCourseModel) Delete() error {
-	d := DB.Self.Delete(course)
+func (class *UsingCourseModel) Delete() error {
+	d := DB.Self.Delete(class)
 	return d.Error
 }
 
 // Get course by its id.(course list)
-func (course *UsingCourseModel) GetById() error {
-	d := DB.Self.First(course, "id = ?", course.Id)
+func (class *UsingCourseModel) GetById() error {
+	d := DB.Self.First(class, "id = ?", class.Id)
 	return d.Error
 }
 
 // Get course by its type.(course list)
 // Fixed by shiina orez at 2019.11.24, type =>> Type
-func (course *UsingCourseModel) GetByType() error {
-	d := DB.Self.Find(course, "type = ?", course.Type)
+func (class *UsingCourseModel) GetByType() error {
+	d := DB.Self.Find(class, "type = ?", class.Type)
 	return d.Error
 }
 
 // Get course by its teacher.(course list)
 // Fixed by shiina orez at 2019.11.24 teacher =>> Teacher
-func (course *UsingCourseModel) GetByTeacher() error {
-	d := DB.Self.Find(course, "teacher = ?", course.Teacher)
+func (class *UsingCourseModel) GetByTeacher() error {
+	d := DB.Self.Find(class, "teacher = ?", class.Teacher)
 	return d.Error
 }
 
 // Get course by its name.(TODO)(course list)
 // Fixed by shiina orez at 2019.11.24 GetByTeacher =>> GetByName
-func (course *UsingCourseModel) GetByName() error {
-	d := DB.Self.Find(course, "name = ?", course.Name)
+func (class *UsingCourseModel) GetByName() error {
+	d := DB.Self.Find(class, "name = ?", class.Name)
 	return d.Error
 }
 
@@ -63,20 +63,20 @@ func (course *UsingCourseModel) GetByName() error {
 
 // Get course by its courseid.(course assistant)
 // Fixed by shiina orez at 2019.11.24 `int time` =>> `time int`, `int place` =>> `place int`
-func (course *UsingCourseModel) GetByCourseId(time int, place int) error { //int为映射，作为筛选条件
-	d := DB.Self.Find(course, "courseid = ?", course.CourseId)
+func (class *UsingCourseModel) GetByCourseId(time int, place int) error { //int为映射，作为筛选条件
+	d := DB.Self.Find(class, "courseid = ?", class.CourseId)
 	return d.Error
 }
 
 // Favorite course.(TODO)
 // Fixed by shiina orez at 2019.11.24, add default return value in function body
-func (course *UsingCourseModel) Favorite() error {
+func (class *UsingCourseModel) Favorite() error {
 	return nil
 }
 
 // Unfavorite course.(TODO)
 // Fixed by shiina orez at 2019.11.24, add default return value in function body
-func (course *UsingCourseModel) Unfavorite() error {
+func (class *UsingCourseModel) Unfavorite() error {
 	return nil
 }
 

@@ -24,14 +24,14 @@ var (
 	ErrGetUserInfo  = &Errno{Code: 20204, Message: "Error in getting user info"}
 
 	// comment errors
-	ErrNotLiked             = &Errno{Code: 20301, Message: "User has not liked yet. "}
-	ErrHasLiked             = &Errno{Code: 20302, Message: "User has already liked. "}
-	ErrEvaluationList       = &Errno{Code: 20303, Message: "Error occurred while getting evaluation list. "}
-	ErrCommentList          = &Errno{Code: 20304, Message: "Error occurred while getting comment list. "}
-	ErrCommentNotExist      = &Errno{Code: 20305, Message: "The comment does not exist. "}
-	ErrGetSubCommentInfo    = &Errno{Code: 20306, Message: "Error occurred while getting subComment info"}
-	ErrGetParentCommentInfo = &Errno{Code: 20307, Message: "Error occurred while getting parent comment info"}
-	ErrGetHotEvaluations    = &Errno{Code: 20308, Message: "Error occurred while getting hot evaluations"}
+	ErrNotLiked              = &Errno{Code: 20301, Message: "User has not liked yet. "}
+	ErrHasLiked              = &Errno{Code: 20302, Message: "User has already liked. "}
+	ErrEvaluationList        = &Errno{Code: 20303, Message: "Error occurred while getting evaluation list. "}
+	ErrCommentList           = &Errno{Code: 20304, Message: "Error occurred while getting comment list. "}
+	ErrCommentNotExist       = &Errno{Code: 20305, Message: "The comment does not exist. "}
+	ErrGetSubCommentInfo     = &Errno{Code: 20306, Message: "Error occurred while getting subComment info"}
+	ErrGetParentCommentInfo  = &Errno{Code: 20307, Message: "Error occurred while getting parent comment info"}
+	ErrGetHotEvaluations     = &Errno{Code: 20308, Message: "Error occurred while getting hot evaluations"}
 	ErrGetHistoryEvaluations = &Errno{Code: 20309, Message: "Error occurred while getting history evaluations"}
 
 	// table errors
