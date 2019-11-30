@@ -27,7 +27,15 @@ type SearchHistoryCourseInfo struct {
 	Credit   float32 `json:"credit"`    //学分
 }
 
+func kwReplace(kw string) string {
+	if res, existed := KeywordMap[kw]; existed {
+		kw = res
+	}
+	return kw
+}
+
 func SearchCourses(keyword string, page, limit uint64, th bool) ([]SearchCourseInfo, error) {
+	keyword = kwReplace(keyword)
 	courseRows, _ := model.AgainstAndMatchCourses(keyword, page, limit, th)
 	/*	if err != nil {
 			return courses, err
@@ -55,6 +63,7 @@ func SearchCourses(keyword string, page, limit uint64, th bool) ([]SearchCourseI
 }
 
 func SearchHistoryCourses(keyword string, page, limit uint64) ([]SearchHistoryCourseInfo, error) {
+	keyword = kwReplace(keyword)
 	courseRows, _ := model.AgainstAndMatchHistoryCourses(keyword, page, limit)
 	/*	if err != nil {
 			return courses, err
