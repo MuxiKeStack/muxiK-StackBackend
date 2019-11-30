@@ -1,8 +1,9 @@
 package model
 
 import (
-	"database/sql"
+	// _"database/sql"
 	_ "github.com/jinzhu/gorm"
+	// _ "log"
 )
 
 const (
@@ -90,28 +91,23 @@ func (class *UsingCourseModel) Unfavorite() error {
 
 // Search course by name, courseId or teacher
 // Use fulltext search, against and match
-func AgainstAndMatchCourses(kw string, page, limit uint64, th bool) (*sql.Rows, error) {
-	var err error
-	var rows *sql.Rows
-	if th {
-		rows, err = DB.Self.Table("using_course").Where("MATCH (`name`, `course_id`, `teacher`) AGAINST ('" + kw + "') ").Limit(limit).Offset((page - 1) * limit).Rows()
+func AgainstAndMatchCourses(kw string, page, limit uint64, th bool) ([]UsingCourseModel, error) {
+	courses := &[]UsingCourseModel{}
+	// log.Println("Query:", kw, page, limit, th)
+	if !th {
+		DB.Self.Debug().Table("using_course").Where("MATCH (`name`, `course_id`, `teacher`) AGAINST ('" + kw + "') ").Find(courses).Limit(limit).Offset((page - 1) * limit)
 	} else {
-		rows, err = DB.Self.Table("using_course").Where("MATCH (`name`, `course_id`, `teacher`) AGAINST ('" + kw + "')" + thSQL).Limit(limit).Offset((page - 1) * limit).Rows()
+		DB.Self.Debug().Table("using_course").Where("MATCH (`name`, `course_id`, `teacher`) AGAINST ('" + kw + "')" + thSQL).Find(courses).Limit(limit).Offset((page - 1) * limit)
 	}
-	if err != nil {
-		return nil, err
-	}
-	return rows, nil
+	return *courses, nil
 }
 
 // Search history course by name or teacher
 // Use fulltext search, against and match
-func AgainstAndMatchHistoryCourses(kw string, page, limit uint64) (*sql.Rows, error) {
-	rows, err := DB.Self.Table("history_course").Where("MATCH (`name`, `teacher`) AGAINST ('" + kw + "') ").Limit(limit).Offset((page - 1) * limit).Rows()
-	if err != nil {
-		return nil, err
-	}
-	return rows, nil
+func AgainstAndMatchHistoryCourses(kw string, page, limit uint64) ([]HistoryCourseModel, error) {
+	courses := &[]HistoryCourseModel{}
+	DB.Self.Table("history_course").Where("MATCH (`name`, `teacher`) AGAINST ('" + kw + "') ").Find(courses).Limit(limit).Offset((page - 1) * limit)
+	return *courses, nil
 }
 
 // Get all courses
