@@ -2,7 +2,7 @@ language: go
 
 go:
   - 1.11.x
-script: make test config conf/config_test.yaml
+script: make test
 
 services:
   - mysql

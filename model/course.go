@@ -9,6 +9,14 @@ const (
 	thSQL = " AND LOCATE('5', `course_id`, 3) = 1 "
 )
 
+func (UsingCourseModel) TableName() string {
+	return "using_course"
+}
+
+func (HistoryCourseModel) TableName() string {
+	return "history_course"
+}
+
 // Add a new course.
 func (course *UsingCourseModel) Add() error {
 	d := DB.Self.Create(course)
@@ -86,9 +94,9 @@ func AgainstAndMatchCourses(kw string, page, limit uint64, th bool) (*sql.Rows, 
 	var err error
 	var rows *sql.Rows
 	if th {
-		rows, err = DB.Self.Exec("SELECT * FROM using_course WHERE MATCH (name, course_id, teacher) AGAINST (?) LIMIT ? OFFSET ?;", kw, limit, (page-1)*limit).Rows()
+		rows, err = DB.Self.Table("using_course").Where("MATCH (name, course_id, teacher) AGAINST (?);", kw).Limit(limit).Offset((page - 1) * limit).Rows()
 	} else {
-		rows, err = DB.Self.Exec("SELECT * FROM using_course WHERE MATCH (name, course_id, teacher) AGAINST (?)"+thSQL+"LIMIT ? OFFSET ?;", kw, limit, (page-1)*limit).Rows()
+		rows, err = DB.Self.Table("using_course").Where("MATCH (name, course_id, teacher) AGAINST (?)"+thSQL+";", kw).Limit(limit).Offset((page - 1) * limit).Rows()
 	}
 	if err != nil {
 		return nil, err
@@ -99,7 +107,7 @@ func AgainstAndMatchCourses(kw string, page, limit uint64, th bool) (*sql.Rows, 
 // Search history course by name or teacher
 // Use fulltext search, against and match
 func AgainstAndMatchHistoryCourses(kw string, page, limit uint64) (*sql.Rows, error) {
-	rows, err := DB.Self.Exec("SELECT * FROM history_course WHERE MATCH (name, teacher) AGAINST (?) LIMIT ? OFFSET ?;", kw, limit, (page-1)*limit).Rows()
+	rows, err := DB.Self.Table("history_course").Where("MATCH (name, teacher) AGAINST (?);", kw).Limit(limit).Offset((page - 1) * limit).Rows()
 	if err != nil {
 		return nil, err
 	}
@@ -107,19 +115,19 @@ func AgainstAndMatchHistoryCourses(kw string, page, limit uint64) (*sql.Rows, er
 }
 
 // Get all courses
-func AllCourses(page, limit uint64, th bool) ([]*UsingCourseModel, error) {
-	courses := []*UsingCourseModel{}
+func AllCourses(page, limit uint64, th bool) ([]UsingCourseModel, error) {
+	courses := &[]UsingCourseModel{}
 	if th {
-		DB.Self.Table("using_course").Where("LOCATE ('5', `course_id`, 3) = 1").Find(&courses).Limit(limit).Offset((page - 1) * limit)
+		DB.Self.Table("using_course").Where("LOCATE ('5', `course_id`, 3) = 1").Find(courses).Limit(limit).Offset((page - 1) * limit)
 	} else {
 		DB.Self.Table("using_course").Find(&courses).Limit(limit).Offset((page - 1) * limit)
 	}
-	return courses, nil
+	return *courses, nil
 }
 
 // Get all history courses
-func AllHistoryCourses(page, limit uint64) ([]*HistoryCourseModel, error) {
-	courses := []*HistoryCourseModel{}
-	DB.Self.Table("history_course").Find(&courses).Limit(limit).Offset((page - 1) * limit)
-	return courses, nil
+func AllHistoryCourses(page, limit uint64) ([]HistoryCourseModel, error) {
+	courses := &[]HistoryCourseModel{}
+	DB.Self.Table("history_course").Find(courses).Limit(limit).Offset((page - 1) * limit)
+	return *courses, nil
 }
