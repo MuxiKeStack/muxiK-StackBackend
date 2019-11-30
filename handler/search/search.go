@@ -42,6 +42,7 @@ func SearchCourse(c *gin.Context) {
 	limit, err := strconv.ParseUint(limitStr, 10, 32)
 	if err != nil {
 		handler.SendBadRequest(c, errno.ErrGetQuery, nil, err.Error())
+		return
 	}
 	keyword := c.DefaultQuery("keyword", "")
 	thStr := c.DefaultQuery("th", "0")
@@ -51,13 +52,14 @@ func SearchCourse(c *gin.Context) {
 	}
 
 	courseList := []service.SearchCourseInfo{}
-	if keyword == "" {
+	if keyword != "" {
 		courseList, err = service.SearchCourses(keyword, page, limit, th)
 	} else {
 		courseList, err = service.GetAllCourses(page, limit, th)
 	}
 	if err != nil {
 		handler.SendError(c, errno.ErrSearchCourse, nil, err.Error())
+		return
 	}
 	response := searchResponse{
 		Courses: courseList,
@@ -86,17 +88,19 @@ func SearchHistoryCourse(c *gin.Context) {
 	limit, err := strconv.ParseUint(limitStr, 10, 32)
 	if err != nil {
 		handler.SendBadRequest(c, errno.ErrGetQuery, nil, err.Error())
+		return
 	}
 	keyword := c.DefaultQuery("keyword", "")
 
 	courseList := []service.SearchHistoryCourseInfo{}
-	if keyword == "" {
+	if keyword != "" {
 		courseList, err = service.SearchHistoryCourses(keyword, page, limit)
 	} else {
 		courseList, err = service.GetAllHistoryCourses(page, limit)
 	}
 	if err != nil {
 		handler.SendError(c, errno.ErrSearchCourse, nil, err.Error())
+		return
 	}
 	response := searchHistoryCourseResponse{
 		Courses: courseList,
