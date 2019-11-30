@@ -193,7 +193,7 @@ INSERT INTO `tags` (name) VALUES ("简单易学"), ("干货满满"), ("生动有
 
 -- mock data
 
-INSERT INTO `history_course` (hash, name, teacher, type) VALUES ('112d34testsvggase', '高等数学A', '宋冰玉', 0);
+INSERT INTO `history_course` (hash, name, teacher, type) VALUES ('sadf23432234dfa', '高等数学A', '宋冰玉', 0);
 
 INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time1, place1, weeks1, region)
-VALUES ('sadf23432234dfa', '高等数学A', '宋冰玉', 1, 13, 3, '1-2#1', '7205', '2-17#0', 1);
+VALUES ('sadf23432234dfa', '高等数学A', '宋冰玉', '1000230', 13, 3, '1-2#1', '7205', '2-17#0', 1);
