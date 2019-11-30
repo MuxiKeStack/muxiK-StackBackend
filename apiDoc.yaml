@@ -383,6 +383,60 @@ paths:
           schema:
             $ref: '#/definitions/CodeResponse'
 
+  /course/list/{id}/:
+    get:
+      tags:
+        - course
+      summary: 获取课程列表
+      description: 获取课程列表
+      parameters:
+        - in: header
+          name: token
+          description: token
+          required: true
+          type: string
+        - in: path
+          name: id
+          required: true
+          type: string
+        - in: query
+          name: year
+          required: true
+          description: 学年，0(全部)/1/2/3/4
+          type: integer
+        - in: query
+          name: term
+          required: true
+          description: 学期，0(全部)/1/2/3
+          type: integer
+
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              list:
+                type: array
+                items:
+                      $ref: '#/definitions/CourseList'
+        '400':
+          description: bad request
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '401':
+          description: 未授权
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '404':
+          description: not found
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '500':
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/CodeResponse'
+
   /course/history/{id}/:
     get:
       tags:
@@ -1639,6 +1693,19 @@ definitions:
           avatar:
             type: string
             description: 头像
+
+  CourseList:
+    type: object
+    description: 返回的课程列表模型
+    properties:
+      course_name:
+        type: string
+        description: 课程名称
+      teacher:
+        type: string
+      is_evaluate:
+        type: boolean
+        description: 当前用户是否已评课
 
   CommentInfo:
     type: object

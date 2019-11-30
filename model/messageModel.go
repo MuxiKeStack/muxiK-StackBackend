@@ -12,11 +12,14 @@ type Message struct {
 	CourseInfo string `gorm:"column:course_info"`
 }
 
-// CourseInfo represents Course information
+// CourseInf	o represents evaluation or comment information
 type CourseInfo struct {
-	CommentCourseId uint32 `json:"comment_course_id"`
+	EvaluationId    uint32 `json:"evaluation_id"`
+	Sid             string `json:"sid"`
+	ParentCommentId string `json:"parent_comment_id"`
 	CourseName      string `json:"course_name"`
-	Comment         string `json:"comment"`
+	Teacher         string `json:"teacher"`
+	Content         string `json:"content"`
 }
 
 //

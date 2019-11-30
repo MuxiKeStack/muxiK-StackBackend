@@ -18,6 +18,7 @@ func AuthMiddleware() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
+		//gin.Context内有一个keys是一个map[string][interface{}]
 		c.Set("id", ctx.Id)
 		c.Next()
 	}

@@ -44,7 +44,7 @@ func TestPublish(t *testing.T) {
 	body := evaluationPublishRequest{
 		CourseId:            courseId,
 		CourseName:          courseName,
-		Rate:                7.5,
+		Rate:                7,
 		AttendanceCheckType: 1,
 		ExamCheckType:       2,
 		Content:             "老师讲课很棒",

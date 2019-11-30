@@ -45,7 +45,7 @@ func Login(c *gin.Context) {
 	}
 	u, err := service.GetUserBySid(l.Sid)
 	if err != nil {
-		SendResponse(c, errno.ErrUserNotFound, nil)
+		SendError(c, errno.ErrUserNotFound, nil, err.Error())
 		return
 	}
 

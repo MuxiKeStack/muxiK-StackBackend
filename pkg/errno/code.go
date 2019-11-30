@@ -31,6 +31,8 @@ var (
 	ErrCommentNotExist      = &Errno{Code: 20305, Message: "The comment does not exist. "}
 	ErrGetSubCommentInfo    = &Errno{Code: 20306, Message: "Error occurred while getting subComment info"}
 	ErrGetParentCommentInfo = &Errno{Code: 20307, Message: "Error occurred while getting parent comment info"}
+	ErrGetHotEvaluations    = &Errno{Code: 20308, Message: "Error occurred while getting hot evaluations"}
+	ErrGetHistoryEvaluations = &Errno{Code: 20309, Message: "Error occurred while getting history evaluations"}
 
 	// table errors
 	ErrTableExisting   = &Errno{Code: 20401, Message: "The table is not existing. "}
