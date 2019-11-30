@@ -161,7 +161,7 @@ CREATE TABLE `history_course` (
 
   PRIMARY KEY (`id`),
   UNIQUE KEY `hash` (`hash`),
-  FULLTEXT KEY (`name`, `teacher`)
+  FULLTEXT KEY (`name`, `teacher`) WITH PARSER ngram
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE `using_course` (
@@ -181,11 +181,11 @@ CREATE TABLE `using_course` (
   `weeks1`         VARCHAR(20)  NOT NULL DEFAULT "",
   `weeks2`         VARCHAR(20)  NOT NULL DEFAULT "",
   `weeks3`         VARCHAR(20)  NOT NULL DEFAULT "",
-  `region`         INT          NOT NULL COMMENT "上课地区，南湖，东区，西区。加索引（筛选条件）",
+  `region`         INT          NOT NULL COMMENT "上课地区，1-南湖，2-东区，3-西区。加索引（筛选条件）",
 
   PRIMARY KEY (`id`),
   UNIQUE KEY `hash` (`hash`),
-  FULLTEXT KEY (`name`, `course_id`, `teacher`)
+  FULLTEXT KEY (`name`, `course_id`, `teacher`) WITH PARSER ngram
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 INSERT INTO `tags` (name) VALUES ("简单易学"), ("干货满满"), ("生动有趣"), ("作业量少"), ("老师温柔"), ("云课堂资料全");
@@ -193,7 +193,64 @@ INSERT INTO `tags` (name) VALUES ("简单易学"), ("干货满满"), ("生动有
 
 -- mock data
 
-INSERT INTO `history_course` (hash, name, teacher, type) VALUES ('sadf23432234dfa', '高等数学A', '宋冰玉', 0);
+INSERT INTO `history_course` (hash, name, teacher, type) VALUES ('112d34testsvggase', '高等数学A', '宋冰玉', 0);
 
 INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time1, place1, weeks1, region)
-VALUES ('sadf23432234dfa', '高等数学A', '宋冰玉', '1000230', 13, 3, '1-2#1', '7205', '2-17#0', 1);
+VALUES ('sadf23432234dfa', '高等数学A', '宋冰玉', '45677654', 10, 3, '1-2#1', '7205', '2-17#0', 2);
+
+INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time1, place1, weeks1, region)
+VALUES ('213f89eyguiguhy', '数据库原理', '喻莹', '98767654', 20, 3, '3-4#2', '9201', '2-17#0', 2);
+
+INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time1, place1, weeks1, region)
+VALUES ('298yr3y9f8euibf', '数字逻辑', '赵甫哲', '34789865', 30, 3, '1-2#3', '9402', '2-17#0', 2);
+
+INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time1, place1, weeks1, region)
+VALUES ('38yry8fe7guiwb3', '计算机组成原理', '李沛', '23345678', 40, 3, '10-11#2', '6221', '2-17#0', 2);
+
+INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time1, place1, weeks1, region)
+VALUES ('298y38efub2ef32', '计算机网络', '王林平', '09898767', 50, 3, '5-6#5', '8205', '2-17#0', 2);
+
+INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time1, place1, weeks1, region)
+VALUES ('28yy89dqube12d8', '面向对象程序设计', '胡珀', '34569876', 60, 3, '7-8#1', 'JKSYS-3', '2-17#0', 2);
+
+INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time1, place1, weeks1, region)
+VALUES ('723fguib98y2e1h', 'Python程序设计', '胡珀', '23456987', 70, 3, '1-2#5', '9403', '2-17#0', 2);
+
+INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time1, place1, weeks1, region)
+VALUES ('2e154de56gyubdq', '高级语言程序设计', '沈显军', '56982345', 80, 3, '3-4#5', '1122', '2-17#0', 2);
+
+INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time1, place1, weeks1, region)
+VALUES ('0s9uighvg121efe', 'Java程序设计', '张连发', '09865423', 90, 3, '9-10#4', '9501', '2-17#0', 2);
+
+
+-- mock data
+
+INSERT INTO `user` (`sid`, `username`, `is_blocked`)
+VALUES ('2016213456', '你管我叫啥呢', '0');
+
+INSERT INTO `user` (`sid`, `username`, `is_blocked`)
+VALUES ('2017213213', 'fucking...', '0');
+
+INSERT INTO `user` (`sid`, `username`, `is_blocked`)
+VALUES ('2018243789', 'Wow, FPXnb!', '0');
+
+INSERT INTO `user` (`sid`, `username`, `is_blocked`)
+VALUES ('2019211678', '大爱法学院', '0');
+
+INSERT INTO `user` (`sid`, `username`, `is_blocked`)
+VALUES ('2016221983', '赵凌云大傻逼', '0');
+
+INSERT INTO `user` (`sid`, `username`, `is_blocked`)
+VALUES ('2017908932', 'i华大牛逼', '0');
+
+INSERT INTO `user` (`sid`, `username`, `is_blocked`)
+VALUES ('2018923872', '当代恶臭网民', '0');
+
+INSERT INTO `user` (`sid`, `username`, `is_blocked`)
+VALUES ('2019526782', '孙笑川', '0');
+
+INSERT INTO `user` (`sid`, `username`, `is_blocked`)
+VALUES ('2017211712', '中华人民共和国湖北省武汉市洪山区当代恶臭网民孙笑川', '0');
+
+INSERT INTO `user` (`sid`, `username`, `is_blocked`)
+VALUES ('2017909876', 'GITHUB', '0');
