@@ -1,6 +1,7 @@
 package comment
 
 import (
+	"github.com/lexkong/log"
 	"strconv"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
@@ -78,4 +79,10 @@ func CreateTopComment(c *gin.Context) {
 	}
 
 	handler.SendResponse(c, nil, commentInfo)
+
+	// New message reminder
+	err = service.NewMessageForParentComment(userId, comment, evaluation)
+	if err != nil {
+		log.Error("NewMessageForParentComment failed", err)
+	}
 }

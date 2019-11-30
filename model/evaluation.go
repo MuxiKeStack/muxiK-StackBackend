@@ -159,7 +159,7 @@ func UpdateCourseRateByEvaluation(id string, rate float32) error {
 		return d.Error
 	}
 
-	c.Rate = (c.Rate * float32(c.StarsNum) + rate) / float32(c.StarsNum + 1)
+	c.Rate = (c.Rate*float32(c.StarsNum) + rate) / float32(c.StarsNum+1)
 	c.StarsNum++
 
 	d := DB.Self.Save(&c)
