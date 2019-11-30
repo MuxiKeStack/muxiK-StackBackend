@@ -109,7 +109,7 @@
                 "tags": [
                     "evaluation"
                 ],
-                "summary": "课程所有评课",
+                "summary": "课程所有评课和热评",
                 "parameters": [
                     {
                         "type": "string",
@@ -126,6 +126,13 @@
                     },
                     {
                         "type": "integer",
+                        "description": "热评数",
+                        "name": "hot_limit",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
                         "description": "评课数",
                         "name": "limit",
                         "in": "query",
@@ -134,14 +141,7 @@
                     {
                         "type": "integer",
                         "description": "上一次请求的最后一个评课的id，若是初始请求则为0",
-                        "name": "lastId",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "排序关键词：hot/time",
-                        "name": "sort",
+                        "name": "last_id",
                         "in": "query",
                         "required": true
                     }
@@ -179,7 +179,7 @@
                     {
                         "type": "integer",
                         "description": "上一次请求的最后一个评课的id，若是初始请求则为0",
-                        "name": "lastId",
+                        "name": "last_id",
                         "in": "query",
                         "required": true
                     }
@@ -356,7 +356,7 @@
                     },
                     {
                         "type": "integer",
-                        "description": "翻页页码，默认为1",
+                        "description": "分页页码，默认为1",
                         "name": "page",
                         "in": "query",
                         "required": true
@@ -466,7 +466,7 @@
                     {
                         "type": "integer",
                         "description": "页码",
-                        "name": "offset",
+                        "name": "page",
                         "in": "query",
                         "required": true
                     },
@@ -531,6 +531,90 @@
                 "responses": {
                     "200": {
                         "description": "OK"
+                    }
+                }
+            }
+        },
+        "/search/course/": {
+            "get": {
+                "tags": [
+                    "search"
+                ],
+                "summary": "搜索课程接口",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "关键字",
+                        "name": "keyword",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "是否为通核, 0或者不给表示不筛选",
+                        "name": "th",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页最大数",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/search.searchResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/search/historyCourse/": {
+            "get": {
+                "tags": [
+                    "search"
+                ],
+                "summary": "搜索历史课程接口",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "关键字",
+                        "name": "keyword",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页最大数",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/search.searchHistoryCourseResponse"
+                        }
                     }
                 }
             }
@@ -746,6 +830,45 @@
                 }
             }
         },
+        "/user/evaluations/": {
+            "get": {
+                "tags": [
+                    "evaluation"
+                ],
+                "summary": "个人历史评课",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "token",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "评课数",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "上一次请求的最后一个评课的id，若是初始请求则为0",
+                        "name": "last_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/evaluation.historyEvaluationsResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/user/info": {
             "get": {
                 "description": "带着token",
@@ -820,6 +943,9 @@
         "comment.commentListResponse": {
             "type": "object",
             "properties": {
+                "page": {
+                    "type": "integer"
+                },
                 "parent_comment_list": {
                     "type": "array",
                     "items": {
@@ -868,8 +994,7 @@
             "type": "object",
             "required": [
                 "course_id",
-                "course_name",
-                "rate"
+                "course_name"
             ],
             "properties": {
                 "attendance_check_type": {
@@ -890,7 +1015,6 @@
                     "type": "integer"
                 },
                 "is_anonymous": {
-                    "description": "若binding为required那么就不能接受false值",
                     "type": "boolean"
                 },
                 "rate": {
@@ -913,6 +1037,29 @@
             }
         },
         "evaluation.evaluationsOfCourseResponse": {
+            "type": "object",
+            "properties": {
+                "hot_list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.EvaluationInfo"
+                    }
+                },
+                "hot_sum": {
+                    "type": "integer"
+                },
+                "normal_list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.EvaluationInfo"
+                    }
+                },
+                "normal_sum": {
+                    "type": "integer"
+                }
+            }
+        },
+        "evaluation.historyEvaluationsResponse": {
             "type": "object",
             "properties": {
                 "list": {
@@ -1271,6 +1418,110 @@
                 },
                 "username": {
                     "type": "string"
+                }
+            }
+        },
+        "search.searchHistoryCourseResponse": {
+            "type": "object",
+            "properties": {
+                "courses": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/service.SearchHistoryCourseInfo"
+                    }
+                },
+                "length": {
+                    "type": "integer"
+                },
+                "page": {
+                    "type": "integer"
+                }
+            }
+        },
+        "search.searchResponse": {
+            "type": "object",
+            "properties": {
+                "courses": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/service.SearchCourseInfo"
+                    }
+                },
+                "length": {
+                    "type": "integer"
+                },
+                "page": {
+                    "type": "integer"
+                }
+            }
+        },
+        "service.SearchCourseInfo": {
+            "type": "object",
+            "properties": {
+                "class_id": {
+                    "description": "课堂编号",
+                    "type": "integer"
+                },
+                "course_id": {
+                    "description": "课程编号",
+                    "type": "string"
+                },
+                "credit": {
+                    "description": "学分",
+                    "type": "number"
+                },
+                "id": {
+                    "description": "主键",
+                    "type": "integer"
+                },
+                "name": {
+                    "description": "课程名称",
+                    "type": "string"
+                },
+                "teacher": {
+                    "description": "任课教师姓名",
+                    "type": "string"
+                },
+                "type": {
+                    "description": "课程类型",
+                    "type": "integer"
+                }
+            }
+        },
+        "service.SearchHistoryCourseInfo": {
+            "type": "object",
+            "properties": {
+                "credit": {
+                    "description": "学分",
+                    "type": "number"
+                },
+                "hash": {
+                    "description": "教师名和课程hash成的唯一标识",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "主键",
+                    "type": "integer"
+                },
+                "name": {
+                    "description": "课程名称",
+                    "type": "string"
+                },
+                "rate": {
+                    "description": "课程评价星级",
+                    "type": "number"
+                },
+                "stars_num": {
+                    "description": "参与评分人数",
+                    "type": "integer"
+                },
+                "teacher": {
+                    "description": "教师姓名",
+                    "type": "string"
+                },
+                "type": {
+                    "description": "课程类型，公共课为0，专业课为1",
+                    "type": "integer"
                 }
             }
         },
