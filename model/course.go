@@ -9,6 +9,14 @@ const (
 	thSQL = " AND LOCATE('5', `course_id`, 3) = 1 "
 )
 
+func (UsingCourseModel) TableName() string {
+	return "using_course"
+}
+
+func (HistoryCourseModel) TableName() string {
+	return "history_course"
+}
+
 // Add a new course.
 func (class *UsingCourseModel) Add() error {
 	d := DB.Self.Create(class)

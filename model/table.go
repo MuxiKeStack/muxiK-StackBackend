@@ -47,10 +47,6 @@ func GetTablesByUserId(userId uint32) (*[]ClassTableModel, error) {
 
 /*--------- Class Operation -----------*/
 
-func (class *UsingCourseModel) TableName() string {
-	return "using_course"
-}
-
 func IsClassExisting(id string) bool {
 	var class UsingCourseModel
 	d := DB.Self.Where("hash = ?", id).First(&class)
