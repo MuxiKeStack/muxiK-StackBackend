@@ -1,0 +1,25 @@
+{
+	"comment": "",
+	"ignore": "",
+	"package": [
+		{
+			"checksumSHA1": "ZpAhn1mzvXmeOErUybf8IdMttGA=",
+			"path": "github.com/aliyun/aliyun-oss-go-sdk",
+			"revision": "4ef22f164c610bca021c2b0376fa63015980536a",
+			"revisionTime": "2019-11-13T05:58:30Z"
+		},
+		{
+			"checksumSHA1": "naElWmfI6kM/eiGgoua+6H1Qr1g=",
+			"path": "github.com/aliyun/aliyun-oss-go-sdk/oss",
+			"revision": "4ef22f164c610bca021c2b0376fa63015980536a",
+			"revisionTime": "2019-11-13T05:58:30Z"
+		},
+		{
+			"checksumSHA1": "wvDJJQmc3b3o5NPhTMoBkHasHoc=",
+			"path": "github.com/aliyun/aliyun-oss-go-sdk/sample",
+			"revision": "4ef22f164c610bca021c2b0376fa63015980536a",
+			"revisionTime": "2019-11-13T05:58:30Z"
+		}
+	],
+	"rootPath": "github.com/MuxiKeStack/muxiK-StackBackend"
+}
