@@ -33,6 +33,8 @@ func openDB(username, password, addr, name string) *gorm.DB {
 
 	// set for db connection
 	setupDB(db)
+	// 将默认表名改为单数
+	db.SingularTable(true)
 
 	return db
 }
