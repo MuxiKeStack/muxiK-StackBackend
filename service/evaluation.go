@@ -26,15 +26,17 @@ func GetEvaluationsForPlayground(lastId, limit int32, userId uint32, visitor boo
 }
 
 // Get evaluations of one course.
-func GetEvaluationsOfOneCourse(lastId, limit int32, userId uint32, visitor bool, courseId, sortKey string) (*[]model.EvaluationInfo, error) {
-	var evaluations *[]model.CourseEvaluationModel
-	var err error
+func GetEvaluationsOfOneCourse(lastId, limit int32, userId uint32, visitor bool, courseId string) (*[]model.EvaluationInfo, error) {
+	//var evaluations *[]model.CourseEvaluationModel
+	//var err error
 
-	if sortKey == "hot" {
-		evaluations, err = model.GetEvaluationsByCourseIdOrderByLikeNum(courseId, lastId, limit)
-	} else {
-		evaluations, err = model.GetEvaluationsByCourseIdOrderByTime(courseId, lastId, limit)
-	}
+	//if sortKey == "hot" {
+	//	evaluations, err = model.GetEvaluationsByCourseIdOrderByLikeNum(courseId, lastId, limit)
+	//} else {
+	//	evaluations, err = model.GetEvaluationsByCourseIdOrderByTime(courseId, lastId, limit)
+	//}
+
+	evaluations, err := model.GetEvaluationsByCourseIdOrderByTime(courseId, lastId, limit)
 
 	if err != nil {
 		log.Info("GetEvaluationsByCourseId* function error.")
@@ -160,6 +162,27 @@ func GetEvaluationInfo(id, userId uint32, visitor bool) (*model.EvaluationInfo, 
 	}
 
 	return info, nil
+}
+
+// Get hot evaluations of one course.
+func GetHotEvaluations(courseId string, limit int32, userId uint32, visitor bool) (*[]model.EvaluationInfo, error) {
+	evaluations, err := model.GetEvaluationsByCourseIdOrderByLikeNum(courseId, limit)
+	if err != nil {
+		log.Info("GetEvaluationsByCourseIdOrderByLikeNum functions error.")
+		return nil, err
+	}
+
+	return GetEvaluationInfosByOriginModels(evaluations, userId, visitor)
+}
+
+func GetHistoryEvaluationsByUserId(userId uint32, lastId, limit int32) (*[]model.EvaluationInfo, error) {
+	evaluations, err := model.GetEvaluationsByUserId(userId, lastId, limit)
+	if err != nil {
+		log.Info("GetEvaluationsByUserId functions error.")
+		return nil, err
+	}
+
+	return GetEvaluationInfosByOriginModels(evaluations, userId, false)
 }
 
 // Get attendance-check type name by identifier code.

@@ -15,6 +15,7 @@ import (
 type commentListResponse struct {
 	ParentCommentSum  uint32                     `json:"parent_comment_sum"`
 	ParentCommentList *[]model.ParentCommentInfo `json:"parent_comment_list"`
+	Page              int32                      `json:"page"`
 }
 
 // 获取评论列表
@@ -69,5 +70,6 @@ func GetComments(c *gin.Context) {
 	handler.SendResponse(c, nil, commentListResponse{
 		ParentCommentSum:  count,
 		ParentCommentList: list,
+		Page:              int32(page),
 	})
 }

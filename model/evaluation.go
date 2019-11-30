@@ -96,11 +96,14 @@ func GetEvaluations(lastId, limit int32) (*[]CourseEvaluationModel, error) {
 	var evaluations []CourseEvaluationModel
 	var d *gorm.DB
 	if lastId != 0 {
-		d = DB.Self.Where("id < ?", lastId).Order("id desc").Find(&evaluations).Limit(limit)
+		d = DB.Self.Where("id < ?", lastId).Order("id desc").Limit(limit).Find(&evaluations)
 	} else {
-		d = DB.Self.Order("id desc").Find(&evaluations).Limit(limit)
+		d = DB.Self.Order("id desc").Limit(limit).Find(&evaluations)
 	}
 
+	if d.RecordNotFound() {
+		return &evaluations, nil
+	}
 	return &evaluations, d.Error
 }
 
@@ -114,27 +117,40 @@ func GetEvaluationsByCourseIdOrderByTime(id string, lastId, limit int32) (*[]Cou
 		d = DB.Self.Where("course_id = ?", id).Order("id desc").Limit(limit).Find(&evaluations)
 	}
 
+	if d.RecordNotFound() {
+		return &evaluations, nil
+	}
 	return &evaluations, d.Error
 }
 
-// Get a course's all evaluations by id order by likeNum.
-func GetEvaluationsByCourseIdOrderByLikeNum(id string, lastId, limit int32) (*[]CourseEvaluationModel, error) {
+// Get a course's hot evaluations by id.
+func GetEvaluationsByCourseIdOrderByLikeNum(courseId string, limit int32) (*[]CourseEvaluationModel, error) {
+	var evaluations []CourseEvaluationModel
+	d := DB.Self.Where("course_id = ? AND like_num > 0", courseId).Order("like_num desc, id desc").Limit(limit).Find(&evaluations)
+
+	if d.RecordNotFound() {
+		return &evaluations, nil
+	}
+	return &evaluations, d.Error
+}
+
+// Get user's evaluations.
+func GetEvaluationsByUserId(userId uint32, lastId, limit int32) (*[]CourseEvaluationModel, error) {
 	var evaluations []CourseEvaluationModel
 	var d *gorm.DB
 	if lastId != 0 {
-		d = DB.Self.Where("id < ? AND course_id = ?", lastId, id).Order("like_num desc").Limit(limit).Find(&evaluations)
+		d = DB.Self.Where("id < ? AND user_id = ?", lastId, userId).Order("id desc").Limit(limit).Find(&evaluations)
 	} else {
-		d = DB.Self.Where("course_id = ?", id).Order("like_num desc").Limit(limit).Find(&evaluations)
+		d = DB.Self.Where("user_id = ?", userId).Order("id desc").Limit(limit).Find(&evaluations)
 	}
 
+	if d.RecordNotFound() {
+		return &evaluations, nil
+	}
 	return &evaluations, d.Error
 }
 
 /*--------------- Course Operation -------------*/
-
-func (course *HistoryCourseModel) TableName() string {
-	return "history_course"
-}
 
 // 新增评课时更新课程的评课信息，先暂时放这里，避免冲突
 func UpdateCourseRateByEvaluation(id string, rate float32) error {

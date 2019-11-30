@@ -2,6 +2,8 @@ basePath: /api/v1
 definitions:
   comment.commentListResponse:
     properties:
+      page:
+        type: integer
       parent_comment_list:
         items:
           $ref: '#/definitions/model.ParentCommentInfo'
@@ -45,7 +47,6 @@ definitions:
         description: 无考核/闭卷考试/开卷考试/论文考核，标识为 1/2/3/4
         type: integer
       is_anonymous:
-        description: 若binding为required那么就不能接受false值
         type: boolean
       rate:
         type: number
@@ -56,7 +57,6 @@ definitions:
     required:
     - course_id
     - course_name
-    - rate
     type: object
   evaluation.evaluationPublishResponse:
     properties:
@@ -64,6 +64,21 @@ definitions:
         type: integer
     type: object
   evaluation.evaluationsOfCourseResponse:
+    properties:
+      hot_list:
+        items:
+          $ref: '#/definitions/model.EvaluationInfo'
+        type: array
+      hot_sum:
+        type: integer
+      normal_list:
+        items:
+          $ref: '#/definitions/model.EvaluationInfo'
+        type: array
+      normal_sum:
+        type: integer
+    type: object
+  evaluation.historyEvaluationsResponse:
     properties:
       list:
         items:
@@ -301,6 +316,79 @@ definitions:
       username:
         type: string
     type: object
+  search.searchHistoryCourseResponse:
+    properties:
+      courses:
+        items:
+          $ref: '#/definitions/service.SearchHistoryCourseInfo'
+        type: array
+      length:
+        type: integer
+      page:
+        type: integer
+    type: object
+  search.searchResponse:
+    properties:
+      courses:
+        items:
+          $ref: '#/definitions/service.SearchCourseInfo'
+        type: array
+      length:
+        type: integer
+      page:
+        type: integer
+    type: object
+  service.SearchCourseInfo:
+    properties:
+      class_id:
+        description: 课堂编号
+        type: integer
+      course_id:
+        description: 课程编号
+        type: string
+      credit:
+        description: 学分
+        type: number
+      id:
+        description: 主键
+        type: integer
+      name:
+        description: 课程名称
+        type: string
+      teacher:
+        description: 任课教师姓名
+        type: string
+      type:
+        description: 课程类型
+        type: integer
+    type: object
+  service.SearchHistoryCourseInfo:
+    properties:
+      credit:
+        description: 学分
+        type: number
+      hash:
+        description: 教师名和课程hash成的唯一标识
+        type: string
+      id:
+        description: 主键
+        type: integer
+      name:
+        description: 课程名称
+        type: string
+      rate:
+        description: 课程评价星级
+        type: number
+      stars_num:
+        description: 参与评分人数
+        type: integer
+      teacher:
+        description: 教师姓名
+        type: string
+      type:
+        description: 课程类型，公共课为0，专业课为1
+        type: integer
+    type: object
   table.addClassResponseData:
     properties:
       class_info:
@@ -413,6 +501,11 @@ paths:
         name: id
         required: true
         type: string
+      - description: 热评数
+        in: query
+        name: hot_limit
+        required: true
+        type: integer
       - description: 评课数
         in: query
         name: limit
@@ -420,20 +513,15 @@ paths:
         type: integer
       - description: 上一次请求的最后一个评课的id，若是初始请求则为0
         in: query
-        name: lastId
+        name: last_id
         required: true
         type: integer
-      - description: 排序关键词：hot/time
-        in: query
-        name: sort
-        required: true
-        type: string
       responses:
         "200":
           description: OK
           schema:
             $ref: '#/definitions/evaluation.evaluationsOfCourseResponse'
-      summary: 课程所有评课
+      summary: 课程所有评课和热评
       tags:
       - evaluation
   /evaluation/:
@@ -450,7 +538,7 @@ paths:
         type: integer
       - description: 上一次请求的最后一个评课的id，若是初始请求则为0
         in: query
-        name: lastId
+        name: last_id
         required: true
         type: integer
       responses:
@@ -566,7 +654,7 @@ paths:
         name: limit
         required: true
         type: integer
-      - description: 翻页页码，默认为1
+      - description: 分页页码，默认为1
         in: query
         name: page
         required: true
@@ -640,7 +728,7 @@ paths:
         type: string
       - description: 页码
         in: query
-        name: offset
+        name: page
         required: true
         type: integer
       - description: 每页最大数
@@ -686,6 +774,62 @@ paths:
       summary: 读取消息提醒
       tags:
       - message
+  /search/course/:
+    get:
+      parameters:
+      - description: 关键字
+        in: query
+        name: keyword
+        required: true
+        type: string
+      - description: 是否为通核, 0或者不给表示不筛选
+        in: query
+        name: th
+        type: string
+      - description: 页码
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: 每页最大数
+        in: query
+        name: limit
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/search.searchResponse'
+      summary: 搜索课程接口
+      tags:
+      - search
+  /search/historyCourse/:
+    get:
+      parameters:
+      - description: 关键字
+        in: query
+        name: keyword
+        required: true
+        type: string
+      - description: 页码
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: 每页最大数
+        in: query
+        name: limit
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/search.searchHistoryCourseResponse'
+      summary: 搜索历史课程接口
+      tags:
+      - search
   /table/:
     get:
       parameters:
@@ -825,6 +969,32 @@ paths:
       summary: 获取课程评价标签列表
       tags:
       - tag
+  /user/evaluations/:
+    get:
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 评课数
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: 上一次请求的最后一个评课的id，若是初始请求则为0
+        in: query
+        name: last_id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/evaluation.historyEvaluationsResponse'
+      summary: 个人历史评课
+      tags:
+      - evaluation
   /user/info:
     get:
       consumes:
