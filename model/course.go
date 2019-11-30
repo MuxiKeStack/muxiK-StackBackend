@@ -115,19 +115,19 @@ func AgainstAndMatchHistoryCourses(kw string, page, limit uint64) (*sql.Rows, er
 }
 
 // Get all courses
-func AllCourses(page, limit uint64, th bool) ([]*UsingCourseModel, error) {
-	courses := []*UsingCourseModel{}
+func AllCourses(page, limit uint64, th bool) ([]UsingCourseModel, error) {
+	courses := &[]UsingCourseModel{}
 	if th {
-		DB.Self.Table("using_course").Where("LOCATE ('5', `course_id`, 3) = 1").Find(&courses).Limit(limit).Offset((page - 1) * limit)
+		DB.Self.Table("using_course").Where("LOCATE ('5', `course_id`, 3) = 1").Find(courses).Limit(limit).Offset((page - 1) * limit)
 	} else {
 		DB.Self.Table("using_course").Find(&courses).Limit(limit).Offset((page - 1) * limit)
 	}
-	return courses, nil
+	return *courses, nil
 }
 
 // Get all history courses
-func AllHistoryCourses(page, limit uint64) ([]*HistoryCourseModel, error) {
-	courses := []*HistoryCourseModel{}
-	DB.Self.Table("history_course").Find(&courses).Limit(limit).Offset((page - 1) * limit)
-	return courses, nil
+func AllHistoryCourses(page, limit uint64) ([]HistoryCourseModel, error) {
+	courses := &[]HistoryCourseModel{}
+	DB.Self.Table("history_course").Find(courses).Limit(limit).Offset((page - 1) * limit)
+	return *courses, nil
 }
