@@ -1240,13 +1240,22 @@
         "model.CourseInfo": {
             "type": "object",
             "properties": {
-                "comment": {
+                "content": {
                     "type": "string"
                 },
-                "comment_course_id": {
+                "course_name": {
+                    "type": "string"
+                },
+                "evaluation_id": {
                     "type": "integer"
                 },
-                "course_name": {
+                "parent_comment_id": {
+                    "type": "string"
+                },
+                "sid": {
+                    "type": "string"
+                },
+                "teacher": {
                     "type": "string"
                 }
             }

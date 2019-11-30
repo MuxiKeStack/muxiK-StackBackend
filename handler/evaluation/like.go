@@ -1,6 +1,8 @@
 package evaluation
 
 import (
+	"github.com/MuxiKeStack/muxiK-StackBackend/service"
+	"github.com/lexkong/log"
 	"strconv"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
@@ -44,6 +46,11 @@ func UpdateEvaluationLike(c *gin.Context) {
 	userId := c.MustGet("id").(uint32)
 
 	var evaluation = &model.CourseEvaluationModel{Id: uint32(id)}
+	if err := evaluation.GetById(); err != nil {
+		log.Info("evaluation.GetById function error")
+		return
+	}
+
 	hasLiked := evaluation.HasLiked(userId)
 
 	// 判断点赞请求是否合理
@@ -85,4 +92,12 @@ func UpdateEvaluationLike(c *gin.Context) {
 		//LikeNum:   model.GetEvaluationLikeSum(uint32(id)),
 		LikeNum: evaluation.LikeNum,
 	})
+
+	// New message reminder for liking an evaluation
+	if !bodyData.LikeState {
+		err = service.NewMessageForEvaluationLiking(userId, evaluation)
+		if err != nil {
+			log.Error("NewMessageForEvaluationLiking failed", err)
+		}
+	}
 }

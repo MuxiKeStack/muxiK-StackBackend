@@ -27,15 +27,6 @@ func GetEvaluationsForPlayground(lastId, limit int32, userId uint32, visitor boo
 
 // Get evaluations of one course.
 func GetEvaluationsOfOneCourse(lastId, limit int32, userId uint32, visitor bool, courseId string) (*[]model.EvaluationInfo, error) {
-	//var evaluations *[]model.CourseEvaluationModel
-	//var err error
-
-	//if sortKey == "hot" {
-	//	evaluations, err = model.GetEvaluationsByCourseIdOrderByLikeNum(courseId, lastId, limit)
-	//} else {
-	//	evaluations, err = model.GetEvaluationsByCourseIdOrderByTime(courseId, lastId, limit)
-	//}
-
 	evaluations, err := model.GetEvaluationsByCourseIdOrderByTime(courseId, lastId, limit)
 
 	if err != nil {

@@ -32,7 +32,7 @@ func GetParentComments(EvaluationId uint32, limit, offset int32) (*[]ParentComme
 	var comments []ParentCommentModel
 
 	d := DB.Self.Where("evaluation_id = ?", EvaluationId).
-		Order("time").Find(&comments).Limit(limit).Offset(offset).Count(&count)
+		Order("time").Limit(limit).Offset(offset).Find(&comments).Count(&count)
 
 	return &comments, count, d.Error
 }

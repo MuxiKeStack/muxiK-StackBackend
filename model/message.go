@@ -13,7 +13,7 @@ func CreateMessage(pub *MessagePub) error {
 	if err != nil {
 		return err
 	}
-	d := DB.Self.Create(Message{
+	d := DB.Self.Create(&Message{
 		PubUserId:  pub.PubUserId,
 		SubUserId:  pub.SubUserId,
 		IsLike:     pub.IsLike,

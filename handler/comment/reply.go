@@ -6,7 +6,6 @@ import (
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
 	"github.com/MuxiKeStack/muxiK-StackBackend/service"
 	"github.com/MuxiKeStack/muxiK-StackBackend/util"
-
 	"github.com/gin-gonic/gin"
 	"github.com/lexkong/log"
 	uuid "github.com/satori/go.uuid"
@@ -53,7 +52,7 @@ func Reply(c *gin.Context) {
 	}
 
 	// Get parentComment by id
-	parentComment := model.ParentCommentModel{Id: parentId}
+	parentComment := &model.ParentCommentModel{Id: parentId}
 	if err := parentComment.GetById(); err != nil {
 		handler.SendBadRequest(c, errno.ErrGetParam, nil, "The parent comment don not exist.")
 		return
@@ -99,4 +98,10 @@ func Reply(c *gin.Context) {
 	}
 
 	handler.SendResponse(c, nil, commentInfo)
+
+	// New message reminder
+	err = service.NewMessageForSubComment(userId, sid, comment, parentComment)
+	if err != nil {
+		log.Error("NewMessageForSubComment failed", err)
+	}
 }
