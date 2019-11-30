@@ -2,9 +2,9 @@ package sample
 
 import (
 	"fmt"
-	"strings"
-	"io/ioutil"
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
+	"io/ioutil"
+	"strings"
 )
 
 // BucketrRequestPaymentSample shows how to set, get the bucket request payment.
@@ -96,7 +96,7 @@ func BucketrRequestPaymentSample() {
 		HandleError(err)
 	}
 	fmt.Println(string(data))
-	
+
 	// Delete object
 	err = creBucket.DeleteObject(key, oss.RequestPayer(oss.Requester))
 	if err != nil {

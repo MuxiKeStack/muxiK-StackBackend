@@ -19,6 +19,12 @@
 			"path": "github.com/aliyun/aliyun-oss-go-sdk/sample",
 			"revision": "4ef22f164c610bca021c2b0376fa63015980536a",
 			"revisionTime": "2019-11-13T05:58:30Z"
+		},
+		{
+			"checksumSHA1": "/tdaiBM7Z11C1V5jiY/X4TBD/3E=",
+			"path": "golang.org/x/time/rate",
+			"revision": "555d28b269f0569763d25dbe1a237ae74c6bcc82",
+			"revisionTime": "2019-10-23T19:31:36Z"
 		}
 	],
 	"rootPath": "github.com/MuxiKeStack/muxiK-StackBackend"

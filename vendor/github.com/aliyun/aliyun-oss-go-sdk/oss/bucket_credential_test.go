@@ -2,25 +2,25 @@
 package oss
 
 import (
-	"os"
-	"strings"
+	"bytes"
+	. "gopkg.in/check.v1"
 	"io/ioutil"
 	"math/rand"
-	"bytes"
+	"os"
 	"strconv"
-	. "gopkg.in/check.v1"
+	"strings"
 )
 
 type OssCredentialBucketSuite struct {
-	client        *Client
-	creClient     *Client
-	bucket        *Bucket
-	creBucket     *Bucket
+	client    *Client
+	creClient *Client
+	bucket    *Bucket
+	creBucket *Bucket
 }
 
 var _ = Suite(&OssCredentialBucketSuite{})
 
-func (cs *OssCredentialBucketSuite)credentialSubUser(c *C) {
+func (cs *OssCredentialBucketSuite) credentialSubUser(c *C) {
 	client, err := New(endpoint, accessID, accessKey)
 	c.Assert(err, IsNil)
 	err = client.CreateBucket(credentialBucketName)
@@ -35,7 +35,7 @@ func (cs *OssCredentialBucketSuite)credentialSubUser(c *C) {
 					"oss:*"
 				],
 				"Effect":"Allow",
-				"Principal":["`+ credentialUID + `"],
+				"Principal":["` + credentialUID + `"],
 				"Resource":["acs:oss:*:*:` + credentialBucketName + `", "acs:oss:*:*:` + credentialBucketName + `/*"]
 			}
 		]
@@ -51,7 +51,7 @@ func (cs *OssCredentialBucketSuite)credentialSubUser(c *C) {
 
 // SetUpSuite runs once when the suite starts running.
 func (cs *OssCredentialBucketSuite) SetUpSuite(c *C) {
-	if credentialUID == ""{
+	if credentialUID == "" {
 		testLogger.Println("the cerdential UID is NULL, skip the credential test")
 		c.Skip("the credential Uid is null")
 	}
@@ -69,7 +69,7 @@ func (cs *OssCredentialBucketSuite) SetUpSuite(c *C) {
 }
 
 func (cs *OssCredentialBucketSuite) TearDownSuite(c *C) {
-	if credentialUID == ""{
+	if credentialUID == "" {
 		c.Skip("the credential Uid is null")
 	}
 	for _, bucket := range []*Bucket{cs.bucket} {
@@ -100,7 +100,7 @@ func (cs *OssCredentialBucketSuite) TearDownSuite(c *C) {
 				c.Assert(err, IsNil)
 			}
 			marker = Marker(lor.NextMarker)
-			if !lor.IsTruncated{
+			if !lor.IsTruncated {
 				break
 			}
 		}
@@ -114,7 +114,7 @@ func (cs *OssCredentialBucketSuite) TearDownSuite(c *C) {
 func (cs *OssCredentialBucketSuite) TestReqerPaymentNoRequester(c *C) {
 	// Set bucket is requester who send the request
 	reqPayConf := RequestPaymentConfiguration{
-		Payer:string(Requester),
+		Payer: string(Requester),
 	}
 	err := cs.client.SetBucketRequestPayment(credentialBucketName, reqPayConf)
 	c.Assert(err, IsNil)
@@ -147,7 +147,7 @@ func (cs *OssCredentialBucketSuite) TestReqerPaymentNoRequester(c *C) {
 func (cs *OssCredentialBucketSuite) TestReqerPaymentWithRequester(c *C) {
 	// Set bucket is requester who send the request
 	reqPayConf := RequestPaymentConfiguration{
-		Payer:string(Requester),
+		Payer: string(Requester),
 	}
 	err := cs.client.SetBucketRequestPayment(credentialBucketName, reqPayConf)
 	c.Assert(err, IsNil)
@@ -190,7 +190,7 @@ func (cs *OssCredentialBucketSuite) TestReqerPaymentWithRequester(c *C) {
 func (cs *OssCredentialBucketSuite) TestOwnerPaymentNoRequester(c *C) {
 	// Set bucket is requester who send the request
 	reqPayConf := RequestPaymentConfiguration{
-		Payer:string(BucketOwner),
+		Payer: string(BucketOwner),
 	}
 	err := cs.client.SetBucketRequestPayment(credentialBucketName, reqPayConf)
 	c.Assert(err, IsNil)
@@ -224,7 +224,7 @@ func (cs *OssCredentialBucketSuite) TestOwnerPaymentNoRequester(c *C) {
 func (cs *OssCredentialBucketSuite) TestOwnerPaymentWithRequester(c *C) {
 	// Set bucket is BucketOwner payer
 	reqPayConf := RequestPaymentConfiguration{
-		Payer:string(BucketOwner),
+		Payer: string(BucketOwner),
 	}
 
 	err := cs.client.SetBucketRequestPayment(credentialBucketName, reqPayConf)
