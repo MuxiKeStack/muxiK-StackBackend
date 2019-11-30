@@ -22,20 +22,20 @@ type playgroundResponse struct {
 // @Tags evaluation
 // @Param token header string false "游客登录则不需要此字段或为空"
 // @Param limit query integer true "最大的一级评论数量"
-// @Param lastId query integer true "上一次请求的最后一个评课的id，若是初始请求则为0"
+// @Param last_id query integer true "上一次请求的最后一个评课的id，若是初始请求则为0"
 // @Success 200 {object} evaluation.playgroundResponse
 // @Router /evaluation/ [get]
 func EvaluationPlayground(c *gin.Context) {
 	log.Info("EvaluationPlayground function is called.")
 
-	size := c.DefaultQuery("limit", "20")
-	limit, err := strconv.ParseInt(size, 10, 32)
+	limitStr := c.DefaultQuery("limit", "10")
+	limit, err := strconv.ParseInt(limitStr, 10, 32)
 	if err != nil {
 		handler.SendBadRequest(c, errno.ErrGetQuery, nil, err.Error())
 		return
 	}
 
-	lastIdStr := c.DefaultQuery("lastId", "0")
+	lastIdStr := c.DefaultQuery("last_id", "0")
 	lastId, err := strconv.ParseInt(lastIdStr, 10, 32)
 	if err != nil {
 		handler.SendBadRequest(c, errno.ErrGetQuery, nil, err.Error())

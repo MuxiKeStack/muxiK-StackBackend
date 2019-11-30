@@ -41,6 +41,8 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 	{
 		u.POST("/info", user.PostInfo)
 		u.GET("/info", user.GetInfo)
+
+		u.GET("/evaluations/", eva.GetHistoryEvaluations)
 	}
 
 	// The message handlers, required authentication
