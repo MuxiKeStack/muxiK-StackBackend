@@ -30,7 +30,7 @@ func (evaluation *CourseEvaluationModel) Delete() error {
 func (evaluation *CourseEvaluationModel) HasLiked(userId uint32) bool {
 	var data EvaluationLikeModel
 	var count int
-	DB.Self.Where("user_id = ? AND evaluation_id = ? ", userId, evaluation.Id).Find(&data).Count(&count)
+	DB.Self.Where("user_id = ? AND evaluation_id = ? ", userId, evaluation.Id).First(&data).Count(&count)
 	return count > 0
 }
 

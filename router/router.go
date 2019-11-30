@@ -100,7 +100,11 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 		evaluation.GET("/:id/comments/", comment.GetComments)
 	}
 
-	g.GET("/api/v1/course/:id/evaluations/", eva.EvaluationsOfOneCourse).Use(middleware.VisitorAuthMiddleware())
+	evaOfCourse := g.Group("/api/v1/course/:id/evaluations/")
+	evaOfCourse.Use(middleware.VisitorAuthMiddleware())
+	{
+		evaOfCourse.GET("", eva.EvaluationsOfOneCourse)
+	}
 
 	evaluationWithAuth := g.Group("/api/v1/evaluation")
 	evaluationWithAuth.Use(middleware.AuthMiddleware())
