@@ -18,3 +18,10 @@ db:  # DB 配置 部署时环境变量覆盖
   addr: 0.0.0.0:3306
   username: root
   password:
+oss:
+  endpoint:
+  access_key_id:
+  access_key_secret:
+  bucket_name:
+  max_image_number_per_person:
+
