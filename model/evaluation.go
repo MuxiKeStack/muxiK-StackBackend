@@ -132,10 +132,6 @@ func GetEvaluationsByCourseIdOrderByLikeNum(id string, lastId, limit int32) (*[]
 
 /*--------------- Course Operation -------------*/
 
-func (course *HistoryCourseModel) TableName() string {
-	return "history_course"
-}
-
 // 新增评课时更新课程的评课信息，先暂时放这里，避免冲突
 func UpdateCourseRateByEvaluation(id string, rate float32) error {
 	var c HistoryCourseModel
