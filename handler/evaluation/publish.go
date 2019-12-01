@@ -73,12 +73,14 @@ func Publish(c *gin.Context) {
 
 	// 更新数据库中课程的评分信息
 	if err := model.UpdateCourseRateByEvaluation(evaluation.CourseId, data.Rate); err != nil {
+		log.Info("UpdateCourseRateByEvaluation function error")
 		handler.SendError(c, errno.ErrUpdateCourseInfo, nil, err.Error())
 		return
 	}
 
 	// 更新课程对应的tag数量
 	if err := service.NewTagsAfterPublishing(&data.Tags, data.CourseId); err != nil {
+		log.Info("NewTagsAfterPublishing function error")
 		handler.SendError(c, errno.ErrUpdateCourseInfo, nil, err.Error())
 		return
 	}
