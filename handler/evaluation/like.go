@@ -48,6 +48,7 @@ func UpdateEvaluationLike(c *gin.Context) {
 	var evaluation = &model.CourseEvaluationModel{Id: uint32(id)}
 	if err := evaluation.GetById(); err != nil {
 		log.Info("evaluation.GetById function error")
+		handler.SendError(c, errno.ErrDatabase, nil, err.Error())
 		return
 	}
 
