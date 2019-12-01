@@ -9,4 +9,5 @@ type CourseTagModel struct {
 	Id       uint32 `gorm:"column:id"`
 	TagId    uint32 `gorm:"column:tag_id"`
 	CourseId string `gorm:"column:course_id"`
+	Num      uint32 `gorm:"column:num"`
 }

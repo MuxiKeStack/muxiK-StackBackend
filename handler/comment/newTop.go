@@ -1,7 +1,6 @@
 package comment
 
 import (
-	"github.com/lexkong/log"
 	"strconv"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
@@ -11,6 +10,7 @@ import (
 	"github.com/MuxiKeStack/muxiK-StackBackend/util"
 
 	"github.com/gin-gonic/gin"
+	"github.com/lexkong/log"
 	uuid "github.com/satori/go.uuid"
 )
 
