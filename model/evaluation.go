@@ -172,3 +172,13 @@ func GetTeacherByCourseId(id string) (string, error) {
 	d := DB.Self.First(&course, "hash = ?", id)
 	return course.Teacher, d.Error
 }
+
+// 判断课程是否存在
+func IsCourseExisting(id string) bool {
+	var course HistoryCourseModel
+	d := DB.Self.Where("hash = ?", id).First(&course)
+	if d.RecordNotFound() {
+		return false
+	}
+	return true
+}

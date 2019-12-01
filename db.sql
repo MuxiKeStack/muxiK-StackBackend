@@ -120,10 +120,11 @@ CREATE TABLE `tags` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
-CREATE TABLE `course_tags` (
+CREATE TABLE `course_tag` (
   `id`        INT unsigned NOT NULL AUTO_INCREMENT,
   `tag_id`    INT          NOT NULL,
   `course_id` VARCHAR(50)  NOT NULL,
+  `num`       INT          NOT NULL,
 
   PRIMARY KEY (`id`),
   KEY `tag_id` (`tag_id`),
@@ -196,7 +197,7 @@ INSERT INTO `tags` (name) VALUES ("简单易学"), ("干货满满"), ("生动有
 INSERT INTO `history_course` (hash, name, teacher, type) VALUES ('112d34testsvggase', '高等数学A', '宋冰玉', 0);
 
 INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time1, place1, weeks1, region)
-VALUES ('sadf23432234dfa', '高等数学A', '宋冰玉', '45677654', 10, 3, '1-2#1', '7205', '2-17#0', 2);
+VALUES ('112d34testsvggase', '高等数学A', '宋冰玉', '45677654', 10, 3, '1-2#1', '7205', '2-17#0', 2);
 
 INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time1, place1, weeks1, region)
 VALUES ('213f89eyguiguhy', '数据库原理', '喻莹', '98767654', 20, 3, '3-4#2', '9201', '2-17#0', 2);
@@ -245,6 +246,9 @@ VALUES ('2017908932', 'i华大牛逼', '0');
 
 INSERT INTO `user` (`sid`, `username`, `is_blocked`)
 VALUES ('2018923872', '当代恶臭网民', '0');
+
+INSERT INTO `user` (`sid`, `username`, `is_blocked`)
+VALUES ('2018214830', '随便呗', '0');
 
 INSERT INTO `user` (`sid`, `username`, `is_blocked`)
 VALUES ('2019526782', '孙笑川', '0');

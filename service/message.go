@@ -3,10 +3,12 @@ package service
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/MuxiKeStack/muxiK-StackBackend/model"
-	"github.com/lexkong/log"
 	"strconv"
 	"time"
+
+	"github.com/MuxiKeStack/muxiK-StackBackend/model"
+
+	"github.com/lexkong/log"
 )
 
 func MessageList(page, limit, uid uint32) (*[]model.MessageSub, error) {

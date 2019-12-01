@@ -16,8 +16,8 @@ type evaluationPublishRequest struct {
 	CourseId            string  `json:"course_id" binding:"required"`
 	CourseName          string  `json:"course_name" binding:"required"`
 	Rate                float32 `json:"rate" binding:"-"`
-	AttendanceCheckType uint8   `json:"attendance_check_type" binding:"-"` // 经常点名/偶尔点名/签到点名，标识为 1/2/3
-	ExamCheckType       uint8   `json:"exam_check_type" binding:"-"`       // 无考核/闭卷考试/开卷考试/论文考核，标识为 1/2/3/4
+	AttendanceCheckType uint8   `json:"attendance_check_type" binding:"required"` // 经常点名/偶尔点名/签到点名，标识为 1/2/3
+	ExamCheckType       uint8   `json:"exam_check_type" binding:"required"`       // 无考核/闭卷考试/开卷考试/论文考核，标识为 1/2/3/4
 	Content             string  `json:"content" binding:"-"`
 	IsAnonymous         bool    `json:"is_anonymous" binding:"-"`
 	Tags                []uint8 `json:"tags" binding:"-"`
@@ -45,6 +45,12 @@ func Publish(c *gin.Context) {
 
 	userId := c.MustGet("id").(uint32)
 
+	// Judge whether the course exists
+	if ok := model.IsCourseExisting(data.CourseId); !ok {
+		handler.SendBadRequest(c, errno.ErrCourseExisting, nil, "")
+		return
+	}
+
 	var evaluation = &model.CourseEvaluationModel{
 		CourseId:            data.CourseId,
 		CourseName:          data.CourseName,
@@ -67,7 +73,13 @@ func Publish(c *gin.Context) {
 
 	// 更新数据库中课程的评分信息
 	if err := model.UpdateCourseRateByEvaluation(evaluation.CourseId, data.Rate); err != nil {
-		handler.SendError(c, err, nil, err.Error())
+		handler.SendError(c, errno.ErrUpdateCourseInfo, nil, err.Error())
+		return
+	}
+
+	// 更新课程对应的tag数量
+	if err := service.NewTagsAfterPublishing(&data.Tags, data.CourseId); err != nil {
+		handler.SendError(c, errno.ErrUpdateCourseInfo, nil, err.Error())
 		return
 	}
 
