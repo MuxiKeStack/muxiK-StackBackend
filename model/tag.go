@@ -5,7 +5,7 @@ func (tag *TagModel) TableName() string {
 }
 
 func (data *CourseTagModel) TableName() string {
-	return "course_tags"
+	return "course_tag"
 }
 
 // Get tag name by id.
@@ -28,4 +28,24 @@ func GetTags() *[]TagModel {
 	var tags []TagModel
 	DB.Self.Find(&tags)
 	return &tags
+}
+
+// New tags for a course when publish a new evaluation.
+func NewTagsForCourse(tagId uint32, courseId string) error {
+	var data CourseTagModel
+	d := DB.Self.Where("course_id = ? AND tag_id = ?", courseId, tagId).First(&data)
+
+	if d.RecordNotFound() {
+		data = CourseTagModel{
+			TagId:    tagId,
+			CourseId: courseId,
+			Num:      1,
+		}
+		d = DB.Self.Create(&data)
+		return d.Error
+	}
+
+	data.Num++
+	d = DB.Self.Save(&data)
+	return d.Error
 }

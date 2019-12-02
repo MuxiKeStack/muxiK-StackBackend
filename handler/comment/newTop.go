@@ -10,6 +10,7 @@ import (
 	"github.com/MuxiKeStack/muxiK-StackBackend/util"
 
 	"github.com/gin-gonic/gin"
+	"github.com/lexkong/log"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -78,4 +79,10 @@ func CreateTopComment(c *gin.Context) {
 	}
 
 	handler.SendResponse(c, nil, commentInfo)
+
+	// New message reminder
+	err = service.NewMessageForParentComment(userId, comment, evaluation)
+	if err != nil {
+		log.Error("NewMessageForParentComment failed", err)
+	}
 }

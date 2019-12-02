@@ -18,7 +18,7 @@ import (
 var (
 	g            *gin.Engine
 	tokenStr            = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1NzM1Mjc1OTEsImlkIjoxLCJuYmYiOjE1NzM1Mjc1OTF9.1CZFz2OVeDfDnvEXwCpQjqNGpSCIRoZOgMkRpuPIgc8"
-	evaluationId uint32 = 2
+	evaluationId uint32 = 1
 	commentId    string
 	sid          = "2018214830"
 )
@@ -143,7 +143,7 @@ func TestGetComments2(t *testing.T) {
 func TestUpdateCommentLike(t *testing.T) {
 	g := getRouter(true)
 	uri := fmt.Sprintf("api/v1/comment/%s/like/", commentId)
-	body := likeDataRequest{LikeState: true}
+	body := likeDataRequest{LikeState: false}
 
 	jsonByte, err := json.Marshal(body)
 	if err != nil {

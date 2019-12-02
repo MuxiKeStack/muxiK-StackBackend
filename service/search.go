@@ -27,34 +27,66 @@ type SearchHistoryCourseInfo struct {
 	Credit   float32 `json:"credit"`    //学分
 }
 
-func SearchCourses(keyword string, page, limit uint64, th bool) ([]SearchCourseInfo, error) {
-	courses := make([]SearchCourseInfo, 0)
-	courseRows, err := model.AgainstAndMatchCourses(keyword, page, limit, th)
-	if err != nil {
-		return courses, err
+func kwReplace(kw string) string {
+	if res, existed := KeywordMap[kw]; existed {
+		kw = res
 	}
-	defer courseRows.Close()
+	return kw
+}
 
-	for courseRows.Next() {
-		var course SearchCourseInfo
-		courseRows.Scan(&course)
-		courses = append(courses, course)
+func SearchCourses(keyword string, page, limit uint64, th bool) ([]SearchCourseInfo, error) {
+	keyword = kwReplace(keyword)
+	courseRows, _ := model.AgainstAndMatchCourses(keyword, page, limit, th)
+	/*	if err != nil {
+			return courses, err
+		}
+		defer courseRows.Close()
+
+		for courseRows.Next() {
+			var course SearchCourseInfo
+			courseRows.Scan(&course)
+			courses = append(courses, course)
+		}*/
+	courses := make([]SearchCourseInfo, len(courseRows))
+	for i, row := range courseRows {
+		courses[i] = SearchCourseInfo{
+			Id:       row.Id,
+			Name:     row.Name,
+			Credit:   row.Credit,
+			Teacher:  row.Teacher,
+			CourseId: row.CourseId,
+			ClassId:  row.ClassId,
+			Type:     row.Type,
+		}
 	}
 	return courses, nil
 }
 
 func SearchHistoryCourses(keyword string, page, limit uint64) ([]SearchHistoryCourseInfo, error) {
-	courses := make([]SearchHistoryCourseInfo, 0)
-	courseRows, err := model.AgainstAndMatchHistoryCourses(keyword, page, limit)
-	if err != nil {
-		return courses, err
-	}
-	defer courseRows.Close()
+	keyword = kwReplace(keyword)
+	courseRows, _ := model.AgainstAndMatchHistoryCourses(keyword, page, limit)
+	/*	if err != nil {
+			return courses, err
+		}
+		defer courseRows.Close()
 
-	for courseRows.Next() {
-		var course SearchHistoryCourseInfo
-		courseRows.Scan(&course)
-		courses = append(courses, course)
+		for courseRows.Next() {
+			var course SearchHistoryCourseInfo
+			courseRows.Scan(&course)
+			courses = append(courses, course)
+		}*/
+	courses := make([]SearchHistoryCourseInfo, len(courseRows))
+	for i, row := range courseRows {
+		courses[i] = SearchHistoryCourseInfo{
+			Id:       row.Id,
+			Hash:     row.Hash,
+			Name:     row.Name,
+			Teacher:  row.Teacher,
+			Type:     row.Type,
+			Rate:     row.Rate,
+			StarsNum: row.StarsNum,
+			Credit:   row.Credit,
+		}
 	}
 	return courses, nil
 }

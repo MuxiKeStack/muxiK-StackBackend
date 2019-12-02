@@ -1,8 +1,9 @@
 package model
 
 import (
-	"database/sql"
+	// _"database/sql"
 	_ "github.com/jinzhu/gorm"
+	// _ "log"
 )
 
 const (
@@ -18,42 +19,42 @@ func (HistoryCourseModel) TableName() string {
 }
 
 // Add a new course.
-func (course *UsingCourseModel) Add() error {
-	d := DB.Self.Create(course)
+func (class *UsingCourseModel) Add() error {
+	d := DB.Self.Create(class)
 	return d.Error
 }
 
 // Delete a course.
 // Fixed by shiina orez at 2019.11.24 evaluation =>> course
-func (course *UsingCourseModel) Delete() error {
-	d := DB.Self.Delete(course)
+func (class *UsingCourseModel) Delete() error {
+	d := DB.Self.Delete(class)
 	return d.Error
 }
 
 // Get course by its id.(course list)
-func (course *UsingCourseModel) GetById() error {
-	d := DB.Self.First(course, "id = ?", course.Id)
+func (class *UsingCourseModel) GetById() error {
+	d := DB.Self.First(class, "id = ?", class.Id)
 	return d.Error
 }
 
 // Get course by its type.(course list)
 // Fixed by shiina orez at 2019.11.24, type =>> Type
-func (course *UsingCourseModel) GetByType() error {
-	d := DB.Self.Find(course, "type = ?", course.Type)
+func (class *UsingCourseModel) GetByType() error {
+	d := DB.Self.Find(class, "type = ?", class.Type)
 	return d.Error
 }
 
 // Get course by its teacher.(course list)
 // Fixed by shiina orez at 2019.11.24 teacher =>> Teacher
-func (course *UsingCourseModel) GetByTeacher() error {
-	d := DB.Self.Find(course, "teacher = ?", course.Teacher)
+func (class *UsingCourseModel) GetByTeacher() error {
+	d := DB.Self.Find(class, "teacher = ?", class.Teacher)
 	return d.Error
 }
 
 // Get course by its name.(TODO)(course list)
 // Fixed by shiina orez at 2019.11.24 GetByTeacher =>> GetByName
-func (course *UsingCourseModel) GetByName() error {
-	d := DB.Self.Find(course, "name = ?", course.Name)
+func (class *UsingCourseModel) GetByName() error {
+	d := DB.Self.Find(class, "name = ?", class.Name)
 	return d.Error
 }
 
@@ -71,47 +72,42 @@ func (course *UsingCourseModel) GetByName() error {
 
 // Get course by its courseid.(course assistant)
 // Fixed by shiina orez at 2019.11.24 `int time` =>> `time int`, `int place` =>> `place int`
-func (course *UsingCourseModel) GetByCourseId(time int, place int) error { //int为映射，作为筛选条件
-	d := DB.Self.Find(course, "courseid = ?", course.CourseId)
+func (class *UsingCourseModel) GetByCourseId(time int, place int) error { //int为映射，作为筛选条件
+	d := DB.Self.Find(class, "course_id = ?", class.CourseId)
 	return d.Error
 }
 
 // Favorite course.(TODO)
 // Fixed by shiina orez at 2019.11.24, add default return value in function body
-func (course *UsingCourseModel) Favorite() error {
+func (class *UsingCourseModel) Favorite() error {
 	return nil
 }
 
 // Unfavorite course.(TODO)
 // Fixed by shiina orez at 2019.11.24, add default return value in function body
-func (course *UsingCourseModel) Unfavorite() error {
+func (class *UsingCourseModel) Unfavorite() error {
 	return nil
 }
 
 // Search course by name, courseId or teacher
 // Use fulltext search, against and match
-func AgainstAndMatchCourses(kw string, page, limit uint64, th bool) (*sql.Rows, error) {
-	var err error
-	var rows *sql.Rows
-	if th {
-		rows, err = DB.Self.Table("using_course").Where("MATCH (name, course_id, teacher) AGAINST (?) ", kw).Limit(limit).Offset((page - 1) * limit).Rows()
+func AgainstAndMatchCourses(kw string, page, limit uint64, th bool) ([]UsingCourseModel, error) {
+	courses := &[]UsingCourseModel{}
+	// log.Println("Query:", kw, page, limit, th)
+	if !th {
+		DB.Self.Debug().Table("using_course").Where("MATCH (`name`, `course_id`, `teacher`) AGAINST ('" + kw + "') ").Find(courses).Limit(limit).Offset((page - 1) * limit)
 	} else {
-		rows, err = DB.Self.Table("using_course").Where("MATCH (name, course_id, teacher) AGAINST (?)"+thSQL, kw).Limit(limit).Offset((page - 1) * limit).Rows()
+		DB.Self.Debug().Table("using_course").Where("MATCH (`name`, `course_id`, `teacher`) AGAINST ('" + kw + "')" + thSQL).Find(courses).Limit(limit).Offset((page - 1) * limit)
 	}
-	if err != nil {
-		return nil, err
-	}
-	return rows, nil
+	return *courses, nil
 }
 
 // Search history course by name or teacher
 // Use fulltext search, against and match
-func AgainstAndMatchHistoryCourses(kw string, page, limit uint64) (*sql.Rows, error) {
-	rows, err := DB.Self.Table("history_course").Where("MATCH (name, teacher) AGAINST (?) ", kw).Limit(limit).Offset((page - 1) * limit).Rows()
-	if err != nil {
-		return nil, err
-	}
-	return rows, nil
+func AgainstAndMatchHistoryCourses(kw string, page, limit uint64) ([]HistoryCourseModel, error) {
+	courses := &[]HistoryCourseModel{}
+	DB.Self.Table("history_course").Where("MATCH (`name`, `teacher`) AGAINST ('" + kw + "') ").Find(courses).Limit(limit).Offset((page - 1) * limit)
+	return *courses, nil
 }
 
 // Get all courses
