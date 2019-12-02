@@ -34,6 +34,7 @@ var (
 	ErrGetHotEvaluations     = &Errno{Code: 20308, Message: "Error occurred while getting hot evaluations"}
 	ErrGetHistoryEvaluations = &Errno{Code: 20309, Message: "Error occurred while getting history evaluations"}
 	ErrUpdateCourseInfo      = &Errno{Code: 20310, Message: "Error occurred while updating course's info"}
+	ErrHasEvaluated          = &Errno{Code: 20311, Message: "User has evaluated the course"}
 
 	// table errors
 	ErrTableExisting   = &Errno{Code: 20401, Message: "The table is not existing. "}

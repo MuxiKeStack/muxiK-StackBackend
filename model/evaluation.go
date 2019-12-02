@@ -150,6 +150,16 @@ func GetEvaluationsByUserId(userId uint32, lastId, limit int32) (*[]CourseEvalua
 	return &evaluations, d.Error
 }
 
+// Whether user has evaluated the course.
+func HasEvaluated(userId uint32, courseId string) bool {
+	var evaluation CourseEvaluationModel
+	d := DB.Self.Where("userId = ? AND course_id = ?", userId, courseId).First(&evaluation)
+	if d.RecordNotFound() {
+		return false
+	}
+	return true
+}
+
 /*--------------- Course Operation -------------*/
 
 // 新增评课时更新课程的评课信息，先暂时放这里，避免冲突
