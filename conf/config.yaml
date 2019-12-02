@@ -22,6 +22,4 @@ oss:
   access_key:
   secret_key:
   bucket_name:
-  set_time_epoch:
   domain_name:
-  up_token:

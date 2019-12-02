@@ -61,7 +61,6 @@ func UploadImage(filename string, id uint32, r io.ReaderAt, dataLen int64) (stri
 	secretKey = viper.GetString("oss.secret_key")
 	bucketName = viper.GetString("oss.bucket_name")
 	domainName = viper.GetString("oss.domain_name")
-	upToken = viper.GetString("oss.up_token")
 	typeMap = map[string]bool{".jpg": true, ".png": true, ".bmp": true, "jpeg": true, "gif": true}
 
 	if upToken == "" {
