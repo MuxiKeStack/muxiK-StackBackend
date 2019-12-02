@@ -59,10 +59,10 @@ func Reply(c *gin.Context) {
 	}
 
 	// Check whether the targetUserId is right
-	if !(parentComment.IsAnonymous && targetUserId == 0 || !parentComment.IsAnonymous && parentComment.UserId == targetUserId) {
-		handler.SendBadRequest(c, errno.ErrGetQuery, nil, "Sid is error, doesn't match the parentComment's")
-		return
-	}
+	//if !(parentComment.IsAnonymous && targetUserId == 0 || !parentComment.IsAnonymous && parentComment.UserId == targetUserId) {
+	//	handler.SendBadRequest(c, errno.ErrGetQuery, nil, "Sid is error, doesn't match the parentComment's")
+	//	return
+	//}
 
 	var comment = &model.SubCommentModel{
 		Id:           uuid.NewV4().String(),
