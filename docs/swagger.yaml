@@ -708,7 +708,7 @@ paths:
       summary: 评论点赞/取消点赞
       tags:
       - evaluation
-  /login:
+  /login/:
     post:
       consumes:
       - application/json
@@ -982,7 +982,7 @@ paths:
       summary: 获取课程评价标签列表
       tags:
       - tag
-  /upload/image:
+  /upload/image/:
     post:
       consumes:
       - multipart/form-data
@@ -1033,7 +1033,7 @@ paths:
       summary: 个人历史评课
       tags:
       - evaluation
-  /user/info:
+  /user/info/:
     get:
       consumes:
       - application/json
@@ -1097,5 +1097,9 @@ tags:
   name: table
 - description: 举报
   name: report
-- description: 上传文件
+- description: 课程评价标签
   name: tag
+- description: 上传文件
+  name: upload
+- description: 登录，鉴权
+  name: auth

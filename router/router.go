@@ -51,7 +51,7 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 	up := g.Group("api/v1/upload")
 	up.Use(middleware.AuthMiddleware())
 	{
-		up.POST("/", upload.Image)
+		up.POST("/image/", upload.Image)
 	}
 
 	// The message handlers, required authentication

@@ -18,7 +18,7 @@ import (
 // @Produce  json
 // @Param data body model.LoginModel true "sid学号，password密码"
 // @Success 200  {object} model.AuthResponse
-// @Router /login [post]
+// @Router /login/ [post]
 func Login(c *gin.Context) {
 	// Binding the data with the user struct.
 	var l model.LoginModel

@@ -19,7 +19,7 @@ import (
 // @Param token header string true "token"
 // @Param data body model.UserInfoRequest true "用户信息"
 // @Success 200 "OK"
-// @Router /user/info [post]
+// @Router /user/info/ [post]
 func PostInfo(c *gin.Context) {
 	log.Info("PostInfo function called.", lager.Data{"X-Request-Id": util.GetReqID(c)})
 	var info model.UserInfoRequest
@@ -42,7 +42,7 @@ func PostInfo(c *gin.Context) {
 // @Produce json
 // @Param token header string true "token"
 // @Success 200 {object}  model.UserInfoResponse
-// @Router /user/info [get]
+// @Router /user/info/ [get]
 func GetInfo(c *gin.Context) {
 	log.Info("GetInfo function called.", lager.Data{"X-Request-Id": util.GetReqID(c)})
 	id, _ := c.Get("id")

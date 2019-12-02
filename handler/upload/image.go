@@ -19,7 +19,7 @@ type ImageUrlModel struct {
 // @Accept multipart/form-data
 // @Produce json
 // @Success 200 {object} ImageUrlModel
-// @Router /upload/image [post]
+// @Router /upload/image/ [post]
 func Image(c *gin.Context) {
 	image, header, err := c.Request.FormFile("image")
 	if err != nil {

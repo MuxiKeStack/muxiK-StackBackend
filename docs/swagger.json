@@ -414,7 +414,7 @@
                 }
             }
         },
-        "/login": {
+        "/login/": {
             "post": {
                 "description": "用学号登录，返回token，如果isnew==1，就要post用户信息。",
                 "consumes": [
@@ -830,7 +830,7 @@
                 }
             }
         },
-        "/upload/image": {
+        "/upload/image/": {
             "post": {
                 "consumes": [
                     "multipart/form-data"
@@ -907,7 +907,7 @@
                 }
             }
         },
-        "/user/info": {
+        "/user/info/": {
             "get": {
                 "description": "带着token",
                 "consumes": [
@@ -1661,8 +1661,16 @@
             "name": "report"
         },
         {
-            "description": "上传文件",
+            "description": "课程评价标签",
             "name": "tag"
+        },
+        {
+            "description": "上传文件",
+            "name": "upload"
+        },
+        {
+            "description": "登录，鉴权",
+            "name": "auth"
         }
     ]
 }
