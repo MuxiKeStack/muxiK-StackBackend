@@ -57,7 +57,7 @@ func AddCourse(c *gin.Context) {
 		fmt.Println(err)
 		return
 	}
-	rows, err := f.GetRows("公共课")
+	rows := f.GetRows("公共课")
 	for _, row := range rows {
 		scourseid := row[2]
 		key := scourseid + row[8]

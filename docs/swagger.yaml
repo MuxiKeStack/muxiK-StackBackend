@@ -55,8 +55,10 @@ definitions:
           type: integer
         type: array
     required:
+    - attendance_check_type
     - course_id
     - course_name
+    - exam_check_type
     type: object
   evaluation.evaluationPublishResponse:
     properties:
@@ -425,6 +427,11 @@ definitions:
         type: array
       sum:
         type: integer
+    type: object
+  upload.ImageUrlModel:
+    properties:
+      url:
+        type: string
     type: object
 host: '...'
 info:
@@ -995,6 +1002,8 @@ paths:
       responses:
         "200":
           description: OK
+          schema:
+            $ref: '#/definitions/upload.ImageUrlModel'
       summary: 上传文件，图片，返回url，即为上传头像
       tags:
       - upload
@@ -1088,5 +1097,5 @@ tags:
   name: table
 - description: 举报
   name: report
-- description: 课程评价标签
+- description: 上传文件
   name: tag

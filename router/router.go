@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	_ "github.com/MuxiKeStack/muxiK-StackBackend/docs"
-	"github.com/MuxiKeStack/muxiK-StackBackend/handler/course"
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler/comment"
+	"github.com/MuxiKeStack/muxiK-StackBackend/handler/course"
 	eva "github.com/MuxiKeStack/muxiK-StackBackend/handler/evaluation"
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler/message"
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler/sd"
