@@ -830,6 +830,41 @@
                 }
             }
         },
+        "/upload/image": {
+            "post": {
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "upload"
+                ],
+                "summary": "上传文件，图片，返回url，即为上传头像",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "token",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "二进制图片文件",
+                        "name": "image",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/user/evaluations/": {
             "get": {
                 "tags": [
@@ -1240,13 +1275,22 @@
         "model.CourseInfo": {
             "type": "object",
             "properties": {
-                "comment": {
+                "content": {
                     "type": "string"
                 },
-                "comment_course_id": {
+                "course_name": {
+                    "type": "string"
+                },
+                "evaluation_id": {
                     "type": "integer"
                 },
-                "course_name": {
+                "parent_comment_id": {
+                    "type": "string"
+                },
+                "sid": {
+                    "type": "string"
+                },
+                "teacher": {
                     "type": "string"
                 }
             }

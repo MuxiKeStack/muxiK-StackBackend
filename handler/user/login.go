@@ -41,6 +41,7 @@ func Login(c *gin.Context) {
 		err := model.CreateUser(l.Sid)
 		if err != nil {
 			SendError(c, errno.ErrCreateUser, nil, err.Error())
+			return
 		}
 	}
 	u, err := service.GetUserBySid(l.Sid)

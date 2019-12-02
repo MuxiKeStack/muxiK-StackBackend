@@ -1,13 +1,15 @@
-package user
+package user_test
 
 import (
 	"encoding/json"
 	"fmt"
 	"github.com/MuxiKeStack/muxiK-StackBackend/config"
+	. "github.com/MuxiKeStack/muxiK-StackBackend/handler/user"
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/router/middleware"
 	"github.com/MuxiKeStack/muxiK-StackBackend/util"
 	"github.com/gin-gonic/gin"
+	"github.com/spf13/viper"
 	"net/http"
 	"os"
 	"testing"
@@ -16,8 +18,8 @@ import (
 var (
 	g           *gin.Engine
 	tokenString = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1NzM4MTc4NTksImlkIjoxLCJuYmYiOjE1NzM4MTc4NTl9.gfdq_WGp10Pxk3iGqRDascQ1wcSHaF37kMK3PCvYBlg"
-	password    = "Yu@14796825550"
-	sid         = "2018212576"
+	password    = viper.GetString("user_test.password")
+	sid         = viper.GetString("user_test.sid")
 )
 
 func TestMain(m *testing.M) {

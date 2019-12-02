@@ -45,6 +45,8 @@ var (
 // @tag.description 举报
 // @tag.name tag
 // @tag.description 课程评价标签
+// @tag.upload
+// @tag.description 上传文件
 
 func main() {
 	pflag.Parse()

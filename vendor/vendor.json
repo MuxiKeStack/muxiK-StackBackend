@@ -3,22 +3,52 @@
 	"ignore": "",
 	"package": [
 		{
-			"checksumSHA1": "ZpAhn1mzvXmeOErUybf8IdMttGA=",
-			"path": "github.com/aliyun/aliyun-oss-go-sdk",
-			"revision": "4ef22f164c610bca021c2b0376fa63015980536a",
-			"revisionTime": "2019-11-13T05:58:30Z"
+			"checksumSHA1": "XHAbhaf73LqKgzzdixhoVVodqHk=",
+			"path": "github.com/qiniu/api.v7",
+			"revision": "caa26c8f226dde529df3ef88513c129fa4e8945a",
+			"revisionTime": "2019-10-30T07:16:54Z"
 		},
 		{
-			"checksumSHA1": "naElWmfI6kM/eiGgoua+6H1Qr1g=",
-			"path": "github.com/aliyun/aliyun-oss-go-sdk/oss",
-			"revision": "4ef22f164c610bca021c2b0376fa63015980536a",
-			"revisionTime": "2019-11-13T05:58:30Z"
+			"checksumSHA1": "glGH7I64O4RbOsLC/gwr2IeagL8=",
+			"path": "github.com/qiniu/api.v7/auth",
+			"revision": "caa26c8f226dde529df3ef88513c129fa4e8945a",
+			"revisionTime": "2019-10-30T07:16:54Z"
 		},
 		{
-			"checksumSHA1": "wvDJJQmc3b3o5NPhTMoBkHasHoc=",
-			"path": "github.com/aliyun/aliyun-oss-go-sdk/sample",
-			"revision": "4ef22f164c610bca021c2b0376fa63015980536a",
-			"revisionTime": "2019-11-13T05:58:30Z"
+			"checksumSHA1": "+OUlXzRoxSQJPTTqheGevmJRGDw=",
+			"path": "github.com/qiniu/api.v7/auth/qbox",
+			"revision": "caa26c8f226dde529df3ef88513c129fa4e8945a",
+			"revisionTime": "2019-10-30T07:16:54Z"
+		},
+		{
+			"checksumSHA1": "bIIKzSQRUAoLghjwsENfb+TX9RA=",
+			"path": "github.com/qiniu/api.v7/storage",
+			"revision": "caa26c8f226dde529df3ef88513c129fa4e8945a",
+			"revisionTime": "2019-10-30T07:16:54Z"
+		},
+		{
+			"path": "github.com/qiniu/api.v7/v7",
+			"revision": "caa26c8f226dde529df3ef88513c129fa4e8945a"
+		},
+		{
+			"path": "github.com/qiniu/api.v7/v7/auth",
+			"revision": "caa26c8f226dde529df3ef88513c129fa4e8945a"
+		},
+		{
+			"path": "github.com/qiniu/api.v7/v7/auth/qbox",
+			"revision": "caa26c8f226dde529df3ef88513c129fa4e8945a"
+		},
+		{
+			"path": "github.com/qiniu/api.v7/v7/client",
+			"revision": "caa26c8f226dde529df3ef88513c129fa4e8945a"
+		},
+		{
+			"path": "github.com/qiniu/api.v7/v7/conf",
+			"revision": "caa26c8f226dde529df3ef88513c129fa4e8945a"
+		},
+		{
+			"path": "github.com/qiniu/api.v7/v7/internal/log",
+			"revision": "caa26c8f226dde529df3ef88513c129fa4e8945a"
 		},
 		{
 			"checksumSHA1": "/tdaiBM7Z11C1V5jiY/X4TBD/3E=",
