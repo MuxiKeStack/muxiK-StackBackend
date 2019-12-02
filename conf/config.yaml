@@ -22,9 +22,4 @@ oss:
   access_key:
   secret_key:
   bucket_name:
-<<<<<<< HEAD
   domain_name:
-=======
-  max_image_number_per_person:
-
->>>>>>> a663d6dbe7a0d363b26075de5d9a0502b01edeae

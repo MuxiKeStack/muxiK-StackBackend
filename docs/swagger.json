@@ -860,7 +860,10 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/upload.ImageUrlModel"
+                        }
                     }
                 }
             }
@@ -1028,8 +1031,10 @@
         "evaluation.evaluationPublishRequest": {
             "type": "object",
             "required": [
+                "attendance_check_type",
                 "course_id",
-                "course_name"
+                "course_name",
+                "exam_check_type"
             ],
             "properties": {
                 "attendance_check_type": {
@@ -1276,19 +1281,11 @@
             "type": "object",
             "properties": {
                 "content": {
-<<<<<<< HEAD
                     "type": "string"
                 },
                 "course_name": {
                     "type": "string"
                 },
-=======
-                    "type": "string"
-                },
-                "course_name": {
-                    "type": "string"
-                },
->>>>>>> a663d6dbe7a0d363b26075de5d9a0502b01edeae
                 "evaluation_id": {
                     "type": "integer"
                 },
@@ -1624,6 +1621,14 @@
                     "type": "integer"
                 }
             }
+        },
+        "upload.ImageUrlModel": {
+            "type": "object",
+            "properties": {
+                "url": {
+                    "type": "string"
+                }
+            }
         }
     },
     "tags": [
@@ -1656,7 +1661,7 @@
             "name": "report"
         },
         {
-            "description": "课程评价标签",
+            "description": "上传文件",
             "name": "tag"
         }
     ]
