@@ -3,24 +3,14 @@ package service
 import (
 	"context"
 	"errors"
-	"github.com/qiniu/api.v7/v7/auth/qbox"
-	"github.com/qiniu/api.v7/v7/storage"
-	"github.com/spf13/viper"
 	"io"
 	"strings"
 
+	"github.com/qiniu/api.v7/v7/auth/qbox"
+	"github.com/qiniu/api.v7/v7/storage"
+
 	"strconv"
 	"time"
-)
-
-var (
-	accessKey    string
-	secretKey    string
-	bucketName   string
-	domainName   string
-	upToken      string
-	setTimeEpoch int64
-	typeMap      map[string]bool
 )
 
 func getType(filename string) (string, error) {
@@ -56,13 +46,6 @@ func getObjectName(filename string, id uint32) (string, error) {
 }
 
 func UploadImage(filename string, id uint32, r io.ReaderAt, dataLen int64) (string, error) {
-	// 先初始化一些信息
-	accessKey = viper.GetString("oss.access_key")
-	secretKey = viper.GetString("oss.secret_key")
-	bucketName = viper.GetString("oss.bucket_name")
-	domainName = viper.GetString("oss.domain_name")
-	typeMap = map[string]bool{".jpg": true, ".png": true, ".bmp": true, "jpeg": true, "gif": true}
-
 	if upToken == "" {
 		getToken()
 	}
