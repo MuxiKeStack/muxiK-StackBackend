@@ -33,6 +33,7 @@ var (
 	ErrGetParentCommentInfo  = &Errno{Code: 20307, Message: "Error occurred while getting parent comment info"}
 	ErrGetHotEvaluations     = &Errno{Code: 20308, Message: "Error occurred while getting hot evaluations"}
 	ErrGetHistoryEvaluations = &Errno{Code: 20309, Message: "Error occurred while getting history evaluations"}
+	ErrUpdateCourseInfo      = &Errno{Code: 20310, Message: "Error occurred while updating course's info"}
 
 	// table errors
 	ErrTableExisting   = &Errno{Code: 20401, Message: "The table is not existing. "}
@@ -50,4 +51,7 @@ var (
 	// upload errors
 	ErrGetFile    = &Errno{Code: 20701, Message: "Error occurred in getting file from FormFile()"}
 	ErrUploadFile = &Errno{Code: 20702, Message: "Error occurred in uploading file to oss"}
+
+	// course errors
+	ErrCourseExisting = &Errno{Code: 20801, Message: "Course does not exist."}
 )

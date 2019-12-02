@@ -4,7 +4,7 @@ import (
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
-
+	"github.com/MuxiKeStack/muxiK-StackBackend/service"
 	"github.com/gin-gonic/gin"
 	"github.com/lexkong/log"
 )
@@ -72,4 +72,12 @@ func UpdateCommentLike(c *gin.Context) {
 	}
 
 	handler.SendResponse(c, nil, data)
+
+	// New message reminder for liking a comment
+	if !bodyData.LikeState {
+		err = service.NewMessageForCommentLiking(userId, id)
+		if err != nil {
+			log.Error("NewMessageForCommentLiking failed", err)
+		}
+	}
 }

@@ -33,10 +33,11 @@ func GetComments(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
 		handler.SendBadRequest(c, errno.ErrGetParam, nil, err.Error())
+		return
 	}
 
-	size := c.DefaultQuery("limit", "20")
-	limit, err := strconv.ParseInt(size, 10, 32)
+	limitStr := c.DefaultQuery("limit", "10")
+	limit, err := strconv.ParseInt(limitStr, 10, 32)
 	if err != nil {
 		handler.SendBadRequest(c, errno.ErrGetQuery, nil, err.Error())
 		return

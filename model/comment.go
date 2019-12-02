@@ -32,7 +32,7 @@ func GetParentComments(EvaluationId uint32, limit, offset int32) (*[]ParentComme
 	var comments []ParentCommentModel
 
 	d := DB.Self.Where("evaluation_id = ?", EvaluationId).
-		Order("time").Find(&comments).Limit(limit).Offset(offset).Count(&count)
+		Order("time").Limit(limit).Offset(offset).Find(&comments).Count(&count)
 
 	return &comments, count, d.Error
 }
@@ -117,35 +117,35 @@ func GetCommentLikeSum(commentId string) (count uint32) {
 }
 
 // Get parentId by commentTargetId.
-func GetParentIdByCommentTargetId(id string) (string, bool) {
-	var comment SubCommentModel
-	DB.Self.Where("id = ?", id).First(&comment)
-	if comment.ParentId != "" {
-		return comment.ParentId, true
-	}
-
-	// The comment target is a parentComment instead of a subComment
-	var parentComment ParentCommentModel
-	DB.Self.Where("id = ?", id).First(&parentComment)
-	if parentComment.Id != "" {
-		return parentComment.Id, true
-	}
-	return "", false
-}
+//func GetParentIdByCommentTargetId(id string) (string, bool) {
+//	var comment SubCommentModel
+//	DB.Self.Where("id = ?", id).First(&comment)
+//	if comment.ParentId != "" {
+//		return comment.ParentId, true
+//	}
+//
+//	// The comment target is a parentComment instead of a subComment
+//	var parentComment ParentCommentModel
+//	DB.Self.Where("id = ?", id).First(&parentComment)
+//	if parentComment.Id != "" {
+//		return parentComment.Id, true
+//	}
+//	return "", false
+//}
 
 // Get comment target user's id by the commentTargetId.
-func GetTargetUserIdByCommentTargetId(id string) (uint32, bool) {
-	var comment SubCommentModel
-	DB.Self.Where("id = ?", id).First(&comment)
-	if comment.Id != "" {
-		return comment.UserId, true
-	}
-
-	// The comment target is a parentComment instead of a subComment
-	var parentComment ParentCommentModel
-	DB.Self.Where("id = ?", id).First(&parentComment)
-	if parentComment.Id != "" {
-		return parentComment.UserId, true
-	}
-	return 0, false
-}
+//func GetTargetUserIdByCommentTargetId(id string) (uint32, bool) {
+//	var comment SubCommentModel
+//	DB.Self.Where("id = ?", id).First(&comment)
+//	if comment.Id != "" {
+//		return comment.UserId, true
+//	}
+//
+//	// The comment target is a parentComment instead of a subComment
+//	var parentComment ParentCommentModel
+//	DB.Self.Where("id = ?", id).First(&parentComment)
+//	if parentComment.Id != "" {
+//		return parentComment.UserId, true
+//	}
+//	return 0, false
+//}

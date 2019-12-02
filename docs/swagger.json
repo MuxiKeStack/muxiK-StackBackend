@@ -1276,11 +1276,19 @@
             "type": "object",
             "properties": {
                 "content": {
+<<<<<<< HEAD
                     "type": "string"
                 },
                 "course_name": {
                     "type": "string"
                 },
+=======
+                    "type": "string"
+                },
+                "course_name": {
+                    "type": "string"
+                },
+>>>>>>> a663d6dbe7a0d363b26075de5d9a0502b01edeae
                 "evaluation_id": {
                     "type": "integer"
                 },

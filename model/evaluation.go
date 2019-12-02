@@ -30,7 +30,7 @@ func (evaluation *CourseEvaluationModel) Delete() error {
 func (evaluation *CourseEvaluationModel) HasLiked(userId uint32) bool {
 	var data EvaluationLikeModel
 	var count int
-	DB.Self.Where("user_id = ? AND evaluation_id = ? ", userId, evaluation.Id).Find(&data).Count(&count)
+	DB.Self.Where("user_id = ? AND evaluation_id = ? ", userId, evaluation.Id).First(&data).Count(&count)
 	return count > 0
 }
 
@@ -155,7 +155,7 @@ func GetEvaluationsByUserId(userId uint32, lastId, limit int32) (*[]CourseEvalua
 // 新增评课时更新课程的评课信息，先暂时放这里，避免冲突
 func UpdateCourseRateByEvaluation(id string, rate float32) error {
 	var c HistoryCourseModel
-	if d := DB.Self.Find(&c, "hash = ?", id); d.Error != nil {
+	if d := DB.Self.First(&c, "hash = ?", id); d.Error != nil {
 		return d.Error
 	}
 
@@ -171,4 +171,14 @@ func GetTeacherByCourseId(id string) (string, error) {
 	var course HistoryCourseModel
 	d := DB.Self.First(&course, "hash = ?", id)
 	return course.Teacher, d.Error
+}
+
+// 判断课程是否存在
+func IsCourseExisting(id string) bool {
+	var course HistoryCourseModel
+	d := DB.Self.Where("hash = ?", id).First(&course)
+	if d.RecordNotFound() {
+		return false
+	}
+	return true
 }

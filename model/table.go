@@ -49,9 +49,11 @@ func GetTablesByUserId(userId uint32) (*[]ClassTableModel, error) {
 
 func IsClassExisting(id string) bool {
 	var class UsingCourseModel
-	var count int8
-	DB.Self.Where("hash = ?", id).First(&class).Count(&count)
-	return count == 1
+	d := DB.Self.Where("hash = ?", id).First(&class)
+	if d.RecordNotFound() {
+		return false
+	}
+	return true
 }
 
 func GetClassByHashId(id string) (*UsingCourseModel, error) {
