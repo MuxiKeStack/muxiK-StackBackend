@@ -14,20 +14,25 @@ type ImageUrlModel struct {
 // @Tags upload
 // @Summary 上传文件，图片，返回url，即为上传头像
 // @Description
-// @Param token header string "token"
+// @Param token header string true "token"
+// @Param image formData file true "二进制图片文件"
 // @Accept multipart/form-data
 // @Produce json
-// @Success 200 "OK"
+// @Success 200 {object} ImageUrlModel
 // @Router /upload/image [post]
 func Image(c *gin.Context) {
-	image, _, err := c.Request.FormFile("image")
+	image, header, err := c.Request.FormFile("image")
 	if err != nil {
 		handler.SendError(c, errno.ErrGetFile, nil, err.Error())
+		return
 	}
+	dataLen := header.Size
 	id, _ := c.Get("id")
-	url, err := service.UploadImage(id.(uint32), image) //TODO hwo to the image parameter to pointer, wo need a io.Reader
+
+	url, err := service.UploadImage(header.Filename, id.(uint32), image, dataLen)
 	if err != nil {
 		handler.SendError(c, errno.ErrUploadFile, nil, err.Error())
+		return
 	}
 	handler.SendResponse(c, nil, ImageUrlModel{Url: url})
 }

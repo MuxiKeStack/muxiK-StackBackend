@@ -34,14 +34,14 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 	})
 
 	// api for authentication functionalities
-	g.POST("api/v1/login", user.Login)
+	g.POST("api/v1/login/", user.Login)
 
 	// The user handlers, requiring authentication
-	u := g.Group("/api/v1/user")
+	u := g.Group("/api/v1/user/")
 	u.Use(middleware.AuthMiddleware())
 	{
-		u.POST("/info", user.PostInfo)
-		u.GET("/info", user.GetInfo)
+		u.POST("/info/", user.PostInfo)
+		u.GET("/info/", user.GetInfo)
 
 		u.GET("/evaluations/", eva.GetHistoryEvaluations)
 	}
@@ -58,8 +58,8 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 	m.Use(middleware.AuthMiddleware())
 	{
 		m.GET("/", message.Get)
-		m.GET("/count", message.Count)
-		m.POST("/readall", message.ReadAll)
+		m.GET("/count/", message.Count)
+		m.POST("/readall/", message.ReadAll)
 	}
 
 	url := ginSwagger.URL("http://kstack.test.muxi-tech.xyz/swagger/doc.json") // The url pointing to API definition

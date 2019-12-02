@@ -1,34 +1,85 @@
 package service
 
 import (
-	"github.com/aliyun/aliyun-oss-go-sdk/oss"
+	"context"
+	"errors"
+	"github.com/qiniu/api.v7/v7/auth/qbox"
+	"github.com/qiniu/api.v7/v7/storage"
 	"github.com/spf13/viper"
 	"io"
+	"strings"
+
 	"strconv"
 	"time"
 )
 
 var (
-	endPoint        = viper.GetString("oss.endpoint")
-	accessKeyId     = viper.GetString("oss.access_key_id")
-	accessKeySecret = viper.GetString("oss.access_key_secret")
-	bucketName      = viper.GetString("oss.bucket_name")
-	maxImageNumber  = viper.GetInt64("oss.max_image_number_per_person")
-	domainName      = viper.GetString("domain_name")
+	accessKey    string
+	secretKey    string
+	bucketName   string
+	domainName   string
+	upToken      string
+	setTimeEpoch int64
+	typeMap      map[string]bool
 )
 
-func UploadImage(id uint32, r io.Reader) (string, error) {
-	client, err := oss.New(endPoint, accessKeyId, accessKeySecret)
-	if err != nil {
-		return "", err
+func getType(filename string) (string, error) {
+	i := strings.LastIndex(filename, ".")
+	fileType := filename[i:]
+	if !typeMap[fileType] {
+		return "", errors.New("the file type is not allowed")
 	}
-	bucket, err := client.Bucket(bucketName)
+	return fileType, nil
+}
+
+func getToken() {
+	var maxInt uint64 = 1 << 32
+	putPolicy := storage.PutPolicy{
+		Scope:   bucketName,
+		Expires: maxInt,
+	}
+	mac := qbox.NewMac(accessKey, secretKey)
+	upToken = putPolicy.UploadToken(mac)
+}
+
+func getObjectName(filename string, id uint32) (string, error) {
+	if setTimeEpoch == 0 {
+		setTimeEpoch = time.Now().Unix()
+	}
+	fileType, err := getType(filename)
 	if err != nil {
 		return "", err
 	}
 	timeEpochNow := time.Now().Unix()
-	objectName := strconv.Itoa(int(id)) + "-" + strconv.Itoa(int(timeEpochNow%maxImageNumber))
-	err = bucket.PutObject(objectName, r)
+	objectName := strconv.FormatUint(uint64(id), 10) + "-" + strconv.FormatInt(timeEpochNow%setTimeEpoch, 10) + fileType
+	return objectName, nil
+}
+
+func UploadImage(filename string, id uint32, r io.ReaderAt, dataLen int64) (string, error) {
+	// 先初始化一些信息
+	accessKey = viper.GetString("oss.access_key")
+	secretKey = viper.GetString("oss.secret_key")
+	bucketName = viper.GetString("oss.bucket_name")
+	domainName = viper.GetString("oss.domain_name")
+	upToken = viper.GetString("oss.up_token")
+	typeMap = map[string]bool{".jpg": true, ".png": true, ".bmp": true, "jpeg": true, "gif": true}
+
+	if upToken == "" {
+		getToken()
+	}
+
+	objectName, err := getObjectName(filename, id)
+	if err != nil {
+		return "", err
+	}
+
+	// 下面是七牛云的oss所需信息，objectName对应key是文件上传路径
+	cfg := storage.Config{Zone: &storage.ZoneHuanan, UseHTTPS: false, UseCdnDomains: true}
+	formUploader := storage.NewResumeUploader(&cfg)
+	ret := storage.PutRet{}
+	putExtra := storage.RputExtra{Params: map[string]string{"x:name": "STACK"}}
+	err = formUploader.Put(context.Background(), &ret, upToken, objectName, r, dataLen, &putExtra)
+	//err = formUploader.PutFile(context.Background(), &ret, upToken, objectName, "/home/bowser/Pictures/maogai/1.jpg", &putExtra)
 	if err != nil {
 		return "", err
 	}

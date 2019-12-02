@@ -37,6 +37,7 @@ func Get(c *gin.Context) {
 	messageList, err := service.MessageList(uint32(page), uint32(limit), uid.(uint32))
 	if err != nil {
 		handler.SendError(c, errno.ErrGetMessage, nil, err.Error())
+		return
 	}
 	handler.SendResponse(c, nil, messageList)
 }

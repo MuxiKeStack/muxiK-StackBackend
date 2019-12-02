@@ -196,11 +196,17 @@ definitions:
     type: object
   model.CourseInfo:
     properties:
-      comment:
+      content:
         type: string
-      comment_course_id:
-        type: integer
       course_name:
+        type: string
+      evaluation_id:
+        type: integer
+      parent_comment_id:
+        type: string
+      sid:
+        type: string
+      teacher:
         type: string
     type: object
   model.EvaluationInfo:
@@ -969,6 +975,29 @@ paths:
       summary: 获取课程评价标签列表
       tags:
       - tag
+  /upload/image:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 二进制图片文件
+        in: formData
+        name: image
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: 上传文件，图片，返回url，即为上传头像
+      tags:
+      - upload
   /user/evaluations/:
     get:
       parameters:

@@ -19,8 +19,9 @@ db:  # DB 配置 部署时环境变量覆盖
   username: muxi
   password: muxi
 oss:
-  endpoint:
-  access_key_id:
-  access_key_secret:
+  access_key:
+  secret_key:
   bucket_name:
-  max_image_number_per_person:
+  set_time_epoch:
+  domain_name:
+  up_token:
