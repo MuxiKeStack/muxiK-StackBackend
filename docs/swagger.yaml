@@ -705,7 +705,7 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/evaluation.likeDataResponse'
-      summary: 评论点赞/取消点赞
+      summary: 评课点赞/取消点赞
       tags:
       - evaluation
   /login/:

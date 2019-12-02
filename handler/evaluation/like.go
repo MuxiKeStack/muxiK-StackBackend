@@ -22,7 +22,7 @@ type likeDataRequest struct {
 }
 
 // 评课点赞/取消点赞
-// @Summary 评论点赞/取消点赞
+// @Summary 评课点赞/取消点赞
 // @Tags evaluation
 // @Param token header string true "token"
 // @Param id path string true "点赞的评课id"

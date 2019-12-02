@@ -377,7 +377,7 @@
                 "tags": [
                     "evaluation"
                 ],
-                "summary": "评论点赞/取消点赞",
+                "summary": "评课点赞/取消点赞",
                 "parameters": [
                     {
                         "type": "string",
