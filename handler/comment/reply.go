@@ -54,7 +54,7 @@ func Reply(c *gin.Context) {
 	// Get parentComment by id
 	parentComment := &model.ParentCommentModel{Id: parentId}
 	if err := parentComment.GetById(); err != nil {
-		handler.SendBadRequest(c, errno.ErrGetParam, nil, "The parent comment don not exist.")
+		handler.SendBadRequest(c, errno.ErrGetParam, nil, "The parent comment does not exist.")
 		return
 	}
 
