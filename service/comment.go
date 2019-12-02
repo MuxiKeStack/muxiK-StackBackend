@@ -19,14 +19,14 @@ type SubCommentInfoList struct {
 }
 
 // Get comment list.
-func CommentList(evaluationId uint32, limit, offset int32, userId uint32, visitor bool) (*[]model.ParentCommentInfo, uint32, error) {
+func CommentList(evaluationId uint32, limit, offset int32, userId uint32, visitor bool) (*[]model.ParentCommentInfo, error) {
 	log.Info("CommentList function is called")
 
 	// Get parent comments from database
-	parentComments, count, err := model.GetParentComments(evaluationId, limit, offset)
+	parentComments, err := model.GetParentComments(evaluationId, limit, offset)
 	if err != nil {
 		log.Error("GetParentComments", err)
-		return nil, count, err
+		return nil, err
 	}
 
 	var parentIds []string
@@ -72,7 +72,7 @@ func CommentList(evaluationId uint32, limit, offset int32, userId uint32, visito
 	select {
 	case <-finished:
 	case err := <-errChan:
-		return nil, count, err
+		return nil, err
 	}
 
 	var infos []model.ParentCommentInfo
@@ -80,7 +80,7 @@ func CommentList(evaluationId uint32, limit, offset int32, userId uint32, visito
 		infos = append(infos, *parentCommentInfoList.IdMap[id])
 	}
 
-	return &infos, count, nil
+	return &infos, nil
 }
 
 // Get the response data information of a parent comment.

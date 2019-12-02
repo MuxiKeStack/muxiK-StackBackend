@@ -27,14 +27,16 @@ func (comment *ParentCommentModel) GetById() error {
 }
 
 // Get parent comments by evaluation id.
-func GetParentComments(EvaluationId uint32, limit, offset int32) (*[]ParentCommentModel, uint32, error) {
-	var count uint32
+func GetParentComments(EvaluationId uint32, limit, offset int32) (*[]ParentCommentModel, error) {
 	var comments []ParentCommentModel
 
 	d := DB.Self.Where("evaluation_id = ?", EvaluationId).
-		Order("time").Limit(limit).Offset(offset).Find(&comments).Count(&count)
+		Order("time").Limit(limit).Offset(offset).Find(&comments)
 
-	return &comments, count, d.Error
+	if d.RecordNotFound() {
+		return &comments, nil
+	}
+	return &comments, d.Error
 }
 
 // Update parentComment's the total number of subComment

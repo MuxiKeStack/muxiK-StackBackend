@@ -45,9 +45,15 @@ func Publish(c *gin.Context) {
 
 	userId := c.MustGet("id").(uint32)
 
-	// Judge whether the course exists
+	// Check whether the course exists
 	if ok := model.IsCourseExisting(data.CourseId); !ok {
 		handler.SendBadRequest(c, errno.ErrCourseExisting, nil, "")
+		return
+	}
+
+	// Check whether user has evaluated the course
+	if ok := model.HasEvaluated(userId, data.CourseId); ok {
+		handler.SendBadRequest(c, errno.ErrHasEvaluated, nil, "")
 		return
 	}
 

@@ -13,7 +13,7 @@ import (
 )
 
 type commentListResponse struct {
-	ParentCommentSum  uint32                     `json:"parent_comment_sum"`
+	ParentCommentSum  int                        `json:"parent_comment_sum"`
 	ParentCommentList *[]model.ParentCommentInfo `json:"parent_comment_list"`
 	Page              int32                      `json:"page"`
 }
@@ -62,14 +62,14 @@ func GetComments(c *gin.Context) {
 		log.Info("User auth successful.")
 	}
 
-	list, count, err := service.CommentList(uint32(id), int32(limit), int32((page-1)*limit), userId, visitor)
+	list, err := service.CommentList(uint32(id), int32(limit), int32((page-1)*limit), userId, visitor)
 	if err != nil {
 		handler.SendError(c, errno.ErrCommentList, nil, err.Error())
 		return
 	}
 
 	handler.SendResponse(c, nil, commentListResponse{
-		ParentCommentSum:  count,
+		ParentCommentSum:  len(*list),
 		ParentCommentList: list,
 		Page:              int32(page),
 	})
