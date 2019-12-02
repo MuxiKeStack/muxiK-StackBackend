@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	_ "github.com/MuxiKeStack/muxiK-StackBackend/docs"
+	"github.com/MuxiKeStack/muxiK-StackBackend/handler/course"
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler/comment"
 	eva "github.com/MuxiKeStack/muxiK-StackBackend/handler/evaluation"
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler/message"
@@ -69,13 +70,14 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 	// g.GET("/api/v1/course/using/home/", course.GetCourseInfo)
 	// g.GET("/api/v1/course/using/:id/query/", course.QueryCourse)
 	// course := g.Group("/api/v1/course/using")
-	// course.Use(middleware.AuthMiddleware())
-	// {
-	// 	course.PUT("/:id/add", course.AddCourse)
-	// 	course.POST("/:id/modify", course.ModifyCourse)
-	// 	course.DELETE("/:id/delete", course.DeleteCourse)
-	// 	course.POST("/:id/favorite/", course.FavoriteCourse)
-	// }
+	courses := g.Group("/api/v1/course")
+	courses.Use(middleware.AuthMiddleware())
+	{
+		courses.PUT("/:id/add", course.AddCourse)
+		courses.POST("/:id/modify", course.ModifyCourse)
+		courses.DELETE("/:id/delete", course.DeleteCourse)
+		courses.POST("/:id/favorite/", course.FavoriteCourse)
+	}
 
 	// // 云课堂课程
 	// g.GET("/api/v1/course/history/home/", course.GetCourseInfo)
