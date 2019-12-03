@@ -12,6 +12,7 @@ type ParentCommentModel struct {
 	SubCommentNum uint32     `gorm:"column:sub_comment_num"`
 	IsAnonymous   bool       `gorm:"column:is_anonymous"`
 	IsValid       bool       `gorm:"column:is_valid"`
+	DeletedAt     *time.Time `gorm:"column:deleted_at"`
 }
 
 // 子评论物理表
@@ -24,6 +25,7 @@ type SubCommentModel struct {
 	Time         *time.Time `gorm:"column:time"`
 	IsAnonymous  bool       `gorm:"column:is_anonymous"`
 	IsValid      bool       `gorm:"column:is_valid"`
+	DeletedAt    *time.Time `gorm:"column:deleted_at"`
 }
 
 // 评论点赞中间表
@@ -39,6 +41,7 @@ type CommentInfo struct {
 	Content        string            `json:"content"`
 	LikeNum        uint32            `json:"like_num"`
 	IsLike         bool              `json:"is_like"`
+	IsValid        bool              `json:"is_valid"`
 	Time           int64             `json:"time"`
 	IsAnonymous    bool              `json:"is_anonymous"`
 	UserInfo       *UserInfoResponse `json:"user_info"`
@@ -51,6 +54,7 @@ type ParentCommentInfo struct {
 	Content         string            `json:"content"`
 	LikeNum         uint32            `json:"like_num"`
 	IsLike          bool              `json:"is_like"`
+	IsValid         bool              `json:"is_valid"`
 	Time            int64             `json:"time"`
 	IsAnonymous     bool              `json:"is_anonymous"`
 	UserInfo        *UserInfoResponse `json:"user_info"`

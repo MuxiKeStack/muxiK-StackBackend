@@ -58,7 +58,7 @@ func (evaluation *CourseEvaluationModel) CancelLiking(userId uint32) error {
 
 // Get evaluation by its id.
 func (evaluation *CourseEvaluationModel) GetById() error {
-	d := DB.Self.First(evaluation, "id = ?", evaluation.Id)
+	d := DB.Self.Unscoped().First(evaluation, "id = ?", evaluation.Id)
 	return d.Error
 }
 
@@ -96,9 +96,9 @@ func GetEvaluations(lastId, limit int32) (*[]CourseEvaluationModel, error) {
 	var evaluations []CourseEvaluationModel
 	var d *gorm.DB
 	if lastId != 0 {
-		d = DB.Self.Where("id < ?", lastId).Order("id desc").Limit(limit).Find(&evaluations)
+		d = DB.Self.Unscoped().Where("id < ?", lastId).Order("id desc").Limit(limit).Find(&evaluations)
 	} else {
-		d = DB.Self.Order("id desc").Limit(limit).Find(&evaluations)
+		d = DB.Self.Unscoped().Order("id desc").Limit(limit).Find(&evaluations)
 	}
 
 	if d.RecordNotFound() {
@@ -112,9 +112,9 @@ func GetEvaluationsByCourseIdOrderByTime(id string, lastId, limit int32) (*[]Cou
 	var evaluations []CourseEvaluationModel
 	var d *gorm.DB
 	if lastId != 0 {
-		d = DB.Self.Where("id < ? AND course_id = ?", lastId, id).Order("id desc").Limit(limit).Find(&evaluations)
+		d = DB.Self.Unscoped().Where("id < ? AND course_id = ?", lastId, id).Order("id desc").Limit(limit).Find(&evaluations)
 	} else {
-		d = DB.Self.Where("course_id = ?", id).Order("id desc").Limit(limit).Find(&evaluations)
+		d = DB.Self.Unscoped().Where("course_id = ?", id).Order("id desc").Limit(limit).Find(&evaluations)
 	}
 
 	if d.RecordNotFound() {
@@ -139,9 +139,9 @@ func GetEvaluationsByUserId(userId uint32, lastId, limit int32) (*[]CourseEvalua
 	var evaluations []CourseEvaluationModel
 	var d *gorm.DB
 	if lastId != 0 {
-		d = DB.Self.Where("id < ? AND user_id = ?", lastId, userId).Order("id desc").Limit(limit).Find(&evaluations)
+		d = DB.Self.Unscoped().Where("id < ? AND user_id = ?", lastId, userId).Order("id desc").Limit(limit).Find(&evaluations)
 	} else {
-		d = DB.Self.Where("user_id = ?", userId).Order("id desc").Limit(limit).Find(&evaluations)
+		d = DB.Self.Unscoped().Where("user_id = ?", userId).Order("id desc").Limit(limit).Find(&evaluations)
 	}
 
 	if d.RecordNotFound() {

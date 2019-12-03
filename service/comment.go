@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"sync"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
@@ -119,11 +120,18 @@ func GetParentCommentInfo(id string, userId uint32, visitor bool) (*model.Parent
 		Content:         comment.Content,
 		LikeNum:         model.GetCommentLikeSum(comment.Id),
 		IsLike:          isLike,
+		IsValid:         true,
 		Time:            comment.Time.Unix(),
 		IsAnonymous:     comment.IsAnonymous,
 		UserInfo:        userInfo,
 		SubCommentsNum:  comment.SubCommentNum,
 		SubCommentsList: subCommentInfos,
+	}
+
+	// The parent comment has been deleted or been reported
+	if comment.DeletedAt != nil || !comment.IsValid {
+		data.IsValid = false
+		data.Content = ""
 	}
 
 	return data, nil
@@ -235,12 +243,63 @@ func GetSubCommentInfoById(id string, userId uint32, visitor bool) (*model.Comme
 		Content:        comment.Content,
 		LikeNum:        model.GetCommentLikeSum(comment.Id),
 		IsLike:         isLike,
+		IsValid:        true,
 		Time:           comment.Time.Unix(),
 		UserInfo:       commentUser,
 		TargetUserInfo: targetUser,
 	}
 
+	// The subComment has been deleted or been reported
+	if comment.DeletedAt != nil || !comment.IsValid {
+		data.IsValid = false
+		data.Content = ""
+	}
+
 	return data, nil
+}
+
+// Delete a parent comment.
+func DeleteParentComment(id string, userId uint32) error {
+	// Get evaluation by id
+	comment := &model.ParentCommentModel{Id: id}
+	if err := comment.GetById(); err != nil {
+		log.Error("comment.GetById error.", err)
+		return err
+	}
+
+	// 验证当前用户是否有删除此评课的权限
+	if comment.UserId != userId {
+		return errors.New("With no permission to delete the comment ")
+	}
+
+	if err := comment.Delete(); err != nil {
+		log.Error("comment.Delete() error.", err)
+		return err
+	}
+
+	return nil
+}
+
+// Delete a subComment.
+func DeleteSubComment(id string, userId uint32) error {
+	// Get evaluation by id
+	comment := &model.SubCommentModel{Id: id}
+	if err := comment.GetById(); err != nil {
+		log.Error("comment.GetById error.", err)
+		return err
+	}
+
+	// 验证当前用户是否有删除此评课的权限
+	if comment.UserId != userId {
+		return errors.New("With no permission to delete the comment ")
+	}
+
+	if err := comment.Delete(); err != nil {
+		log.Error("comment.Delete() error.", err)
+		return err
+	}
+
+	return nil
 }
 
 // Update liked number of a comment after liking or canceling it.

@@ -18,6 +18,7 @@ type CourseEvaluationModel struct {
 	IsAnonymous         bool       `gorm:"column:is_anonymous"`          // 是否匿名
 	IsValid             bool       `gorm:"column:is_valid"`              // 是否有效，未被折叠
 	Time                *time.Time `gorm:"column:time"`                  // 时间，时间戳
+	DeletedAt           *time.Time `gorm:"column:deleted_at"`
 }
 
 // 评课点赞中间表
