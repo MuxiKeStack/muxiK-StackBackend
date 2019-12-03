@@ -114,14 +114,16 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 		evaluationWithAuth.POST("/", eva.Publish)
 		evaluationWithAuth.DELETE("/:id/", eva.Delete)
 		evaluationWithAuth.PUT("/:id/like/", eva.UpdateEvaluationLike)
+
 		evaluationWithAuth.POST("/:id/comment/", comment.CreateTopComment)
 	}
 
-	// Router for comments
+	// Router for comments requiring auth
 	comments := g.Group("/api/v1/comment")
 	comments.Use(middleware.AuthMiddleware())
 	{
 		comments.POST("/:id/", comment.Reply)
+		comments.DELETE("/:id/", comment.Delete)
 		comments.PUT("/:id/like/", comment.UpdateCommentLike)
 	}
 

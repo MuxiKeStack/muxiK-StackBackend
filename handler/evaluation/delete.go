@@ -47,5 +47,8 @@ func Delete(c *gin.Context) {
 		return
 	}
 
+	// 更新课程信息
+	// ...
+
 	handler.SendResponse(c, nil, nil)
 }

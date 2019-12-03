@@ -41,37 +41,42 @@ CREATE TABLE `course_evaluation` (
   `tags`                  VARCHAR(255)                    COMMENT "标签id列表，逗号分隔",
   `time`                  DATETIME     NOT NULL           COMMENT "评课时间",
   `is_valid`              TINYINT(1)            DEFAULT 1 COMMENT "是否有效，未被折叠",
+  `deleted_at`            TIMESTAMP    NULL     DEFAULT NULL,
 
   `course_id`             VARCHAR(50)  NOT NULL,
   `user_id`               INT          NOT NULl,
 
   PRIMARY KEY (`id`),
   KEY `course_id` (`course_id`),
-  KEY `user_id` (`user_id`)
+  KEY `user_id` (`user_id`),
+  KEY `deleted_at` (`deleted_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE `parent_comment` (
-  `id`                VARCHAR(40) NOT NULL           COMMENT "uuid",
-  `time`              DATETIME    NOT NULL           COMMENT "评课时间",
-  `content`           TEXT                           COMMENT "评论内容",
-  `sub_comment_num`   INT         NOT NULL DEFAULT 0 COMMENT "子评论数",
-  `is_anonymous`      TINYINT(1)  NOT NULL DEFAULT 0 COMMENT "是否匿名",
-  `is_valid`          TINYINT(1)  NOT NULL DEFAULT 1 COMMENT "是否有效，未被折叠",
+  `id`              VARCHAR(40) NOT NULL           COMMENT "uuid",
+  `time`            DATETIME    NOT NULL           COMMENT "评课时间",
+  `content`         TEXT                           COMMENT "评论内容",
+  `sub_comment_num` INT         NOT NULL DEFAULT 0 COMMENT "子评论数",
+  `is_anonymous`    TINYINT(1)  NOT NULL DEFAULT 0 COMMENT "是否匿名",
+  `is_valid`        TINYINT(1)  NOT NULL DEFAULT 1 COMMENT "是否有效，未被折叠",
+  `deleted_at`      TIMESTAMP   NULL     DEFAULT NULL,
 
-  `user_id`           INT         NOT NULL,
-  `evaluation_id`     INT         NOT NULL COMMENT "评课id",
+  `user_id`         INT         NOT NULL,
+  `evaluation_id`   INT         NOT NULL COMMENT "评课id",
 
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
-  KEY `evaluation_id` (`evaluation_id`)
+  KEY `evaluation_id` (`evaluation_id`),
+  KEY `deleted_at` (`deleted_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE `sub_comment` (
-  `id`             VARCHAR(40) NOT NULL           COMMENT "uuid",
-  `time`           DATETIME    NOT NULL           COMMENT "评课时间",
-  `content`        TEXT                           COMMENT "评论内容",
-  `is_anonymous`   TINYINT(1)  NOT NULL DEFAULT 0 COMMENT "是否匿名",
-  `is_valid`       TINYINT(1)  NOT NULL DEFAULT 1 COMMENT "是否有效，未被折叠",
+  `id`           VARCHAR(40) NOT NULL           COMMENT "uuid",
+  `time`         DATETIME    NOT NULL           COMMENT "评课时间",
+  `content`      TEXT                           COMMENT "评论内容",
+  `is_anonymous` TINYINT(1)  NOT NULL DEFAULT 0 COMMENT "是否匿名",
+  `is_valid`     TINYINT(1)  NOT NULL DEFAULT 1 COMMENT "是否有效，未被折叠",
+  `deleted_at`   TIMESTAMP   NULL     DEFAULT NULL,
 
   `parent_id`      VARCHAR(40) NOT NULL,
   `user_id`        INT         NOT NULL,
@@ -80,7 +85,8 @@ CREATE TABLE `sub_comment` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `parent_id` (`parent_id`),
-  KEY `target_user_id` (`target_user_id`)
+  KEY `target_user_id` (`target_user_id`),
+  KEY `deleted_at` (`deleted_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE `course_evaluation_like` (

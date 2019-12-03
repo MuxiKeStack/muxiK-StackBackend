@@ -152,6 +152,16 @@ func GetEvaluationInfo(id, userId uint32, visitor bool) (*model.EvaluationInfo, 
 		IsValid:             true,
 	}
 
+	// The evaluation has been deleted or been reported
+	if evaluation.DeletedAt != nil || !evaluation.IsValid {
+		info.IsValid = false
+		info.Content = ""
+		info.AttendanceCheckType = ""
+		info.ExamCheckType = ""
+		info.Rate = 0
+		info.Tags = nil
+	}
+
 	return info, nil
 }
 

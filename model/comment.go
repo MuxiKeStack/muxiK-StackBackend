@@ -16,13 +16,17 @@ func (data *CommentLikeModel) TableName() string {
 
 // Create a new parent comment.
 func (comment *ParentCommentModel) New() error {
-	d := DB.Self.Create(comment)
-	return d.Error
+	return DB.Self.Create(comment).Error
+}
+
+// Delete the parent comment.
+func (comment *ParentCommentModel) Delete() error {
+	return DB.Self.Delete(comment).Error
 }
 
 // Get a parent comment by its id.
 func (comment *ParentCommentModel) GetById() error {
-	d := DB.Self.First(comment, "id = ?", comment.Id)
+	d := DB.Self.Unscoped().First(comment, "id = ?", comment.Id)
 	return d.Error
 }
 
@@ -30,7 +34,7 @@ func (comment *ParentCommentModel) GetById() error {
 func GetParentComments(EvaluationId uint32, limit, offset int32) (*[]ParentCommentModel, error) {
 	var comments []ParentCommentModel
 
-	d := DB.Self.Where("evaluation_id = ?", EvaluationId).
+	d := DB.Self.Unscoped().Where("evaluation_id = ?", EvaluationId).
 		Order("time").Limit(limit).Offset(offset).Find(&comments)
 
 	if d.RecordNotFound() {
@@ -54,31 +58,42 @@ func (comment *ParentCommentModel) UpdateSubCommentNum(n int) error {
 
 // Create a new subComment.
 func (comment *SubCommentModel) New() error {
-	d := DB.Self.Create(comment)
-	return d.Error
+	return DB.Self.Create(comment).Error
+}
+
+// Delete the subComment.
+func (comment *SubCommentModel) Delete() error {
+	return DB.Self.Delete(comment).Error
 }
 
 // Get a subComment by its id.
 func (comment *SubCommentModel) GetById() error {
-	d := DB.Self.First(comment, "id = ?", comment.Id)
+	d := DB.Self.Unscoped().First(comment, "id = ?", comment.Id)
 	return d.Error
 }
 
 // Get subComments by their parentId.
 func GetSubCommentsByParentId(ParentId string) (*[]SubCommentModel, error) {
 	var subComments []SubCommentModel
-	d := DB.Self.Where("parent_id = ?", ParentId).Order("time").Find(&subComments)
+	d := DB.Self.Unscoped().Where("parent_id = ?", ParentId).Order("time").Find(&subComments)
 	return &subComments, d.Error
 }
 
 // Judge whether it is a subComment by id, if so then also return the subComment.
 func IsSubComment(id string) (*SubCommentModel, bool) {
 	var comment SubCommentModel
-	DB.Self.Where("id = ?", id).First(&comment)
-	if comment.Id != "" {
+	d := DB.Self.Where("id = ?", id).First(&comment)
+	if !d.RecordNotFound() {
 		return &comment, true
 	}
 	return nil, false
+}
+
+// Judge whether is a parent comment.
+func IsParentComment(id string) bool {
+	var comment ParentCommentModel
+	d := DB.Self.Where("id = ?", id).First(&comment)
+	return !d.RecordNotFound()
 }
 
 /*---------------------------- Other Comment Operations --------------------------*/
@@ -106,9 +121,8 @@ func CommentCancelLiking(userId uint32, commentId string) error {
 // Judge whether a comment has already liked by the current user.
 func CommentHasLiked(userId uint32, commentId string) bool {
 	var data CommentLikeModel
-	var count int
-	DB.Self.Where("user_id = ? AND comment_id = ?", userId, commentId).Find(&data).Count(&count)
-	return count > 0
+	d := DB.Self.Where("user_id = ? AND comment_id = ?", userId, commentId).Find(&data)
+	return !d.RecordNotFound()
 }
 
 // Get comment's total like account by commentId.
