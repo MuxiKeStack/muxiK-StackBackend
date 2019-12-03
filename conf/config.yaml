@@ -23,3 +23,6 @@ oss:
   secret_key:
   bucket_name:
   domain_name:
+default_user:
+  avatar: https://avatars2.githubusercontent.com/u/43539191?s=460&v=4
+  username: muxike
