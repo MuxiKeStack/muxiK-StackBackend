@@ -180,6 +180,8 @@ definitions:
         type: boolean
       is_like:
         type: boolean
+      is_valid:
+        type: boolean
       like_num:
         type: integer
       target_user_info:
@@ -286,6 +288,8 @@ definitions:
       is_anonymous:
         type: boolean
       is_like:
+        type: boolean
+      is_valid:
         type: boolean
       like_num:
         type: integer
@@ -442,6 +446,24 @@ info:
   version: "1.0"
 paths:
   /comment/{id}/:
+    delete:
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 评论id
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: 删除评论
+      tags:
+      - evaluation
     post:
       parameters:
       - description: token
