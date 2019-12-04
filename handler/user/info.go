@@ -23,8 +23,14 @@ import (
 func PostInfo(c *gin.Context) {
 	log.Info("PostInfo function called.", lager.Data{"X-Request-Id": util.GetReqID(c)})
 	var info model.UserInfoRequest
-	if err := c.ShouldBindJSON(&info); err != nil {
+	// BindJSON 如果字段不存在会返回400
+	// ShouldBindJSON 不会自动返回400
+	if err := c.BindJSON(&info); err != nil {
 		SendBadRequest(c, errno.ErrBind, nil, err.Error())
+		return
+	}
+	if info.Username == "" || info.Avatar == "" {
+		SendBadRequest(c, errno.ErrUserInfo, nil, "username or avatar cannot be empty")
 		return
 	}
 	id, _ := c.Get("id")
