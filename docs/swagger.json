@@ -60,6 +60,33 @@
                         }
                     }
                 }
+            },
+            "delete": {
+                "tags": [
+                    "evaluation"
+                ],
+                "summary": "删除评论",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "token",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "评论id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
             }
         },
         "/comment/{id}/like/": {
@@ -1253,6 +1280,9 @@
                 "is_like": {
                     "type": "boolean"
                 },
+                "is_valid": {
+                    "type": "boolean"
+                },
                 "like_num": {
                     "type": "integer"
                 },
@@ -1411,6 +1441,9 @@
                     "type": "boolean"
                 },
                 "is_like": {
+                    "type": "boolean"
+                },
+                "is_valid": {
                     "type": "boolean"
                 },
                 "like_num": {
