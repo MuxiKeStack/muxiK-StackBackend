@@ -8,10 +8,29 @@ import (
 
 	"github.com/qiniu/api.v7/v7/auth/qbox"
 	"github.com/qiniu/api.v7/v7/storage"
+	"github.com/spf13/viper"
 
 	"strconv"
 	"time"
 )
+
+var (
+	accessKey    string
+	secretKey    string
+	bucketName   string
+	domainName   string
+	upToken      string
+	setTimeEpoch int64
+	typeMap      map[string]bool
+)
+
+var initOSS = func() {
+	accessKey = viper.GetString("oss.access_key")
+	secretKey = viper.GetString("oss.secret_key")
+	bucketName = viper.GetString("oss.bucket_name")
+	domainName = viper.GetString("oss.domain_name")
+	typeMap = map[string]bool{".jpg": true, ".png": true, ".bmp": true, "jpeg": true, "gif": true}
+}
 
 func getType(filename string) (string, error) {
 	i := strings.LastIndex(filename, ".")
@@ -24,6 +43,7 @@ func getType(filename string) (string, error) {
 
 func getToken() {
 	var maxInt uint64 = 1 << 32
+	initOSS()
 	putPolicy := storage.PutPolicy{
 		Scope:   bucketName,
 		Expires: maxInt,

@@ -22,6 +22,9 @@ require (
 	github.com/swaggo/swag v1.6.3
 	github.com/teris-io/shortid v0.0.0-20171029131806-771a37caa5cf
 	github.com/willf/pad v0.0.0-20190207183901-eccfe5d84172
+	golang.org/x/crypto v0.0.0-20191202143827-86a70503ff7e // indirect
 	golang.org/x/net v0.0.0-20191126235420-ef20fe5d7933
+	golang.org/x/sys v0.0.0-20191128015809-6d18c012aee9 // indirect
+	golang.org/x/tools v0.0.0-20191203043002-5ae4576c3a41 // indirect
 	gopkg.in/go-playground/validator.v9 v9.30.2
 )
