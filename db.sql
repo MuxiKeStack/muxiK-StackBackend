@@ -176,7 +176,7 @@ CREATE TABLE `using_course` (
   `hash`           VARCHAR(50)  NOT NULL           COMMENT "课程id + 教师名 hash 生成的唯一标识",
   `name`           VARCHAR(50)  NOT NULL DEFAULT "",
   `teacher`        VARCHAR(20)  NOT NULL DEFAULT "",
-  `course_id`      VARCHAR(8)   NOT NULL           COMMENT "课程号",
+  `course_id`      VARCHAR(9)   NOT NULL           COMMENT "课程号",
   `class_id`       INT          NOT NULL           COMMENT "教学班编号",
   `type`           INT          NOT NULL           COMMENT "通识必修，通识选修，通识核心，专业必修，专业选修分别为 0/1/2/3/4",
   `time1`          VARCHAR(20)  NOT NULL DEFAULT "",

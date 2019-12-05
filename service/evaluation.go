@@ -125,6 +125,12 @@ func GetEvaluationInfo(id, userId uint32, visitor bool) (*model.EvaluationInfo, 
 		isLike = evaluation.HasLiked(userId)
 	}
 
+	// Whether the evaluation can be deleted by the user
+	canDelete := false
+	if !visitor && evaluation.UserId == userId && evaluation.DeletedAt == nil {
+		canDelete = true
+	}
+
 	// Get tag names
 	tagNames, err := GetTagNamesByIdStr(evaluation.Tags)
 	if err != nil {
@@ -150,6 +156,7 @@ func GetEvaluationInfo(id, userId uint32, visitor bool) (*model.EvaluationInfo, 
 		Tags:                tagNames,
 		UserInfo:            u,
 		IsValid:             true,
+		CanDelete:           canDelete,
 	}
 
 	// The evaluation has been deleted or been reported

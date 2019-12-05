@@ -21,7 +21,13 @@ import (
 func AddTable(c *gin.Context) {
 	userId := c.MustGet("id").(uint32)
 
-	newTable := model.ClassTableModel{
+	// Check whether table amount is more than three
+	if num := model.GetTableAmount(userId); num >= 3 {
+		handler.SendBadRequest(c, errno.ErrNewTable, nil, "Table amount is limited to three.")
+		return
+	}
+
+	newTable := &model.ClassTableModel{
 		UserId: userId,
 		Name:   "新课表",
 	}
@@ -31,7 +37,7 @@ func AddTable(c *gin.Context) {
 	// id为空，新建空白课表
 	if !ok || idStr == "" || idStr == "0" {
 		if err := newTable.New(); err != nil {
-			handler.SendError(c, err, nil, err.Error())
+			handler.SendError(c, errno.ErrDatabase, nil, err.Error())
 			return
 		}
 
@@ -57,7 +63,7 @@ func AddTable(c *gin.Context) {
 
 		// 根据id获取父课表
 		if err := table.GetById(); err != nil {
-			handler.SendError(c, err, nil, err.Error())
+			handler.SendError(c, errno.ErrDatabase, nil, err.Error())
 			return
 		}
 
@@ -66,7 +72,7 @@ func AddTable(c *gin.Context) {
 
 		// 创建副本课表
 		if err := newTable.New(); err != nil {
-			handler.SendError(c, err, nil, err.Error())
+			handler.SendError(c, errno.ErrDatabase, nil, err.Error())
 			return
 		}
 	}

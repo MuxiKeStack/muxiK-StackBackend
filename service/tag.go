@@ -53,7 +53,7 @@ func TagArrayToStr(tagIds []uint8) string {
 	return s
 }
 
-// Update course's tag account after publishing a new evaluation.
+// Update course's tag amount after publishing a new evaluation.
 func NewTagsAfterPublishing(tags *[]uint8, courseId string) error {
 	for _, tag := range *tags {
 		err := model.NewTagsForCourse(uint32(tag), courseId)

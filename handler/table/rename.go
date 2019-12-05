@@ -47,7 +47,7 @@ func Rename(c *gin.Context) {
 
 	// 更新课表
 	if err := table.Rename(data.NewName); err != nil {
-		handler.SendError(c, err, nil, err.Error())
+		handler.SendError(c, errno.ErrDatabase, nil, err.Error())
 		return
 	}
 

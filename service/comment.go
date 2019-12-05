@@ -109,6 +109,12 @@ func GetParentCommentInfo(id string, userId uint32, visitor bool) (*model.Parent
 		isLike = model.CommentHasLiked(userId, comment.Id)
 	}
 
+	// Whether the comment can be deleted by the user
+	canDelete := false
+	if !visitor && comment.UserId == userId && comment.DeletedAt == nil {
+		canDelete = true
+	}
+
 	// Get subComments' infos
 	subCommentInfos, err := GetSubCommentInfosByParentId(comment.Id, userId, visitor)
 	if err != nil {
@@ -126,6 +132,7 @@ func GetParentCommentInfo(id string, userId uint32, visitor bool) (*model.Parent
 		UserInfo:        userInfo,
 		SubCommentsNum:  comment.SubCommentNum,
 		SubCommentsList: subCommentInfos,
+		CanDelete:       canDelete,
 	}
 
 	// The parent comment has been deleted or been reported
@@ -238,6 +245,12 @@ func GetSubCommentInfoById(id string, userId uint32, visitor bool) (*model.Comme
 		isLike = model.CommentHasLiked(userId, comment.Id)
 	}
 
+	// Whether the comment can be deleted by the user
+	canDelete := false
+	if !visitor && comment.UserId == userId && comment.DeletedAt == nil {
+		canDelete = true
+	}
+
 	data := &model.CommentInfo{
 		Id:             comment.Id,
 		Content:        comment.Content,
@@ -247,6 +260,7 @@ func GetSubCommentInfoById(id string, userId uint32, visitor bool) (*model.Comme
 		Time:           comment.Time.Unix(),
 		UserInfo:       commentUser,
 		TargetUserInfo: targetUser,
+		CanDelete:      canDelete,
 	}
 
 	// The subComment has been deleted or been reported
@@ -295,7 +309,7 @@ func DeleteSubComment(id string, userId uint32) error {
 	}
 
 	if err := comment.Delete(); err != nil {
-		log.Error("comment.Delete() error.", err)
+		log.Error("comment.Delete error.", err)
 		return err
 	}
 
