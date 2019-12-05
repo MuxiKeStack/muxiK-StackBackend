@@ -1,18 +1,6 @@
 package service
 
-import "github.com/spf13/viper"
-
 var KeywordMap map[string]string
-
-var (
-	accessKey    string
-	secretKey    string
-	bucketName   string
-	domainName   string
-	upToken      string
-	setTimeEpoch int64
-	typeMap      map[string]bool
-)
 
 func init() {
 	KeywordMap = map[string]string{
@@ -71,11 +59,4 @@ func init() {
 		// 政治与国际关系学院
 		"马哲": "马克思主义哲学原理",
 	}
-	// 先初始化一些信息
-	accessKey = viper.GetString("oss.access_key")
-	secretKey = viper.GetString("oss.secret_key")
-	bucketName = viper.GetString("oss.bucket_name")
-	domainName = viper.GetString("oss.domain_name")
-	typeMap = map[string]bool{".jpg": true, ".png": true, ".bmp": true, "jpeg": true, "gif": true}
-
 }

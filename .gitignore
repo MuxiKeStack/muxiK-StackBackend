@@ -6,3 +6,5 @@ main
 *.iml
 *.out
 *.zip
+.vscode
+log/
