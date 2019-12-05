@@ -57,6 +57,9 @@ func Publish(c *gin.Context) {
 		return
 	}
 
+	// 检查字数
+	// ...
+
 	var evaluation = &model.CourseEvaluationModel{
 		CourseId:            data.CourseId,
 		CourseName:          data.CourseName,

@@ -125,7 +125,7 @@ func CommentHasLiked(userId uint32, commentId string) bool {
 	return !d.RecordNotFound()
 }
 
-// Get comment's total like account by commentId.
+// Get comment's total like amount by commentId.
 func GetCommentLikeSum(commentId string) (count uint32) {
 	var data CommentLikeModel
 	DB.Self.Where("comment_id = ?", commentId).Find(&data).Count(&count)

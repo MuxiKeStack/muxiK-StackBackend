@@ -46,4 +46,5 @@ type EvaluationInfo struct {
 	Tags                []string          `json:"tags"`
 	UserInfo            *UserInfoResponse `json:"user_info"`
 	IsValid             bool              `json:"is_valid"`
+	CanDelete           bool              `json:"can_delete"`
 }

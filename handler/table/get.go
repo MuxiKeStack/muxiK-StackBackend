@@ -3,6 +3,7 @@ package table
 import (
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
+	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
 	"github.com/MuxiKeStack/muxiK-StackBackend/service"
 
 	"github.com/gin-gonic/gin"
@@ -27,6 +28,21 @@ func Get(c *gin.Context) {
 	if err != nil {
 		handler.SendError(c, err, nil, err.Error())
 		return
+	}
+
+	// If there is no table, create a default table for him.
+	if len(*tables) == 0 {
+		originalTable := &model.ClassTableModel{
+			UserId: userId,
+			Name:   "默认课表",
+		}
+
+		if err := originalTable.New(); err != nil {
+			handler.SendError(c, errno.ErrDatabase, nil, err.Error())
+			return
+		}
+
+		*tables = append(*tables, *originalTable)
 	}
 
 	// 将课表解析为要返回的课表详情

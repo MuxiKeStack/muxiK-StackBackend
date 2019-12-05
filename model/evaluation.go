@@ -1,6 +1,7 @@
 package model
 
 import (
+	"errors"
 	"github.com/jinzhu/gorm"
 )
 
@@ -62,7 +63,7 @@ func (evaluation *CourseEvaluationModel) GetById() error {
 	return d.Error
 }
 
-// Update evaluation's total comment account.
+// Update evaluation's total comment amount.
 func (evaluation *CourseEvaluationModel) UpdateCommentNum(n int) error {
 	num := int(evaluation.CommentNum)
 	if num == 0 && n == -1 {
@@ -73,7 +74,7 @@ func (evaluation *CourseEvaluationModel) UpdateCommentNum(n int) error {
 	return d.Error
 }
 
-// Update evaluation's total like account.
+// Update evaluation's total like amount.
 func (evaluation *CourseEvaluationModel) UpdateLikeNum(n int) error {
 	num := int(evaluation.LikeNum)
 	if num == 0 && n == -1 {
@@ -84,7 +85,7 @@ func (evaluation *CourseEvaluationModel) UpdateLikeNum(n int) error {
 	return d.Error
 }
 
-// Get evaluation's total like account by id.
+// Get evaluation's total like amount by id.
 func GetEvaluationLikeSum(id uint32) (count uint32) {
 	var data EvaluationLikeModel
 	DB.Self.Where("evaluation_id = ?", id).Find(&data).Count(&count)
@@ -154,10 +155,7 @@ func GetEvaluationsByUserId(userId uint32, lastId, limit int32) (*[]CourseEvalua
 func HasEvaluated(userId uint32, courseId string) bool {
 	var evaluation CourseEvaluationModel
 	d := DB.Self.Where("userId = ? AND course_id = ?", userId, courseId).First(&evaluation)
-	if d.RecordNotFound() {
-		return false
-	}
-	return true
+	return !d.RecordNotFound()
 }
 
 /*--------------- Course Operation -------------*/
@@ -176,6 +174,23 @@ func UpdateCourseRateByEvaluation(id string, rate float32) error {
 	return d.Error
 }
 
+// Update course's info after deleting an evaluation.
+func UpdateCourseInfoAfterDeletingEvaluation(id string, rate float32) error {
+	var c HistoryCourseModel
+	if d := DB.Self.First(&c, "hash = ?", id); d.Error != nil {
+		return d.Error
+	}
+
+	rate = c.Rate*float32(c.StarsNum) - rate
+	if c.StarsNum <= 0 || rate <= 0 {
+		return errors.New("Unexpected data error ")
+	}
+	c.StarsNum--
+	c.Rate = rate / float32(c.StarsNum)
+
+	return DB.Self.Save(&c).Error
+}
+
 // 根据课程id获取教师名
 func GetTeacherByCourseId(id string) (string, error) {
 	var course HistoryCourseModel
@@ -187,8 +202,5 @@ func GetTeacherByCourseId(id string) (string, error) {
 func IsCourseExisting(id string) bool {
 	var course HistoryCourseModel
 	d := DB.Self.Where("hash = ?", id).First(&course)
-	if d.RecordNotFound() {
-		return false
-	}
-	return true
+	return !d.RecordNotFound()
 }

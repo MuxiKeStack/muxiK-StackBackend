@@ -4,22 +4,24 @@ func (table *ClassTableModel) TableName() string {
 	return "class_table"
 }
 
+// Create a new table.
 func (table *ClassTableModel) New() error {
-	d := DB.Self.Create(table)
-	return d.Error
+	return DB.Self.Create(table).Error
 }
 
+// Delete the table.
 func (table *ClassTableModel) Delete() error {
-	d := DB.Self.Delete(table)
-	return d.Error
+	return DB.Self.Delete(table).Error
 }
 
+// Get table info by id.
 func (table *ClassTableModel) GetById() error {
 	d := DB.Self.First(table, "id = ?", table.Id)
 	//d := DB.Self.First(table)
 	return d.Error
 }
 
+// Rename the table.
 func (table *ClassTableModel) Rename(newName string) error {
 	DB.Self.First(table)
 	table.Name = newName
@@ -27,22 +29,32 @@ func (table *ClassTableModel) Rename(newName string) error {
 	return d.Error
 }
 
+// Judge whether the table exists.
 func (table *ClassTableModel) Existing() bool {
-	var count int
-	DB.Self.First(table).Count(&count)
-	return count == 1
+	d := DB.Self.First(table)
+	return !d.RecordNotFound()
 }
 
+// Update table's class info.
 func (table *ClassTableModel) UpdateClasses(classes string) error {
 	table.Classes = classes
 	d := DB.Self.Save(table)
 	return d.Error
 }
 
+// Get tables by userId.
 func GetTablesByUserId(userId uint32) (*[]ClassTableModel, error) {
 	var tables []ClassTableModel
 	d := DB.Self.Find(&tables, "user_id = ?", userId)
 	return &tables, d.Error
+}
+
+// Get user's table amount by userId.
+func GetTableAmount(userId uint32) uint32 {
+	var count uint32
+	var table ClassTableModel
+	DB.Self.Where("user_id = ?", userId).Find(&table).Count(&count)
+	return count
 }
 
 /*--------- Class Operation -----------*/

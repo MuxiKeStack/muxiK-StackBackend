@@ -36,7 +36,7 @@ func DeleteTable(c *gin.Context) {
 	}
 
 	if err := table.Delete(); err != nil {
-		handler.SendError(c, err, nil, err.Error())
+		handler.SendError(c, errno.ErrDatabase, nil, err.Error())
 		return
 	}
 

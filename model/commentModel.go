@@ -46,6 +46,7 @@ type CommentInfo struct {
 	IsAnonymous    bool              `json:"is_anonymous"`
 	UserInfo       *UserInfoResponse `json:"user_info"`
 	TargetUserInfo *UserInfoResponse `json:"target_user_info"`
+	CanDelete      bool              `json:"can_delete"`
 }
 
 // 返回的评论列表，一级评论模型
@@ -60,4 +61,5 @@ type ParentCommentInfo struct {
 	UserInfo        *UserInfoResponse `json:"user_info"`
 	SubCommentsNum  uint32            `json:"sub_comments_num"`
 	SubCommentsList *[]CommentInfo    `json:"sub_comments_list"`
+	CanDelete       bool              `json:"can_delete"`
 }
