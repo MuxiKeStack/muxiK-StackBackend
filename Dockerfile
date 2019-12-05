@@ -1,4 +1,4 @@
-FROM golang:latest 
+FROM golang:1.12.13 
 WORKDIR $GOPATH/src/github.com/MuxiKeStack/muxiK-StackBackend
 COPY . $GOPATH/src/github.com/MuxiKeStack/muxiK-StackBackend
 RUN make
