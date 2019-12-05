@@ -5,9 +5,9 @@ clean:
 	find . -name "[._]*.s[a-w][a-z]" | xargs -i rm -f {}
 gotool:
 	gofmt -w .
-	go vet .
 	go mod tidy
 	go mod verify
+	go vet .
 test:
 	@go test -v -count=1  ./...
 ca:
