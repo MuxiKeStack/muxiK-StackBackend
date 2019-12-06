@@ -334,6 +334,44 @@ paths:
           schema:
             $ref: '#/definitions/CodeResponse'
 
+  /course/using/favoritelist/:
+    get:
+      tags:
+        - course
+      summary: 获取收藏列表
+      description: 获取收藏列表
+      parameters:
+        - in: header
+          name: token
+          required: true
+          type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+            properties:
+              list:
+                type: array
+                items:
+                      $ref: '#/definitions/FavoriteList'
+        '400':
+          description: bad request
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '401':
+          description: 未授权
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '404':
+          description: not found
+          schema:
+            $ref: '#/definitions/CodeResponse'
+        '500':
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/CodeResponse'
+
   /course/using/query/:
     get:
       tags:
@@ -1706,6 +1744,17 @@ definitions:
       is_evaluate:
         type: boolean
         description: 当前用户是否已评课
+        
+  FavoriteList:
+    type: object
+    description: 返回的收藏列表模型
+    properties:
+      course_id:
+        type: string
+        description: 课程id,通过id来获取课程信息
+      course_name:
+        type: string
+        description: 课程名称
 
   CommentInfo:
     type: object
