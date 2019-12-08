@@ -334,6 +334,18 @@ definitions:
       username:
         type: string
     type: object
+  report.Request:
+    properties:
+      reason:
+        type: string
+    type: object
+  report.Response:
+    properties:
+      fail:
+        type: boolean
+      reason:
+        type: string
+    type: object
   search.searchHistoryCourseResponse:
     properties:
       courses:
@@ -650,6 +662,20 @@ paths:
       summary: 获取评课详情
       tags:
       - evaluation
+  /evaluation/{id}/block/:
+    get:
+      parameters:
+      - description: 评课ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: 折叠评课
+      tags:
+      - report
   /evaluation/{id}/comment/:
     post:
       parameters:
@@ -736,6 +762,34 @@ paths:
       summary: 评课点赞/取消点赞
       tags:
       - evaluation
+  /evaluation/{id}/report/:
+    post:
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 评课ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: xxx
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/report.Request'
+          type: object
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/report.Response'
+      summary: 举报评课
+      tags:
+      - report
   /login/:
     post:
       consumes:
