@@ -13,7 +13,7 @@ import (
 // @Summary 折叠评课
 // @Tags report
 // @Param id path integer true "评课ID"
-// @Success 200 string
+// @Success 200 "OK"
 // @Router /evaluation/{id}/block/ [get]
 func BlockEvaluation(c *gin.Context) {
 	eid, err := strconv.ParseUint(c.Param("id"), 10, 32)
