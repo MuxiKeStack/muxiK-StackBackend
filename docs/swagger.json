@@ -131,7 +131,7 @@
                 }
             }
         },
-        "/course/{id}/evaluations/": {
+        "/course/history/{id}/evaluations/": {
             "get": {
                 "tags": [
                     "evaluation"
@@ -1268,6 +1268,9 @@
         "model.CommentInfo": {
             "type": "object",
             "properties": {
+                "can_delete": {
+                    "type": "boolean"
+                },
                 "content": {
                     "type": "string"
                 },
@@ -1335,6 +1338,9 @@
             "properties": {
                 "attendance_check_type": {
                     "type": "string"
+                },
+                "can_delete": {
+                    "type": "boolean"
                 },
                 "comment_num": {
                     "type": "integer"
@@ -1430,6 +1436,9 @@
         "model.ParentCommentInfo": {
             "type": "object",
             "properties": {
+                "can_delete": {
+                    "type": "boolean"
+                },
                 "content": {
                     "type": "string"
                 },
