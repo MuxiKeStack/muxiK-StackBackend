@@ -172,6 +172,8 @@ definitions:
     type: object
   model.CommentInfo:
     properties:
+      can_delete:
+        type: boolean
       content:
         type: string
       id:
@@ -217,6 +219,8 @@ definitions:
     properties:
       attendance_check_type:
         type: string
+      can_delete:
+        type: boolean
       comment_num:
         type: integer
       content:
@@ -280,6 +284,8 @@ definitions:
     type: object
   model.ParentCommentInfo:
     properties:
+      can_delete:
+        type: boolean
       content:
         type: string
       id:
@@ -524,7 +530,7 @@ paths:
       summary: 评论点赞/取消点赞
       tags:
       - comment
-  /course/{id}/evaluations/:
+  /course/history/{id}/evaluations/:
     get:
       parameters:
       - description: 游客登录则不需要此字段或为空
