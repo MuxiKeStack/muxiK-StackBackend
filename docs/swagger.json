@@ -312,6 +312,28 @@
                 }
             }
         },
+        "/evaluation/{id}/block/": {
+            "get": {
+                "tags": [
+                    "report"
+                ],
+                "summary": "折叠评课",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "评课ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/evaluation/{id}/comment/": {
             "post": {
                 "tags": [
@@ -436,6 +458,48 @@
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/evaluation.likeDataResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/evaluation/{id}/report/": {
+            "post": {
+                "tags": [
+                    "report"
+                ],
+                "summary": "举报评课",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "token",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "评课ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "xxx",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/report.Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/report.Response"
                         }
                     }
                 }
@@ -1508,6 +1572,25 @@
                     "type": "string"
                 },
                 "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "report.Request": {
+            "type": "object",
+            "properties": {
+                "reason": {
+                    "type": "string"
+                }
+            }
+        },
+        "report.Response": {
+            "type": "object",
+            "properties": {
+                "fail": {
+                    "type": "boolean"
+                },
+                "reason": {
                     "type": "string"
                 }
             }
