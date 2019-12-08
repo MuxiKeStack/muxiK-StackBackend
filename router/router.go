@@ -74,7 +74,7 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 	courses := g.Group("/api/v1/course/using")
 	courses.Use(middleware.AuthMiddleware())
 	{
-		courses.GET("/:id/", course.GetCourseInfo)
+		courses.GET("/:hash/", course.GetCourseInfo)
 		courses.PUT("/:id/", course.AddCourse)
 		courses.POST("/:id/", course.ModifyCourse)
 		courses.DELETE("/:id/", course.DeleteCourse)
