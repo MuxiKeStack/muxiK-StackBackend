@@ -34,7 +34,7 @@ func GetCourseInfo(c *gin.Context) {
 		log.Info("Get Param error")
 		return
 	}
-	
+
 	course := &model.UsingCourseModel{Hash: hash}
 	if err := course.GetByHash(); err != nil {
 		log.Info("course.GetByHash() error.")
