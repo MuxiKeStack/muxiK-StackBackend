@@ -31,6 +31,7 @@ func BlockEvaluation(c *gin.Context) {
 		}
 		if evaluation.IsValid == false {
 			handler.SendResponse(c, nil, "Evaluation already be blocked.")
+			return
 		}
 		// block it
 		evaluation.IsValid = false
