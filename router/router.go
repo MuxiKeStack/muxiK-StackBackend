@@ -1,8 +1,9 @@
 package router
 
 import (
-	"github.com/MuxiKeStack/muxiK-StackBackend/handler/upload"
 	"net/http"
+
+	"github.com/MuxiKeStack/muxiK-StackBackend/handler/upload"
 
 	_ "github.com/MuxiKeStack/muxiK-StackBackend/docs"
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler/comment"
@@ -102,7 +103,7 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 		evaluation.GET("/:id/comments/", comment.GetComments)
 	}
 
-	evaOfCourse := g.Group("/api/v1/course/:id/evaluations/")
+	evaOfCourse := g.Group("/api/v1/course/history/:id/evaluations/")
 	evaOfCourse.Use(middleware.VisitorAuthMiddleware())
 	{
 		evaOfCourse.GET("", eva.EvaluationsOfOneCourse)
