@@ -27,7 +27,7 @@ type Response struct {
 // @Tags report
 // @Param token header string true "token"
 // @Param id path integer true "评课ID"
-// @Param payload body report.Request true "xxx"
+// @Param payload body Request true "请求数据"
 // @Success 200 {object} report.Response
 // @Router /evaluation/{id}/report/ [post]
 func ReportEvaluation(c *gin.Context) {
