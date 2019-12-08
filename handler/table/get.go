@@ -34,7 +34,7 @@ func Get(c *gin.Context) {
 	if len(*tables) == 0 {
 		originalTable := &model.ClassTableModel{
 			UserId: userId,
-			Name:   "默认课表",
+			Name:   "课表1",
 		}
 
 		if err := originalTable.New(); err != nil {
