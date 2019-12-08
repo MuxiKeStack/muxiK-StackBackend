@@ -27,6 +27,16 @@ func (evaluation *CourseEvaluationModel) Delete() error {
 	return d.Error
 }
 
+// block a evaluation, cause of be reported > 5 times
+func (e *CourseEvaluationModel) Block() error {
+	e.IsValid = false
+	d := DB.Self.Update(e)
+	if d.Error != nil {
+		return d.Error
+	}
+	return nil
+}
+
 // Judge whether a course evaluation has already liked by the current user.
 func (evaluation *CourseEvaluationModel) HasLiked(userId uint32) bool {
 	var data EvaluationLikeModel
