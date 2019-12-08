@@ -41,5 +41,5 @@ func GetCourseInfo(c *gin.Context) {
 		return
 	}
 
-	handler.SendResponse(c, nil, course)
+	handler.SendResponse(c, nil, *course)
 }
