@@ -30,12 +30,16 @@ func GetCourseInfo(c *gin.Context) {
 		handler.SendResponse(c, nil, course)*/
 
 	hash := c.Param("hash")
-
+	if hash == "" {
+		log.Info("Get Param error")
+		return
+	}
+	
 	course := &model.UsingCourseModel{Hash: hash}
 	if err := course.GetByHash(); err != nil {
 		log.Info("course.GetByHash() error.")
 		return
 	}
 
-	handler.SendResponse(c, nil, course)
+	handler.SendResponse(c, nil, *course)
 }
