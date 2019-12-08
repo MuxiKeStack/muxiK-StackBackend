@@ -1,6 +1,7 @@
 package router
 
 import (
+	"github.com/MuxiKeStack/muxiK-StackBackend/handler/report"
 	"net/http"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler/upload"
@@ -100,6 +101,9 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 		evaluation.GET("/", eva.EvaluationPlayground)
 		evaluation.GET("/:id/", eva.GetEvaluation)
 
+		// confirm reported, to block evaluation
+		evaluation.GET("/:id/block", report.BlockEvaluation)
+
 		// router for getting comment list
 		evaluation.GET("/:id/comments/", comment.GetComments)
 	}
@@ -118,6 +122,9 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 		evaluationWithAuth.PUT("/:id/like/", eva.UpdateEvaluationLike)
 
 		evaluationWithAuth.POST("/:id/comment/", comment.CreateTopComment)
+
+		// report a evaluation
+		evaluation.POST("/:id/report/", report.ReportEvaluation)
 	}
 
 	// Router for comments requiring auth

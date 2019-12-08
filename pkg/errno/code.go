@@ -37,6 +37,7 @@ var (
 	ErrUpdateCourseInfo      = &Errno{Code: 20310, Message: "Error occurred while updating course's info"}
 	ErrDeleteComment         = &Errno{Code: 20311, Message: "Error occurred while deleting a comment "}
 	ErrHasEvaluated          = &Errno{Code: 20312, Message: "User has evaluated the course"}
+	ErrGetEvaluation         = &Errno{Code: 20313, Message: "Error occurred while getting evaluation."}
 
 	// table errors
 	ErrTableExisting   = &Errno{Code: 20401, Message: "The table is not existing. "}
@@ -58,4 +59,7 @@ var (
 
 	// course errors
 	ErrCourseExisting = &Errno{Code: 20801, Message: "Course does not exist."}
+
+	// report errors
+	ErrCreateReport = &Errno{Code: 20901, Message: "Error occurred in creating new report."}
 )

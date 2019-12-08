@@ -141,7 +141,8 @@ CREATE TABLE `report` (
   `id`            INT unsigned NOT NULL AUTO_INCREMENT,
   `evaluation_id` INT          NOT NULL,
   `user_id`       INT          NOT NULL,
-  `pass`          TINYINT(1)   NOT NULL DEFAULT 1 COMMENT "举报审核是否通过",
+  `pass`          TINYINT(1)   NOT NULL DEFAULT 0 COMMENT "举报审核是否通过",
+  `reason`        VARCHAR(200) NOT NULL,
 
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
