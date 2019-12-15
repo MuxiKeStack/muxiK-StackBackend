@@ -1,7 +1,6 @@
 package model
 
 import (
-	"github.com/spf13/viper"
 	"gopkg.in/go-playground/validator.v9"
 )
 
@@ -35,7 +34,5 @@ func (u *UserModel) GetInfo() *UserInfoResponse {
 
 // Create creates a new user account.
 func CreateUser(sid string) error {
-	defaultAvatar := viper.GetString("default_user.avatar")
-	defaultUsername := viper.GetString("default_user.username")
-	return DB.Self.Create(&UserModel{Sid: sid, Avatar: defaultAvatar, Username: defaultUsername}).Error
+	return DB.Self.Create(&UserModel{Sid: sid}).Error
 }

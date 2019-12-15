@@ -15,13 +15,12 @@ import (
 )
 
 var (
-	accessKey    string
-	secretKey    string
-	bucketName   string
-	domainName   string
-	upToken      string
-	setTimeEpoch int64
-	typeMap      map[string]bool
+	accessKey  string
+	secretKey  string
+	bucketName string
+	domainName string
+	upToken    string
+	typeMap    map[string]bool
 )
 
 var initOSS = func() {
@@ -53,15 +52,12 @@ func getToken() {
 }
 
 func getObjectName(filename string, id uint32) (string, error) {
-	if setTimeEpoch == 0 {
-		setTimeEpoch = time.Now().Unix()
-	}
 	fileType, err := getType(filename)
 	if err != nil {
 		return "", err
 	}
 	timeEpochNow := time.Now().Unix()
-	objectName := strconv.FormatUint(uint64(id), 10) + "-" + strconv.FormatInt(timeEpochNow%setTimeEpoch, 10) + fileType
+	objectName := strconv.FormatUint(uint64(id), 10) + "-" + strconv.FormatInt(timeEpochNow, 10) + fileType
 	return objectName, nil
 }
 
