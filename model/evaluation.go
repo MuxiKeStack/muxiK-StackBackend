@@ -168,6 +168,17 @@ func HasEvaluated(userId uint32, courseId string) bool {
 	return !d.RecordNotFound()
 }
 
+//
+func GetAttendanceTypeNumChosenByCode(courseId string, code int) (count uint32) {
+	DB.Self.Table("course_evaluation").Where("course_id = ? AND attendance_check_type = ?", courseId, code).Count(&count)
+	return
+}
+
+func GetExamCheckTypeNumChosenByCode(courseId string, code int) (count uint32) {
+	DB.Self.Table("course_evaluation").Where("course_id = ? AND exam_check_type = ?", courseId, code).Count(&count)
+	return
+}
+
 /*--------------- Course Operation -------------*/
 
 // 新增评课时更新课程的评课信息，先暂时放这里，避免冲突
