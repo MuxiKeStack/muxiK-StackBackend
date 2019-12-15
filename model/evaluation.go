@@ -164,7 +164,7 @@ func GetEvaluationsByUserId(userId uint32, lastId, limit int32) (*[]CourseEvalua
 // Whether user has evaluated the course.
 func HasEvaluated(userId uint32, courseId string) bool {
 	var evaluation CourseEvaluationModel
-	d := DB.Self.Where("userId = ? AND course_id = ?", userId, courseId).First(&evaluation)
+	d := DB.Self.Where("user_id = ? AND course_id = ?", userId, courseId).First(&evaluation)
 	return !d.RecordNotFound()
 }
 
