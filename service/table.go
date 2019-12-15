@@ -113,10 +113,10 @@ func GetClassInfoForTableById(id string) (*model.ClassInfo, error) {
 	// 获取上课周次和单双周状态
 	weeks := []string{class.Weeks1}
 	if class.Weeks2 != "" {
-		weeks = append(weeks, class.Place2)
+		weeks = append(weeks, class.Weeks2)
 	}
 	if class.Weeks3 != "" {
-		weeks = append(weeks, class.Place3)
+		weeks = append(weeks, class.Weeks3)
 	}
 
 	// 获取课堂上课时间

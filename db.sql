@@ -192,7 +192,7 @@ CREATE TABLE `using_course` (
   `region`         INT          NOT NULL COMMENT "上课地区，1-南湖，2-东区，3-西区。加索引（筛选条件）",
 
   PRIMARY KEY (`id`),
-  UNIQUE KEY `hash` (`hash`),
+  KEY `hash` (`hash`),
   FULLTEXT KEY (`name`, `course_id`, `teacher`) WITH PARSER ngram
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
@@ -205,6 +205,12 @@ INSERT INTO `history_course` (hash, name, teacher, type) VALUES ('112d34testsvgg
 
 INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time1, place1, weeks1, region)
 VALUES ('112d34testsvggase', '高等数学A', '宋冰玉', '45677654', 10, 3, '1-2#1', '7205', '2-17#0', 2);
+
+INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time1, time2, place1, place2, weeks1, weeks2, region)
+VALUES ('112d34testsvggase', '高等数学A', '宋冰玉', '45677654', 11, 3, '3-4#1', '5-6#3', '7207', '7105', '2-17#0', '2-15#2', 2);
+
+INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time1, time2,time3, place1, place2, place3, weeks1, weeks2, weeks3, region)
+VALUES ('112d34testsvggase', '高等数学A', '宋冰玉', '45677654', 12, 3, '9-10#2', '5-6#5', '1-2#4', '7207', '7105', '7201', '2-17#0', '2-17#0', '2-17#2', 2);
 
 INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time1, place1, weeks1, region)
 VALUES ('213f89eyguiguhy', '数据库原理', '喻莹', '98767654', 20, 3, '3-4#2', '9201', '2-17#0', 2);
@@ -230,8 +236,12 @@ VALUES ('2e154de56gyubdq', '高级语言程序设计', '沈显军', '56982345', 
 INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time1, place1, weeks1, region)
 VALUES ('0s9uighvg121efe', 'Java程序设计', '张连发', '09865423', 90, 3, '9-10#4', '9501', '2-17#0', 2);
 
+INSERT INTO `course_list` (user_id, course_hash_id) values (1, '0s9uighvg121efe'), (1, '112d34testsvggase');
 
 -- mock data
+
+INSERT INTO `user` (`sid`, `username`, `is_blocked`)
+VALUES ('2018214830', '随便呗', '0');
 
 INSERT INTO `user` (`sid`, `username`, `is_blocked`)
 VALUES ('2016213456', '你管我叫啥呢', '0');
@@ -253,9 +263,6 @@ VALUES ('2017908932', 'i华大牛逼', '0');
 
 INSERT INTO `user` (`sid`, `username`, `is_blocked`)
 VALUES ('2018923872', '当代恶臭网民', '0');
-
-INSERT INTO `user` (`sid`, `username`, `is_blocked`)
-VALUES ('2018214830', '随便呗', '0');
 
 INSERT INTO `user` (`sid`, `username`, `is_blocked`)
 VALUES ('2019526782', '孙笑川', '0');
