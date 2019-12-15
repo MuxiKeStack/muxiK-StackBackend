@@ -16,9 +16,7 @@ func (table *ClassTableModel) Delete() error {
 
 // Get table info by id.
 func (table *ClassTableModel) GetById() error {
-	d := DB.Self.First(table, "id = ?", table.Id)
-	//d := DB.Self.First(table)
-	return d.Error
+	return DB.Self.First(table).Error
 }
 
 // Rename the table.
@@ -62,10 +60,7 @@ func GetTableAmount(userId uint32) uint32 {
 func IsClassExisting(id string) bool {
 	var class UsingCourseModel
 	d := DB.Self.Where("hash = ?", id).First(&class)
-	if d.RecordNotFound() {
-		return false
-	}
-	return true
+	return !d.RecordNotFound()
 }
 
 func GetClassByHashId(id string) (*UsingCourseModel, error) {

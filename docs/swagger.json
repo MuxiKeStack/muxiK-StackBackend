@@ -13,6 +13,31 @@
     "host": "...",
     "basePath": "/api/v1",
     "paths": {
+        "/collection/table/": {
+            "get": {
+                "tags": [
+                    "collection"
+                ],
+                "summary": "课表界面获取课程清单",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "token",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/collection.CollectionsInfo"
+                        }
+                    }
+                }
+            }
+        },
         "/comment/{id}/": {
             "post": {
                 "tags": [
@@ -485,13 +510,13 @@
                         "required": true
                     },
                     {
-                        "description": "xxx",
+                        "description": "请求数据",
                         "name": "payload",
                         "in": "body",
                         "required": true,
                         "schema": {
                             "type": "object",
-                            "$ref": "#/definitions/report.Request"
+                            "$ref": "#/definitions/Request"
                         }
                     }
                 ],
@@ -598,7 +623,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.CountModel"
+                            "$ref": "#/definitions/message.CountModel"
                         }
                     }
                 }
@@ -1069,6 +1094,20 @@
         }
     },
     "definitions": {
+        "collection.CollectionsInfo": {
+            "type": "object",
+            "properties": {
+                "course_list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.CourseInfoInCollections"
+                    }
+                },
+                "sum": {
+                    "type": "integer"
+                }
+            }
+        },
         "comment.commentListResponse": {
             "type": "object",
             "properties": {
@@ -1237,6 +1276,14 @@
                 }
             }
         },
+        "message.CountModel": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                }
+            }
+        },
         "message.messageListResponse": {
             "type": "object",
             "properties": {
@@ -1263,12 +1310,10 @@
             "type": "object",
             "properties": {
                 "class_id": {
+                    "description": "CourseId  string           `json:\"course_id\"`",
                     "type": "string"
                 },
                 "class_name": {
-                    "type": "string"
-                },
-                "course_id": {
                     "type": "string"
                 },
                 "places": {
@@ -1280,10 +1325,44 @@
                 "teacher": {
                     "type": "string"
                 },
+                "teaching_class_id": {
+                    "description": "教学班编号",
+                    "type": "integer"
+                },
                 "times": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/model.ClassTimeInfo"
+                    }
+                }
+            }
+        },
+        "model.ClassInfoInCollections": {
+            "type": "object",
+            "properties": {
+                "class_id": {
+                    "type": "string"
+                },
+                "class_name": {
+                    "type": "string"
+                },
+                "places": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "teacher": {
+                    "type": "string"
+                },
+                "teaching_class_id": {
+                    "description": "教学班编号",
+                    "type": "integer"
+                },
+                "times": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.ClassTimeInfoInCollections"
                     }
                 }
             }
@@ -1319,6 +1398,24 @@
                 },
                 "start": {
                     "type": "integer"
+                },
+                "week_state": {
+                    "description": "全周0,单周1,双周2",
+                    "type": "integer"
+                },
+                "weeks": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.ClassTimeInfoInCollections": {
+            "type": "object",
+            "properties": {
+                "day": {
+                    "type": "integer"
+                },
+                "time": {
+                    "type": "string"
                 },
                 "week_state": {
                     "description": "全周0,单周1,双周2",
@@ -1366,14 +1463,6 @@
                 }
             }
         },
-        "model.CountModel": {
-            "type": "object",
-            "properties": {
-                "count": {
-                    "type": "integer"
-                }
-            }
-        },
         "model.CourseInfo": {
             "type": "object",
             "properties": {
@@ -1393,6 +1482,26 @@
                     "type": "string"
                 },
                 "teacher": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.CourseInfoInCollections": {
+            "type": "object",
+            "properties": {
+                "class_sum": {
+                    "type": "integer"
+                },
+                "classes": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.ClassInfoInCollections"
+                    }
+                },
+                "course_id": {
+                    "type": "string"
+                },
+                "course_name": {
                     "type": "string"
                 }
             }
@@ -1572,14 +1681,6 @@
                     "type": "string"
                 },
                 "username": {
-                    "type": "string"
-                }
-            }
-        },
-        "report.Request": {
-            "type": "object",
-            "properties": {
-                "reason": {
                     "type": "string"
                 }
             }
