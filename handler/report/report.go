@@ -36,7 +36,12 @@ func ReportEvaluation(c *gin.Context) {
 		handler.SendBadRequest(c, errno.ErrGetParam, nil, err.Error())
 		return
 	}
-	uid, _ := c.Get("id")
+	uid, ok := c.Get("id")
+	if !ok || uid == nil {
+		handler.SendUnauthorized(c, errno.ErrAuthFailed, nil, "API get user id from token failed.")
+		return
+	}
+
 	var requestPayload Request
 	if err := c.BindJSON(&requestPayload); err != nil {
 		handler.SendBadRequest(c, errno.ErrBind, nil, err.Error())
@@ -48,7 +53,7 @@ func ReportEvaluation(c *gin.Context) {
 	defer close(beReportedTotCh)
 
 	go func() {
-		reportExistedCh <- model.ReportExisted(eid, uid.(uint64))
+		reportExistedCh <- model.ReportExisted(eid, uid.(uint32))
 	}()
 	go func() {
 		// not passed total of reports
