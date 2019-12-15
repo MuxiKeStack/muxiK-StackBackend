@@ -309,6 +309,14 @@ paths:
           description: 课程id
           required: true
           type: string
+        - in: body
+          name: data
+          required: true
+          schema:
+            type: object
+            properties:
+              is_like:
+                type: boolean
       responses:
         "200":
           description: OK
