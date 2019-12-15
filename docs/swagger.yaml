@@ -1,5 +1,14 @@
 basePath: /api/v1
 definitions:
+  collection.CollectionsInfo:
+    properties:
+      course_list:
+        items:
+          $ref: '#/definitions/model.CourseInfoInCollections'
+        type: array
+      sum:
+        type: integer
+    type: object
   comment.commentListResponse:
     properties:
       page:
@@ -110,6 +119,11 @@ definitions:
       sum:
         type: integer
     type: object
+  message.CountModel:
+    properties:
+      count:
+        type: integer
+    type: object
   message.messageListResponse:
     properties:
       messageList:
@@ -127,10 +141,9 @@ definitions:
   model.ClassInfo:
     properties:
       class_id:
+        description: CourseId  string           `json:"course_id"`
         type: string
       class_name:
-        type: string
-      course_id:
         type: string
       places:
         items:
@@ -138,9 +151,32 @@ definitions:
         type: array
       teacher:
         type: string
+      teaching_class_id:
+        description: 教学班编号
+        type: integer
       times:
         items:
           $ref: '#/definitions/model.ClassTimeInfo'
+        type: array
+    type: object
+  model.ClassInfoInCollections:
+    properties:
+      class_id:
+        type: string
+      class_name:
+        type: string
+      places:
+        items:
+          type: string
+        type: array
+      teacher:
+        type: string
+      teaching_class_id:
+        description: 教学班编号
+        type: integer
+      times:
+        items:
+          $ref: '#/definitions/model.ClassTimeInfoInCollections'
         type: array
     type: object
   model.ClassTableInfo:
@@ -164,6 +200,18 @@ definitions:
         type: integer
       start:
         type: integer
+      week_state:
+        description: 全周0,单周1,双周2
+        type: integer
+      weeks:
+        type: string
+    type: object
+  model.ClassTimeInfoInCollections:
+    properties:
+      day:
+        type: integer
+      time:
+        type: string
       week_state:
         description: 全周0,单周1,双周2
         type: integer
@@ -195,11 +243,6 @@ definitions:
         $ref: '#/definitions/model.UserInfoResponse'
         type: object
     type: object
-  model.CountModel:
-    properties:
-      count:
-        type: integer
-    type: object
   model.CourseInfo:
     properties:
       content:
@@ -213,6 +256,19 @@ definitions:
       sid:
         type: string
       teacher:
+        type: string
+    type: object
+  model.CourseInfoInCollections:
+    properties:
+      class_sum:
+        type: integer
+      classes:
+        items:
+          $ref: '#/definitions/model.ClassInfoInCollections'
+        type: array
+      course_id:
+        type: string
+      course_name:
         type: string
     type: object
   model.EvaluationInfo:
@@ -332,11 +388,6 @@ definitions:
       sid:
         type: string
       username:
-        type: string
-    type: object
-  report.Request:
-    properties:
-      reason:
         type: string
     type: object
   report.Response:
@@ -463,6 +514,22 @@ info:
   title: Muxi K-Stack
   version: "1.0"
 paths:
+  /collection/table/:
+    get:
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/collection.CollectionsInfo'
+      summary: 课表界面获取课程清单
+      tags:
+      - collection
   /comment/{id}/:
     delete:
       parameters:
@@ -775,12 +842,12 @@ paths:
         name: id
         required: true
         type: integer
-      - description: xxx
+      - description: 请求数据
         in: body
         name: payload
         required: true
         schema:
-          $ref: '#/definitions/report.Request'
+          $ref: '#/definitions/Request'
           type: object
       responses:
         "200":
@@ -851,7 +918,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.CountModel'
+            $ref: '#/definitions/message.CountModel'
       summary: 获取消息提醒的个数
       tags:
       - message

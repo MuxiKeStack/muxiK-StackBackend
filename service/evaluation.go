@@ -14,10 +14,6 @@ type EvaluationInfoList struct {
 	IdMap map[uint32]*model.EvaluationInfo
 }
 
-type AttendanceAndExamCheckTypeNumList struct {
-
-}
-
 // Get course evaluation list for evaluation playground.
 func GetEvaluationsForPlayground(lastId, limit int32, userId uint32, visitor bool) (*[]model.EvaluationInfo, error) {
 	evaluations, err := model.GetEvaluations(lastId, limit)
@@ -187,6 +183,7 @@ func GetHotEvaluations(courseId string, limit int32, userId uint32, visitor bool
 	return GetEvaluationInfosByOriginModels(evaluations, userId, visitor)
 }
 
+// Get history-evaluations for user by its id.
 func GetHistoryEvaluationsByUserId(userId uint32, lastId, limit int32) (*[]model.EvaluationInfo, error) {
 	evaluations, err := model.GetEvaluationsByUserId(userId, lastId, limit)
 	if err != nil {
@@ -225,9 +222,9 @@ func GetExamCheckTypeByCode(code uint8) string {
 	return ""
 }
 
-//
+// Get attendance check type amount by course id for course info.
 func GetAttendanceCheckTypeNumForCourseInfo(courseId string) map[string]uint32 {
-	result :=  make(map[string]uint32)
+	result := make(map[string]uint32)
 	for i := 1; i < 4; i++ {
 		name := GetAttendanceCheckTypeByCode(uint8(i))
 		result[name] = model.GetAttendanceTypeNumChosenByCode(courseId, i)
@@ -235,8 +232,9 @@ func GetAttendanceCheckTypeNumForCourseInfo(courseId string) map[string]uint32 {
 	return result
 }
 
+// Get exam check type amount by course id for course info.
 func GetExamCheckTypeNumForCourseInfo(courseId string) map[string]uint32 {
-	result :=  make(map[string]uint32)
+	result := make(map[string]uint32)
 	for i := 1; i < 5; i++ {
 		name := GetExamCheckTypeByCode(uint8(i))
 		result[name] = model.GetExamCheckTypeNumChosenByCode(courseId, i)

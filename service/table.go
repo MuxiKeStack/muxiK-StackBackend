@@ -95,11 +95,11 @@ func GetClassInfoForTableById(id string) (*model.ClassInfo, error) {
 	}
 
 	// Get course's hash id
-	courseId, err := model.GetCourseHashIdById(class.CourseId)
-	if err != nil {
-		log.Error("GetCourseHashIdById function err", err)
-		return nil, err
-	}
+	//courseId, err := model.GetCourseHashIdById(class.CourseId)
+	//if err != nil {
+	//	log.Error("GetCourseHashIdById function err", err)
+	//	return nil, err
+	//}
 
 	// 解析上课地点
 	places := []string{class.Place1}
@@ -169,12 +169,13 @@ func GetClassInfoForTableById(id string) (*model.ClassInfo, error) {
 	}
 
 	info := &model.ClassInfo{
-		CourseId:  courseId,
-		ClassId:   id,
-		ClassName: class.Name,
-		Teacher:   class.Teacher,
-		Places:    &places,
-		Times:     &timeInfos,
+		//CourseId:  courseId,
+		ClassId:         id,
+		TeachingClassId: class.ClassId,
+		ClassName:       class.Name,
+		Teacher:         class.Teacher,
+		Places:          &places,
+		Times:           &timeInfos,
 	}
 
 	return info, nil

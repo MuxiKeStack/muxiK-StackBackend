@@ -1,6 +1,7 @@
 package router
 
 import (
+	"github.com/MuxiKeStack/muxiK-StackBackend/handler/collection"
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler/report"
 	"net/http"
 
@@ -156,6 +157,12 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 	{
 		searchGroup.GET("/course/", search.SearchCourse)
 		searchGroup.GET("/historyCourse/", search.SearchHistoryCourse)
+	}
+
+	collections := g.Group("/api/v1/collection")
+	collections.Use(middleware.AuthMiddleware())
+	{
+		collections.GET("/table/", collection.CollectionsForTable)
 	}
 
 	// The health check handlers

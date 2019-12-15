@@ -168,12 +168,13 @@ func HasEvaluated(userId uint32, courseId string) bool {
 	return !d.RecordNotFound()
 }
 
-//
+// Get attendance check type amount of a course by identifier.
 func GetAttendanceTypeNumChosenByCode(courseId string, code int) (count uint32) {
 	DB.Self.Table("course_evaluation").Where("course_id = ? AND attendance_check_type = ?", courseId, code).Count(&count)
 	return
 }
 
+// Get exam check type amount of a course by identifier.
 func GetExamCheckTypeNumChosenByCode(courseId string, code int) (count uint32) {
 	DB.Self.Table("course_evaluation").Where("course_id = ? AND exam_check_type = ?", courseId, code).Count(&count)
 	return
