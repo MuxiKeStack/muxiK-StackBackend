@@ -14,12 +14,13 @@ func GetCollectionsList(userId uint32) (*[]model.CourseInfoInCollections, error)
 	var result []model.CourseInfoInCollections
 	courseIds, err := model.GetCollectionsByUserId(userId)
 	if err != nil {
-		log.Info("GetCollectionsByUserId function error")
+		log.Error("GetCollectionsByUserId function error", err)
 		return nil, err
 	}
 
 	hiddenCourseIds, err := GetAllClassIdsInTables(userId)
 	if err != nil {
+		log.Error("GetAllClassIdsInTables function error", err)
 		return nil, err
 	}
 
@@ -31,11 +32,13 @@ func GetCollectionsList(userId uint32) (*[]model.CourseInfoInCollections, error)
 
 		classes, err := model.GetClassesByCourseHash(courseId)
 		if err != nil {
+			log.Error("GetClassesByCourseHash function error", err)
 			return nil, err
 		}
 
 		classInfos, err := GetClassInfoInCollection(classes)
 		if err != nil {
+			log.Error("GetClassInfoInCollection function error", err)
 			return nil, err
 		}
 
@@ -66,10 +69,10 @@ func GetClassInfoInCollection(classes *[]model.UsingCourseModel) (*[]model.Class
 		// 获取上课周次和单双周状态
 		weeks := []string{class.Weeks1}
 		if class.Weeks2 != "" {
-			weeks = append(weeks, class.Place2)
+			weeks = append(weeks, class.Weeks2)
 		}
 		if class.Weeks3 != "" {
-			weeks = append(weeks, class.Place3)
+			weeks = append(weeks, class.Weeks3)
 		}
 
 		// 获取课堂上课时间
@@ -89,17 +92,20 @@ func GetClassInfoInCollection(classes *[]model.UsingCourseModel) (*[]model.Class
 
 			start, err := strconv.ParseInt(time[:split1], 10, 8)
 			if err != nil {
+				log.Error("strconv.ParseInt function error when parsing start", err)
 				return nil, err
 			}
 
 			stop, err := strconv.ParseInt(time[split1+1:split2], 10, 8)
 			if err != nil {
+				log.Error("strconv.ParseInt function error when parsing stop", err)
 				return nil, err
 			}
 
 			// 上课星期
 			day, err := strconv.ParseInt(time[split2+1:], 10, 8)
 			if err != nil {
+				log.Error("strconv.ParseInt function error when parsing day", err)
 				return nil, err
 			}
 
@@ -109,6 +115,7 @@ func GetClassInfoInCollection(classes *[]model.UsingCourseModel) (*[]model.Class
 
 			weekState, err := strconv.ParseInt(week[splitWeek+1:], 10, 8)
 			if err != nil {
+				log.Error("strconv.ParseInt function error when parsing weekState", err)
 				return nil, err
 			}
 
@@ -135,6 +142,7 @@ func GetClassInfoInCollection(classes *[]model.UsingCourseModel) (*[]model.Class
 func GetAllClassIdsInTables(userId uint32) (map[string]bool, error) {
 	tables, err := model.GetTablesByUserId(userId)
 	if err != nil {
+		log.Error("GetTablesByUserId function error", err)
 		return nil, err
 	}
 

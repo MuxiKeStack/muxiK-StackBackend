@@ -62,4 +62,7 @@ var (
 
 	// report errors
 	ErrCreateReport = &Errno{Code: 20901, Message: "Error occurred in creating new report."}
+
+	// collection errors
+	ErrGetCollections = &Errno{Code: 21001, Message: "Error occurred in getting collections"}
 )
