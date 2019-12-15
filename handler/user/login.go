@@ -7,6 +7,8 @@ import (
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/token"
 	"github.com/MuxiKeStack/muxiK-StackBackend/service"
 	"github.com/MuxiKeStack/muxiK-StackBackend/util"
+	"github.com/spf13/viper"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -48,6 +50,17 @@ func Login(c *gin.Context) {
 	if err != nil {
 		SendError(c, errno.ErrUserNotFound, nil, err.Error())
 		return
+	}
+
+	if IsNewUser == 1 {
+		err := u.UpdateInfo(&model.UserInfoRequest{
+			Avatar:   viper.GetString("default_user.avatar"),
+			Username: viper.GetString("default_user.username") + strconv.FormatUint(uint64(u.Id), 10),
+		})
+		if err != nil {
+			SendError(c, errno.ErrUpdateUser, nil, err.Error())
+			return
+		}
 	}
 
 	// Sign the json web token.
