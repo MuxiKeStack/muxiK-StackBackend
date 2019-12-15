@@ -15,7 +15,7 @@ type classInfoList struct {
 	list []model.ClassInfo
 }
 
-// 根据课表model获取课表返回详情
+// Get table response info by original table model.
 func GetTableInfoByTableModel_2(table *model.ClassTableModel) (*model.ClassTableInfo, error) {
 	// return if has no class
 	if table.Classes == "" {
@@ -73,7 +73,7 @@ func GetTableInfoByTableModel_2(table *model.ClassTableModel) (*model.ClassTable
 	return info, nil
 }
 
-// 根据id获取课表详情
+// Get table info by table id.
 func GetTableInfoById(id uint32) (*model.ClassTableInfo, error) {
 	log.Info("GetTableInfoById function is called")
 
@@ -86,7 +86,7 @@ func GetTableInfoById(id uint32) (*model.ClassTableInfo, error) {
 	return GetTableInfoByTableModel(table)
 }
 
-// 根据id获取课表所用的课堂详情
+// Get class info for tables by class hash id.
 func GetClassInfoForTableById(id string) (*model.ClassInfo, error) {
 	class, err := model.GetClassByHashId(id)
 	if err != nil {
@@ -181,7 +181,7 @@ func GetClassInfoForTableById(id string) (*model.ClassInfo, error) {
 	return info, nil
 }
 
-// 根据课表model获取课表返回详情
+// Get table response info by original table model.
 func GetTableInfoByTableModel(table *model.ClassTableModel) (*model.ClassTableInfo, error) {
 	// return if has no class
 	if table.Classes == "" {
@@ -245,4 +245,22 @@ func GetTableInfoByTableModel(table *model.ClassTableModel) (*model.ClassTableIn
 	}
 
 	return info, nil
+}
+
+// Get all classes' id if in tables, returning a map and error.
+func GetAllClassIdsInTables(userId uint32) (map[string]bool, error) {
+	tables, err := model.GetTablesByUserId(userId)
+	if err != nil {
+		log.Error("GetTablesByUserId function error", err)
+		return nil, err
+	}
+
+	result := make(map[string]bool)
+	for _, table := range *tables {
+		ids := strings.Split(table.Classes, ",")
+		for _, id := range ids {
+			result[id] = true
+		}
+	}
+	return result, nil
 }
