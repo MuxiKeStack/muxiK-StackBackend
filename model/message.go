@@ -31,18 +31,15 @@ func GetMessages(page, limit, uid uint32) (*[]Message, error) {
 	return &messages, nil
 }
 
-func GetCount(uid uint32) uint32 {
+func GetCount(uid uint32) (uint32, error) {
 	var count uint32
-	DB.Self.Where("sub_user_id = ? AND is_read = ?", uid, '0').Count(&count)
-	return count
+	d := DB.Self.Table("message").Where("sub_user_id = ? AND is_read = ?", uid, 0).Count(&count)
+	return count, d.Error
 }
 
 func ReadAll(uid uint32) error {
 	var messages []Message
-	var count, i uint32
-	d := DB.Self.Where("sub_user_id = ? AND is_read = ?", uid, '0').Find(&messages).Count(&count)
-	for i = 0; i < count; i++ {
-		d = DB.Self.Model(messages[i]).Update("is_read", 1)
-	}
+	d := DB.Self.Table("message").Where("sub_user_id = ? AND is_read = ?", uid, '0').Find(&messages)
+	d = DB.Self.Model(&messages).Update("is_read", 1)
 	return d.Error
 }
