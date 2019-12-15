@@ -83,16 +83,33 @@ func (class *UsingCourseModel) GetByCourseId(time int, place int) error { //intä
 	return d.Error
 }
 
-// Favorite course.(TODO)
-// Fixed by shiina orez at 2019.11.24, add default return value in function body
-func (class *UsingCourseModel) Favorite() error {
-	return nil
+// Judge whether a course has already favorited by the current user.
+func (class *UsingCourseModel) HasFavorited(userId uint32) bool {
+	var data CourseLikeModel
+	var count int
+	DB.Self.Where("user_id = ? AND course_hash = ? ", userId, class.Hash).First(&data).Count(&count)
+	return count > 0
 }
 
-// Unfavorite course.(TODO)
-// Fixed by shiina orez at 2019.11.24, add default return value in function body
-func (class *UsingCourseModel) Unfavorite() error {
-	return nil
+// Favorite a course by the current user.
+func (class *UsingCourseModel) Favorite(userId uint32) error {
+	var data = CourseLikeModel{
+		CourseHash: class.Hash,
+		UserId:     userId,
+	}
+
+	d := DB.Self.Create(&data)
+	return d.Error
+}
+
+func (class *UsingCourseModel) Unfavorite(userId uint32) error {
+	var data = CourseLikeModel{
+		CourseHash: class.Hash,
+		UserId:     userId,
+	}
+
+	d := DB.Self.Delete(&data)
+	return d.Error
 }
 
 // Search course by name, courseId or teacher
