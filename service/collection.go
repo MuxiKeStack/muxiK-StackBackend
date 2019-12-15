@@ -4,12 +4,14 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"sync"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 
 	"github.com/lexkong/log"
 )
 
+// Get collections which have been processed by userId in table page.
 func GetCollectionsList(userId uint32) (*[]model.CourseInfoInCollections, error) {
 	var result []model.CourseInfoInCollections
 	courseIds, err := model.GetCollectionsByUserId(userId)
@@ -24,35 +26,66 @@ func GetCollectionsList(userId uint32) (*[]model.CourseInfoInCollections, error)
 		return nil, err
 	}
 
+	errChan := make(chan error, 1)
+	wg := &sync.WaitGroup{}
+	finished := make(chan bool, 1)
+	dataChan := make(chan *model.CourseInfoInCollections, 10)
+
 	for _, courseId := range courseIds {
 		// skip the course which has been added into tables
 		if ok := hiddenCourseIds[courseId]; ok {
 			continue
 		}
 
-		classes, err := model.GetClassesByCourseHash(courseId)
-		if err != nil {
-			log.Error("GetClassesByCourseHash function error", err)
-			return nil, err
-		}
+		wg.Add(1)
+		go func(courseId string) {
+			defer wg.Done()
 
-		classInfos, err := GetClassInfoInCollection(classes)
-		if err != nil {
-			log.Error("GetClassInfoInCollection function error", err)
-			return nil, err
-		}
+			classes, err := model.GetClassesByCourseHash(courseId)
+			if err != nil {
+				log.Error("GetClassesByCourseHash function error", err)
+				errChan <- err
+			}
 
-		result = append(result, model.CourseInfoInCollections{
-			CourseId:   courseId,
-			CourseName: (*classes)[0].Teacher,
-			ClassSum:   len(*classes),
-			Classes:    classInfos,
-		})
+			classInfos, err := GetClassInfoInCollection(classes)
+			if err != nil {
+				log.Error("GetClassInfoInCollection function error", err)
+				errChan <- err
+			}
+
+			data := &model.CourseInfoInCollections{
+				CourseId:   courseId,
+				CourseName: (*classes)[0].Teacher,
+				ClassSum:   len(*classes),
+				Classes:    classInfos,
+			}
+			dataChan <- data
+
+		}(courseId)
+	}
+
+	go func() {
+		wg.Wait()
+		close(dataChan)
+	}()
+
+	go func() {
+		for class := range dataChan {
+			result = append(result, *class)
+		}
+		close(finished)
+	}()
+
+	select {
+	case <-finished:
+	case err := <-errChan:
+		return nil, err
 	}
 
 	return &result, nil
 }
 
+// Get class info by original classes for table image's collection.
 func GetClassInfoInCollection(classes *[]model.UsingCourseModel) (*[]model.ClassInfoInCollections, error) {
 	var infos []model.ClassInfoInCollections
 
@@ -137,21 +170,4 @@ func GetClassInfoInCollection(classes *[]model.UsingCourseModel) (*[]model.Class
 		})
 	}
 	return &infos, nil
-}
-
-func GetAllClassIdsInTables(userId uint32) (map[string]bool, error) {
-	tables, err := model.GetTablesByUserId(userId)
-	if err != nil {
-		log.Error("GetTablesByUserId function error", err)
-		return nil, err
-	}
-
-	result := make(map[string]bool)
-	for _, table := range *tables {
-		ids := strings.Split(table.Classes, ",")
-		for _, id := range ids {
-			result[id] = true
-		}
-	}
-	return result, nil
 }
