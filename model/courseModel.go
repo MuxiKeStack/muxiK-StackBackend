@@ -34,6 +34,12 @@ type UsingCourseModel struct {
 	Region   uint8   `gorm:"column:region"`           //上课地区，暂定：东区，西区，其他。加索引（筛选条件）
 }
 
+type CourseLikeModel struct {
+	Id         uint32 `gorm:"column:id; primary_key; AUTO_INCREMENT"`
+	CourseHash string `gorm:"column:course_hash"`
+	UserId     uint32 `gorm:"column:user_id"`
+}
+
 type HistoryCourseInfo struct {
 	Hash     string
 	CourseId string
