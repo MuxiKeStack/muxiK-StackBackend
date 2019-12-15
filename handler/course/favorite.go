@@ -16,6 +16,7 @@ type likeDataRequest struct {
 
 //收藏课程
 func FavoriteCourse(c *gin.Context) {
+	log.Info("FavoriteCourse function is called.")
 	hash := c.Param("hash")
 	if hash == "" {
 		log.Info("get hash error")
@@ -33,19 +34,19 @@ func FavoriteCourse(c *gin.Context) {
 
 	hasLiked := course.HasFavorited(userId)
 
-	// 获取请求中当前的点赞状态
+	// 获取请求中当前的收藏状态
 	var bodyData likeDataRequest
 	if err := c.BindJSON(&bodyData); err != nil {
 		handler.SendBadRequest(c, errno.ErrBind, nil, err.Error())
 		return
 	}
 
-	// 未点赞
+	// 未收藏
 	if bodyData.LikeState && !hasLiked {
 		handler.SendResponse(c, errno.ErrNotLiked, nil)
 		return
 	}
-	//	已点赞
+	// 已收藏
 	if !bodyData.LikeState && hasLiked {
 		handler.SendResponse(c, errno.ErrHasLiked, nil)
 		return
@@ -53,7 +54,7 @@ func FavoriteCourse(c *gin.Context) {
 
 	var err error
 
-	// 点赞或者取消点赞
+	// 收藏或者取消收藏
 	if bodyData.LikeState {
 		err = course.Unfavorite(userId)
 	} else {
@@ -65,5 +66,6 @@ func FavoriteCourse(c *gin.Context) {
 		return
 	}
 
+	log.Info("success")
 	handler.SendResponse(c, nil, nil)
 }
