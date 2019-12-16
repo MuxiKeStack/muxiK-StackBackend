@@ -12,7 +12,7 @@ import (
 )
 
 // Get collections which have been processed by userId in table page.
-func GetCollectionsList(userId uint32) (*[]model.CourseInfoInCollections, error) {
+func GetCollectionsList(userId uint32, tableId uint32) (*[]model.CourseInfoInCollections, error) {
 	var result []model.CourseInfoInCollections
 	courseIds, err := model.GetCollectionsByUserId(userId)
 	if err != nil {
@@ -20,7 +20,7 @@ func GetCollectionsList(userId uint32) (*[]model.CourseInfoInCollections, error)
 		return nil, err
 	}
 
-	hiddenCourseIds, err := GetAllClassIdsInTables(userId)
+	hiddenCourseIds, err := GetAllClassIdsByTableId(userId, tableId)
 	if err != nil {
 		log.Error("GetAllClassIdsInTables function error", err)
 		return nil, err
@@ -125,20 +125,20 @@ func GetClassInfoInCollection(classes *[]model.UsingCourseModel) (*[]model.Class
 
 			start, err := strconv.ParseInt(time[:split1], 10, 8)
 			if err != nil {
-				log.Error("strconv.ParseInt function error when parsing start", err)
+				log.Error("ParseInt function error when parsing start", err)
 				return nil, err
 			}
 
 			stop, err := strconv.ParseInt(time[split1+1:split2], 10, 8)
 			if err != nil {
-				log.Error("strconv.ParseInt function error when parsing stop", err)
+				log.Error("ParseInt function error when parsing stop", err)
 				return nil, err
 			}
 
 			// 上课星期
 			day, err := strconv.ParseInt(time[split2+1:], 10, 8)
 			if err != nil {
-				log.Error("strconv.ParseInt function error when parsing day", err)
+				log.Error("ParseInt function error when parsing day", err)
 				return nil, err
 			}
 
@@ -148,7 +148,7 @@ func GetClassInfoInCollection(classes *[]model.UsingCourseModel) (*[]model.Class
 
 			weekState, err := strconv.ParseInt(week[splitWeek+1:], 10, 8)
 			if err != nil {
-				log.Error("strconv.ParseInt function error when parsing weekState", err)
+				log.Error("ParseInt function error when parsing weekState", err)
 				return nil, err
 			}
 

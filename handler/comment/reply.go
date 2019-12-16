@@ -30,7 +30,6 @@ func Reply(c *gin.Context) {
 	}
 
 	userId := c.MustGet("id").(uint32)
-
 	parentId := c.Param("id")
 
 	// Get the user's sid whom is reply to.
@@ -63,6 +62,12 @@ func Reply(c *gin.Context) {
 	//	handler.SendBadRequest(c, errno.ErrGetQuery, nil, "Sid is error, doesn't match the parentComment's")
 	//	return
 	//}
+
+	// Words are limited to 200
+	if len(data.Content) > 200 {
+		handler.SendBadRequest(c, errno.ErrWordLimitation, nil, "Comment's content is limited to 400.")
+		return
+	}
 
 	var comment = &model.SubCommentModel{
 		Id:           uuid.NewV4().String(),

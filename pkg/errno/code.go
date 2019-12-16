@@ -29,7 +29,7 @@ var (
 	ErrHasLiked              = &Errno{Code: 20302, Message: "User has already liked. "}
 	ErrEvaluationList        = &Errno{Code: 20303, Message: "Error occurred while getting evaluation list. "}
 	ErrCommentList           = &Errno{Code: 20304, Message: "Error occurred while getting comment list. "}
-	ErrCommentNotExist       = &Errno{Code: 20305, Message: "The comment does not exist. "}
+	ErrGetEvaluation         = &Errno{Code: 20305, Message: "Error occurred while getting evaluation."}
 	ErrGetSubCommentInfo     = &Errno{Code: 20306, Message: "Error occurred while getting subComment info"}
 	ErrGetParentCommentInfo  = &Errno{Code: 20307, Message: "Error occurred while getting parent comment info"}
 	ErrGetHotEvaluations     = &Errno{Code: 20308, Message: "Error occurred while getting hot evaluations"}
@@ -37,14 +37,14 @@ var (
 	ErrUpdateCourseInfo      = &Errno{Code: 20310, Message: "Error occurred while updating course's info"}
 	ErrDeleteComment         = &Errno{Code: 20311, Message: "Error occurred while deleting a comment "}
 	ErrHasEvaluated          = &Errno{Code: 20312, Message: "User has evaluated the course"}
-	ErrGetEvaluation         = &Errno{Code: 20313, Message: "Error occurred while getting evaluation."}
+	ErrWordLimitation        = &Errno{Code: 20313, Message: "Word limit exceeded"}
 
 	// table errors
-	ErrTableExisting   = &Errno{Code: 20401, Message: "The table is not existing. "}
-	ErrClassExisting   = &Errno{Code: 20402, Message: "The class is not existing. "}
+	ErrTableExisting   = &Errno{Code: 20401, Message: "The table does not exist"}
+	ErrClassExisting   = &Errno{Code: 20402, Message: "The class does not exist"}
 	ErrGetTableInfo    = &Errno{Code: 20403, Message: "Error occurred in getting table info. "}
 	ErrGetClassInfo    = &Errno{Code: 20404, Message: "Error occurred in getting class info."}
-	ErrClassHasExisted = &Errno{Code: 20405, Message: "Class has existed in the table."}
+	ErrClassHasExisted = &Errno{Code: 20405, Message: "Class has already existed in the table."}
 	ErrNewTable        = &Errno{Code: 20406, Message: "Error occurred while creating a new table "}
 
 	// message errors

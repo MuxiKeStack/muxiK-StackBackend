@@ -13,7 +13,7 @@
     "host": "...",
     "basePath": "/api/v1",
     "paths": {
-        "/collection/table/": {
+        "/collection/table/{id}/": {
             "get": {
                 "tags": [
                     "collection"
@@ -25,6 +25,13 @@
                         "description": "token",
                         "name": "token",
                         "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "课表id",
+                        "name": "id",
+                        "in": "path",
                         "required": true
                     }
                 ],

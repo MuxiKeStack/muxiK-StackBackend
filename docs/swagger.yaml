@@ -514,12 +514,17 @@ info:
   title: Muxi K-Stack
   version: "1.0"
 paths:
-  /collection/table/:
+  /collection/table/{id}/:
     get:
       parameters:
       - description: token
         in: header
         name: token
+        required: true
+        type: string
+      - description: 课表id
+        in: path
+        name: id
         required: true
         type: string
       responses:
