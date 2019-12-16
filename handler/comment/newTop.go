@@ -42,6 +42,12 @@ func CreateTopComment(c *gin.Context) {
 		return
 	}
 
+	// Words are limited to 200
+	if len(data.Content) > 200 {
+		handler.SendBadRequest(c, errno.ErrWordLimitation, nil, "Comment's content is limited to 400.")
+		return
+	}
+
 	var comment = &model.ParentCommentModel{
 		Id:            uuid.NewV4().String(),
 		UserId:        userId,

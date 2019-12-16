@@ -247,20 +247,24 @@ func GetTableInfoByTableModel(table *model.ClassTableModel) (*model.ClassTableIn
 	return info, nil
 }
 
-// Get all classes' id if in tables, returning a map and error.
-func GetAllClassIdsInTables(userId uint32) (map[string]bool, error) {
-	tables, err := model.GetTablesByUserId(userId)
-	if err != nil {
-		log.Error("GetTablesByUserId function error", err)
+// Get all classes' id if in the table, returning a map and error.
+func GetAllClassIdsByTableId(userId uint32, tableId uint32) (map[string]bool, error) {
+	table := &model.ClassTableModel{
+		Id:     tableId,
+		UserId: userId,
+	}
+
+	if err := table.GetById(); err != nil {
+		log.Error("table.GetById function error", err)
 		return nil, err
 	}
 
 	result := make(map[string]bool)
-	for _, table := range *tables {
-		ids := strings.Split(table.Classes, ",")
-		for _, id := range ids {
-			result[id] = true
-		}
+
+	ids := strings.Split(table.Classes, ",")
+	for _, id := range ids {
+		result[id] = true
 	}
+
 	return result, nil
 }

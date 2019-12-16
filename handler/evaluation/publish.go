@@ -57,8 +57,11 @@ func Publish(c *gin.Context) {
 		return
 	}
 
-	// 检查字数
-	// ...
+	// Words are limited to 400
+	if len(data.Content) > 400 {
+		handler.SendBadRequest(c, errno.ErrWordLimitation, nil, "Evaluation's content is limited to 400.")
+		return
+	}
 
 	var evaluation = &model.CourseEvaluationModel{
 		CourseId:            data.CourseId,

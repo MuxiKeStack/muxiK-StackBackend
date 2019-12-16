@@ -113,7 +113,7 @@ CREATE TABLE `class_table` (
   `id`      INT unsigned NOT NULL AUTO_INCREMENT,
   `user_id` INT          NOT NULL,
   `name`    VARCHAR(20)  NOT NULL DEFAULT "课表",
-  `classes` TEXT         NOT NULL COMMENT "课堂 hash 列表，逗号分隔",
+  `classes` TEXT         NOT NULL DEFAULT "" COMMENT "课堂 hash 列表，逗号分隔",
 
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`)

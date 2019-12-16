@@ -162,7 +162,7 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 	collections := g.Group("/api/v1/collection")
 	collections.Use(middleware.AuthMiddleware())
 	{
-		collections.GET("/table/", collection.CollectionsForTable)
+		collections.GET("/table/:id/", collection.CollectionsForTable)
 	}
 
 	// The health check handlers

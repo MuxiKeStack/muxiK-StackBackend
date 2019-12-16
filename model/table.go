@@ -29,7 +29,7 @@ func (table *ClassTableModel) Rename(newName string) error {
 
 // Judge whether the table exists.
 func (table *ClassTableModel) Existing() bool {
-	d := DB.Self.First(table)
+	d := DB.Self.Where("id = ? AND user_id = ?", table.Id, table.UserId).First(table)
 	return !d.RecordNotFound()
 }
 
@@ -38,6 +38,13 @@ func (table *ClassTableModel) UpdateClasses(classes string) error {
 	table.Classes = classes
 	d := DB.Self.Save(table)
 	return d.Error
+}
+
+// Judge whether the tableId is valid.
+func TableIsExisting(tableId uint32, userId uint32) bool {
+	var table ClassTableModel
+	d := DB.Self.Where("id = ? AND user_id = ?", tableId, userId).First(&table)
+	return !d.RecordNotFound()
 }
 
 // Get tables by userId.
