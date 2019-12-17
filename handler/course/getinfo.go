@@ -94,7 +94,7 @@ func GetCourseInfo(c *gin.Context) {
 
 	var i int
 	for i = 0; i < 10; i++ {
-		list := make([]TPList, 10, 20)
+		list := make([]TPList, 3, 6)
 		//var list ClassList
 		var list1, list2, list3 TPList
 		//list1 := make([]TPList, 2)
@@ -111,7 +111,9 @@ func GetCourseInfo(c *gin.Context) {
 		list3.time = aclass.Time3
 		list3.place = aclass.Place3
 		list = append(list, list1, list2, list3)
-		test = append(test, list)
+		if len(list) != 0 {
+			test = append(test, list)
+		}
 	}
 
 	courseResponse := ResponseInfo{
