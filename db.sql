@@ -216,6 +216,12 @@ INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time
 VALUES ('213f89eyguiguhy', '数据库原理', '喻莹', '98767654', 1, 3, '3-4#2', '9201', '2-17#0', 2);
 
 INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time1, place1, weeks1, region)
+VALUES ('213f89eyguiguhy', '数据库原理', '喻莹', '98767654', 2, 3, '1-2#3', '9201', '2-17#0', 2);
+
+INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time1, place1, weeks1, region)
+VALUES ('213f89eyguiguhy', '数据库原理', '喻莹', '98767654', 3, 3, '7-8#4', '9201', '2-17#0', 2);
+
+INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time1, place1, weeks1, region)
 VALUES ('298yr3y9f8euibf', '数字逻辑', '赵甫哲', '34789865', 1, 3, '1-2#3', '9402', '2-17#0', 2);
 
 INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time1, place1, weeks1, region)
