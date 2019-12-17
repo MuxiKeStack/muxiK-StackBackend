@@ -43,6 +43,12 @@ func (class *UsingCourseModel) GetByHash() error {
 	return d.Error
 }
 
+// Get history course by its hash.
+func (class *HistoryCourseModel) GetHistoryByHash() error {
+	d := DB.Self.First(class, "hash = ?", class.Hash)
+	return d.Error
+}
+
 // Get course by its type.(course list)
 // Fixed by shiina orez at 2019.11.24, type =>> Type
 func (class *UsingCourseModel) GetByType() error {
