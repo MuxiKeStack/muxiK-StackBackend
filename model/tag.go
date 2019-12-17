@@ -49,3 +49,9 @@ func NewTagsForCourse(tagId uint32, courseId string) error {
 	d = DB.Self.Save(&data)
 	return d.Error
 }
+
+func GetTagsNumber(tagId uint32, courseId string) (uint32, error) {
+	var data CourseTagModel
+	d := DB.Self.Where("course_id = ? AND tag_id = ?", courseId, tagId).First(&data)
+	return data.Num, d.Error
+}
