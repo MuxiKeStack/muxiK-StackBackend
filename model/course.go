@@ -50,8 +50,8 @@ func (class *HistoryCourseModel) GetHistoryByHash() error {
 }
 
 func (class *UsingCourseModel) GetClass(courseId string, classId uint64) error {
-	var data UsingCourseModel
-	d := DB.Self.Where("course_id = ? AND class_id = ? ", courseId, classId).First(&data)
+	//var data UsingCourseModel
+	d := DB.Self.Where("course_id = ? AND class_id = ? ", courseId, classId).First(&class)
 	return d.Error
 }
 
