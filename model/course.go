@@ -80,19 +80,6 @@ func (class *UsingCourseModel) GetByTeacher() error {
 	return d.Error
 }
 
-func GetCourseList(userId uint32) ([]string, error) {
-	var data []CourseLikeModel
-	var result []string
-	d := DB.Self.Where("user_id = ?", userId).Find(&data)
-	if d.RecordNotFound() {
-		return nil, nil
-	}
-	for _, i := range data {
-		result = append(result, i.CourseHash)
-	}
-	return result, d.Error
-}
-
 // Get course by its courseid.(course assistant)
 // Fixed by shiina orez at 2019.11.24 `int time` =>> `time int`, `int place` =>> `place int`
 func (class *UsingCourseModel) GetByCourseId(time int, place int) error { //int为映射，作为筛选条件
