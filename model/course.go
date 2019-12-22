@@ -49,9 +49,20 @@ func (class *HistoryCourseModel) GetHistoryByHash() error {
 	return d.Error
 }
 
+/*
 func (class *UsingCourseModel) GetClass(courseId string, classId uint64) error {
 	//var data UsingCourseModel
 	d := DB.Self.Where("course_id = ? AND class_id = ? ", courseId, classId).First(&class)
+	return d.Error
+}
+
+func (class *UsingCourseModel) GetClass(courseId string, classId uint64) error {
+	d := DB.Self.First(class, "hash = ? AND class_id = ? ", courseId, 1)
+	return d.Error
+}*/
+
+func (class *UsingCourseModel) GetClass(courseId string) error {
+	d := DB.Self.First(class, "hash = ? ", courseId)
 	return d.Error
 }
 
@@ -69,24 +80,18 @@ func (class *UsingCourseModel) GetByTeacher() error {
 	return d.Error
 }
 
-// Get course by its name.(TODO)(course list)
-// Fixed by shiina orez at 2019.11.24 GetByTeacher =>> GetByName
-func (class *UsingCourseModel) GetByName() error {
-	d := DB.Self.Find(class, "name = ?", class.Name)
-	return d.Error
+func GetCourseList(userId uint32) ([]string, error) {
+	var data []CourseLikeModel
+	var result []string
+	d := DB.Self.Where("user_id = ?", userId).Find(&data)
+	if d.RecordNotFound() {
+		return nil, nil
+	}
+	for _, i := range data {
+		result = append(result, i.CourseHash)
+	}
+	return result, d.Error
 }
-
-// Get course by its name.(TODO)(course assistant)
-// func (course *UsingCourseModel) GetByName(int time, int place) error {   //int为映射，作为筛选条件
-//     d := DB.Self.Find(course, "name = ?", course.name)
-//     return d.Error
-// }
-
-// Get course by its teacher.(course assistant)
-// func (course *UsingCourseModel) GetByTeacher(int time, int place) error {   //int为映射，作为筛选条件
-//     d := DB.Self.Find(course, "teacher = ?", course.teacher)
-//     return d.Error
-// }
 
 // Get course by its courseid.(course assistant)
 // Fixed by shiina orez at 2019.11.24 `int time` =>> `time int`, `int place` =>> `place int`
