@@ -1,7 +1,9 @@
 package course
 
 import (
-	//	"strconv"
+	//"strconv"
+	"fmt"
+	//"net/http"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
@@ -44,6 +46,23 @@ type ResponseInfo struct {
 	CourseFeature6 uint32
 }
 
+/*
+type Response struct {
+	Code    int         `json:"code"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
+}
+
+func SendInfo(c *gin.Context, err error, data ResponseInfo) {
+	code, message := errno.DecodeErr(err)
+
+	c.JSON(http.StatusOK, Response{
+		Code:    code,
+		Message: message,
+		Data:    data,
+	})
+}*/
+
 //获取课程信息
 func GetCourseInfo(c *gin.Context) {
 	/*	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
@@ -59,6 +78,7 @@ func GetCourseInfo(c *gin.Context) {
 		}
 
 		handler.SendResponse(c, nil, course)*/
+	log.Info("GetInfo function is called")
 
 	hash := c.Param("hash")
 	if hash == "" {
@@ -73,6 +93,7 @@ func GetCourseInfo(c *gin.Context) {
 	}
 
 	courseid := course.CourseId
+	fmt.Println(courseid)
 
 	class := &model.HistoryCourseModel{Hash: hash}
 	if err := class.GetHistoryByHash(); err != nil {
@@ -83,7 +104,7 @@ func GetCourseInfo(c *gin.Context) {
 
 	var examMap = service.GetExamCheckTypeNumForCourseInfo(course.CourseId)
 	//var test InfoClass
-	test := make([][]TPList, 10, 60)
+	test := make([][]TPList, 0, 60)
 
 	tag1, _ := model.GetTagsNumber(1, course.CourseId)
 	tag2, _ := model.GetTagsNumber(2, course.CourseId)
@@ -94,27 +115,43 @@ func GetCourseInfo(c *gin.Context) {
 
 	var i int
 	for i = 0; i < 10; i++ {
-		list := make([]TPList, 3, 6)
+		list := make([]TPList, 0, 3)
 		//var list ClassList
-		var list1, list2, list3 TPList
+		var list2, list3 TPList
 		//list1 := make([]TPList, 2)
 		//list2 := make([]TPList, 2)
 		//list3 := make([]TPList, 2)
 		aclass := &model.UsingCourseModel{Hash: hash}
-		if err := aclass.GetClass(courseid, uint64(i)); err != nil {
+		if err := aclass.GetByHash(); err != nil {
 			log.Info("course.GetClass() error.")
+			handler.SendError(c, err, nil, "")
+			log.Info(courseid)
+			//log.Println("%s", courseid)
+			//fmt.Print(courseid, uint64(i))
 		}
-		list1.time = aclass.Time1
-		list1.place = aclass.Place1
+		//log.Info(aclass.Time1)
+		//log.Info(aclass.Place1)
+		a := aclass.Time1
+		b := aclass.Time2
+		list4 := TPList{a, b}
+		//fmt.Print(list4)
+		//list1.time = aclass.Time1
+		//list1.place = aclass.Place1
 		list2.time = aclass.Time2
 		list2.place = aclass.Place2
 		list3.time = aclass.Time3
 		list3.place = aclass.Place3
-		list = append(list, list1, list2, list3)
-		if len(list) != 0 {
-			test = append(test, list)
-		}
+		list = append(list, list4) //, list2, list3)
+		//fmt.Print(list)
+		//if len(list) != 0 {
+		test = append(test, list)
+		//fmt.Print(test)
+		//}
 	}
+	//var test2 *[][]TPList
+	//*test2 = make([][]TPList, 60)
+	//test2 = &test
+	//fmt.Print(test)
 
 	courseResponse := ResponseInfo{
 		CourseName:     course.Name,
@@ -126,13 +163,16 @@ func GetCourseInfo(c *gin.Context) {
 		Attendance:     attendanceMap,
 		Exam:           examMap,
 		ClassInfo:      test,
-		CourseFeature1: tag1, //model.GetTagsNumber(1, course.CourseId),
-		CourseFeature2: tag2, //model.GetTagsNumber(2, course.CourseId),
-		CourseFeature3: tag3, //model.GetTagsNumber(3, course.CourseId),
-		CourseFeature4: tag4, //model.GetTagsNumber(4, course.CourseId),
-		CourseFeature5: tag5, //model.GetTagsNumber(5, course.CourseId),
-		CourseFeature6: tag6, //model.GetTagsNumber(6, course.CourseId),
+		CourseFeature1: tag1,
+		CourseFeature2: tag2,
+		CourseFeature3: tag3,
+		CourseFeature4: tag4,
+		CourseFeature5: tag5,
+		CourseFeature6: tag6,
 	}
 
+	fmt.Print(courseResponse)
+
+	//SendInfo(c, nil, courseResponse)
 	handler.SendResponse(c, nil, courseResponse) //*
 }
