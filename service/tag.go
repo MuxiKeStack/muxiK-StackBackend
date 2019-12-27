@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+	"github.com/lexkong/log"
 	"strconv"
 	"strings"
 
@@ -62,4 +63,25 @@ func NewTagsAfterPublishing(tags *[]uint8, courseId string) error {
 		}
 	}
 	return nil
+}
+
+// Get two most tags of a course by its hash id.
+func GetTwoMostTagsOfOneCourse(courseId string) ([]string, error) {
+	tagIds, err := model.GetTwoMostTagIdsOfCourseByHashId(courseId)
+	if err != nil {
+		log.Error("GetTwoMostTagsOfCourseByHashId function error", err)
+		return nil, err
+	}
+
+	var result []string
+	for _, id := range tagIds {
+		tag, err := model.GetTagNameById(id)
+		if err != nil {
+			log.Error("GetTagNameById function error", err)
+			return nil, err
+		}
+		result = append(result, tag)
+	}
+
+	return result, nil
 }

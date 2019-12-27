@@ -9,6 +9,15 @@ definitions:
       sum:
         type: integer
     type: object
+  collection.collectionListResponse:
+    properties:
+      list:
+        items:
+          $ref: '#/definitions/model.CourseInfoForCollections'
+        type: array
+      sum:
+        type: integer
+    type: object
   comment.commentListResponse:
     properties:
       page:
@@ -162,6 +171,7 @@ definitions:
   model.ClassInfoInCollections:
     properties:
       class_id:
+        description: 课堂hash id
         type: string
       class_name:
         type: string
@@ -258,15 +268,41 @@ definitions:
       teacher:
         type: string
     type: object
+  model.CourseInfoForCollections:
+    properties:
+      attendance_check_type:
+        type: string
+      course_id:
+        type: string
+      course_name:
+        type: string
+      evaluation_num:
+        type: integer
+      exam_check_type:
+        type: string
+      id:
+        description: 数据库表中记录的id，自增id
+        type: integer
+      rate:
+        type: number
+      tags:
+        items:
+          type: string
+        type: array
+      teacher:
+        type: string
+    type: object
   model.CourseInfoInCollections:
     properties:
       class_sum:
+        description: 课堂数
         type: integer
       classes:
         items:
           $ref: '#/definitions/model.ClassInfoInCollections'
         type: array
       course_id:
+        description: 课程hash id
         type: string
       course_name:
         type: string
@@ -514,6 +550,32 @@ info:
   title: Muxi K-Stack
   version: "1.0"
 paths:
+  /collection/:
+    get:
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 期望的数量
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: 上一次请求的最后一个记录的id，若是初始请求则为0
+        in: query
+        name: last_id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/collection.collectionListResponse'
+      summary: 获取课程清单列表
+      tags:
+      - collection
   /collection/table/{id}/:
     get:
       parameters:
