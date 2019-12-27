@@ -163,6 +163,7 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 	collections.Use(middleware.AuthMiddleware())
 	{
 		collections.GET("/table/:id/", collection.CollectionsForTable)
+		collections.GET("/", collection.GetCollections)
 	}
 
 	// The health check handlers
