@@ -1,12 +1,12 @@
 package collection
 
 import (
-	"fmt"
+	"strconv"
+
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
 	"github.com/MuxiKeStack/muxiK-StackBackend/service"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -24,7 +24,6 @@ type CollectionsInfo struct {
 // @Router /collection/table/{id}/ [get]
 func CollectionsForTable(c *gin.Context) {
 	userId := c.MustGet("id").(uint32)
-	fmt.Println(userId)
 
 	tableId, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {

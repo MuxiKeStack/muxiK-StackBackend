@@ -222,7 +222,7 @@ func GetExamCheckTypeByCode(code uint8) string {
 	return ""
 }
 
-// Get attendance check type amount by course id for course info.
+// Get attendance check type amount by course hash id for course info.
 func GetAttendanceCheckTypeNumForCourseInfo(courseId string) map[string]uint32 {
 	result := make(map[string]uint32)
 	for i := 1; i < 4; i++ {
@@ -232,7 +232,7 @@ func GetAttendanceCheckTypeNumForCourseInfo(courseId string) map[string]uint32 {
 	return result
 }
 
-// Get exam check type amount by course id for course info.
+// Get exam check type amount by course hash id for course info.
 func GetExamCheckTypeNumForCourseInfo(courseId string) map[string]uint32 {
 	result := make(map[string]uint32)
 	for i := 1; i < 5; i++ {
