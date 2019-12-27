@@ -76,11 +76,12 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 	courses := g.Group("/api/v1/course/using")
 	courses.Use(middleware.AuthMiddleware())
 	{
-		courses.GET("/:hash/", course.GetCourseInfo)
+		courses.GET("/info/:hash/", course.GetCourseInfo)
 		courses.PUT("/:id/", course.AddCourse)
 		courses.POST("/:id/", course.ModifyCourse)
 		courses.DELETE("/:id/", course.DeleteCourse)
 		courses.POST("/:id/favorite/", course.FavoriteCourse)
+		courses.GET("/favorite/list/", course.FavoriteList)
 	}
 
 	// // 云课堂课程
