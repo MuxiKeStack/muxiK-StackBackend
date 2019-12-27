@@ -1,14 +1,10 @@
 package course
 
 import (
-	//"strconv"
 	"fmt"
-	//"net/http"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
-	_ "github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
-	_ "github.com/MuxiKeStack/muxiK-StackBackend/pkg/token"
 	"github.com/MuxiKeStack/muxiK-StackBackend/service"
 
 	"github.com/gin-gonic/gin"
@@ -16,8 +12,8 @@ import (
 )
 
 type TPList struct {
-	time  string
-	place string
+	Time  string
+	Place string
 }
 
 /*type ClassList struct {
@@ -29,21 +25,21 @@ type InfoClass struct {
 }*/
 
 type ResponseInfo struct {
-	CourseName     string
-	TeacherName    string
-	CourseCategory uint8
-	CourseCredit   float32
-	Rate           float32
-	StarsNum       uint32
-	Attendance     map[string]uint32
-	Exam           map[string]uint32
-	ClassInfo      [][]TPList
-	CourseFeature1 uint32
-	CourseFeature2 uint32
-	CourseFeature3 uint32
-	CourseFeature4 uint32
-	CourseFeature5 uint32
-	CourseFeature6 uint32
+	CourseName     string            `json:"course_name"`
+	TeacherName    string            `json:"teacher_name"`
+	CourseCategory uint8             `json:"course_category"`
+	CourseCredit   float32           `json:"course_credit"`
+	Rate           float32           `json:"rate"`
+	StarsNum       uint32            `json:"stars_num"`
+	Attendance     map[string]uint32 `json:"attendance"`
+	Exam           map[string]uint32 `json:"exam"`
+	ClassInfo      [][]TPList        `json:"class_info"`
+	CourseFeature1 uint32            `json:"course_feature_1"`
+	CourseFeature2 uint32            `json:"course_feature_2"`
+	CourseFeature3 uint32            `json:"course_feature_3"`
+	CourseFeature4 uint32            `json:"course_feature_4"`
+	CourseFeature5 uint32            `json:"course_feature_5"`
+	CourseFeature6 uint32            `json:"course_feature_6"`
 }
 
 /*
@@ -137,10 +133,10 @@ func GetCourseInfo(c *gin.Context) {
 		//fmt.Print(list4)
 		//list1.time = aclass.Time1
 		//list1.place = aclass.Place1
-		list2.time = aclass.Time2
-		list2.place = aclass.Place2
-		list3.time = aclass.Time3
-		list3.place = aclass.Place3
+		list2.Time = aclass.Time2
+		list2.Place = aclass.Place2
+		list3.Time = aclass.Time3
+		list3.Place = aclass.Place3
 		list = append(list, list4) //, list2, list3)
 		//fmt.Print(list)
 		//if len(list) != 0 {
@@ -171,7 +167,7 @@ func GetCourseInfo(c *gin.Context) {
 		CourseFeature6: tag6,
 	}
 
-	fmt.Print(courseResponse)
+	// fmt.Print(courseResponse)
 
 	//SendInfo(c, nil, courseResponse)
 	handler.SendResponse(c, nil, courseResponse) //*
