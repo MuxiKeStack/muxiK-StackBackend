@@ -37,7 +37,7 @@ func CollectionsForTable(c *gin.Context) {
 		return
 	}
 
-	data, err := service.GetCollectionsList(userId, uint32(tableId))
+	data, err := service.GetCollectionListForTables(userId, uint32(tableId))
 	if err != nil {
 		handler.SendError(c, errno.ErrGetCollections, nil, err.Error())
 		return

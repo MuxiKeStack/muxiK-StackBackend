@@ -2,6 +2,7 @@ package model
 
 import (
 	"errors"
+
 	"github.com/jinzhu/gorm"
 )
 
@@ -27,7 +28,7 @@ func (evaluation *CourseEvaluationModel) Delete() error {
 	return d.Error
 }
 
-// block a evaluation, cause of be reported > 5 times
+// Block a evaluation, cause of be reported > 5 times
 func (e *CourseEvaluationModel) Block() error {
 	e.IsValid = false
 	d := DB.Self.Update(e)
@@ -218,6 +219,13 @@ func GetTeacherByCourseId(id string) (string, error) {
 	var course HistoryCourseModel
 	d := DB.Self.First(&course, "hash = ?", id)
 	return course.Teacher, d.Error
+}
+
+// Get history course by hash id.
+func GetHistoryCourseByHashId(id string) (*HistoryCourseModel, error) {
+	var course HistoryCourseModel
+	d := DB.Self.First(&course, "hash = ?", id)
+	return &course, d.Error
 }
 
 // 判断课程是否存在

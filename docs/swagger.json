@@ -13,6 +13,45 @@
     "host": "...",
     "basePath": "/api/v1",
     "paths": {
+        "/collection/": {
+            "get": {
+                "tags": [
+                    "collection"
+                ],
+                "summary": "获取课程清单列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "token",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "期望的数量",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "上一次请求的最后一个记录的id，若是初始请求则为0",
+                        "name": "last_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/collection.collectionListResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/collection/table/{id}/": {
             "get": {
                 "tags": [
@@ -1115,6 +1154,20 @@
                 }
             }
         },
+        "collection.collectionListResponse": {
+            "type": "object",
+            "properties": {
+                "list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.CourseInfoForCollections"
+                    }
+                },
+                "sum": {
+                    "type": "integer"
+                }
+            }
+        },
         "comment.commentListResponse": {
             "type": "object",
             "properties": {
@@ -1348,6 +1401,7 @@
             "type": "object",
             "properties": {
                 "class_id": {
+                    "description": "课堂hash id",
                     "type": "string"
                 },
                 "class_name": {
@@ -1493,10 +1547,47 @@
                 }
             }
         },
+        "model.CourseInfoForCollections": {
+            "type": "object",
+            "properties": {
+                "attendance_check_type": {
+                    "type": "string"
+                },
+                "course_id": {
+                    "type": "string"
+                },
+                "course_name": {
+                    "type": "string"
+                },
+                "evaluation_num": {
+                    "type": "integer"
+                },
+                "exam_check_type": {
+                    "type": "string"
+                },
+                "id": {
+                    "description": "数据库表中记录的id，自增id",
+                    "type": "integer"
+                },
+                "rate": {
+                    "type": "number"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "teacher": {
+                    "type": "string"
+                }
+            }
+        },
         "model.CourseInfoInCollections": {
             "type": "object",
             "properties": {
                 "class_sum": {
+                    "description": "课堂数",
                     "type": "integer"
                 },
                 "classes": {
@@ -1506,6 +1597,7 @@
                     }
                 },
                 "course_id": {
+                    "description": "课程hash id",
                     "type": "string"
                 },
                 "course_name": {

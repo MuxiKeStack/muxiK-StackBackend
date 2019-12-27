@@ -11,10 +11,15 @@ import (
 	"github.com/lexkong/log"
 )
 
+type CourseInfoForCollectionsList struct {
+	Lock  *sync.Mutex
+	IdMap map[uint32]*model.CourseInfoForCollections
+}
+
 // Get collections which have been processed by userId in table page.
-func GetCollectionsList(userId uint32, tableId uint32) (*[]model.CourseInfoInCollections, error) {
+func GetCollectionListForTables(userId uint32, tableId uint32) (*[]model.CourseInfoInCollections, error) {
 	var result []model.CourseInfoInCollections
-	courseIds, err := model.GetCollectionsByUserId(userId)
+	courseIds, err := model.GetCourseHashIdsFromCollection(userId)
 	if err != nil {
 		log.Error("GetCollectionsByUserId function error", err)
 		return nil, err
@@ -170,4 +175,94 @@ func GetClassInfoInCollection(classes *[]model.UsingCourseModel) (*[]model.Class
 		})
 	}
 	return &infos, nil
+}
+
+// Get collections in course list page.
+func GetCollectionList(userId uint32, lastId, limit int32) (*[]model.CourseInfoForCollections, error) {
+	records, err := model.GetCollectionsByUserId(userId, lastId, limit)
+	if err != nil {
+		log.Error("GetCollectionsByUserId function error", err)
+		return nil, err
+	}
+
+	var ids []uint32
+	for _, record := range *records {
+		ids = append(ids, record.Id)
+	}
+
+	courseInfoList := CourseInfoForCollectionsList{
+		Lock:  new(sync.Mutex),
+		IdMap: make(map[uint32]*model.CourseInfoForCollections, len(*records)),
+	}
+
+	wg := sync.WaitGroup{}
+	finished := make(chan bool, 1)
+	errChan := make(chan error, 1)
+
+	for _, record := range *records {
+		wg.Add(1)
+
+		go func(record model.CourseListModel) {
+			defer wg.Done()
+
+			course, err := model.GetHistoryCourseByHashId(record.CourseHashId)
+			if err != nil {
+				log.Error("GetHistoryCourseByHashId function error", err)
+				errChan <- err
+			}
+
+			attendanceTypeNum, err := model.GetTheMostAttendanceCheckType(record.CourseHashId)
+			if err != nil {
+				log.Error("GetTheMostAttendanceCheckType function error", err)
+				errChan <- err
+			}
+
+			examCheckTypeNum, err := model.GetTheMostExamCheckType(record.CourseHashId)
+			if err != nil {
+				log.Error("GetTheMostExamCheckType function error", err)
+				errChan <- err
+			}
+
+			tags, err := GetTwoMostTagsOfOneCourse(record.CourseHashId)
+			if err != nil {
+				log.Error("GetTwoMostTagsOfOneCourse function error", err)
+				errChan <- err
+			}
+
+			info := &model.CourseInfoForCollections{
+				Id:                  record.Id,
+				CourseId:            course.Hash,
+				CourseName:          course.Name,
+				Teacher:             course.Teacher,
+				EvaluationNum:       course.StarsNum,
+				Rate:                course.Rate,
+				AttendanceCheckType: GetAttendanceCheckTypeByCode(attendanceTypeNum),
+				ExamCheckType:       GetExamCheckTypeByCode(examCheckTypeNum),
+				Tags:                &tags,
+			}
+
+			courseInfoList.Lock.Lock()
+			defer courseInfoList.Lock.Unlock()
+
+			courseInfoList.IdMap[info.Id] = info
+		}(record)
+	}
+
+	go func() {
+		wg.Wait()
+		close(finished)
+	}()
+
+	select {
+	case <-finished:
+	case err := <-errChan:
+		return nil, err
+	}
+
+	var result []model.CourseInfoForCollections
+	for _, id := range ids {
+		result = append(result, *courseInfoList.IdMap[id])
+	}
+
+	return &result, nil
 }

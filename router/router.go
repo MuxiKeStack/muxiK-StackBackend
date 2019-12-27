@@ -81,7 +81,7 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 		courses.POST("/:id/", course.ModifyCourse)
 		courses.DELETE("/:id/", course.DeleteCourse)
 		courses.POST("/:id/favorite/", course.FavoriteCourse)
-		courses.GET("/favorite/list/", course.FavoriteList)
+		//courses.GET("/favorite/list/", course.FavoriteList)
 	}
 
 	// // 云课堂课程
