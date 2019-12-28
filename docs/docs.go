@@ -1159,7 +1159,7 @@ var doc = `{
                 "course_list": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/model.CourseInfoInCollections"
+                        "$ref": "#/definitions/model.CourseInfoInTableCollection"
                     }
                 },
                 "sum": {
@@ -1596,7 +1596,7 @@ var doc = `{
                 }
             }
         },
-        "model.CourseInfoInCollections": {
+        "model.CourseInfoInTableCollection": {
             "type": "object",
             "properties": {
                 "class_sum": {

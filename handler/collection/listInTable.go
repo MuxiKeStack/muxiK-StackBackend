@@ -13,7 +13,7 @@ import (
 
 type CollectionsInfo struct {
 	Sum        int                              `json:"sum"`
-	CourseList *[]model.CourseInfoInCollections `json:"course_list"`
+	CourseList *[]model.CourseInfoInTableCollection `json:"course_list"`
 }
 
 // @Summary 课表界面获取课程清单

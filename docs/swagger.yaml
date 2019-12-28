@@ -4,7 +4,7 @@ definitions:
     properties:
       course_list:
         items:
-          $ref: '#/definitions/model.CourseInfoInCollections'
+          $ref: '#/definitions/model.CourseInfoInTableCollection'
         type: array
       sum:
         type: integer
@@ -292,7 +292,7 @@ definitions:
       teacher:
         type: string
     type: object
-  model.CourseInfoInCollections:
+  model.CourseInfoInTableCollection:
     properties:
       class_sum:
         description: 课堂数
