@@ -17,8 +17,8 @@ type CourseInfoForCollectionsList struct {
 }
 
 // Get collections which have been processed by userId in table page.
-func GetCollectionListForTables(userId uint32, tableId uint32) (*[]model.CourseInfoInCollections, error) {
-	var result []model.CourseInfoInCollections
+func GetCollectionListForTables(userId uint32, tableId uint32) (*[]model.CourseInfoInTableCollection, error) {
+	var result []model.CourseInfoInTableCollection
 	courseIds, err := model.GetCourseHashIdsFromCollection(userId)
 	if err != nil {
 		log.Error("GetCollectionsByUserId function error", err)
@@ -34,7 +34,7 @@ func GetCollectionListForTables(userId uint32, tableId uint32) (*[]model.CourseI
 	errChan := make(chan error, 1)
 	wg := &sync.WaitGroup{}
 	finished := make(chan bool, 1)
-	dataChan := make(chan *model.CourseInfoInCollections, 10)
+	dataChan := make(chan *model.CourseInfoInTableCollection, 10)
 
 	for _, courseId := range courseIds {
 		// skip the course which has been added into tables
@@ -58,7 +58,7 @@ func GetCollectionListForTables(userId uint32, tableId uint32) (*[]model.CourseI
 				errChan <- err
 			}
 
-			data := &model.CourseInfoInCollections{
+			data := &model.CourseInfoInTableCollection{
 				CourseId:   courseId,
 				CourseName: (*classes)[0].Teacher,
 				ClassSum:   len(*classes),

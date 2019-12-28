@@ -1,13 +1,15 @@
 package collection
 
 import (
+	"strconv"
+
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
 	"github.com/MuxiKeStack/muxiK-StackBackend/service"
+
 	"github.com/gin-gonic/gin"
 	"github.com/lexkong/log"
-	"strconv"
 )
 
 type collectionListResponse struct {

@@ -6,7 +6,8 @@ type CourseListModel struct {
 	CourseHashId string `gorm:"column:course_hash_id"`
 }
 
-type CourseInfoInCollections struct {
+// 课表界面的课程清单信息
+type CourseInfoInTableCollection struct {
 	CourseId   string                    `json:"course_id"` // 课程hash id
 	CourseName string                    `json:"course_name"`
 	ClassSum   int                       `json:"class_sum"` // 课堂数
