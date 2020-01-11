@@ -441,10 +441,6 @@ paths:
           description: token
           required: true
           type: string
-        - in: path
-          name: id
-          required: true
-          type: string
         - in: query
           name: year
           required: true
@@ -1752,6 +1748,9 @@ definitions:
       is_evaluate:
         type: boolean
         description: 当前用户是否已评课
+      hash:
+        type: string
+        description: 课堂hash,可定位到课堂
         
   FavoriteList:
     type: object
