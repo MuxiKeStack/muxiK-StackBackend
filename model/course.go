@@ -49,22 +49,21 @@ func (class *HistoryCourseModel) GetHistoryByHash() error {
 	return d.Error
 }
 
-/*
 func (class *UsingCourseModel) GetClass(courseId string, classId uint64) error {
-	//var data UsingCourseModel
 	d := DB.Self.Where("course_id = ? AND class_id = ? ", courseId, classId).First(&class)
 	return d.Error
 }
 
+/*
 func (class *UsingCourseModel) GetClass(courseId string, classId uint64) error {
 	d := DB.Self.First(class, "hash = ? AND class_id = ? ", courseId, 1)
 	return d.Error
-}*/
+}
 
 func (class *UsingCourseModel) GetClass(courseId string) error {
 	d := DB.Self.First(class, "hash = ? ", courseId)
 	return d.Error
-}
+}*/
 
 // Get course by its type.(course list)
 // Fixed by shiina orez at 2019.11.24, type =>> Type
