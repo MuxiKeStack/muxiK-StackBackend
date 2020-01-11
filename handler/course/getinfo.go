@@ -34,6 +34,8 @@ type ResponseInfo struct {
 	Attendance     map[string]uint32 `json:"attendance"`
 	Exam           map[string]uint32 `json:"exam"`
 	ClassInfo      [][]TPList        `json:"class_info"`
+	TotalScore     float32           `json:"total_score"`
+	OrdinaryScore  float32           `json:"ordinary_score"`
 	CourseFeature1 uint32            `json:"course_feature_1"`
 	CourseFeature2 uint32            `json:"course_feature_2"`
 	CourseFeature3 uint32            `json:"course_feature_3"`
@@ -96,9 +98,9 @@ func GetCourseInfo(c *gin.Context) {
 		log.Info("course.GetHistoryByHash() error.")
 	}
 
-	var attendanceMap = service.GetAttendanceCheckTypeNumForCourseInfo(course.CourseId)
+	var attendanceMap = service.GetAttendanceCheckTypeNumForCourseInfo(hash)
 
-	var examMap = service.GetExamCheckTypeNumForCourseInfo(course.CourseId)
+	var examMap = service.GetExamCheckTypeNumForCourseInfo(hash)
 	//var test InfoClass
 	test := make([][]TPList, 0, 60)
 
@@ -118,7 +120,7 @@ func GetCourseInfo(c *gin.Context) {
 		//list2 := make([]TPList, 2)
 		//list3 := make([]TPList, 2)
 		aclass := &model.UsingCourseModel{Hash: hash}
-		if err := aclass.GetByHash(); err != nil {
+		if err := aclass.GetClass("45677654", 40); err != nil {
 			log.Info("course.GetClass() error.")
 			handler.SendError(c, err, nil, "")
 			log.Info(courseid)
@@ -159,6 +161,8 @@ func GetCourseInfo(c *gin.Context) {
 		Attendance:     attendanceMap,
 		Exam:           examMap,
 		ClassInfo:      test,
+		TotalScore:     80.0,
+		OrdinaryScore:  80.0,
 		CourseFeature1: tag1,
 		CourseFeature2: tag2,
 		CourseFeature3: tag3,
