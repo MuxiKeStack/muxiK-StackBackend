@@ -120,7 +120,7 @@ func GetCourseInfo(c *gin.Context) {
 		//list2 := make([]TPList, 2)
 		//list3 := make([]TPList, 2)
 		aclass := &model.UsingCourseModel{Hash: hash}
-		if err := aclass.GetClass("45677654", 40); err != nil {
+		if err := aclass.GetClass("45677654", 1); err != nil {
 			log.Info("course.GetClass() error.")
 			handler.SendError(c, err, nil, "")
 			log.Info(courseid)
