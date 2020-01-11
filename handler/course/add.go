@@ -2,10 +2,10 @@ package course
 
 import (
 	//"regexp"
-	"strconv"
-	//"crypto/md5"
-	//"encoding/hex"
+	"crypto/md5"
+	"encoding/hex"
 	"fmt"
+	"strconv"
 
 	"github.com/360EntSecGroup-Skylar/excelize"
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
@@ -61,8 +61,10 @@ func AddCourse(c *gin.Context) {
 	for _, row := range rows {
 		scourseid := row[2]
 		key := scourseid + row[8]
-		//md5lnst := md5.New()
-		//md5lnst.Write([]byte(key))
+		md5lnst := md5.New()
+		md5lnst.Write([]byte(key))
+		Result := md5lnst.Sum([]byte(""))
+		encodedStr := hex.EncodeToString(Result)
 		//result :=  hex.EncodeToString(md5.Sum(key))
 		//result := hex.EncodeToString(key.Sum(nil))
 		//result := md5lnst.Sum([]byte(""))
@@ -76,7 +78,7 @@ func AddCourse(c *gin.Context) {
 			}
 		}()
 		onecourse := &model.UsingCourseModel{
-			Hash:     key,
+			Hash:     encodedStr,
 			Name:     test(row[1]),
 			CourseId: test(row[2]),
 			ClassId:  clas,
