@@ -204,6 +204,8 @@ INSERT INTO `tags` (name) VALUES ("简单易学"), ("干货满满"), ("生动有
 INSERT INTO `history_course` (hash, name, teacher, type) VALUES ('112d34testsvggase', '高等数学A', '宋冰玉', 0);
 INSERT INTO `history_course` (hash, name, teacher, type) VALUES ('2e154de56gyubdq', '高级语言程序设计', '沈显军', 1);
 INSERT INTO `history_course` (hash, name, teacher, type) VALUES ('0s9uighvg121efe', 'Java程序设计', '张连发', 1);
+INSERT INTO `history_course` (hash, name, teacher, type) VALUES ('28yy89dqube12d8', '面向对象程序设计', '胡珀', 2);
+INSERT INTO `history_course` (hash, name, teacher, type) VALUES ('723fguib98y2e1h', 'Python程序设计', '胡珀', 2);
 
 INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time1, place1, weeks1, region)
 VALUES ('112d34testsvggase', '高等数学A', '宋冰玉', '45677654', 1, 3, '1-2#1', '7205', '2-17#0', 2);
