@@ -16,7 +16,7 @@ func CreateMessage(pub *MessagePub) error {
 	d := DB.Self.Create(&Message{
 		PubUserId:  pub.PubUserId,
 		SubUserId:  pub.SubUserId,
-		IsLike:     pub.IsLike,
+		Kind:       pub.Kind,
 		IsRead:     pub.IsRead,
 		Reply:      pub.Reply,
 		Time:       pub.Time,

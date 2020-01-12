@@ -10,7 +10,16 @@ import (
 
 	"github.com/lexkong/log"
 )
-
+/*
+对消息提醒的整理，分为三种，评论，点赞，举报，用kind来表识。
+所有消息提醒都有一个tag，即为courseinfo，信息有课程名，课程老师名，课程ID
+评论分为两种：
+	对评课的评论为一级评论，返回 	一级评论内容/reply		评课ID 评课内容 
+	对一级评论的评论即二级评论，返回 二级评论内容/reply		一级评论ID 一级评论内容
+点赞分为
+	
+举报分为
+*/
 func MessageList(page, limit, uid uint32) (*[]model.MessageSub, error) {
 	messages, err := model.GetMessages(page, limit, uid)
 	if err != nil {
@@ -19,7 +28,7 @@ func MessageList(page, limit, uid uint32) (*[]model.MessageSub, error) {
 	var messageSubs []model.MessageSub
 	for _, message := range *messages {
 		messageSub := model.MessageSub{
-			IsLike: message.IsLike,
+			Kind:   message.Kind,
 			IsRead: message.IsRead,
 			Reply:  message.Reply,
 			Time:   message.Time,
@@ -51,7 +60,7 @@ func NewMessageForParentComment(userId uint32, comment *model.ParentCommentModel
 	message := &model.MessagePub{
 		PubUserId: userId,
 		SubUserId: evaluation.UserId,
-		IsLike:    false,
+		Kind:      1,
 		IsRead:    false,
 		Reply:     comment.Content,
 		Time:      strconv.FormatInt(comment.Time.Unix(), 10),
@@ -90,7 +99,7 @@ func NewMessageForSubComment(userId uint32, sid string, comment *model.SubCommen
 	message := &model.MessagePub{
 		PubUserId: userId,
 		SubUserId: parentComment.UserId,
-		IsLike:    false,
+		Kind:      0,
 		IsRead:    false,
 		Reply:     comment.Content,
 		Time:      strconv.FormatInt(comment.Time.Unix(), 10),
@@ -123,7 +132,7 @@ func NewMessageForEvaluationLiking(userId uint32, evaluation *model.CourseEvalua
 	message := &model.MessagePub{
 		PubUserId: userId,
 		SubUserId: evaluation.UserId,
-		IsLike:    true,
+		Kind:      1,
 		IsRead:    false,
 		Reply:     "",
 		Time:      strconv.FormatInt(time.Now().Unix(), 10),
@@ -175,7 +184,7 @@ func NewMessageForParentCommentLiking(userId uint32, commentId string) error {
 	message := &model.MessagePub{
 		PubUserId: userId,
 		SubUserId: comment.UserId,
-		IsLike:    true,
+		Kind:      1,
 		IsRead:    false,
 		Reply:     "",
 		Time:      strconv.FormatInt(time.Now().Unix(), 10),
@@ -219,7 +228,7 @@ func NewMessageForSubCommentLiking(userId uint32, comment *model.SubCommentModel
 	message := &model.MessagePub{
 		PubUserId: userId,
 		SubUserId: comment.UserId,
-		IsLike:    true,
+		Kind:      1,
 		IsRead:    false,
 		Reply:     "",
 		Time:      strconv.FormatInt(time.Now().Unix(), 10),
@@ -240,3 +249,5 @@ func NewMessageForSubCommentLiking(userId uint32, comment *model.SubCommentModel
 	}
 	return nil
 }
+
+func NewMessageForReport(userId uint32, )
