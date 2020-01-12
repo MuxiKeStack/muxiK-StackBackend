@@ -9,18 +9,18 @@ func (m *Message) TableName() string {
 }
 
 func CreateMessage(pub *MessagePub) error {
-	courseJson, err := json.Marshal(pub.CourseInfo)
+	messageJson, err := json.Marshal(pub.MessageInfo)
 	if err != nil {
 		return err
 	}
 	d := DB.Self.Create(&Message{
-		PubUserId:  pub.PubUserId,
-		SubUserId:  pub.SubUserId,
-		Kind:       pub.Kind,
-		IsRead:     pub.IsRead,
-		Reply:      pub.Reply,
-		Time:       pub.Time,
-		CourseInfo: string(courseJson),
+		PubUserId:   pub.PubUserId,
+		SubUserId:   pub.SubUserId,
+		Kind:        pub.Kind,
+		IsRead:      pub.IsRead,
+		Reply:       pub.Reply,
+		Time:        pub.Time,
+		MessageInfo: string(messageJson),
 	})
 	return d.Error
 }

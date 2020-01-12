@@ -2,43 +2,52 @@ package model
 
 // Message represents a json for messaging
 type Message struct {
-	Id         uint32 `gorm:"column:id; primary_key" `
-	PubUserId  uint32 `gorm:"column:pub_user_id"`
-	SubUserId  uint32 `gorm:"column:sub_user_id"`
-	Kind       uint8  `gorm:"column:kind"`
-	IsRead     bool   `gorm:"column:is_read"`
-	Reply      string `gorm:"column:reply"`
-	Time       string `gorm:"column:time"`
-	CourseInfo string `gorm:"column:course_info"`
+	Id          uint32 `gorm:"column:id; primary_key" `
+	PubUserId   uint32 `gorm:"column:pub_user_id"`
+	SubUserId   uint32 `gorm:"column:sub_user_id"`
+	Kind        uint8  `gorm:"column:kind"`
+	IsRead      bool   `gorm:"column:is_read"`
+	Reply       string `gorm:"column:reply"`
+	Time        string `gorm:"column:time"`
+	MessageInfo string `gorm:"column:message_info"`
 }
 
-// CourseInf	o represents evaluation or comment information
-type CourseInfo struct {
-	EvaluationId    uint32 `json:"evaluation_id"`
+// 消息提醒的一些信息，显示出来的字段，用于回复评论的id	o represents evaluation or comment information
+type MessageInfo struct {
+	//消息提醒  tag需要的信息
+	CourseId   string `json:"course_id"`
+	CourseName string `json:"course_name"`
+	Teacher    string `json:"teacher"`
+
+	//点击消息提醒中的内容 跳转到 评课 需要 EvaluationId
+	EvaluationId uint32 `json:"evaluation_id"`
+
+	//即为操作对象的内容，如果是对于评课则是评课，如果是对评论则是原评论内容。
+	Content string `json:"content"`
+
+	//用于对评课==一级评论(只需要EnvaluationID)，评论的回复==二级评论(一级评论的ID ParentCommentId+目标用户 Sid).
+	//用来发二级评论
 	Sid             string `json:"sid"`
 	ParentCommentId string `json:"parent_comment_id"`
-	CourseName      string `json:"course_name"`
-	Teacher         string `json:"teacher"`
-	Content         string `json:"content"`
 }
 
 //
 type MessagePub struct {
-	PubUserId  uint32     `json:"pub_user_id"`
-	SubUserId  uint32     `json:"sub_user_id"`
-	Kind       uint8      `gorm:"column:kind"`
-	IsRead     bool       `json:"is_read"`
-	Reply      string     `json:"reply"`
-	Time       string     `json:"time"`
-	CourseInfo CourseInfo `json:"course_info"`
+	PubUserId   uint32      `json:"pub_user_id"`
+	SubUserId   uint32      `json:"sub_user_id"`
+	Kind        uint8       `gorm:"column:kind"`
+	IsRead      bool        `json:"is_read"`
+	Reply       string      `json:"reply"`
+	Time        string      `json:"time"`
+	MessageInfo MessageInfo `json:"message_info"`
 }
 
 //
 type MessageSub struct {
-	UserInfo   UserInfoRequest `json:"user_info"`
-	Kind       uint8           `gorm:"column:kind"`
-	IsRead     bool            `json:"is_read"`
-	Reply      string          `json:"reply"`
-	Time       string          `json:"time"`
-	CourseInfo CourseInfo      `json:"course_info"`
+	UserInfo    UserInfoRequest `json:"user_info"`
+	Kind        uint8           `gorm:"column:kind"`
+	IsRead      bool            `json:"is_read"`
+	Reply       string          `json:"reply"`
+	Time        string          `json:"time"`
+	MessageInfo MessageInfo     `json:"course_info"`
 }
