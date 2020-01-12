@@ -3,12 +3,9 @@ package service
 import (
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/util"
+
 	"github.com/lexkong/log"
 )
-
-//type ProducedCourse struct {
-//	Items *[]ProducedCourseItem `json:"items"`
-//}
 
 type ProducedCourseItem struct {
 	CourseId     string `json:"course_id"`

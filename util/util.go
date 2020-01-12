@@ -3,10 +3,11 @@ package util
 import (
 	"crypto/md5"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/teris-io/shortid"
 	"strings"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/teris-io/shortid"
 )
 
 func GenShortId() (string, error) {
@@ -30,6 +31,7 @@ func GetCurrentTime() *time.Time {
 	return &t
 }
 
+// 根据获取的教师字段提取教师名，[2006982005/张立荣,2006982022/费军](或2006982005/张立荣/教授,2006982022/费军/讲师)=>张立荣,费军
 func GetTeachersSqStrBySplitting(s string) string {
 	sqs := strings.Split(s, ",")
 	var teachers []string
@@ -39,6 +41,7 @@ func GetTeachersSqStrBySplitting(s string) string {
 	return strings.Join(teachers, ",")
 }
 
+// 根据课程号和教师名字符串hash
 func HashCourseId(courseNumStr, teachers string) string {
 	//fmt.Println(courseNumStr, teachers)
 	hash := md5.New()
