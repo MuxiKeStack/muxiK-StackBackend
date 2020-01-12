@@ -60,6 +60,17 @@ func MessageList(page, limit, uid uint32) (*[]model.MessageSub, error) {
 	return &messageSubs, nil
 }
 
+//所以对于消息提醒暂时分为三种，所有的信息返回也就是这三种。
+//所以我的想法是使用interface将其封装，而不应该是这样多个函数。
+//TODO FIX TO interface
+type MessageForComment interface {
+	GetEvaluation() *model.CourseEvaluationModel
+	// GetComment() *model.CommentModel
+}
+type MessageForLiking interface {
+	GetEvaluation() *model.CourseEvaluationModel
+}
+
 func NewMessageForParentComment(userId uint32, comment *model.ParentCommentModel, evaluation *model.CourseEvaluationModel) error {
 	teacher, err := model.GetTeacherByCourseId(evaluation.CourseId)
 	if err != nil {
