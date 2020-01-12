@@ -14,6 +14,7 @@ import (
 type TPList struct {
 	Time  string
 	Place string
+	Week  string
 }
 
 /*type ClassList struct {
@@ -112,15 +113,15 @@ func GetCourseInfo(c *gin.Context) {
 	tag6, _ := model.GetTagsNumber(6, course.CourseId)
 
 	var i int
-	for i = 0; i < 10; i++ {
+	for i = 1; i <= 10; i++ {
 		list := make([]TPList, 0, 3)
 		//var list ClassList
-		var list2, list3 TPList
+		//var list2, list3 TPList
 		//list1 := make([]TPList, 2)
 		//list2 := make([]TPList, 2)
 		//list3 := make([]TPList, 2)
 		aclass := &model.UsingCourseModel{Hash: hash}
-		if err := aclass.GetClass("45677654", 1); err != nil {
+		if err := aclass.GetClass("45677654", uint64(i)); err != nil {
 			log.Info("course.GetClass() error.")
 			handler.SendError(c, err, nil, "")
 			log.Info(courseid)
@@ -130,21 +131,34 @@ func GetCourseInfo(c *gin.Context) {
 		//log.Info(aclass.Time1)
 		//log.Info(aclass.Place1)
 		a := aclass.Time1
-		b := aclass.Time2
-		list4 := TPList{a, b}
+		b := aclass.Place1
+		x := aclass.Weeks1
+		c := aclass.Time2
+		d := aclass.Place2
+		y := aclass.Weeks2
+		e := aclass.Time3
+		f := aclass.Place3
+		z := aclass.Weeks3
+		list1 := TPList{a, b, x}
+		list2 := TPList{c, d, y}
+		list3 := TPList{e, f, z}
 		//fmt.Print(list4)
 		//list1.time = aclass.Time1
 		//list1.place = aclass.Place1
-		list2.Time = aclass.Time2
-		list2.Place = aclass.Place2
-		list3.Time = aclass.Time3
-		list3.Place = aclass.Place3
-		list = append(list, list4) //, list2, list3)
+		if a != "" || b != "" {
+			list = append(list, list1)
+		}
+		if c != "" || d != "" {
+			list = append(list, list2)
+		}
+		if e != "" || f != "" {
+			list = append(list, list3)
+		}
 		//fmt.Print(list)
-		//if len(list) != 0 {
-		test = append(test, list)
-		//fmt.Print(test)
-		//}
+		if len(list) != 0 {
+			test = append(test, list)
+			//fmt.Print(test)
+		}
 	}
 	//var test2 *[][]TPList
 	//*test2 = make([][]TPList, 60)
