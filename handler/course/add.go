@@ -1,9 +1,8 @@
 package course
 
 import (
-	//"regexp"
-	"crypto/md5"
-	"encoding/hex"
+	"github.com/MuxiKeStack/muxiK-StackBackend/util"
+
 	"fmt"
 	"strconv"
 
@@ -60,11 +59,8 @@ func AddCourse(c *gin.Context) {
 	rows := f.GetRows("公共课")
 	for _, row := range rows {
 		scourseid := row[2]
-		key := scourseid + row[8]
-		md5lnst := md5.New()
-		md5lnst.Write([]byte(key))
-		Result := md5lnst.Sum([]byte(""))
-		encodedStr := hex.EncodeToString(Result)
+		teachers := util.GetTeachersSqStrBySplitting(row[8])
+		key := util.HashCourseId(scourseid, teachers)
 		//result :=  hex.EncodeToString(md5.Sum(key))
 		//result := hex.EncodeToString(key.Sum(nil))
 		//result := md5lnst.Sum([]byte(""))
@@ -78,12 +74,12 @@ func AddCourse(c *gin.Context) {
 			}
 		}()
 		onecourse := &model.UsingCourseModel{
-			Hash:     encodedStr,
+			Hash:     key,
 			Name:     test(row[1]),
 			CourseId: test(row[2]),
 			ClassId:  clas,
 			Credit:   float,
-			Teacher:  test(row[8]),
+			Teacher:  teachers,
 			Type:     judge1(row[2][4:5]),
 			Time1:    test(row[10]), //regexp.FindString("^.{8}",row[10]),
 			Place1:   test(row[11]),
