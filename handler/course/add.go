@@ -3,10 +3,10 @@ package course
 import (
 	"github.com/MuxiKeStack/muxiK-StackBackend/util"
 	//"regexp"
-	"strconv"
-	//"crypto/md5"
-	//"encoding/hex"
+	"crypto/md5"
+	"encoding/hex"
 	"fmt"
+	"strconv"
 
 	"github.com/360EntSecGroup-Skylar/excelize"
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
@@ -64,8 +64,6 @@ func AddCourse(c *gin.Context) {
 		teachers := util.GetTeachersSqStrBySplitting(row[8])
 		//key := scourseid + row[8]
 		key := util.HashCourseId(scourseid, teachers)
-		//md5lnst := md5.New()
-		//md5lnst.Write([]byte(key))
 		//result :=  hex.EncodeToString(md5.Sum(key))
 		//result := hex.EncodeToString(key.Sum(nil))
 		//result := md5lnst.Sum([]byte(""))
