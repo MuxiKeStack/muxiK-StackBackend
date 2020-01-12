@@ -5,6 +5,7 @@ import (
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
 	"github.com/MuxiKeStack/muxiK-StackBackend/service"
+	"github.com/lexkong/log"
 
 	"github.com/gin-gonic/gin"
 )
@@ -31,15 +32,20 @@ func GetSelfCourses(c *gin.Context) {
 		return
 	}
 
-	// GetSidById
-	// 比较sid是否相等
+	// 验证学号是否属于该用户
+	if service.GetSidById(userId) != l.Sid {
+		handler.SendBadRequest(c, errno.ErrAuthFailed, nil, "")
+		return
+	}
 
 	year := c.DefaultQuery("year", "0")
 	term := c.DefaultQuery("term", "0")
 
 	data, err := service.GetSelfCourseList(userId, l.Sid, l.Password, year, term)
 	if err != nil {
-		handler.SendError(c, err, nil, err.Error())
+		log.Error("GetSelfCourseList", err)
+		handler.SendError(c, errno.ErrGetSelfCourses, nil, err.Error())
+		return
 	}
 
 	handler.SendResponse(c, nil, &selfCoursesResponse{

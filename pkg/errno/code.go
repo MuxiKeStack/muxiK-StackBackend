@@ -59,6 +59,7 @@ var (
 
 	// course errors
 	ErrCourseExisting = &Errno{Code: 20801, Message: "Course does not exist."}
+	ErrGetSelfCourses = &Errno{Code: 20802, Message: "Error occurred in getting self courses"}
 
 	// report errors
 	ErrCreateReport = &Errno{Code: 20901, Message: "Error occurred in creating new report."}
