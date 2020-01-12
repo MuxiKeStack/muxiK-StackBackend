@@ -15,11 +15,11 @@ type selfCoursesResponse struct {
 }
 
 // @Summary 获取个人历史课程
-// @Tags user
+// @Tags course
 // @Param token header string true "token"
 // @Param year query string true "学年，默认获取全部"
 // @Param term query string true "学期，1/2/3，默认0表示获取全部"
-// @Success 200 {object} model.ClassTableInfo
+// @Success 200 {object} course.selfCoursesResponse
 // @Router /user/courses/ [get]
 func GetSelfCourses(c *gin.Context) {
 	userId := c.MustGet("id").(uint32)

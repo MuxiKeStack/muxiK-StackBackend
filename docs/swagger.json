@@ -1033,7 +1033,7 @@
         "/user/courses/": {
             "get": {
                 "tags": [
-                    "user"
+                    "course"
                 ],
                 "summary": "获取个人历史课程",
                 "parameters": [
@@ -1063,7 +1063,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.ClassTableInfo"
+                            "$ref": "#/definitions/course.selfCoursesResponse"
                         }
                     }
                 }
@@ -1254,6 +1254,20 @@
                 },
                 "is_anonymous": {
                     "type": "boolean"
+                }
+            }
+        },
+        "course.selfCoursesResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/service.ProducedCourseItem"
+                    }
+                },
+                "sum": {
+                    "type": "integer"
                 }
             }
         },
@@ -1865,6 +1879,26 @@
                 },
                 "page": {
                     "type": "integer"
+                }
+            }
+        },
+        "service.ProducedCourseItem": {
+            "type": "object",
+            "properties": {
+                "academic": {
+                    "type": "string"
+                },
+                "course_id": {
+                    "type": "string"
+                },
+                "has_evaluated": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "teacher": {
+                    "type": "string"
                 }
             }
         },
