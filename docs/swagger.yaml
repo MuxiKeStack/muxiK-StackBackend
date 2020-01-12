@@ -159,9 +159,11 @@ definitions:
   model.ClassInfo:
     properties:
       class_id:
-        description: CourseId  string           `json:"course_id"`
-        type: string
+        description: 教学班编号
+        type: integer
       class_name:
+        type: string
+      course_id:
         type: string
       places:
         items:
@@ -169,9 +171,6 @@ definitions:
         type: array
       teacher:
         type: string
-      teaching_class_id:
-        description: 教学班编号
-        type: integer
       times:
         items:
           $ref: '#/definitions/model.ClassTimeInfo'
@@ -260,21 +259,6 @@ definitions:
       user_info:
         $ref: '#/definitions/model.UserInfoResponse'
         type: object
-    type: object
-  model.CourseInfo:
-    properties:
-      content:
-        type: string
-      course_name:
-        type: string
-      evaluation_id:
-        type: integer
-      parent_comment_id:
-        type: string
-      sid:
-        type: string
-      teacher:
-        type: string
     type: object
   model.CourseInfoForCollections:
     properties:
@@ -367,14 +351,33 @@ definitions:
     type: object
   model.MessageSub:
     properties:
-      course_info:
-        $ref: '#/definitions/model.CourseInfo'
-        type: object
-      is_like:
-        type: boolean
+      content:
+        description: 即为操作对象的内容，如果是对于评课则是评课，如果是对评论则是原评论内容。
+        type: string
+      courseId:
+        description: "MessageInfo string `gorm:\"column:message_info\"`\n消息提醒的一些信息，显示出来的字段，用于回复评论的id\to
+          represents evaluation or comment information"
+        type: string
+      courseName:
+        type: string
+      evaluationId:
+        description: 点击消息提醒中的内容 跳转到 评课 需要 EvaluationId
+        type: integer
       is_read:
         type: boolean
+      kind:
+        description: kind 区分 点赞->0 评论->1 举报->2
+        type: integer
+      parentCommentId:
+        type: string
       reply:
+        type: string
+      sid:
+        description: |-
+          用于对评课==一级评论(只需要EnvaluationID)，评论的回复==二级评论(一级评论的ID ParentCommentId+目标用户 Sid).
+          用来发二级评论
+        type: string
+      teacher:
         type: string
       time:
         type: string
@@ -1147,9 +1150,9 @@ paths:
         name: id
         required: true
         type: string
-      - description: 课堂id
+      - description: 课程id
         in: query
-        name: classId
+        name: course_id
         required: true
         type: string
       responses:
@@ -1250,7 +1253,7 @@ paths:
       tags:
       - upload
   /user/courses/:
-    get:
+    post:
       parameters:
       - description: token
         in: header

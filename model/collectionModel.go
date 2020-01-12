@@ -16,12 +16,12 @@ type CourseInfoInTableCollection struct {
 
 // 选课清单内的课堂（教学班）信息
 type ClassInfoInCollections struct {
-	ClassId         uint64                        `json:"class_id"` // 教学班编号
-	ClassName       string                        `json:"class_name"`
+	ClassId   uint64 `json:"class_id"` // 教学班编号
+	ClassName string `json:"class_name"`
 	//TeachingClassId uint64                        `json:"teaching_class_id"` // 教学班编号
-	Teacher         string                        `json:"teacher"`
-	Times           *[]ClassTimeInfoInCollections `json:"times"`
-	Places          *[]string                     `json:"places"`
+	Teacher string                        `json:"teacher"`
+	Times   *[]ClassTimeInfoInCollections `json:"times"`
+	Places  *[]string                     `json:"places"`
 }
 
 type ClassTimeInfoInCollections struct {

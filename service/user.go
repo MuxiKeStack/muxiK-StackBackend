@@ -70,3 +70,9 @@ func UpdateInfoById(id uint32, info *UserInfoRequest) error {
 	}
 	return nil
 }
+
+func GetSidById(id uint32) string {
+	u := &UserModel{}
+	DB.Self.Where("id = ?", id).First(&u)
+	return u.Sid
+}

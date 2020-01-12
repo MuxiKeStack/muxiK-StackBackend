@@ -40,12 +40,12 @@ var (
 	ErrWordLimitation        = &Errno{Code: 20313, Message: "Word limit exceeded"}
 
 	// table errors
-	ErrTableExisting   = &Errno{Code: 20401, Message: "The table does not exist"}
-	ErrClassExisting   = &Errno{Code: 20402, Message: "The class does not exist"}
-	ErrGetTableInfo    = &Errno{Code: 20403, Message: "Error occurred in getting table info. "}
-	ErrGetClassInfo    = &Errno{Code: 20404, Message: "Error occurred in getting class info."}
+	ErrTableExisting    = &Errno{Code: 20401, Message: "The table does not exist"}
+	ErrClassExisting    = &Errno{Code: 20402, Message: "The class does not exist"}
+	ErrGetTableInfo     = &Errno{Code: 20403, Message: "Error occurred in getting table info. "}
+	ErrGetClassInfo     = &Errno{Code: 20404, Message: "Error occurred in getting class info."}
 	ErrCourseHasExisted = &Errno{Code: 20405, Message: "This course has already existed in the table."}
-	ErrNewTable        = &Errno{Code: 20406, Message: "Error occurred while creating a new table "}
+	ErrNewTable         = &Errno{Code: 20406, Message: "Error occurred while creating a new table "}
 
 	// message errors
 	ErrGetMessage = &Errno{Code: 20501, Message: "Error occurred in getting message list"}

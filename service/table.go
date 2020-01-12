@@ -170,13 +170,13 @@ func GetClassInfoForTableById(hashId string, classId string) (*model.ClassInfo, 
 	}
 
 	info := &model.ClassInfo{
-		CourseId:  hashId,
-		ClassId:         class.ClassId,
+		CourseId: hashId,
+		ClassId:  class.ClassId,
 		//TeachingClassId: class.ClassId,
-		ClassName:       class.Name,
-		Teacher:         class.Teacher,
-		Places:          &places,
-		Times:           &timeInfos,
+		ClassName: class.Name,
+		Teacher:   class.Teacher,
+		Places:    &places,
+		Times:     &timeInfos,
 	}
 
 	return info, nil
