@@ -11,7 +11,7 @@ CREATE TABLE `user` (
   `avatar`     VARCHAR(255)     ,
   `is_blocked` TINYINT          NOT NULL DEFAULT 0,
 
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
   KEY `sid` (`sid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
@@ -19,11 +19,17 @@ CREATE TABLE `message` (
   `id`          INT UNSIGNED NOT NULL auto_increment,
   `pub_user_id` INT UNSIGNED NOT NULL DEFAULT 0,
   `sub_user_id` INT UNSIGNED NOT NULL DEFAULT 0,
-  `kind`        TINYINT(1) UNSIGNED   NOT NULL DEFAULT 0 "消息提醒的种类，0是点赞，1是评论，2是举报",
+  `kind`        TINYINT(1) UNSIGNED   NOT NULL DEFAULT 0  COMMENT "消息提醒的种类，0是点赞，1是评论，2是举报",
   `is_read`     TINYINT(1)   NOT NULL DEFAULT 0,
   `reply`       VARCHAR(255),
   `time`        VARCHAR(20)  NOT NULL,
-  `message_info` VARCHAR() NOT NULL,
+  `course_id`   VARCHAR(255),
+  `course_name` VARCHAR(255),
+  `teacher`     VARCHAR(255),
+  `evaluation_id` INT UNSIGNED,
+  `content`     VARCHAR(255),
+  `sid`         VARCHAR(255),
+  `parent_comment_id`     VARCHAR(255),
 
   PRIMARY KEY (`id`),
   KEY sub_user_id (`sub_user_id`)
