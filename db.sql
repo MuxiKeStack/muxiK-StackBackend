@@ -19,11 +19,11 @@ CREATE TABLE `message` (
   `id`          INT UNSIGNED NOT NULL auto_increment,
   `pub_user_id` INT UNSIGNED NOT NULL DEFAULT 0,
   `sub_user_id` INT UNSIGNED NOT NULL DEFAULT 0,
-  `kind`        TINYINT(1) UNSIGNED   NOT NULL DEFAULT 0 "消息提醒的种类，0是评论，1是点赞，2是举报",
+  `kind`        TINYINT(1) UNSIGNED   NOT NULL DEFAULT 0 "消息提醒的种类，0是点赞，1是评论，2是举报",
   `is_read`     TINYINT(1)   NOT NULL DEFAULT 0,
   `reply`       VARCHAR(255),
   `time`        VARCHAR(20)  NOT NULL,
-  `course_info` VARCHAR() NOT NULL,
+  `message_info` VARCHAR() NOT NULL,
 
   PRIMARY KEY (`id`),
   KEY sub_user_id (`sub_user_id`)
