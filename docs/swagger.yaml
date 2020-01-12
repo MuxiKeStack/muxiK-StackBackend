@@ -50,6 +50,15 @@ definitions:
     required:
     - content
     type: object
+  course.selfCoursesResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/service.ProducedCourseItem'
+        type: array
+      sum:
+        type: integer
+    type: object
   evaluation.evaluationPublishRequest:
     properties:
       attendance_check_type:
@@ -454,6 +463,19 @@ definitions:
         type: integer
       page:
         type: integer
+    type: object
+  service.ProducedCourseItem:
+    properties:
+      academic:
+        type: string
+      course_id:
+        type: string
+      has_evaluated:
+        type: boolean
+      name:
+        type: string
+      teacher:
+        type: string
     type: object
   service.SearchCourseInfo:
     properties:
@@ -1245,10 +1267,10 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.ClassTableInfo'
+            $ref: '#/definitions/course.selfCoursesResponse'
       summary: 获取个人历史课程
       tags:
-      - user
+      - course
   /user/evaluations/:
     get:
       parameters:
