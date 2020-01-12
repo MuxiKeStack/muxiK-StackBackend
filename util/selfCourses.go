@@ -29,8 +29,8 @@ type OriginalCourseItem struct {
 	Kcxzmc string `json:"kcxzmc"`                  // 课程性质，如专业主干课程/通识必修课
 }
 
-// 获取个人已上过的所有课程
-func GetAllSelfCourses(sid, password string) (*OriginalCourses, error) {
+// 获取个人已上过的课程
+func GetSelfCoursesFromXK(sid, password string, year, term string) (*OriginalCourses, error) {
 	params, err := MakeAccountPreflightRequest()
 	if err != nil {
 		log.Error("MakeAccountPreflightRequest function error", err)
@@ -57,7 +57,7 @@ func GetAllSelfCourses(sid, password string) (*OriginalCourses, error) {
 		return nil, err
 	}
 
-	return MakeCoursesGetRequest(client, sid)
+	return MakeCoursesGetRequest(client, sid, year, term)
 }
 
 // xk.ccnu.edu.cn 模拟登录
@@ -76,10 +76,15 @@ func MakeXKLogin(client *http.Client) error {
 }
 
 // 请求获取课程列表
-func MakeCoursesGetRequest(client *http.Client, sid string) (*OriginalCourses, error) {
+func MakeCoursesGetRequest(client *http.Client, sid, year, term string) (*OriginalCourses, error) {
+	var rqTerm = map[string]string{"1": "3", "2": "12", "3": "16"} // 请求学期参数
+	if year == "0" {
+		year = ""
+	}
+
 	formData := url.Values{}
-	formData.Set("xnm", "") // 学年名
-	formData.Set("xqm", "") // 学期名
+	formData.Set("xnm", year)         // 学年名
+	formData.Set("xqm", rqTerm[term]) // 学期名
 	formData.Set("_search", "false")
 	formData.Set("nd", string(time.Now().UnixNano()))
 	formData.Set("queryModel.showCount", "1000")

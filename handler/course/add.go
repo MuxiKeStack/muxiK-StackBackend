@@ -1,6 +1,7 @@
 package course
 
 import (
+	"github.com/MuxiKeStack/muxiK-StackBackend/util"
 	//"regexp"
 	"strconv"
 	//"crypto/md5"
@@ -60,7 +61,9 @@ func AddCourse(c *gin.Context) {
 	rows := f.GetRows("公共课")
 	for _, row := range rows {
 		scourseid := row[2]
-		key := scourseid + row[8]
+		teachers := util.GetTeachersSqStrBySplitting(row[8])
+		//key := scourseid + row[8]
+		key := util.HashCourseId(scourseid, teachers)
 		//md5lnst := md5.New()
 		//md5lnst.Write([]byte(key))
 		//result :=  hex.EncodeToString(md5.Sum(key))
@@ -81,7 +84,7 @@ func AddCourse(c *gin.Context) {
 			CourseId: test(row[2]),
 			ClassId:  clas,
 			Credit:   float,
-			Teacher:  test(row[8]),
+			Teacher:  teachers,
 			Type:     judge1(row[2][4:5]),
 			Time1:    test(row[10]), //regexp.FindString("^.{8}",row[10]),
 			Place1:   test(row[11]),

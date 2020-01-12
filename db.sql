@@ -112,8 +112,8 @@ CREATE TABLE `comment_like` (
 CREATE TABLE `class_table` (
   `id`      INT unsigned NOT NULL AUTO_INCREMENT,
   `user_id` INT          NOT NULL,
-  `name`    VARCHAR(20)  NOT NULL DEFAULT "课表",
-  `classes` TEXT         NOT NULL DEFAULT "" COMMENT "课堂 hash 列表，逗号分隔",
+  `name`    VARCHAR(20)  NOT NULL DEFAULT "新课表",
+  `classes` TEXT         NOT NULL COMMENT "课堂 hash 列表，逗号分隔",
 
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`)
@@ -196,7 +196,7 @@ CREATE TABLE `using_course` (
   FULLTEXT KEY (`name`, `course_id`, `teacher`) WITH PARSER ngram
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
-INSERT INTO `tags` (name) VALUES ("简单易学"), ("干货满满"), ("生动有趣"), ("作业量少"), ("老师温柔"), ("云课堂资料全");
+INSERT INTO `tags` (name) VALUES ("简单易学"), ("干货满满"), ("严谨负责"), ("温柔随风"), ("风趣幽默"), ("作业少"), ("划重点"), ("云课堂资料全");
 
 
 -- mock data
