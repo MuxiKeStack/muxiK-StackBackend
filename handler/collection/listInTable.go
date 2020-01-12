@@ -12,7 +12,7 @@ import (
 )
 
 type CollectionsInfo struct {
-	Sum        int                              `json:"sum"`
+	Sum        int                                  `json:"sum"`
 	CourseList *[]model.CourseInfoInTableCollection `json:"course_list"`
 }
 

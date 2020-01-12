@@ -48,6 +48,7 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 		u.GET("/info/", user.GetInfo)
 
 		u.GET("/evaluations/", eva.GetHistoryEvaluations)
+		u.GET("/courses/", course.GetSelfCourses)
 	}
 
 	// Upload image to oss
