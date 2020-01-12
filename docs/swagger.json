@@ -1030,6 +1030,45 @@
                 }
             }
         },
+        "/user/courses/": {
+            "get": {
+                "tags": [
+                    "user"
+                ],
+                "summary": "获取个人历史课程",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "token",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "学年，默认获取全部",
+                        "name": "year",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "学期，1/2/3，默认0表示获取全部",
+                        "name": "term",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.ClassTableInfo"
+                        }
+                    }
+                }
+            }
+        },
         "/user/evaluations/": {
             "get": {
                 "tags": [

@@ -1223,6 +1223,32 @@ paths:
       summary: 上传文件，图片，返回url，即为上传头像
       tags:
       - upload
+  /user/courses/:
+    get:
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 学年，默认获取全部
+        in: query
+        name: year
+        required: true
+        type: string
+      - description: 学期，1/2/3，默认0表示获取全部
+        in: query
+        name: term
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ClassTableInfo'
+      summary: 获取个人历史课程
+      tags:
+      - user
   /user/evaluations/:
     get:
       parameters:
