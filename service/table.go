@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"strconv"
 	"strings"
 	"sync"
@@ -40,7 +41,14 @@ func GetTableInfoByTableModel_2(table *model.ClassTableModel) (*model.ClassTable
 		go func(id string) {
 			defer wg.Done()
 
-			classInfo, err := GetClassInfoForTableById(id)
+			idSq := strings.Split(id, "#")
+			// 分隔出错，存储的数据没有按照hashId#classId存储
+			if len(idSq) < 2 {
+				errChan <- errors.New("classes split error")
+				return
+			}
+
+			classInfo, err := GetClassInfoForTableById(idSq[0], idSq[1])
 			if err != nil {
 				errChan <- err
 				return
@@ -87,19 +95,12 @@ func GetTableInfoById(id uint32) (*model.ClassTableInfo, error) {
 }
 
 // Get class info for tables by class hash id.
-func GetClassInfoForTableById(id string) (*model.ClassInfo, error) {
-	class, err := model.GetClassByHashId(id)
+func GetClassInfoForTableById(hashId string, classId string) (*model.ClassInfo, error) {
+	class, err := model.GetClassByHashId(hashId, classId)
 	if err != nil {
 		log.Error("GetClassByHashId function error", err)
 		return nil, err
 	}
-
-	// Get course's hash id
-	//courseId, err := model.GetCourseHashIdById(class.CourseId)
-	//if err != nil {
-	//	log.Error("GetCourseHashIdById function err", err)
-	//	return nil, err
-	//}
 
 	// 解析上课地点
 	places := []string{class.Place1}
@@ -169,9 +170,9 @@ func GetClassInfoForTableById(id string) (*model.ClassInfo, error) {
 	}
 
 	info := &model.ClassInfo{
-		//CourseId:  courseId,
-		ClassId:         id,
-		TeachingClassId: class.ClassId,
+		CourseId:  hashId,
+		ClassId:         class.ClassId,
+		//TeachingClassId: class.ClassId,
 		ClassName:       class.Name,
 		Teacher:         class.Teacher,
 		Places:          &places,
@@ -207,7 +208,14 @@ func GetTableInfoByTableModel(table *model.ClassTableModel) (*model.ClassTableIn
 		go func(id string) {
 			defer wg.Done()
 
-			classInfo, err := GetClassInfoForTableById(id)
+			idSq := strings.Split(id, "#")
+			// 分隔出错，存储的数据没有按照hashId#classId存储
+			if len(idSq) < 2 {
+				errChan <- errors.New("classes split error")
+				return
+			}
+
+			classInfo, err := GetClassInfoForTableById(idSq[0], idSq[1])
 			if err != nil {
 				errChan <- err
 				return
@@ -247,7 +255,7 @@ func GetTableInfoByTableModel(table *model.ClassTableModel) (*model.ClassTableIn
 	return info, nil
 }
 
-// Get all classes' id if in the table, returning a map and error.
+// Get all classes' id if in the table, returning a map and error, used by collection.
 func GetAllClassIdsByTableId(userId uint32, tableId uint32) (map[string]bool, error) {
 	table := &model.ClassTableModel{
 		Id:     tableId,
@@ -263,7 +271,8 @@ func GetAllClassIdsByTableId(userId uint32, tableId uint32) (map[string]bool, er
 
 	ids := strings.Split(table.Classes, ",")
 	for _, id := range ids {
-		result[id] = true
+		index := strings.Split(id, "#")
+		result[index[0]] = true
 	}
 
 	return result, nil
