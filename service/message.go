@@ -1,7 +1,6 @@
 package service
 
 import (
-	"encoding/json"
 	"fmt"
 	"strconv"
 	"time"
@@ -39,22 +38,22 @@ func MessageList(page, limit, uid uint32) (*[]model.MessageSub, error) {
 	var messageSubs []model.MessageSub
 	for _, message := range *messages {
 		messageSub := model.MessageSub{
-			Kind:   message.Kind,
-			IsRead: message.IsRead,
-			Reply:  message.Reply,
-			Time:   message.Time,
+			Kind:            message.Kind,
+			IsRead:          message.IsRead,
+			Reply:           message.Reply,
+			Time:            message.Time,
+			CourseId:        message.CourseId,
+			CourseName:      message.CourseName,
+			Teacher:         message.Teacher,
+			EvaluationId:    message.EvaluationId,
+			Content:         message.Content,
+			Sid:             message.Sid,
+			ParentCommentId: message.ParentCommentId,
 		}
 		userInfo, err := GetUserInfoRById(uid)
 		if err != nil {
 			return nil, err
 		}
-
-		var MessageInfo model.MessageInfo
-		err = json.Unmarshal([]byte(message.MessageInfo), &MessageInfo)
-		if err != nil {
-			return nil, err
-		}
-		messageSub.MessageInfo = MessageInfo
 		messageSub.UserInfo = *userInfo
 		messageSubs = append(messageSubs, messageSub)
 	}
@@ -69,21 +68,19 @@ func NewMessageForParentComment(userId uint32, comment *model.ParentCommentModel
 	}
 
 	message := &model.MessagePub{
-		PubUserId: userId,
-		SubUserId: evaluation.UserId,
-		Kind:      1,
-		IsRead:    false,
-		Reply:     comment.Content,
-		Time:      strconv.FormatInt(comment.Time.Unix(), 10),
-		MessageInfo: model.MessageInfo{
-			CourseId:        evaluation.CourseId,
-			CourseName:      evaluation.CourseName,
-			Teacher:         teacher,
-			EvaluationId:    evaluation.Id,
-			Content:         evaluation.Content,
-			Sid:             GetSidById(evaluation.UserId),
-			ParentCommentId: comment.Id,
-		},
+		PubUserId:       userId,
+		SubUserId:       evaluation.UserId,
+		Kind:            1,
+		IsRead:          false,
+		Reply:           comment.Content,
+		Time:            strconv.FormatInt(comment.Time.Unix(), 10),
+		CourseId:        evaluation.CourseId,
+		CourseName:      evaluation.CourseName,
+		Teacher:         teacher,
+		EvaluationId:    evaluation.Id,
+		Content:         evaluation.Content,
+		Sid:             GetSidById(evaluation.UserId),
+		ParentCommentId: comment.Id,
 	}
 
 	err = model.CreateMessage(message)
@@ -109,21 +106,19 @@ func NewMessageForSubComment(userId uint32, sid string, comment *model.SubCommen
 	}
 
 	message := &model.MessagePub{
-		PubUserId: userId,
-		SubUserId: parentComment.UserId,
-		Kind:      0,
-		IsRead:    false,
-		Reply:     comment.Content,
-		Time:      strconv.FormatInt(comment.Time.Unix(), 10),
-		MessageInfo: model.MessageInfo{
-			CourseId:        evaluation.CourseId,
-			CourseName:      evaluation.CourseName,
-			Teacher:         teacher,
-			EvaluationId:    parentComment.EvaluationId,
-			Content:         parentComment.Content,
-			Sid:             sid,
-			ParentCommentId: comment.Id,
-		},
+		PubUserId:       userId,
+		SubUserId:       parentComment.UserId,
+		Kind:            0,
+		IsRead:          false,
+		Reply:           comment.Content,
+		Time:            strconv.FormatInt(comment.Time.Unix(), 10),
+		CourseId:        evaluation.CourseId,
+		CourseName:      evaluation.CourseName,
+		Teacher:         teacher,
+		EvaluationId:    parentComment.EvaluationId,
+		Content:         parentComment.Content,
+		Sid:             sid,
+		ParentCommentId: comment.Id,
 	}
 
 	err = model.CreateMessage(message)
@@ -143,21 +138,19 @@ func NewMessageForEvaluationLiking(userId uint32, evaluation *model.CourseEvalua
 	}
 
 	message := &model.MessagePub{
-		PubUserId: userId,
-		SubUserId: evaluation.UserId,
-		Kind:      0,
-		IsRead:    false,
-		Reply:     "",
-		Time:      strconv.FormatInt(time.Now().Unix(), 10),
-		MessageInfo: model.MessageInfo{
-			CourseId:        evaluation.CourseId,
-			CourseName:      evaluation.CourseName,
-			Teacher:         teacher,
-			EvaluationId:    evaluation.Id,
-			Content:         evaluation.Content,
-			Sid:             "",
-			ParentCommentId: "",
-		},
+		PubUserId:       userId,
+		SubUserId:       evaluation.UserId,
+		Kind:            0,
+		IsRead:          false,
+		Reply:           "",
+		Time:            strconv.FormatInt(time.Now().Unix(), 10),
+		CourseId:        evaluation.CourseId,
+		CourseName:      evaluation.CourseName,
+		Teacher:         teacher,
+		EvaluationId:    evaluation.Id,
+		Content:         evaluation.Content,
+		Sid:             "",
+		ParentCommentId: "",
 	}
 
 	err = model.CreateMessage(message)
@@ -196,21 +189,19 @@ func NewMessageForParentCommentLiking(userId uint32, commentId string) error {
 	}
 
 	message := &model.MessagePub{
-		PubUserId: userId,
-		SubUserId: comment.UserId,
-		Kind:      0,
-		IsRead:    false,
-		Reply:     "",
-		Time:      strconv.FormatInt(time.Now().Unix(), 10),
-		MessageInfo: model.MessageInfo{
-			CourseId:        evaluation.CourseId,
-			CourseName:      evaluation.CourseName,
-			Teacher:         teacher,
-			EvaluationId:    evaluation.Id,
-			Content:         comment.Content,
-			Sid:             "",
-			ParentCommentId: "",
-		},
+		PubUserId:       userId,
+		SubUserId:       comment.UserId,
+		Kind:            0,
+		IsRead:          false,
+		Reply:           "",
+		Time:            strconv.FormatInt(time.Now().Unix(), 10),
+		CourseId:        evaluation.CourseId,
+		CourseName:      evaluation.CourseName,
+		Teacher:         teacher,
+		EvaluationId:    evaluation.Id,
+		Content:         comment.Content,
+		Sid:             "",
+		ParentCommentId: "",
 	}
 
 	err = model.CreateMessage(message)
@@ -241,21 +232,19 @@ func NewMessageForSubCommentLiking(userId uint32, comment *model.SubCommentModel
 	}
 
 	message := &model.MessagePub{
-		PubUserId: userId,
-		SubUserId: comment.UserId,
-		Kind:      0,
-		IsRead:    false,
-		Reply:     "",
-		Time:      strconv.FormatInt(time.Now().Unix(), 10),
-		MessageInfo: model.MessageInfo{
-			CourseId:        evaluation.CourseId,
-			CourseName:      evaluation.CourseName,
-			Teacher:         teacher,
-			EvaluationId:    evaluation.Id,
-			Content:         comment.Content,
-			Sid:             "",
-			ParentCommentId: "",
-		},
+		PubUserId:       userId,
+		SubUserId:       comment.UserId,
+		Kind:            0,
+		IsRead:          false,
+		Reply:           "",
+		Time:            strconv.FormatInt(time.Now().Unix(), 10),
+		CourseId:        evaluation.CourseId,
+		CourseName:      evaluation.CourseName,
+		Teacher:         teacher,
+		EvaluationId:    evaluation.Id,
+		Content:         comment.Content,
+		Sid:             "",
+		ParentCommentId: "",
 	}
 
 	err = model.CreateMessage(message)

@@ -1,26 +1,24 @@
 package model
 
-import (
-	"encoding/json"
-)
-
 func (m *Message) TableName() string {
 	return "message"
 }
 
 func CreateMessage(pub *MessagePub) error {
-	messageJson, err := json.Marshal(pub.MessageInfo)
-	if err != nil {
-		return err
-	}
 	d := DB.Self.Create(&Message{
-		PubUserId:   pub.PubUserId,
-		SubUserId:   pub.SubUserId,
-		Kind:        pub.Kind,
-		IsRead:      pub.IsRead,
-		Reply:       pub.Reply,
-		Time:        pub.Time,
-		MessageInfo: string(messageJson),
+		PubUserId:       pub.PubUserId,
+		SubUserId:       pub.SubUserId,
+		Kind:            pub.Kind,
+		IsRead:          pub.IsRead,
+		Reply:           pub.Reply,
+		Time:            pub.Time,
+		CourseId:        pub.CourseId,
+		CourseName:      pub.CourseName,
+		Teacher:         pub.Teacher,
+		EvaluationId:    pub.EvaluationId,
+		Content:         pub.Content,
+		Sid:             pub.Sid,
+		ParentCommentId: pub.ParentCommentId,
 	})
 	return d.Error
 }
