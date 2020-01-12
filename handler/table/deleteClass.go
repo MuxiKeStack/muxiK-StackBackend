@@ -16,7 +16,7 @@ import (
 // @Tags table
 // @Param token header string true "token"
 // @Param id path string true "课表id"
-// @Param classId query string true "课堂id"
+// @Param course_id query string true "课程id"
 // @Success 200 "OK"
 // @Router /table/{id}/class/ [delete]
 func DeleteClass(c *gin.Context) {
@@ -28,9 +28,9 @@ func DeleteClass(c *gin.Context) {
 		return
 	}
 
-	classId := c.DefaultQuery("classId", "")
-	if classId == "" {
-		handler.SendBadRequest(c, errno.ErrGetQuery, nil, "Table id is expected. ")
+	courseId := c.DefaultQuery("course_id", "")
+	if courseId == "" {
+		handler.SendBadRequest(c, errno.ErrGetQuery, nil, "course id is expected. ")
 		return
 	}
 
@@ -52,7 +52,7 @@ func DeleteClass(c *gin.Context) {
 	}
 
 	// 移除目标课堂的id
-	omitStart := strings.Index(table.Classes, classId)
+	omitStart := strings.Index(table.Classes, courseId)
 	if omitStart == -1 {
 		handler.SendError(c, errno.ErrClassExisting, nil, "")
 		return
@@ -61,9 +61,11 @@ func DeleteClass(c *gin.Context) {
 
 	var newClasses string
 	if omitEnd != -1 {
-		newClasses = table.Classes[:omitStart] + table.Classes[omitEnd+1:]
+		// 原始omitEnd是子串中分隔符的位置，需取在母串中的索引
+		newClasses = table.Classes[:omitStart] + table.Classes[omitStart+omitEnd+1:]
 	} else {
-		newClasses = table.Classes[:omitStart]
+		// 需去除尾部的分隔符
+		newClasses = table.Classes[:omitStart-1]
 	}
 
 	// 更新课表信息

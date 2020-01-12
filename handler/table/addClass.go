@@ -1,6 +1,7 @@
 package table
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -22,7 +23,8 @@ type addClassResponseData struct {
 // @Tags table
 // @Param token header string true "token"
 // @Param id path string true "课表id"
-// @Param classId query string true "课堂id"
+// @Param course_id query string true "课程hash id"
+// @Param class_id query string true "课堂教学班编号"
 // @Success 200 {object} table.addClassResponseData
 // @Router /table/{id}/class/ [post]
 func AddClass(c *gin.Context) {
@@ -34,9 +36,15 @@ func AddClass(c *gin.Context) {
 		return
 	}
 
-	classId := c.DefaultQuery("classId", "")
+	classId := c.DefaultQuery("class_id", "")
 	if classId == "" {
-		handler.SendBadRequest(c, errno.ErrGetQuery, nil, "The classId is required.")
+		handler.SendBadRequest(c, errno.ErrGetQuery, nil, "The class_id is required.")
+		return
+	}
+
+	courseId := c.DefaultQuery("course_id", "")
+	if classId == "" {
+		handler.SendBadRequest(c, errno.ErrGetQuery, nil, "The course_id is required.")
 		return
 	}
 
@@ -56,23 +64,26 @@ func AddClass(c *gin.Context) {
 	}
 
 	// 验证id所属的class是否存在
-	if !model.IsClassExisting(classId) {
+	if !model.IsClassExisting(courseId, classId) {
 		handler.SendBadRequest(c, errno.ErrClassExisting, nil, "")
 		return
 	}
 
 	// 验证该class在table中是否已存在
-	if ok := strings.Contains(table.Classes, classId); ok {
-		handler.SendBadRequest(c, errno.ErrClassHasExisted, nil, "")
+	if ok := strings.Contains(table.Classes, courseId); ok {
+		handler.SendBadRequest(c, errno.ErrCourseHasExisted, nil, "")
 		return
 	}
+
+	// 用于表中存储的字符串
+	courseStr := fmt.Sprintf("%s#%s", courseId, classId)
 
 	// 添加新课堂id
 	var newClasses string
 	if table.Classes == "" {
-		newClasses = classId
+		newClasses = courseStr
 	} else {
-		newClasses = table.Classes + "," + classId
+		newClasses = table.Classes + "," + courseStr
 	}
 	if err := table.UpdateClasses(newClasses); err != nil {
 		handler.SendError(c, errno.ErrDatabase, nil, err.Error())
@@ -80,7 +91,7 @@ func AddClass(c *gin.Context) {
 	}
 
 	// 获取新课堂的信息
-	newClassInfo, err := service.GetClassInfoForTableById(classId)
+	newClassInfo, err := service.GetClassInfoForTableById(courseId, classId)
 	if err != nil {
 		handler.SendError(c, errno.ErrGetClassInfo, nil, err.Error())
 		return

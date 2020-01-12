@@ -166,9 +166,9 @@ func GetClassInfoInCollection(classes *[]model.UsingCourseModel) (*[]model.Class
 		}
 
 		infos = append(infos, model.ClassInfoInCollections{
-			ClassId:         class.Hash,
+			ClassId:         class.ClassId,
 			ClassName:       class.Name,
-			TeachingClassId: class.ClassId,
+			//TeachingClassId: class.ClassId,
 			Teacher:         class.Teacher,
 			Times:           &timeInfos,
 			Places:          &places,

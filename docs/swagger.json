@@ -887,8 +887,15 @@
                     },
                     {
                         "type": "string",
-                        "description": "课堂id",
-                        "name": "classId",
+                        "description": "课程hash id",
+                        "name": "course_id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "课堂教学班编号",
+                        "name": "class_id",
                         "in": "query",
                         "required": true
                     }
@@ -1057,6 +1064,16 @@
                         "name": "term",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "description": "data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/model.LoginModel"
+                        }
                     }
                 ],
                 "responses": {
@@ -1454,8 +1471,8 @@
             "type": "object",
             "properties": {
                 "class_id": {
-                    "description": "课堂hash id",
-                    "type": "string"
+                    "description": "教学班编号",
+                    "type": "integer"
                 },
                 "class_name": {
                     "type": "string"
@@ -1467,11 +1484,8 @@
                     }
                 },
                 "teacher": {
+                    "description": "TeachingClassId uint64                        `json:\"teaching_class_id\"` // 教学班编号",
                     "type": "string"
-                },
-                "teaching_class_id": {
-                    "description": "教学班编号",
-                    "type": "integer"
                 },
                 "times": {
                     "type": "array",

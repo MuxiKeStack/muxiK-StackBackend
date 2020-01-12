@@ -180,8 +180,8 @@ definitions:
   model.ClassInfoInCollections:
     properties:
       class_id:
-        description: 课堂hash id
-        type: string
+        description: 教学班编号
+        type: integer
       class_name:
         type: string
       places:
@@ -189,10 +189,9 @@ definitions:
           type: string
         type: array
       teacher:
+        description: TeachingClassId uint64                        `json:"teaching_class_id"`
+          // 教学班编号
         type: string
-      teaching_class_id:
-        description: 教学班编号
-        type: integer
       times:
         items:
           $ref: '#/definitions/model.ClassTimeInfoInCollections'
@@ -1171,9 +1170,14 @@ paths:
         name: id
         required: true
         type: string
-      - description: 课堂id
+      - description: 课程hash id
         in: query
-        name: classId
+        name: course_id
+        required: true
+        type: string
+      - description: 课堂教学班编号
+        in: query
+        name: class_id
         required: true
         type: string
       responses:
@@ -1263,6 +1267,13 @@ paths:
         name: term
         required: true
         type: string
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.LoginModel'
+          type: object
       responses:
         "200":
           description: OK

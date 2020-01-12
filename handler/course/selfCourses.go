@@ -19,8 +19,9 @@ type selfCoursesResponse struct {
 // @Param token header string true "token"
 // @Param year query string true "学年，默认获取全部"
 // @Param term query string true "学期，1/2/3，默认0表示获取全部"
+// @Param data body model.LoginModel true "data"
 // @Success 200 {object} course.selfCoursesResponse
-// @Router /user/courses/ [get]
+// @Router /user/courses/ [post]
 func GetSelfCourses(c *gin.Context) {
 	userId := c.MustGet("id").(uint32)
 
@@ -29,6 +30,9 @@ func GetSelfCourses(c *gin.Context) {
 		handler.SendBadRequest(c, errno.ErrBind, nil, err.Error())
 		return
 	}
+
+	// GetSidById
+	// 比较sid是否相等
 
 	year := c.DefaultQuery("year", "0")
 	term := c.DefaultQuery("term", "0")

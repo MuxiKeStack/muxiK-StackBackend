@@ -64,15 +64,16 @@ func GetTableAmount(userId uint32) uint32 {
 
 /*--------- Class Operation -----------*/
 
-func IsClassExisting(id string) bool {
+func IsClassExisting(hashId string, classId string) bool {
 	var class UsingCourseModel
-	d := DB.Self.Where("hash = ?", id).First(&class)
+	d := DB.Self.Where("hash = ? AND class_id = ?", hashId, classId).First(&class)
 	return !d.RecordNotFound()
 }
 
-func GetClassByHashId(id string) (*UsingCourseModel, error) {
+// 根据hash id 和教学班编号获取课堂
+func GetClassByHashId(hashId string, classId string) (*UsingCourseModel, error) {
 	var class UsingCourseModel
-	d := DB.Self.Where("hash = ?", id).First(&class)
+	d := DB.Self.Where("hash = ? AND class_id = ?", hashId, classId).First(&class)
 	return &class, d.Error
 }
 
