@@ -5,9 +5,9 @@ import (
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
 	"github.com/MuxiKeStack/muxiK-StackBackend/service"
-	"github.com/lexkong/log"
 
 	"github.com/gin-gonic/gin"
+	"github.com/lexkong/log"
 )
 
 type selfCoursesResponse struct {
