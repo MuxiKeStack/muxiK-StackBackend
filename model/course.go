@@ -18,9 +18,10 @@ func (HistoryCourseModel) TableName() string {
 	return "history_course"
 }
 
+/*
 func (CourseLikeModel) TableName() string {
 	return "course_like"
-}
+}*/
 
 // Add a new course.
 func (class *UsingCourseModel) Add() error {
@@ -73,6 +74,7 @@ func (class *UsingCourseModel) GetByTeacher() error {
 	return d.Error
 }
 
+/*
 func GetCourseList(userId uint32) ([]string, error) {
 	var data []CourseLikeModel
 	var result []string
@@ -84,7 +86,7 @@ func GetCourseList(userId uint32) ([]string, error) {
 		result = append(result, i.CourseHash)
 	}
 	return result, d.Error
-}
+}*/
 
 // Get course by its courseid.(course assistant)
 func (class *UsingCourseModel) GetByCourseId(time int, place int) error { //int为映射，作为筛选条件
@@ -94,17 +96,17 @@ func (class *UsingCourseModel) GetByCourseId(time int, place int) error { //int�
 
 // Judge whether a course has already favorited by the current user.
 func (class *UsingCourseModel) HasFavorited(userId uint32) bool {
-	var data CourseLikeModel
+	var data CourseListModel
 	var count int
-	DB.Self.Where("user_id = ? AND course_hash = ? ", userId, class.Hash).First(&data).Count(&count)
+	DB.Self.Where("user_id = ? AND course_hash_id = ? ", userId, class.Hash).First(&data).Count(&count)
 	return count > 0
 }
 
 // Favorite a course by the current user.
 func (class *UsingCourseModel) Favorite(userId uint32) error {
-	var data = CourseLikeModel{
-		CourseHash: class.Hash,
-		UserId:     userId,
+	var data = CourseListModel{
+		CourseHashId: class.Hash,
+		UserId:       userId,
 	}
 
 	d := DB.Self.Create(&data)
@@ -112,9 +114,9 @@ func (class *UsingCourseModel) Favorite(userId uint32) error {
 }
 
 func (class *UsingCourseModel) Unfavorite(userId uint32) error {
-	var data = CourseLikeModel{
-		CourseHash: class.Hash,
-		UserId:     userId,
+	var data = CourseListModel{
+		CourseHashId: class.Hash,
+		UserId:       userId,
 	}
 
 	d := DB.Self.Delete(&data)
