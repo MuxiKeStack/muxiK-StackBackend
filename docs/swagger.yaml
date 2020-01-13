@@ -50,6 +50,11 @@ definitions:
     required:
     - content
     type: object
+  course.likeDataRequest:
+    properties:
+      like_state:
+        type: boolean
+    type: object
   course.selfCoursesResponse:
     properties:
       data:
@@ -82,10 +87,8 @@ definitions:
           type: integer
         type: array
     required:
-    - attendance_check_type
     - course_id
     - course_name
-    - exam_check_type
     type: object
   evaluation.evaluationPublishResponse:
     properties:
@@ -735,6 +738,34 @@ paths:
       summary: 课程所有评课和热评
       tags:
       - evaluation
+  /course/using/{id}/favorite/:
+    post:
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 收藏的课程id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: 当前收藏状态
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/course.likeDataRequest'
+          type: object
+      responses:
+        "200":
+          description: ok
+          schema:
+            $ref: '#/definitions/string'
+      summary: 收藏课程/取消收藏
+      tags:
+      - course
   /evaluation/:
     get:
       parameters:

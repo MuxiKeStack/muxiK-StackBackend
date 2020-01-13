@@ -254,6 +254,48 @@
                 }
             }
         },
+        "/course/using/{id}/favorite/": {
+            "post": {
+                "tags": [
+                    "course"
+                ],
+                "summary": "收藏课程/取消收藏",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "token",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "收藏的课程id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "当前收藏状态",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/course.likeDataRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "$ref": "#/definitions/string"
+                        }
+                    }
+                }
+            }
+        },
         "/evaluation/": {
             "get": {
                 "tags": [
@@ -1274,6 +1316,14 @@
                 }
             }
         },
+        "course.likeDataRequest": {
+            "type": "object",
+            "properties": {
+                "like_state": {
+                    "type": "boolean"
+                }
+            }
+        },
         "course.selfCoursesResponse": {
             "type": "object",
             "properties": {
@@ -1291,10 +1341,8 @@
         "evaluation.evaluationPublishRequest": {
             "type": "object",
             "required": [
-                "attendance_check_type",
                 "course_id",
-                "course_name",
-                "exam_check_type"
+                "course_name"
             ],
             "properties": {
                 "attendance_check_type": {
