@@ -294,7 +294,7 @@ paths:
             $ref: '#/definitions/CodeResponse'
 
   /course/using/{id}/favorite/:
-    post:
+    put:
       tags:
         - course
       summary: 收藏课程
@@ -315,7 +315,7 @@ paths:
           schema:
             type: object
             properties:
-              is_like:
+              like_state:
                 type: boolean
       responses:
         "200":
@@ -446,6 +446,10 @@ paths:
           required: true
           description: 学年，0(全部)/1/2/3/4
           type: integer
+        - in: path
+          name: id
+          required: true
+          type: string
         - in: query
           name: term
           required: true
