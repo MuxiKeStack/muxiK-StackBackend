@@ -116,6 +116,16 @@ CREATE TABLE `comment_like` (
   KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
+CREATE TABLE `course_like` (
+  `id`           INT unsigned NOT NULL AUTO_INCREMENT,
+  `course_hash`  VARCHAR(40)  NOT NULL COMMENT "课程hash",
+  `user_id`      INT          NOT NULL,
+
+  PRIMARY KEY (`id`),
+  KEY `course_hash` (`course_hash`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+
 CREATE TABLE `class_table` (
   `id`      INT unsigned NOT NULL AUTO_INCREMENT,
   `user_id` INT          NOT NULL,
