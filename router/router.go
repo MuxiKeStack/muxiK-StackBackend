@@ -81,7 +81,7 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 		courses.PUT("/:id/", course.AddCourse)
 		courses.POST("/:id/", course.ModifyCourse)
 		courses.DELETE("/:id/", course.DeleteCourse)
-		courses.POST("/:id/favorite/", course.FavoriteCourse)
+		courses.PUT("/:id/favorite/", course.FavoriteCourse)
 		//courses.GET("/favorite/list/", course.FavoriteList)
 	}
 
