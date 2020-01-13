@@ -72,3 +72,19 @@ func GetTwoMostTagIdsOfCourseByHashId(courseId string) ([]int, error) {
 	}
 	return ids, d.Error
 }
+
+// Get four most tags' ids of a course by its hash id.
+func GetFourMostTagIdsOfCourseByHashId(courseId string) ([]int, error) {
+	var tags []struct{ Id int }
+	d := DB.Self.Table("course_tag").Select("tag_id AS id").Where("course_id = ?", courseId).Order("num desc").Limit(4).Scan(&tags)
+
+	var ids []int
+	for _, tag := range tags {
+		ids = append(ids, tag.Id)
+	}
+
+	if d.RecordNotFound() {
+		return ids, nil
+	}
+	return ids, d.Error
+}

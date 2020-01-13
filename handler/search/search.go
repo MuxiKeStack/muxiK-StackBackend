@@ -11,9 +11,9 @@ import (
 )
 
 type searchResponse struct {
-	Courses []service.SearchCourseInfo `json:"courses"`
-	Length  int                        `json:"length"`
-	Page    uint64                     `json:"page"`
+	Courses []service.CourseInfoForAssistant `json:"courses"`
+	Length  int                              `json:"length"`
+	Page    uint64                           `json:"page"`
 }
 
 type searchHistoryCourseResponse struct {
@@ -33,13 +33,13 @@ type searchHistoryCourseResponse struct {
 // @Router /search/course/ [get]
 func SearchCourse(c *gin.Context) {
 	pageStr := c.DefaultQuery("page", "1")
-	page, err := strconv.ParseUint(pageStr, 10, 32)
+	page, err := strconv.ParseUint(pageStr, 10, 64)
 	if err != nil {
 		handler.SendBadRequest(c, errno.ErrGetQuery, nil, err.Error())
 		return
 	}
 	limitStr := c.DefaultQuery("limit", "10")
-	limit, err := strconv.ParseUint(limitStr, 10, 32)
+	limit, err := strconv.ParseUint(limitStr, 10, 64)
 	if err != nil {
 		handler.SendBadRequest(c, errno.ErrGetQuery, nil, err.Error())
 		return
@@ -51,7 +51,7 @@ func SearchCourse(c *gin.Context) {
 		th = true
 	}
 
-	courseList := []service.SearchCourseInfo{}
+	courseList := []service.CourseInfoForAssistant{}
 	if keyword != "" {
 		courseList, err = service.SearchCourses(keyword, page, limit, th)
 	} else {
@@ -79,13 +79,13 @@ func SearchCourse(c *gin.Context) {
 // @Router /search/historyCourse/ [get]
 func SearchHistoryCourse(c *gin.Context) {
 	pageStr := c.DefaultQuery("page", "1")
-	page, err := strconv.ParseUint(pageStr, 10, 32)
+	page, err := strconv.ParseUint(pageStr, 10, 64)
 	if err != nil {
 		handler.SendBadRequest(c, errno.ErrGetQuery, nil, err.Error())
 		return
 	}
 	limitStr := c.DefaultQuery("limit", "10")
-	limit, err := strconv.ParseUint(limitStr, 10, 32)
+	limit, err := strconv.ParseUint(limitStr, 10, 64)
 	if err != nil {
 		handler.SendBadRequest(c, errno.ErrGetQuery, nil, err.Error())
 		return
