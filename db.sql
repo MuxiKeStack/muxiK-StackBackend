@@ -5,11 +5,11 @@ CREATE DATABASE `muxikstack`;
 USE `muxikstack`;
 
 CREATE TABLE `user` (
-  `id`         INT              unsigned  NOT NULL AUTO_INCREMENT,
-  `sid`        VARCHAR(10)      NOT NULL COMMENT   "学生学号",
-  `username`   VARCHAR(25)      ,
-  `avatar`     VARCHAR(255)     ,
-  `is_blocked` TINYINT          NOT NULL DEFAULT 0,
+  `id`         INT UNSIGNED  NOT NULL AUTO_INCREMENT,
+  `sid`        VARCHAR(10)   NOT NULL COMMENT   "学生学号",
+  `username`   VARCHAR(25)   ,
+  `avatar`     VARCHAR(255)  ,
+  `is_blocked` TINYINT       NOT NULL DEFAULT 0,
 
   PRIMARY KEY (`id`),
   KEY `sid` (`sid`)
@@ -36,7 +36,7 @@ CREATE TABLE `message` (
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE `course_evaluation` (
-  `id`                    INT unsigned NOT NULL AUTO_INCREMENT,
+  `id`                    INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `course_name`           VARCHAR(50)  NOT NULL,
   `rate`                  FLOAT        NOT NULL DEFAULT 0,
   `attendance_check_type` INT          NOT NULL DEFAULT 0 COMMENT "考勤方式，经常点名/偶尔点名/签到点名，标识为 1/2/3",
@@ -51,7 +51,7 @@ CREATE TABLE `course_evaluation` (
   `deleted_at`            TIMESTAMP    NULL     DEFAULT NULL,
 
   `course_id`             VARCHAR(50)  NOT NULL,
-  `user_id`               INT          NOT NULl,
+  `user_id`               INT UNSIGNED NOT NULl,
 
   PRIMARY KEY (`id`),
   KEY `course_id` (`course_id`),
@@ -68,8 +68,8 @@ CREATE TABLE `parent_comment` (
   `is_valid`        TINYINT(1)  NOT NULL DEFAULT 1 COMMENT "是否有效，未被折叠",
   `deleted_at`      TIMESTAMP   NULL     DEFAULT NULL,
 
-  `user_id`         INT         NOT NULL,
-  `evaluation_id`   INT         NOT NULL COMMENT "评课id",
+  `user_id`         INT UNSIGNED NOT NULL,
+  `evaluation_id`   INT UNSIGNED NOT NULL COMMENT "评课id",
 
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
@@ -86,8 +86,8 @@ CREATE TABLE `sub_comment` (
   `deleted_at`   TIMESTAMP   NULL     DEFAULT NULL,
 
   `parent_id`      VARCHAR(40) NOT NULL,
-  `user_id`        INT         NOT NULL,
-  `target_user_id` INT         NOT NULL COMMENT "评论的目标用户id",
+  `user_id`        INT UNSIGNED  NOT NULL,
+  `target_user_id` INT UNSIGNED  NOT NULL COMMENT "评论的目标用户id",
 
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
@@ -97,9 +97,9 @@ CREATE TABLE `sub_comment` (
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE `course_evaluation_like` (
-  `id`            INT unsigned NOT NULL AUTO_INCREMENT,
-  `evaluation_id` INT          NOT NULL COMMENT "评课id",
-  `user_id`       INT          NOT NULL,
+  `id`            INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `evaluation_id` INT UNSIGNED NOT NULL COMMENT "评课id",
+  `user_id`       INT UNSIGNED NOT NULL,
 
   PRIMARY KEY (`id`),
   KEY `evaluation_id` (`evaluation_id`),
@@ -107,29 +107,18 @@ CREATE TABLE `course_evaluation_like` (
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE `comment_like` (
-  `id`         INT unsigned NOT NULL AUTO_INCREMENT,
+  `id`         INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `comment_id` VARCHAR(40)  NOT NULL COMMENT "评论id",
-  `user_id`    INT          NOT NULL,
+  `user_id`    INT UNSIGNED NOT NULL,
 
   PRIMARY KEY (`id`),
   KEY `comment_id` (`comment_id`),
   KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
-/*
-CREATE TABLE `course_like` (
-  `id`           INT unsigned NOT NULL AUTO_INCREMENT,
-  `course_hash`  VARCHAR(40)  NOT NULL COMMENT "课程hash",
-  `user_id`      INT          NOT NULL,
-
-  PRIMARY KEY (`id`),
-  KEY `course_hash` (`course_hash`),
-  KEY `user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;*/
-
 CREATE TABLE `class_table` (
-  `id`      INT unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` INT          NOT NULL,
+  `id`      INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_id` INT UNSIGNED NOT NULL,
   `name`    VARCHAR(20)  NOT NULL DEFAULT "新课表",
   `classes` TEXT         NOT NULL COMMENT "课堂 hash 列表，逗号分隔",
 
@@ -138,15 +127,15 @@ CREATE TABLE `class_table` (
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE `tags` (
-  `id`   INT unsigned NOT NULL AUTO_INCREMENT,
+  `id`   INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(20)  NOT NULL,
 
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE `course_tag` (
-  `id`        INT unsigned NOT NULL AUTO_INCREMENT,
-  `tag_id`    INT          NOT NULL,
+  `id`        INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `tag_id`    INT UNSIGNED NOT NULL,
   `course_id` VARCHAR(50)  NOT NULL,
   `num`       INT          NOT NULL,
 
@@ -156,9 +145,9 @@ CREATE TABLE `course_tag` (
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE `report` (
-  `id`            INT unsigned NOT NULL AUTO_INCREMENT,
-  `evaluation_id` INT          NOT NULL,
-  `user_id`       INT          NOT NULL,
+  `id`            INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `evaluation_id` INT UNSIGNED NOT NULL,
+  `user_id`       INT UNSIGNED NOT NULL,
   `pass`          TINYINT(1)   NOT NULL DEFAULT 0 COMMENT "举报审核是否通过",
   `reason`        VARCHAR(200) NOT NULL,
 
@@ -166,8 +155,8 @@ CREATE TABLE `report` (
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE `course_list` (
-  `id`             INT unsigned NOT NULL AUTO_INCREMENT,
-  `user_id`        INT          NOT NULL,
+  `id`             INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_id`        INT UNSIGNED NOT NULL,
   `course_hash_id` VARCHAR(50)  NOT NULL,
 
   PRIMARY KEY (`id`),
@@ -176,7 +165,7 @@ CREATE TABLE `course_list` (
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE `history_course` (
-  `id`        INT unsigned NOT NULL AUTO_INCREMENT,
+  `id`        INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `hash`      VARCHAR(50)  NOT NULL COMMENT "课程id + 教师名 hash 生成的唯一标识",
   `name`      VARCHAR(50)  NOT NULL,
   `teacher`   VARCHAR(50)  NOT NULL,
@@ -191,7 +180,7 @@ CREATE TABLE `history_course` (
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE `using_course` (
-  `id`             INT unsigned NOT NULL AUTO_INCREMENT,
+  `id`             INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `hash`           VARCHAR(50)  NOT NULL           COMMENT "课程id + 教师名 hash 生成的唯一标识",
   `name`           VARCHAR(50)  NOT NULL DEFAULT "",
   `teacher`        VARCHAR(50)  NOT NULL DEFAULT "",
