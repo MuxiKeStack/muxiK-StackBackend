@@ -34,12 +34,8 @@ type UsingCourseModel struct {
 	Region   uint8   `gorm:"column:region"`           //上课地区，暂定：东区，西区，其他。加索引（筛选条件）
 }
 
-/*
-type CourseLikeModel struct {
-	Id         uint32 `gorm:"column:id; primary_key; AUTO_INCREMENT"`
-	CourseHash string `gorm:"column:course_hash"`
-	UserId     uint32 `gorm:"column:user_id"`
-}*/
+// time格式：1-2#1 ==> 周一的第一到第二节，#后面的数字代表周几(1-7)
+// week格式：2-17#0 ==> 2-17周，全周；0为全周，1为单周，2为双周
 
 type HistoryCourseInfo struct {
 	Hash     string
