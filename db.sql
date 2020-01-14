@@ -209,6 +209,7 @@ INSERT INTO `tags` (name) VALUES ("简单易学"), ("干货满满"), ("严谨负
 -- mock data
 
 INSERT INTO `history_course` (hash, name, teacher, type) VALUES ('112d34testsvggase', '高等数学A', '宋冰玉', 0);
+INSERT INTO `history_course` (hash, name, teacher, type) VALUES ('213f89eyguiguhy', '数据库原理', '喻莹', 0);
 INSERT INTO `history_course` (hash, name, teacher, type) VALUES ('2e154de56gyubdq', '高级语言程序设计', '沈显军', 1);
 INSERT INTO `history_course` (hash, name, teacher, type) VALUES ('0s9uighvg121efe', 'Java程序设计', '张连发', 1);
 INSERT INTO `history_course` (hash, name, teacher, type) VALUES ('28yy89dqube12d8', '面向对象程序设计', '胡珀', 2);
@@ -223,11 +224,11 @@ VALUES ('112d34testsvggase', '高等数学A', '宋冰玉', '45677654', 2, 3, '3-
 INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time1, time2,time3, place1, place2, place3, weeks1, weeks2, weeks3, region)
 VALUES ('112d34testsvggase', '高等数学A', '宋冰玉', '45677654', 3, 3, '9-10#2', '5-6#5', '1-2#4', '7207', '7105', '7201', '2-17#0', '2-17#0', '2-17#2', 2);
 
-INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time1, place1, weeks1, region)
-VALUES ('213f89eyguiguhy', '数据库原理', '喻莹', '98767654', 1, 3, '3-4#2', '9201', '2-17#0', 2);
+INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time1, time2, time3, place1, place2, place3 ,weeks1, weeks2, weeks3, region)
+VALUES ('213f89eyguiguhy', '数据库原理', '喻莹', '98767654', 1, 3, '3-4#2', '7-8#4', '1-2#5', '9201', '8204', '7309', '2-17#0', '5-20#1','2-17#0', 2);
 
-INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time1, place1, weeks1, region)
-VALUES ('213f89eyguiguhy', '数据库原理', '喻莹', '98767654', 2, 3, '1-2#3', '9201', '2-17#0', 2);
+INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time1, time2, place1, place2, weeks1, weeks2, region)
+VALUES ('213f89eyguiguhy', '数据库原理', '喻莹', '98767654', 2, 3, '1-2#3', '5-6#1', '9201', '8412','2-17#0', '5-18#1',2);
 
 INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time1, place1, weeks1, region)
 VALUES ('213f89eyguiguhy', '数据库原理', '喻莹', '98767654', 3, 3, '7-8#4', '9201', '2-17#0', 2);
@@ -289,3 +290,41 @@ VALUES ('2017211712', '中华人民共和国湖北省武汉市洪山区当代恶
 
 INSERT INTO `user` (`sid`, `username`, `is_blocked`)
 VALUES ('2017909876', 'GITHUB', '0');
+
+-- mock data
+
+INSERT INTO `course_tag` (`tag_id`, `course_id`, `num`)
+VALUES ('1', '98767654', '2');
+
+INSERT INTO `course_tag` (`tag_id`, `course_id`, `num`)
+VALUES ('2', '98767654', '5');
+
+INSERT INTO `course_tag` (`tag_id`, `course_id`, `num`)
+VALUES ('3', '98767654', '10');
+
+INSERT INTO `course_tag` (`tag_id`, `course_id`, `num`)
+VALUES ('4', '98767654', '7');
+
+INSERT INTO `course_tag` (`tag_id`, `course_id`, `num`)
+VALUES ('5', '98767654', '1');
+
+INSERT INTO `course_tag` (`tag_id`, `course_id`, `num`)
+VALUES ('6', '98767654', '4');
+
+INSERT INTO `course_tag` (`tag_id`, `course_id`, `num`)
+VALUES ('1', '45677654', '20');
+
+INSERT INTO `course_tag` (`tag_id`, `course_id`, `num`)
+VALUES ('2', '45677654', '5');
+
+INSERT INTO `course_tag` (`tag_id`, `course_id`, `num`)
+VALUES ('3', '45677654', '1');
+
+INSERT INTO `course_tag` (`tag_id`, `course_id`, `num`)
+VALUES ('4', '45677654', '2');
+
+INSERT INTO `course_tag` (`tag_id`, `course_id`, `num`)
+VALUES ('5', '45677654', '10');
+
+INSERT INTO `course_tag` (`tag_id`, `course_id`, `num`)
+VALUES ('6', '45677654', '6');
