@@ -17,6 +17,7 @@ type UsingCourseModel struct {
 	Id       uint32  `gorm:"column:id; primary_key"`
 	Hash     string  `gorm:"column:hash; unique_key"` //教师名和课程hash成的唯一标识
 	Name     string  `gorm:"column:name"`             //课程名称
+	Academy  string  `gorm:"column:academy"`          //开课学院
 	Credit   float32 `gorm:"column:credit"`           //学分
 	Teacher  string  `gorm:"column:teacher"`          //教师性名
 	CourseId string  `gorm:"column:course_id"`        //UI上需要展示
@@ -51,6 +52,7 @@ type UsingCourseInfo struct {
 	CourseId string
 	ClassId  string
 	Name     string
+	Academy  string
 	Credit   float32
 	Teacher  string
 	Type     uint8
