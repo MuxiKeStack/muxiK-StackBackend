@@ -45,17 +45,16 @@ func SearchCourse(c *gin.Context) {
 		return
 	}
 	keyword := c.DefaultQuery("keyword", "")
-	thStr := c.DefaultQuery("th", "0")
-	th := false
-	if thStr == "1" {
-		th = true
-	}
+	t := c.DefaultQuery("type", "")
+	a := c.DefaultQuery("academy", "")
+	w := c.DefaultQuery("weekday", "")
+	p := c.DefaultQuery("place", "")
 
 	courseList := []service.CourseInfoForAssistant{}
 	if keyword != "" {
-		courseList, err = service.SearchCourses(keyword, page, limit, th)
+		courseList, err = service.SearchCourses(keyword, page, limit, t, a, w, p)
 	} else {
-		courseList, err = service.GetAllCourses(page, limit, th)
+		courseList, err = service.GetAllCourses(page, limit, t, a, w, p)
 	}
 	if err != nil {
 		handler.SendError(c, errno.ErrSearchCourse, nil, err.Error())
@@ -91,12 +90,13 @@ func SearchHistoryCourse(c *gin.Context) {
 		return
 	}
 	keyword := c.DefaultQuery("keyword", "")
+	t := c.DefaultQuery("type", "")
 
 	courseList := []service.SearchHistoryCourseInfo{}
 	if keyword != "" {
-		courseList, err = service.SearchHistoryCourses(keyword, page, limit)
+		courseList, err = service.SearchHistoryCourses(keyword, page, limit, t)
 	} else {
-		courseList, err = service.GetAllHistoryCourses(page, limit)
+		courseList, err = service.GetAllHistoryCourses(page, limit, t)
 	}
 	if err != nil {
 		handler.SendError(c, errno.ErrSearchCourse, nil, err.Error())

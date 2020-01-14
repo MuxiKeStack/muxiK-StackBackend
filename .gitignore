@@ -8,3 +8,4 @@ main
 *.zip
 .vscode
 log/
+*.swp
