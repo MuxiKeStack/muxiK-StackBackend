@@ -12,7 +12,7 @@ type SearchCourseInfo struct {
 	Credit   float32 `json:"credit"`    //学分
 	Teacher  string  `json:"teacher"`   //任课教师姓名
 	CourseId string  `json:"course_id"` //课程编号
-	ClassId  uint64  `json:"class_id"`  //课堂编号
+	ClassId  string  `json:"class_id"`  //课堂编号
 	Type     uint8   `json:"type"`      //课程类型
 }
 

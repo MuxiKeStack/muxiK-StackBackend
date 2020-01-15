@@ -187,17 +187,17 @@ CREATE TABLE `using_course` (
   `teacher`        VARCHAR(200)  NOT NULL DEFAULT "",
   `credit`         FLOAT        NOT NULL DEFAULT 0 COMMENT "学分",
   `course_id`      VARCHAR(9)   NOT NULL            COMMENT "课程号",
-  `class_id`       INT          NOT NULL            COMMENT "教学班编号",
+  `class_id`       VARCHAR(20)          NOT NULL            COMMENT "教学班编号",
   `type`           INT          NOT NULL            COMMENT "通识必修，通识选修，通识核心，专业必修，专业选修分别为 0/1/2/3/4",
-  `time1`          VARCHAR(20)  NOT NULL DEFAULT "",
-  `place1`         VARCHAR(20)  NOT NULL DEFAULT "",
-  `time2`          VARCHAR(20)  NOT NULL DEFAULT "",
-  `place2`         VARCHAR(20)  NOT NULL DEFAULT "",
-  `time3`          VARCHAR(20)  NOT NULL DEFAULT "",
-  `place3`         VARCHAR(20)  NOT NULL DEFAULT "",
-  `weeks1`         VARCHAR(20)  NOT NULL DEFAULT "",
-  `weeks2`         VARCHAR(20)  NOT NULL DEFAULT "",
-  `weeks3`         VARCHAR(20)  NOT NULL DEFAULT "",
+  `time1`          VARCHAR(30)  NOT NULL DEFAULT "",
+  `place1`         VARCHAR(30)  NOT NULL DEFAULT "",
+  `time2`          VARCHAR(30)  NOT NULL DEFAULT "",
+  `place2`         VARCHAR(30)  NOT NULL DEFAULT "",
+  `time3`          VARCHAR(30)  NOT NULL DEFAULT "",
+  `place3`         VARCHAR(30)  NOT NULL DEFAULT "",
+  `weeks1`         VARCHAR(30)  NOT NULL DEFAULT "",
+  `weeks2`         VARCHAR(30)  NOT NULL DEFAULT "",
+  `weeks3`         VARCHAR(30)  NOT NULL DEFAULT "",
   `region`         INT          NOT NULL COMMENT "上课地区，1-南湖，2-东区，3-西区。加索引（筛选条件）",
 
   PRIMARY KEY (`id`),
@@ -218,43 +218,43 @@ INSERT INTO `history_course` (hash, name, teacher, type) VALUES ('28yy89dqube12d
 INSERT INTO `history_course` (hash, name, teacher, type) VALUES ('723fguib98y2e1h', 'Python程序设计', '胡珀', 2);
 
 INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time1, place1, weeks1, region)
-VALUES ('112d34testsvggase', '高等数学A', '宋冰玉', '45677654', 1, 3, '1-2#1', '7205', '2-17#0', 2);
+VALUES ('112d34testsvggase', '高等数学A', '宋冰玉', '45677654', "1", 3, '1-2#1', '7205', '2-17#0', 2);
 
 INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time1, time2, place1, place2, weeks1, weeks2, region)
-VALUES ('112d34testsvggase', '高等数学A', '宋冰玉', '45677654', 2, 3, '3-4#1', '5-6#3', '7207', '7105', '2-17#0', '2-15#2', 2);
+VALUES ('112d34testsvggase', '高等数学A', '宋冰玉', '45677654', "2", 3, '3-4#1', '5-6#3', '7207', '7105', '2-17#0', '2-15#2', 2);
 
 INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time1, time2,time3, place1, place2, place3, weeks1, weeks2, weeks3, region)
-VALUES ('112d34testsvggase', '高等数学A', '宋冰玉', '45677654', 3, 3, '9-10#2', '5-6#5', '1-2#4', '7207', '7105', '7201', '2-17#0', '2-17#0', '2-17#2', 2);
+VALUES ('112d34testsvggase', '高等数学A', '宋冰玉', '45677654', "3", 3, '9-10#2', '5-6#5', '1-2#4', '7207', '7105', '7201', '2-17#0', '2-17#0', '2-17#2', 2);
 
 INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time1, time2, time3, place1, place2, place3 ,weeks1, weeks2, weeks3, region)
-VALUES ('213f89eyguiguhy', '数据库原理', '喻莹', '98767654', 1, 3, '3-4#2', '7-8#4', '1-2#5', '9201', '8204', '7309', '2-17#0', '5-20#1','2-17#0', 2);
+VALUES ('213f89eyguiguhy', '数据库原理', '喻莹', '98767654', "1", 3, '3-4#2', '7-8#4', '1-2#5', '9201', '8204', '7309', '2-17#0', '5-20#1','2-17#0', 2);
 
 INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time1, time2, place1, place2, weeks1, weeks2, region)
-VALUES ('213f89eyguiguhy', '数据库原理', '喻莹', '98767654', 2, 3, '1-2#3', '5-6#1', '9201', '8412','2-17#0', '5-18#1',2);
+VALUES ('213f89eyguiguhy', '数据库原理', '喻莹', '98767654', "2", 3, '1-2#3', '5-6#1', '9201', '8412','2-17#0', '5-18#1',2);
 
 INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time1, place1, weeks1, region)
-VALUES ('213f89eyguiguhy', '数据库原理', '喻莹', '98767654', 3, 3, '7-8#4', '9201', '2-17#0', 2);
+VALUES ('213f89eyguiguhy', '数据库原理', '喻莹', '98767654', "3", 3, '7-8#4', '9201', '2-17#0', 2);
 
 INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time1, place1, weeks1, region)
-VALUES ('298yr3y9f8euibf', '数字逻辑', '赵甫哲', '34789865', 1, 3, '1-2#3', '9402', '2-17#0', 2);
+VALUES ('298yr3y9f8euibf', '数字逻辑', '赵甫哲', '34789865', "1", 3, '1-2#3', '9402', '2-17#0', 2);
 
 INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time1, place1, weeks1, region)
-VALUES ('38yry8fe7guiwb3', '计算机组成原理', '李沛', '23345678', 1, 3, '10-11#2', '6221', '2-17#0', 2);
+VALUES ('38yry8fe7guiwb3', '计算机组成原理', '李沛', '23345678', "1", 3, '10-11#2', '6221', '2-17#0', 2);
 
 INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time1, place1, weeks1, region)
-VALUES ('298y38efub2ef32', '计算机网络', '王林平', '09898767', 1, 3, '5-6#5', '8205', '2-17#0', 2);
+VALUES ('298y38efub2ef32', '计算机网络', '王林平', '09898767', "1", 3, '5-6#5', '8205', '2-17#0', 2);
 
 INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time1, place1, weeks1, region)
-VALUES ('28yy89dqube12d8', '面向对象程序设计', '胡珀', '34569876', 1, 3, '7-8#1', 'JKSYS-3', '2-17#0', 2);
+VALUES ('28yy89dqube12d8', '面向对象程序设计', '胡珀', '34569876', "1", 3, '7-8#1', 'JKSYS-3', '2-17#0', 2);
 
 INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time1, place1, weeks1, region)
-VALUES ('723fguib98y2e1h', 'Python程序设计', '胡珀', '23456987', 1, 3, '1-2#5', '9403', '2-17#0', 2);
+VALUES ('723fguib98y2e1h', 'Python程序设计', '胡珀', '23456987', "1", 3, '1-2#5', '9403', '2-17#0', 2);
 
 INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time1, place1, weeks1, region)
-VALUES ('2e154de56gyubdq', '高级语言程序设计', '沈显军', '56982345', 1, 3, '3-4#5', '1122', '2-17#0', 2);
+VALUES ('2e154de56gyubdq', '高级语言程序设计', '沈显军', '56982345', "1", 3, '3-4#5', '1122', '2-17#0', 2);
 
 INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time1, place1, weeks1, region)
-VALUES ('0s9uighvg121efe', 'Java程序设计', '张连发', '09865423', 1, 3, '9-10#4', '9501', '2-17#0', 2);
+VALUES ('0s9uighvg121efe', 'Java程序设计', '张连发', '09865423', "1", 3, '9-10#4', '9501', '2-17#0', 2);
 
 INSERT INTO `course_list` (user_id, course_hash_id) values (1, '0s9uighvg121efe'), (1, '112d34testsvggase');
 INSERT INTO `course_evaluation_like` (user_id, evaluation_id) values (8, 1), (8, 2);

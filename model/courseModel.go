@@ -21,7 +21,7 @@ type UsingCourseModel struct {
 	Credit   float32 `gorm:"column:credit"`           //学分
 	Teacher  string  `gorm:"column:teacher"`          //教师姓名
 	CourseId string  `gorm:"column:course_id"`        //UI上需要展示
-	ClassId  uint64  `gorm:"column:class_id"`         //课堂编号，用于区分课堂
+	ClassId  string  `gorm:"column:class_id"`         //课堂编号，用于区分课堂
 	Type     uint8   `gorm:"column:type"`             //通识必修，通识选修，通识核心，专业必修，专业选修分别为 0/1/2/3/4
 	Time1    string  `gorm:"column:time1"`            //上课时间1
 	Place1   string  `gorm:"column:place1"`           //上课地点1

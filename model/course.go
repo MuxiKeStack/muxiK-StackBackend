@@ -52,7 +52,7 @@ func (class *HistoryCourseModel) GetHistoryByHash() error {
 	return d.Error
 }
 
-func (class *UsingCourseModel) GetClass(courseId string, classId uint64) error {
+func (class *UsingCourseModel) GetClass(courseId string, classId string) error {
 	d := DB.Self.Where("course_id = ? AND class_id = ? ", courseId, classId).First(&class)
 	if d.RecordNotFound() {
 		return nil
