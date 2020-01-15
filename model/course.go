@@ -1,10 +1,6 @@
 package model
 
 import (
-<<<<<<< HEAD
-	// _"database/sql"
-=======
->>>>>>> 9c76ad1583a96f445e34ac7d1144368131ac906e
 	"fmt"
 	_ "github.com/jinzhu/gorm"
 	// _ "log"
