@@ -255,7 +255,7 @@
             }
         },
         "/course/using/{id}/favorite/": {
-            "post": {
+            "put": {
                 "tags": [
                     "course"
                 ],
@@ -755,8 +755,26 @@
                     },
                     {
                         "type": "string",
-                        "description": "是否为通核, 0或者不给表示不筛选",
-                        "name": "th",
+                        "description": "课程类型",
+                        "name": "type",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "开课学院",
+                        "name": "academy",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "上课日期",
+                        "name": "weekday",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "上课地点",
+                        "name": "place",
                         "in": "query"
                     },
                     {
@@ -797,6 +815,12 @@
                         "name": "keyword",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "课程类型",
+                        "name": "type",
+                        "in": "query"
                     },
                     {
                         "type": "integer",
@@ -1931,7 +1955,7 @@
                 "courses": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/service.SearchCourseInfo"
+                        "$ref": "#/definitions/service.CourseInfoForAssistant"
                     }
                 },
                 "length": {
@@ -1939,6 +1963,54 @@
                 },
                 "page": {
                     "type": "integer"
+                }
+            }
+        },
+        "service.CourseInfoForAssistant": {
+            "type": "object",
+            "properties": {
+                "academy": {
+                    "type": "string"
+                },
+                "course_id": {
+                    "type": "string"
+                },
+                "course_name": {
+                    "type": "string"
+                },
+                "id": {
+                    "description": "数据库表中记录的id，自增id",
+                    "type": "integer"
+                },
+                "place1": {
+                    "type": "string"
+                },
+                "place2": {
+                    "type": "string"
+                },
+                "place3": {
+                    "type": "string"
+                },
+                "rate": {
+                    "type": "number"
+                },
+                "region": {
+                    "type": "integer"
+                },
+                "stars_num": {
+                    "type": "integer"
+                },
+                "teacher": {
+                    "type": "string"
+                },
+                "time1": {
+                    "type": "string"
+                },
+                "time2": {
+                    "type": "string"
+                },
+                "time3": {
+                    "type": "string"
                 }
             }
         },
@@ -1959,39 +2031,6 @@
                 },
                 "teacher": {
                     "type": "string"
-                }
-            }
-        },
-        "service.SearchCourseInfo": {
-            "type": "object",
-            "properties": {
-                "class_id": {
-                    "description": "课堂编号",
-                    "type": "integer"
-                },
-                "course_id": {
-                    "description": "课程编号",
-                    "type": "string"
-                },
-                "credit": {
-                    "description": "学分",
-                    "type": "number"
-                },
-                "id": {
-                    "description": "主键",
-                    "type": "integer"
-                },
-                "name": {
-                    "description": "课程名称",
-                    "type": "string"
-                },
-                "teacher": {
-                    "description": "任课教师姓名",
-                    "type": "string"
-                },
-                "type": {
-                    "description": "课程类型",
-                    "type": "integer"
                 }
             }
         },
@@ -2021,6 +2060,13 @@
                 "stars_num": {
                     "description": "参与评分人数",
                     "type": "integer"
+                },
+                "tags": {
+                    "description": "前四的tag",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "teacher": {
                     "description": "教师姓名",
