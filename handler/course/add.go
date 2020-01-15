@@ -66,7 +66,7 @@ func AddCourse(c *gin.Context) {
 		//result := md5lnst.Sum([]byte(""))
 		cred, _ := strconv.ParseFloat(row[4], 32)
 		float = float32(cred)
-		clas, _ := strconv.ParseUint(row[3], 10, 64)
+		clas, _ := row[3]
 		//reg := regexp.MustCompile(`^.{8}`)
 		defer func() {
 			if err := recover(); err != nil {
