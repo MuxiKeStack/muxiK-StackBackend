@@ -12,9 +12,15 @@ import (
 )
 
 type TPList struct {
+	Id    uint32
 	Time  string
 	Place string
 	Week  string
+}
+
+type TTPL struct {
+	Id   uint32   `json:"id"`
+	List []TPList `json:"list"`
 }
 
 /*type ClassList struct {
@@ -32,9 +38,11 @@ type ResponseInfo struct {
 	CourseCredit   float32           `json:"course_credit"`
 	Rate           float32           `json:"rate"`
 	StarsNum       uint32            `json:"stars_num"`
+	Score          map[uint32]uint32 `json:"score"`
+	ScoreNum       uint32            `json:"score_num"`
 	Attendance     map[string]uint32 `json:"attendance"`
 	Exam           map[string]uint32 `json:"exam"`
-	ClassInfo      [][]TPList        `json:"class_info"`
+	ClassInfo      []TTPL            `json:"class_info"`
 	TotalScore     float32           `json:"total_score"`
 	OrdinaryScore  float32           `json:"ordinary_score"`
 	CourseFeature1 uint32            `json:"course_feature_1"`
@@ -45,39 +53,11 @@ type ResponseInfo struct {
 	CourseFeature6 uint32            `json:"course_feature_6"`
 }
 
-/*
-type Response struct {
-	Code    int         `json:"code"`
-	Message string      `json:"message"`
-	Data    interface{} `json:"data"`
-}
-
-func SendInfo(c *gin.Context, err error, data ResponseInfo) {
-	code, message := errno.DecodeErr(err)
-
-	c.JSON(http.StatusOK, Response{
-		Code:    code,
-		Message: message,
-		Data:    data,
-	})
-}*/
-
 //获取课程信息
 func GetCourseInfo(c *gin.Context) {
-	/*	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
-		id32 := uint32(id)
-		if err != nil {
-			handler.SendBadRequest(c, errno.ErrGetParam, nil, err.Error())
-			return
-		}
-		course := &model.UsingCourseModel{Id: id32}
-		if err := course.GetById(); err != nil {
-			log.Info("course.GetById() error.")
-			return
-		}
-
-		handler.SendResponse(c, nil, course)*/
 	log.Info("GetInfo function is called")
+
+	var n1 uint32
 
 	hash := c.Param("hash")
 	if hash == "" {
@@ -99,11 +79,13 @@ func GetCourseInfo(c *gin.Context) {
 		log.Info("course.GetHistoryByHash() error.")
 	}
 
-	var attendanceMap = service.GetAttendanceCheckTypeNumForCourseInfo(hash)
+	var score = map[uint32]uint32{70: 11, 7085: 76, 85: 13}
 
-	var examMap = service.GetExamCheckTypeNumForCourseInfo(hash)
+	var attendanceMap = service.GetAttendanceCheckTypeNumForCourseInfoEnglish(hash)
+
+	var examMap = service.GetExamCheckTypeNumForCourseInfoEnglish(hash)
 	//var test InfoClass
-	test := make([][]TPList, 0, 60)
+	test := make([]TTPL, 0, 60)
 
 	tag1, _ := model.GetTagsNumber(1, course.CourseId)
 	tag2, _ := model.GetTagsNumber(2, course.CourseId)
@@ -139,9 +121,9 @@ func GetCourseInfo(c *gin.Context) {
 		e := aclass.Time3
 		f := aclass.Place3
 		z := aclass.Weeks3
-		list1 := TPList{a, b, x}
-		list2 := TPList{c, d, y}
-		list3 := TPList{e, f, z}
+		list1 := TPList{1, a, b, x}
+		list2 := TPList{2, c, d, y}
+		list3 := TPList{3, e, f, z}
 		//fmt.Print(list4)
 		//list1.time = aclass.Time1
 		//list1.place = aclass.Place1
@@ -156,7 +138,9 @@ func GetCourseInfo(c *gin.Context) {
 		}
 		//fmt.Print(list)
 		if len(list) != 0 {
-			test = append(test, list)
+			n1++
+			LIST := TTPL{n1, list}
+			test = append(test, LIST)
 			//fmt.Print(test)
 		}
 	}
@@ -172,6 +156,8 @@ func GetCourseInfo(c *gin.Context) {
 		CourseCredit:   course.Credit,
 		Rate:           class.Rate,
 		StarsNum:       class.StarsNum,
+		Score:          score,
+		ScoreNum:       89,
 		Attendance:     attendanceMap,
 		Exam:           examMap,
 		ClassInfo:      test,

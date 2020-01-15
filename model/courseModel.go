@@ -19,7 +19,7 @@ type UsingCourseModel struct {
 	Name     string  `gorm:"column:name"`             //课程名称
 	Academy  string  `gorm:"column:academy"`          //开课学院
 	Credit   float32 `gorm:"column:credit"`           //学分
-	Teacher  string  `gorm:"column:teacher"`          //教师性名
+	Teacher  string  `gorm:"column:teacher"`          //教师姓名
 	CourseId string  `gorm:"column:course_id"`        //UI上需要展示
 	ClassId  uint64  `gorm:"column:class_id"`         //课堂编号，用于区分课堂
 	Type     uint8   `gorm:"column:type"`             //通识必修，通识选修，通识核心，专业必修，专业选修分别为 0/1/2/3/4

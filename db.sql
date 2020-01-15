@@ -184,7 +184,8 @@ CREATE TABLE `using_course` (
   `hash`           VARCHAR(50)  NOT NULL            COMMENT "课程id + 教师名 hash 生成的唯一标识",
   `name`           VARCHAR(50)  NOT NULL DEFAULT "",
   `academy`        VARCHAR(25)  NOT NULL DEFAULT "" COMMENT "开课学院",
-  `teacher`        VARCHAR(50)  NOT NULL DEFAULT "",
+  `teacher`        VARCHAR(200)  NOT NULL DEFAULT "",
+  `credit`         FLOAT        NOT NULL DEFAULT 0 COMMENT "学分",
   `course_id`      VARCHAR(9)   NOT NULL            COMMENT "课程号",
   `class_id`       INT          NOT NULL            COMMENT "教学班编号",
   `type`           INT          NOT NULL            COMMENT "通识必修，通识选修，通识核心，专业必修，专业选修分别为 0/1/2/3/4",
@@ -329,3 +330,4 @@ VALUES ('5', '45677654', '10');
 
 INSERT INTO `course_tag` (`tag_id`, `course_id`, `num`)
 VALUES ('6', '45677654', '6');
+
