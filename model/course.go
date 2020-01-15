@@ -2,8 +2,6 @@ package model
 
 import (
 	"fmt"
-	_ "github.com/jinzhu/gorm"
-	// _ "log"
 )
 
 const (
@@ -22,15 +20,6 @@ func (UsingCourseModel) TableName() string {
 func (HistoryCourseModel) TableName() string {
 	return "history_course"
 }
-
-func (class *UsingCourseModel) T() {
-	fmt.Println("---")
-}
-
-/*
-func (CourseLikeModel) TableName() string {
-	return "course_like"
-}*/
 
 // Add a new course.
 func (class *UsingCourseModel) Add() error {
@@ -89,12 +78,12 @@ func (class *UsingCourseModel) GetByCourseId(time int, place int) error { //intä
 	return d.Error
 }
 
-// Judge whether a course has already favorited by the current user.
-func (class *UsingCourseModel) HasFavorited(userId uint32) bool {
+// Judge whether a course has already favorited by the current user,
+// return record id and bool type.
+func (class *UsingCourseModel) HasFavorited(userId uint32) (uint32, bool) {
 	var data CourseListModel
-	var count int
-	DB.Self.Where("user_id = ? AND course_hash_id = ? ", userId, class.Hash).First(&data).Count(&count)
-	return count > 0
+	d := DB.Self.Where("user_id = ? AND course_hash_id = ? ", userId, class.Hash).First(&data)
+	return data.Id, !d.RecordNotFound()
 }
 
 // Favorite a course by the current user.
@@ -108,13 +97,9 @@ func (class *UsingCourseModel) Favorite(userId uint32) error {
 	return d.Error
 }
 
-func (class *UsingCourseModel) Unfavorite(userId uint32) error {
-	var data = CourseListModel{
-		CourseHashId: class.Hash,
-		UserId:       userId,
-	}
-	fmt.Println(data)
-
+// Cancel a course's favorite by the current user.
+func (class *UsingCourseModel) Unfavorite(id uint32) error {
+	var data = CourseListModel{Id: id}
 	d := DB.Self.Delete(&data)
 	return d.Error
 }

@@ -7,8 +7,8 @@ import (
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
 	"github.com/MuxiKeStack/muxiK-StackBackend/service"
-	"github.com/lexkong/log"
 
+	"github.com/lexkong/log"
 	"github.com/gin-gonic/gin"
 )
 
@@ -52,7 +52,7 @@ func UpdateEvaluationLike(c *gin.Context) {
 		return
 	}
 
-	hasLiked := evaluation.HasLiked(userId)
+	likeRecordId, hasLiked := evaluation.HasLiked(userId)
 
 	// 判断点赞请求是否合理
 	// 未点赞
@@ -68,7 +68,7 @@ func UpdateEvaluationLike(c *gin.Context) {
 
 	// 点赞或者取消点赞
 	if bodyData.LikeState {
-		err = evaluation.CancelLiking(userId)
+		err = evaluation.CancelLiking(likeRecordId)
 	} else {
 		err = evaluation.Like(userId)
 	}

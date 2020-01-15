@@ -5,6 +5,7 @@ import (
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
 	"github.com/MuxiKeStack/muxiK-StackBackend/service"
+
 	"github.com/gin-gonic/gin"
 	"github.com/lexkong/log"
 )
@@ -40,7 +41,7 @@ func UpdateCommentLike(c *gin.Context) {
 
 	userId := c.MustGet("id").(uint32)
 
-	hasLiked := model.CommentHasLiked(userId, id)
+	likeRecordId, hasLiked := model.CommentHasLiked(userId, id)
 
 	// 判断点赞请求是否合理
 	// 未点赞
@@ -56,7 +57,7 @@ func UpdateCommentLike(c *gin.Context) {
 
 	// 点赞&取消点赞
 	if bodyData.LikeState {
-		err = model.CommentCancelLiking(userId, id)
+		err = model.CommentCancelLiking(likeRecordId)
 	} else {
 		err = model.CommentLiking(userId, id)
 	}

@@ -108,21 +108,19 @@ func CommentLiking(userId uint32, commentId string) error {
 	return d.Error
 }
 
-// Cancel liking a comment by the current user.
-func CommentCancelLiking(userId uint32, commentId string) error {
-	var data = &CommentLikeModel{
-		UserId:    userId,
-		CommentId: commentId,
-	}
-	d := DB.Self.Delete(data)
+// Cancel liking a comment by the like-record id.
+func CommentCancelLiking(id uint32) error {
+	var data = CommentLikeModel{Id: id}
+	d := DB.Self.Delete(&data)
 	return d.Error
 }
 
-// Judge whether a comment has already liked by the current user.
-func CommentHasLiked(userId uint32, commentId string) bool {
+// Judge whether a comment has already liked by the current user,
+// return like-record id and bool type.
+func CommentHasLiked(userId uint32, commentId string) (uint32, bool) {
 	var data CommentLikeModel
 	d := DB.Self.Where("user_id = ? AND comment_id = ?", userId, commentId).Find(&data)
-	return !d.RecordNotFound()
+	return data.Id, !d.RecordNotFound()
 }
 
 // Get comment's total like amount by commentId.
