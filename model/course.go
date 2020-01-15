@@ -1,14 +1,22 @@
 package model
 
 import (
+<<<<<<< HEAD
 	// _"database/sql"
+=======
+>>>>>>> 9c76ad1583a96f445e34ac7d1144368131ac906e
 	"fmt"
 	_ "github.com/jinzhu/gorm"
 	// _ "log"
 )
 
 const (
-	thSQL = " AND LOCATE('5', `course_id`, 3) = 1 "
+	typeTemp       = "AND RIGHT(LEFT(`course_id`, 4), 1) = %s "
+	typeCourseTemp = "AND `type` = %s "
+	academyTemp    = "AND `academy` = %s "
+	weekdayTemp    = "AND (RIGHT(`time1`, 1) = %s OR RIGHT(`time2`, 1) = %s OR RIGHT(`time3`, 1) = %s) "
+	nPlaceTemp     = "AND LEFT(`place1`, 1) = 'N' AND (`place2` = '' OR LEFT(`place2`, 1) = 'N') AND (`place3` = '' OR LEFT(`place3`, 1) = 'N') "
+	bPlaceTemp     = "AND LEFT(`place1`, 1) != 'N' AND (`place2` = '' OR LEFT(`place2`, 1) != 'N') AND (`place3` = '' OR LEFT(`place3`, 1) != 'N') "
 )
 
 func (UsingCourseModel) TableName() string {
@@ -117,39 +125,76 @@ func (class *UsingCourseModel) Unfavorite(userId uint32) error {
 
 // Search course by name, courseId or teacher
 // Use fulltext search, against and match
-func AgainstAndMatchCourses(kw string, page, limit uint64, th bool) ([]UsingCourseModel, error) {
+// 2020-01-15: Add New Filter: type, academy, weekday, place
+func AgainstAndMatchCourses(kw string, page, limit uint64, t, a, w, p string) ([]UsingCourseModel, error) {
 	courses := &[]UsingCourseModel{}
-	// log.Println("Query:", kw, page, limit, th)
-	if !th {
-		DB.Self.Debug().Table("using_course").Where("MATCH (`name`, `course_id`, `teacher`) AGAINST ('" + kw + "') ").Limit(limit).Offset((page - 1) * limit).Find(courses)
-	} else {
-		DB.Self.Debug().Table("using_course").Where("MATCH (`name`, `course_id`, `teacher`) AGAINST ('" + kw + "')" + thSQL).Limit(limit).Offset((page - 1) * limit).Find(courses)
+	where := "MATCH (`name`, `course_id`, `teacher`) AGAINST ('" + kw + "') "
+	if t != "" {
+		where += fmt.Sprintf(typeTemp, t)
 	}
+	if a != "" {
+		where += fmt.Sprintf(academyTemp, a)
+	}
+	if w != "" {
+		where += fmt.Sprintf(weekdayTemp, w, w, w)
+	}
+	if p == "本校区" {
+		where += bPlaceTemp
+	}
+	if p == "南湖校区" {
+		where += nPlaceTemp
+	}
+	DB.Self.Debug().Table("using_course").Where(where).Limit(limit).Offset((page - 1) * limit).Find(courses)
 	return *courses, nil
 }
 
 // Search history course by name or teacher
 // Use fulltext search, against and match
-func AgainstAndMatchHistoryCourses(kw string, page, limit uint64) ([]HistoryCourseModel, error) {
+// 2020-01-15: Add New Filter: type
+func AgainstAndMatchHistoryCourses(kw string, page, limit uint64, t string) ([]HistoryCourseModel, error) {
 	courses := &[]HistoryCourseModel{}
-	DB.Self.Table("history_course").Where("MATCH (`name`, `teacher`) AGAINST ('" + kw + "') ").Limit(limit).Offset((page - 1) * limit).Find(courses)
+	where := "MATCH (`name`, `teacher`) AGAINST ('" + kw + "') "
+	if t != "" {
+		where += fmt.Sprintf(typeCourseTemp, t)
+	}
+	DB.Self.Table("history_course").Where(where).Limit(limit).Offset((page - 1) * limit).Find(courses)
 	return *courses, nil
 }
 
 // Get all courses
-func AllCourses(page, limit uint64, th bool) ([]UsingCourseModel, error) {
+func AllCourses(page, limit uint64, t, a, w, p string) ([]UsingCourseModel, error) {
 	courses := &[]UsingCourseModel{}
-	if th {
-		DB.Self.Table("using_course").Where("LOCATE ('5', `course_id`, 3) = 1").Limit(limit).Offset((page - 1) * limit).Find(courses)
-	} else {
+	where := ""
+	if t != "" {
+		where += fmt.Sprintf(typeTemp, t)
+	}
+	if a != "" {
+		where += fmt.Sprintf(academyTemp, a)
+	}
+	if w != "" {
+		where += fmt.Sprintf(weekdayTemp, w, w, w)
+	}
+	if p == "本校区" {
+		where += bPlaceTemp
+	}
+	if p == "南湖校区" {
+		where += nPlaceTemp
+	}
+	if where == "" {
 		DB.Self.Table("using_course").Limit(limit).Offset((page - 1) * limit).Find(&courses)
+	} else {
+		DB.Self.Table("using_course").Where(where).Limit(limit).Offset((page - 1) * limit).Find(&courses)
 	}
 	return *courses, nil
 }
 
 // Get all history courses
-func AllHistoryCourses(page, limit uint64) ([]HistoryCourseModel, error) {
+func AllHistoryCourses(page, limit uint64, t string) ([]HistoryCourseModel, error) {
 	courses := &[]HistoryCourseModel{}
-	DB.Self.Table("history_course").Limit(limit).Offset((page - 1) * limit).Find(courses)
+	if t != "" {
+		DB.Self.Table("history_course").Where("type = ?", t).Limit(limit).Offset((page - 1) * limit).Find(courses)
+	} else {
+		DB.Self.Table("history_course").Limit(limit).Offset((page - 1) * limit).Find(courses)
+	}
 	return *courses, nil
 }
