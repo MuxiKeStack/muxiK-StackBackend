@@ -122,7 +122,7 @@ func GetEvaluationInfo(id, userId uint32, visitor bool) (*model.EvaluationInfo, 
 	// Get like state
 	var isLike = false
 	if !visitor {
-		isLike = evaluation.HasLiked(userId)
+		_, isLike = evaluation.HasLiked(userId)
 	}
 
 	// Whether the evaluation can be deleted by the user

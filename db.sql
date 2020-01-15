@@ -257,6 +257,7 @@ INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time
 VALUES ('0s9uighvg121efe', 'Java程序设计', '张连发', '09865423', 1, 3, '9-10#4', '9501', '2-17#0', 2);
 
 INSERT INTO `course_list` (user_id, course_hash_id) values (1, '0s9uighvg121efe'), (1, '112d34testsvggase');
+INSERT INTO `course_evaluation_like` (user_id, evaluation_id) values (8, 1), (8, 2);
 
 -- mock data
 
@@ -330,4 +331,3 @@ VALUES ('5', '45677654', '10');
 
 INSERT INTO `course_tag` (`tag_id`, `course_id`, `num`)
 VALUES ('6', '45677654', '6');
-

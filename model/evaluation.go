@@ -29,21 +29,21 @@ func (evaluation *CourseEvaluationModel) Delete() error {
 }
 
 // Block a evaluation, cause of be reported > 5 times
-func (e *CourseEvaluationModel) Block() error {
-	e.IsValid = false
-	d := DB.Self.Update(e)
+func (evaluation *CourseEvaluationModel) Block() error {
+	evaluation.IsValid = false
+	d := DB.Self.Update(evaluation)
 	if d.Error != nil {
 		return d.Error
 	}
 	return nil
 }
 
-// Judge whether a course evaluation has already liked by the current user.
-func (evaluation *CourseEvaluationModel) HasLiked(userId uint32) bool {
+// Judge whether a course evaluation has already liked by the current user,
+// return like-record id and bool type.
+func (evaluation *CourseEvaluationModel) HasLiked(userId uint32) (uint32, bool) {
 	var data EvaluationLikeModel
-	var count int
-	DB.Self.Where("user_id = ? AND evaluation_id = ? ", userId, evaluation.Id).First(&data).Count(&count)
-	return count > 0
+	d := DB.Self.Where("user_id = ? AND evaluation_id = ? ", userId, evaluation.Id).First(&data)
+	return data.Id, !d.RecordNotFound()
 }
 
 // Like a course evaluation by the current user.
@@ -57,13 +57,9 @@ func (evaluation *CourseEvaluationModel) Like(userId uint32) error {
 	return d.Error
 }
 
-// Cancel liking a course evaluation by the current user.
-func (evaluation *CourseEvaluationModel) CancelLiking(userId uint32) error {
-	var data = EvaluationLikeModel{
-		EvaluationId: evaluation.Id,
-		UserId:       userId,
-	}
-
+// Cancel liking a course evaluation by the like-record id.
+func (evaluation *CourseEvaluationModel) CancelLiking(id uint32) error {
+	var data = EvaluationLikeModel{Id: id}
 	d := DB.Self.Delete(&data)
 	return d.Error
 }

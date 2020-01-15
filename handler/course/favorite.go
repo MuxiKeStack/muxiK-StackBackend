@@ -4,7 +4,6 @@ import (
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
-	_ "github.com/MuxiKeStack/muxiK-StackBackend/pkg/token"
 
 	"github.com/gin-gonic/gin"
 	"github.com/lexkong/log"
@@ -39,7 +38,7 @@ func FavoriteCourse(c *gin.Context) {
 		return
 	}
 
-	hasLiked := course.HasFavorited(userId)
+	recordId, hasLiked := course.HasFavorited(userId)
 
 	// 获取请求中当前的收藏状态
 	var bodyData likeDataRequest
@@ -63,7 +62,7 @@ func FavoriteCourse(c *gin.Context) {
 
 	// 收藏或者取消收藏
 	if bodyData.LikeState {
-		err = course.Unfavorite(userId)
+		err = course.Unfavorite(recordId)
 	} else {
 		err = course.Favorite(userId)
 	}

@@ -106,7 +106,7 @@ func GetParentCommentInfo(id string, userId uint32, visitor bool) (*model.Parent
 	// Get like state
 	var isLike = false
 	if !visitor {
-		isLike = model.CommentHasLiked(userId, comment.Id)
+		_, isLike = model.CommentHasLiked(userId, comment.Id)
 	}
 
 	// Whether the comment can be deleted by the user
@@ -242,7 +242,7 @@ func GetSubCommentInfoById(id string, userId uint32, visitor bool) (*model.Comme
 	// Get like state
 	var isLike = false
 	if !visitor {
-		isLike = model.CommentHasLiked(userId, comment.Id)
+		_, isLike = model.CommentHasLiked(userId, comment.Id)
 	}
 
 	// Whether the comment can be deleted by the user
