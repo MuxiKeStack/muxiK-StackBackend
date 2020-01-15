@@ -222,6 +222,34 @@ func GetExamCheckTypeByCode(code uint8) string {
 	return ""
 }
 
+// Get attendance-check type name by identifier code.
+func GetAttendanceCheckTypeByCodeEnglish(code uint8) string {
+	switch code {
+	case 1:
+		return "often"
+	case 2:
+		return "occasionally"
+	case 3:
+		return "Sign in"
+	}
+	return ""
+}
+
+// Get exam-check type name by identifier code.
+func GetExamCheckTypeByCodeEnglish(code uint8) string {
+	switch code {
+	case 1:
+		return "no"
+	case 2:
+		return "close"
+	case 3:
+		return "open"
+	case 4:
+		return "eassay"
+	}
+	return ""
+}
+
 // Get attendance check type amount by course hash id for course info.
 func GetAttendanceCheckTypeNumForCourseInfo(courseId string) map[string]uint32 {
 	result := make(map[string]uint32)
@@ -237,6 +265,26 @@ func GetExamCheckTypeNumForCourseInfo(courseId string) map[string]uint32 {
 	result := make(map[string]uint32)
 	for i := 1; i < 5; i++ {
 		name := GetExamCheckTypeByCode(uint8(i))
+		result[name] = model.GetExamCheckTypeNumChosenByCode(courseId, i)
+	}
+	return result
+}
+
+// Get attendance check type amount by course hash id for course info.
+func GetAttendanceCheckTypeNumForCourseInfoEnglish(courseId string) map[string]uint32 {
+	result := make(map[string]uint32)
+	for i := 1; i < 4; i++ {
+		name := GetAttendanceCheckTypeByCodeEnglish(uint8(i))
+		result[name] = model.GetAttendanceTypeNumChosenByCode(courseId, i)
+	}
+	return result
+}
+
+// Get exam check type amount by course hash id for course info.
+func GetExamCheckTypeNumForCourseInfoEnglish(courseId string) map[string]uint32 {
+	result := make(map[string]uint32)
+	for i := 1; i < 5; i++ {
+		name := GetExamCheckTypeByCodeEnglish(uint8(i))
 		result[name] = model.GetExamCheckTypeNumChosenByCode(courseId, i)
 	}
 	return result
