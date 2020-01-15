@@ -69,13 +69,13 @@ type MessageSub struct {
 	Teacher    string `json:"teacher"`
 
 	//点击消息提醒中的内容 跳转到 评课 需要 EvaluationId
-	EvaluationId uint32 `josn:"evaluation_id"`
+	EvaluationId uint32 `json:"evaluation_id"`
 
 	//即为操作对象的内容，如果是对于评课则是评课，如果是对评论则是原评论内容。
-	Content string `josn:"content"`
+	Content string `json:"content"`
 
 	//用于对评课==一级评论(只需要EnvaluationID)，评论的回复==二级评论(一级评论的ID ParentCommentId+目标用户 Sid).
 	//用来发二级评论
-	Sid             string `gorm:"column:sid"`
-	ParentCommentId string `gorm:"column:parent_comment_id"`
+	Sid             string `json:"sid"`
+	ParentCommentId string `json:"parent_comment_id"`
 }
