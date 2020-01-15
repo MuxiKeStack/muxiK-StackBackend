@@ -58,24 +58,24 @@ type MessagePub struct {
 type MessageSub struct {
 	UserInfo UserInfoRequest `json:"user_info"`
 	//kind 区分 点赞->0 评论->1 举报->2
-	Kind   uint8  `gorm:"column:kind"`
+	Kind   uint8  `json:"kind"`
 	IsRead bool   `json:"is_read"`
 	Reply  string `json:"reply"`
 	Time   string `json:"time"`
 	// MessageInfo string `gorm:"column:message_info"`
 	// 消息提醒的一些信息，显示出来的字段，用于回复评论的id	o represents evaluation or comment information
-	CourseId   string `gorm:"column:course_id"`
-	CourseName string `gorm:"column:course_name"`
-	Teacher    string `gorm:"column:teacher"`
+	CourseId   string `json:"course_id"`
+	CourseName string `json:"course_name"`
+	Teacher    string `json:"teacher"`
 
 	//点击消息提醒中的内容 跳转到 评课 需要 EvaluationId
-	EvaluationId uint32 `gorm:"column:evaluation_id"`
+	EvaluationId uint32 `json:"evaluation_id"`
 
 	//即为操作对象的内容，如果是对于评课则是评课，如果是对评论则是原评论内容。
-	Content string `gorm:"column:content"`
+	Content string `json:"content"`
 
 	//用于对评课==一级评论(只需要EnvaluationID)，评论的回复==二级评论(一级评论的ID ParentCommentId+目标用户 Sid).
 	//用来发二级评论
-	Sid             string `gorm:"column:sid"`
-	ParentCommentId string `gorm:"column:parent_comment_id"`
+	Sid             string `json:"sid"`
+	ParentCommentId string `json:"parent_comment_id"`
 }
