@@ -1,0 +1,1443 @@
+basePath: /api/v1
+definitions:
+  collection.CollectionsInfo:
+    properties:
+      course_list:
+        items:
+          $ref: '#/definitions/model.CourseInfoInTableCollection'
+        type: array
+      sum:
+        type: integer
+    type: object
+  collection.collectionListResponse:
+    properties:
+      list:
+        items:
+          $ref: '#/definitions/model.CourseInfoForCollections'
+        type: array
+      sum:
+        type: integer
+    type: object
+  comment.commentListResponse:
+    properties:
+      page:
+        type: integer
+      parent_comment_list:
+        items:
+          $ref: '#/definitions/model.ParentCommentInfo'
+        type: array
+      parent_comment_sum:
+        type: integer
+    type: object
+  comment.likeDataRequest:
+    properties:
+      like_state:
+        type: boolean
+    type: object
+  comment.likeDataResponse:
+    properties:
+      like_num:
+        type: integer
+      like_state:
+        type: boolean
+    type: object
+  comment.newCommentRequest:
+    properties:
+      content:
+        type: string
+      is_anonymous:
+        type: boolean
+    required:
+    - content
+    type: object
+  course.likeDataRequest:
+    properties:
+      like_state:
+        type: boolean
+    type: object
+  course.selfCoursesResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/service.ProducedCourseItem'
+        type: array
+      sum:
+        type: integer
+    type: object
+  evaluation.evaluationPublishRequest:
+    properties:
+      attendance_check_type:
+        description: 经常点名/偶尔点名/签到点名，标识为 1/2/3
+        type: integer
+      content:
+        type: string
+      course_id:
+        type: string
+      course_name:
+        type: string
+      exam_check_type:
+        description: 无考核/闭卷考试/开卷考试/论文考核，标识为 1/2/3/4
+        type: integer
+      is_anonymous:
+        type: boolean
+      rate:
+        type: number
+      tags:
+        items:
+          type: integer
+        type: array
+    required:
+    - course_id
+    - course_name
+    type: object
+  evaluation.evaluationPublishResponse:
+    properties:
+      evaluation_id:
+        type: integer
+    type: object
+  evaluation.evaluationsOfCourseResponse:
+    properties:
+      hot_list:
+        items:
+          $ref: '#/definitions/model.EvaluationInfo'
+        type: array
+      hot_sum:
+        type: integer
+      normal_list:
+        items:
+          $ref: '#/definitions/model.EvaluationInfo'
+        type: array
+      normal_sum:
+        type: integer
+    type: object
+  evaluation.historyEvaluationsResponse:
+    properties:
+      list:
+        items:
+          $ref: '#/definitions/model.EvaluationInfo'
+        type: array
+      sum:
+        type: integer
+    type: object
+  evaluation.likeDataRequest:
+    properties:
+      like_state:
+        type: boolean
+    type: object
+  evaluation.likeDataResponse:
+    properties:
+      like_num:
+        type: integer
+      like_state:
+        type: boolean
+    type: object
+  evaluation.playgroundResponse:
+    properties:
+      list:
+        items:
+          $ref: '#/definitions/model.EvaluationInfo'
+        type: array
+      sum:
+        type: integer
+    type: object
+  message.CountModel:
+    properties:
+      count:
+        type: integer
+    type: object
+  message.messageListResponse:
+    properties:
+      messageList:
+        items:
+          $ref: '#/definitions/model.MessageSub'
+        type: array
+    type: object
+  model.AuthResponse:
+    properties:
+      is_new:
+        type: integer
+      token:
+        type: string
+    type: object
+  model.ClassInfo:
+    properties:
+      class_id:
+        description: 教学班编号
+        type: integer
+      class_name:
+        type: string
+      course_id:
+        type: string
+      places:
+        items:
+          type: string
+        type: array
+      teacher:
+        type: string
+      times:
+        items:
+          $ref: '#/definitions/model.ClassTimeInfo'
+        type: array
+    type: object
+  model.ClassInfoInCollections:
+    properties:
+      class_id:
+        description: 教学班编号
+        type: integer
+      class_name:
+        type: string
+      places:
+        items:
+          type: string
+        type: array
+      teacher:
+        description: TeachingClassId uint64                        `json:"teaching_class_id"`
+          // 教学班编号
+        type: string
+      times:
+        items:
+          $ref: '#/definitions/model.ClassTimeInfoInCollections'
+        type: array
+    type: object
+  model.ClassTableInfo:
+    properties:
+      class_list:
+        items:
+          $ref: '#/definitions/model.ClassInfo'
+        type: array
+      class_num:
+        type: integer
+      table_id:
+        type: integer
+      table_name:
+        type: string
+    type: object
+  model.ClassTimeInfo:
+    properties:
+      day:
+        type: integer
+      duration:
+        type: integer
+      start:
+        type: integer
+      week_state:
+        description: 全周0,单周1,双周2
+        type: integer
+      weeks:
+        type: string
+    type: object
+  model.ClassTimeInfoInCollections:
+    properties:
+      day:
+        type: integer
+      time:
+        type: string
+      week_state:
+        description: 全周0,单周1,双周2
+        type: integer
+      weeks:
+        type: string
+    type: object
+  model.CommentInfo:
+    properties:
+      can_delete:
+        type: boolean
+      content:
+        type: string
+      id:
+        type: string
+      is_anonymous:
+        type: boolean
+      is_like:
+        type: boolean
+      is_valid:
+        type: boolean
+      like_num:
+        type: integer
+      target_user_info:
+        $ref: '#/definitions/model.UserInfoResponse'
+        type: object
+      time:
+        type: integer
+      user_info:
+        $ref: '#/definitions/model.UserInfoResponse'
+        type: object
+    type: object
+  model.CourseInfoForCollections:
+    properties:
+      attendance_check_type:
+        type: string
+      course_id:
+        type: string
+      course_name:
+        type: string
+      evaluation_num:
+        type: integer
+      exam_check_type:
+        type: string
+      id:
+        description: 数据库表中记录的id，自增id
+        type: integer
+      rate:
+        type: number
+      tags:
+        items:
+          type: string
+        type: array
+      teacher:
+        type: string
+    type: object
+  model.CourseInfoInTableCollection:
+    properties:
+      class_sum:
+        description: 课堂数
+        type: integer
+      classes:
+        items:
+          $ref: '#/definitions/model.ClassInfoInCollections'
+        type: array
+      course_id:
+        description: 课程hash id
+        type: string
+      course_name:
+        type: string
+    type: object
+  model.EvaluationInfo:
+    properties:
+      attendance_check_type:
+        type: string
+      can_delete:
+        type: boolean
+      comment_num:
+        type: integer
+      content:
+        type: string
+      course_id:
+        type: string
+      course_name:
+        type: string
+      exam_check_type:
+        type: string
+      id:
+        type: integer
+      is_anonymous:
+        type: boolean
+      is_like:
+        type: boolean
+      is_valid:
+        type: boolean
+      like_num:
+        type: integer
+      rate:
+        type: number
+      tags:
+        items:
+          type: string
+        type: array
+      teacher:
+        type: string
+      time:
+        type: integer
+      user_info:
+        $ref: '#/definitions/model.UserInfoResponse'
+        type: object
+    type: object
+  model.LoginModel:
+    properties:
+      password:
+        type: string
+      sid:
+        type: string
+    required:
+    - password
+    - sid
+    type: object
+  model.MessageSub:
+    properties:
+      content:
+        description: 即为操作对象的内容，如果是对于评课则是评课，如果是对评论则是原评论内容。
+        type: string
+      course_id:
+        description: "MessageInfo string `gorm:\"column:message_info\"`\n消息提醒的一些信息，显示出来的字段，用于回复评论的id\to
+          represents evaluation or comment information"
+        type: string
+      course_name:
+        type: string
+      evaluation_id:
+        description: 点击消息提醒中的内容 跳转到 评课 需要 EvaluationId
+        type: integer
+      is_read:
+        type: boolean
+      kind:
+        description: kind 区分 点赞->0 评论->1 举报->2
+        type: integer
+      parent_comment_id:
+        type: string
+      reply:
+        type: string
+      sid:
+        description: |-
+          用于对评课==一级评论(只需要EnvaluationID)，评论的回复==二级评论(一级评论的ID ParentCommentId+目标用户 Sid).
+          用来发二级评论
+        type: string
+      teacher:
+        type: string
+      time:
+        type: string
+      user_info:
+        $ref: '#/definitions/model.UserInfoRequest'
+        type: object
+    type: object
+  model.ParentCommentInfo:
+    properties:
+      can_delete:
+        type: boolean
+      content:
+        type: string
+      id:
+        description: 父评论id
+        type: string
+      is_anonymous:
+        type: boolean
+      is_like:
+        type: boolean
+      is_valid:
+        type: boolean
+      like_num:
+        type: integer
+      sub_comments_list:
+        items:
+          $ref: '#/definitions/model.CommentInfo'
+        type: array
+      sub_comments_num:
+        type: integer
+      time:
+        type: integer
+      user_info:
+        $ref: '#/definitions/model.UserInfoResponse'
+        type: object
+    type: object
+  model.TagModel:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  model.UserInfoRequest:
+    properties:
+      avatar:
+        type: string
+      username:
+        type: string
+    type: object
+  model.UserInfoResponse:
+    properties:
+      avatar:
+        type: string
+      sid:
+        type: string
+      username:
+        type: string
+    type: object
+  report.Response:
+    properties:
+      fail:
+        type: boolean
+      reason:
+        type: string
+    type: object
+  search.searchHistoryCourseResponse:
+    properties:
+      courses:
+        items:
+          $ref: '#/definitions/service.SearchHistoryCourseInfo'
+        type: array
+      length:
+        type: integer
+      page:
+        type: integer
+    type: object
+  search.searchResponse:
+    properties:
+      courses:
+        items:
+          $ref: '#/definitions/service.CourseInfoForAssistant'
+        type: array
+      length:
+        type: integer
+      page:
+        type: integer
+    type: object
+  service.CourseInfoForAssistant:
+    properties:
+      academy:
+        type: string
+      course_id:
+        type: string
+      course_name:
+        type: string
+      id:
+        description: 数据库表中记录的id，自增id
+        type: integer
+      place1:
+        type: string
+      place2:
+        type: string
+      place3:
+        type: string
+      rate:
+        type: number
+      region:
+        type: integer
+      stars_num:
+        type: integer
+      teacher:
+        type: string
+      time1:
+        type: string
+      time2:
+        type: string
+      time3:
+        type: string
+    type: object
+  service.ProducedCourseItem:
+    properties:
+      academic:
+        type: string
+      course_id:
+        type: string
+      has_evaluated:
+        type: boolean
+      name:
+        type: string
+      teacher:
+        type: string
+    type: object
+  service.SearchHistoryCourseInfo:
+    properties:
+      credit:
+        description: 学分
+        type: number
+      hash:
+        description: 教师名和课程hash成的唯一标识
+        type: string
+      id:
+        description: 主键
+        type: integer
+      name:
+        description: 课程名称
+        type: string
+      rate:
+        description: 课程评价星级
+        type: number
+      stars_num:
+        description: 参与评分人数
+        type: integer
+      tags:
+        description: 前四的tag
+        items:
+          type: string
+        type: array
+      teacher:
+        description: 教师姓名
+        type: string
+      type:
+        description: 课程类型，公共课为0，专业课为1
+        type: integer
+    type: object
+  table.addClassResponseData:
+    properties:
+      class_info:
+        $ref: '#/definitions/model.ClassInfo'
+        type: object
+      table_id:
+        type: integer
+    type: object
+  table.getTablesResponse:
+    properties:
+      table_list:
+        items:
+          $ref: '#/definitions/model.ClassTableInfo'
+        type: array
+      table_num:
+        type: integer
+    type: object
+  table.renameBodyData:
+    properties:
+      new_name:
+        type: string
+    type: object
+  tag.tagGetResponse:
+    properties:
+      list:
+        items:
+          $ref: '#/definitions/model.TagModel'
+        type: array
+      sum:
+        type: integer
+    type: object
+  upload.ImageUrlModel:
+    properties:
+      url:
+        type: string
+    type: object
+host: '...'
+info:
+  contact: {}
+  description: 木犀课栈
+  license: {}
+  title: Muxi K-Stack
+  version: "1.0"
+paths:
+  /collection/:
+    get:
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 期望的数量
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: 上一次请求的最后一个记录的id，若是初始请求则为0
+        in: query
+        name: last_id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/collection.collectionListResponse'
+      summary: 获取课程清单列表
+      tags:
+      - collection
+  /collection/table/{id}/:
+    get:
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 课表id
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/collection.CollectionsInfo'
+      summary: 课表界面获取课程清单
+      tags:
+      - collection
+  /comment/{id}/:
+    delete:
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 评论id
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: 删除评论
+      tags:
+      - evaluation
+    post:
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 一级评论id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: 评论回复的目标用户的sid，若是匿名用户，则为'0'
+        in: query
+        name: sid
+        required: true
+        type: string
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/comment.newCommentRequest'
+          type: object
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.CommentInfo'
+      summary: 回复评论
+      tags:
+      - comment
+  /comment/{id}/like/:
+    put:
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 点赞评论id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: 当前点赞状态
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/comment.likeDataRequest'
+          type: object
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/comment.likeDataResponse'
+      summary: 评论点赞/取消点赞
+      tags:
+      - comment
+  /course/history/{id}/evaluations/:
+    get:
+      parameters:
+      - description: 游客登录则不需要此字段或为空
+        in: header
+        name: token
+        type: string
+      - description: 课程id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: 热评数
+        in: query
+        name: hot_limit
+        required: true
+        type: integer
+      - description: 评课数
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: 上一次请求的最后一个评课的id，若是初始请求则为0
+        in: query
+        name: last_id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/evaluation.evaluationsOfCourseResponse'
+      summary: 课程所有评课和热评
+      tags:
+      - evaluation
+  /course/using/{id}/favorite/:
+    post:
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 收藏的课程id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: 当前收藏状态
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/course.likeDataRequest'
+          type: object
+      responses:
+        "200":
+          description: ok
+          schema:
+            $ref: '#/definitions/string'
+      summary: 收藏课程/取消收藏
+      tags:
+      - course
+  /evaluation/:
+    get:
+      parameters:
+      - description: 游客登录则不需要此字段或为空
+        in: header
+        name: token
+        type: string
+      - description: 最大的一级评论数量
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: 上一次请求的最后一个评课的id，若是初始请求则为0
+        in: query
+        name: last_id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/evaluation.playgroundResponse'
+      summary: 评课广场获取评课列表
+      tags:
+      - evaluation
+    post:
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/evaluation.evaluationPublishRequest'
+          type: object
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/evaluation.evaluationPublishResponse'
+      summary: 发布评课
+      tags:
+      - evaluation
+  /evaluation/{id}/:
+    delete:
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 评课id
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: 删除评课
+      tags:
+      - evaluation
+    get:
+      parameters:
+      - description: 游客登录则不需要此字段或为空
+        in: header
+        name: token
+        type: string
+      - description: 评课id
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.EvaluationInfo'
+      summary: 获取评课详情
+      tags:
+      - evaluation
+  /evaluation/{id}/block/:
+    get:
+      parameters:
+      - description: 评课ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      summary: 折叠评课
+      tags:
+      - report
+  /evaluation/{id}/comment/:
+    post:
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 评课id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/comment.newCommentRequest'
+          type: object
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ParentCommentInfo'
+      summary: 评论评课
+      tags:
+      - comment
+  /evaluation/{id}/comments/:
+    get:
+      parameters:
+      - description: 游客登录则不需要此字段或为空
+        in: header
+        name: token
+        type: string
+      - description: 评课id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: 最大的一级评论数量
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: 分页页码，默认为1
+        in: query
+        name: page
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/comment.commentListResponse'
+      summary: 获取评论列表
+      tags:
+      - comment
+  /evaluation/{id}/like/:
+    put:
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 点赞的评课id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: 当前点赞状态
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/evaluation.likeDataRequest'
+          type: object
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/evaluation.likeDataResponse'
+      summary: 评课点赞/取消点赞
+      tags:
+      - evaluation
+  /evaluation/{id}/report/:
+    post:
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 评课ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 请求数据
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/Request'
+          type: object
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/report.Response'
+      summary: 举报评课
+      tags:
+      - report
+  /login/:
+    post:
+      consumes:
+      - application/json
+      description: 用学号登录，返回token，如果isnew==1，就要post用户信息。
+      parameters:
+      - description: sid学号，password密码
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.LoginModel'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.AuthResponse'
+      summary: 学号登录
+      tags:
+      - auth
+  /message/:
+    get:
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 页码
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: 每页最大数
+        in: query
+        name: limit
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/message.messageListResponse'
+      summary: 获取消息提醒
+      tags:
+      - message
+  /message/count/:
+    get:
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/message.CountModel'
+      summary: 获取消息提醒的个数
+      tags:
+      - message
+  /message/readall/:
+    post:
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: 读取消息提醒
+      tags:
+      - message
+  /search/course/:
+    get:
+      parameters:
+      - description: 关键字
+        in: query
+        name: keyword
+        required: true
+        type: string
+      - description: 课程类型
+        in: query
+        name: type
+        type: string
+      - description: 开课学院
+        in: query
+        name: academy
+        type: string
+      - description: 上课日期
+        in: query
+        name: weekday
+        type: string
+      - description: 上课地点
+        in: query
+        name: place
+        type: string
+      - description: 页码
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: 每页最大数
+        in: query
+        name: limit
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/search.searchResponse'
+      summary: 搜索课程接口
+      tags:
+      - search
+  /search/historyCourse/:
+    get:
+      parameters:
+      - description: 关键字
+        in: query
+        name: keyword
+        required: true
+        type: string
+      - description: 课程类型
+        in: query
+        name: type
+        type: string
+      - description: 页码
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: 每页最大数
+        in: query
+        name: limit
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/search.searchHistoryCourseResponse'
+      summary: 搜索历史课程接口
+      tags:
+      - search
+  /table/:
+    get:
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/table.getTablesResponse'
+      summary: 获取课表
+      tags:
+      - table
+    post:
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 若是创建副本，则为课表副本id，若是添加新课表，则为0
+        in: query
+        name: id
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ClassTableInfo'
+      summary: 新建课表
+      tags:
+      - table
+  /table/{id}/:
+    delete:
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 课表id
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: 删除课表
+      tags:
+      - table
+  /table/{id}/class/:
+    delete:
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 课表id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: 课程id
+        in: query
+        name: course_id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: 删除课堂
+      tags:
+      - table
+    post:
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 课表id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: 课程hash id
+        in: query
+        name: course_id
+        required: true
+        type: string
+      - description: 课堂教学班编号
+        in: query
+        name: class_id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/table.addClassResponseData'
+      summary: 收藏的课堂加入课表
+      tags:
+      - table
+  /table/{id}/rename/:
+    put:
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 课表id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/table.renameBodyData'
+          type: object
+      responses:
+        "200":
+          description: OK
+      summary: 课表重命名
+      tags:
+      - table
+  /tag/:
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/tag.tagGetResponse'
+      summary: 获取课程评价标签列表
+      tags:
+      - tag
+  /upload/image/:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 二进制图片文件
+        in: formData
+        name: image
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/upload.ImageUrlModel'
+      summary: 上传文件，图片，返回url，即为上传头像
+      tags:
+      - upload
+  /user/courses/:
+    post:
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 学年，默认获取全部
+        in: query
+        name: year
+        required: true
+        type: string
+      - description: 学期，1/2/3，默认0表示获取全部
+        in: query
+        name: term
+        required: true
+        type: string
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.LoginModel'
+          type: object
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/course.selfCoursesResponse'
+      summary: 获取个人历史课程
+      tags:
+      - course
+  /user/evaluations/:
+    get:
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 评课数
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: 上一次请求的最后一个评课的id，若是初始请求则为0
+        in: query
+        name: last_id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/evaluation.historyEvaluationsResponse'
+      summary: 个人历史评课
+      tags:
+      - evaluation
+  /user/info/:
+    get:
+      consumes:
+      - application/json
+      description: 带着token
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.UserInfoResponse'
+      summary: 获取用户信息
+      tags:
+      - user
+    post:
+      consumes:
+      - application/json
+      description: 带着token，上传用户的头像/avatar，名字/username.
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 用户信息
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.UserInfoRequest'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: 上传用户信息
+      tags:
+      - user
+schemes:
+- https
+swagger: "2.0"
+tags:
+- description: 用户相关
+  name: user
+- description: 消息提醒
+  name: message
+- description: 课程相关
+  name: course
+- description: 评课
+  name: evaluation
+- description: 评论
+  name: comment
+- description: 排课课表
+  name: table
+- description: 举报
+  name: report
+- description: 课程评价标签
+  name: tag
+- description: 上传文件
+  name: upload
+- description: 登录，鉴权
+  name: auth
