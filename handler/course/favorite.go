@@ -21,7 +21,7 @@ type likeDataRequest struct {
 // @Param id path string true "收藏的课程id"
 // @Param data body course.likeDataRequest true "当前收藏状态"
 // @Success 200 {object} string	"ok"
-// @Router /course/using/{id}/favorite/ [post]
+// @Router /course/using/{id}/favorite/ [put]
 func FavoriteCourse(c *gin.Context) {
 	log.Info("FavoriteCourse function is called.")
 	hash := c.Param("id")
