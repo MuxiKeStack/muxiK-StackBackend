@@ -26,7 +26,10 @@ type searchHistoryCourseResponse struct {
 // @Summary 搜索课程接口
 // @Tags search
 // @Param keyword query string true "关键字"
-// @Param th query string false "是否为通核, 0或者不给表示不筛选"
+// @Param type query string false "课程类型"
+// @Param academy query string false "开课学院"
+// @Param weekday query string false "上课日期"
+// @Param place query string false "上课地点"
 // @Param page query integer true "页码"
 // @Param limit query integer true "每页最大数"
 // @Success 200 {object} search.searchResponse
@@ -45,17 +48,16 @@ func SearchCourse(c *gin.Context) {
 		return
 	}
 	keyword := c.DefaultQuery("keyword", "")
-	thStr := c.DefaultQuery("th", "0")
-	th := false
-	if thStr == "1" {
-		th = true
-	}
+	t := c.DefaultQuery("type", "")
+	a := c.DefaultQuery("academy", "")
+	w := c.DefaultQuery("weekday", "")
+	p := c.DefaultQuery("place", "")
 
 	courseList := []service.CourseInfoForAssistant{}
 	if keyword != "" {
-		courseList, err = service.SearchCourses(keyword, page, limit, th)
+		courseList, err = service.SearchCourses(keyword, page, limit, t, a, w, p)
 	} else {
-		courseList, err = service.GetAllCourses(page, limit, th)
+		courseList, err = service.GetAllCourses(page, limit, t, a, w, p)
 	}
 	if err != nil {
 		handler.SendError(c, errno.ErrSearchCourse, nil, err.Error())
@@ -73,6 +75,7 @@ func SearchCourse(c *gin.Context) {
 // @Summary 搜索历史课程接口
 // @Tags search
 // @Param keyword query string true "关键字"
+// @Param type query string false "课程类型"
 // @Param page query integer true "页码"
 // @Param limit query integer true "每页最大数"
 // @Success 200 {object} search.searchHistoryCourseResponse
@@ -91,12 +94,13 @@ func SearchHistoryCourse(c *gin.Context) {
 		return
 	}
 	keyword := c.DefaultQuery("keyword", "")
+	t := c.DefaultQuery("type", "")
 
 	courseList := []service.SearchHistoryCourseInfo{}
 	if keyword != "" {
-		courseList, err = service.SearchHistoryCourses(keyword, page, limit)
+		courseList, err = service.SearchHistoryCourses(keyword, page, limit, t)
 	} else {
-		courseList, err = service.GetAllHistoryCourses(page, limit)
+		courseList, err = service.GetAllHistoryCourses(page, limit, t)
 	}
 	if err != nil {
 		handler.SendError(c, errno.ErrSearchCourse, nil, err.Error())

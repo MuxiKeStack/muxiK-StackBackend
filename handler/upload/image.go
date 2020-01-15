@@ -11,6 +11,8 @@ type ImageUrlModel struct {
 	Url string `json:"url"`
 }
 
+// TODO FIX upload to change avatar directly.
+
 // @Tags upload
 // @Summary 上传文件，图片，返回url，即为上传头像
 // @Description

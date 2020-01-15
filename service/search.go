@@ -33,6 +33,7 @@ type SearchHistoryCourseInfo struct {
 type CourseInfoForAssistant struct {
 	Id       uint32  `json:"id"` //数据库表中记录的id，自增id
 	Name     string  `json:"course_name"`
+	Academy  string  `json:"academy"`
 	Teacher  string  `json:"teacher"`
 	CourseId string  `json:"course_id"`
 	Rate     float32 `json:"rate"`
@@ -63,9 +64,9 @@ func kwReplace(kw string) string {
 	return kw
 }
 
-func SearchCourses(keyword string, page, limit uint64, th bool) ([]CourseInfoForAssistant, error) {
+func SearchCourses(keyword string, page, limit uint64, t, a, w, p string) ([]CourseInfoForAssistant, error) {
 	keyword = kwReplace(keyword)
-	courseRows, _ := model.AgainstAndMatchCourses(keyword, page, limit, th)
+	courseRows, _ := model.AgainstAndMatchCourses(keyword, page, limit, t, a, w, p)
 	/*	if err != nil {
 			return courses, err
 		}
@@ -86,6 +87,7 @@ func SearchCourses(keyword string, page, limit uint64, th bool) ([]CourseInfoFor
 		courses[i] = CourseInfoForAssistant{
 			Id:       row.Id,
 			Name:     row.Name,
+			Academy:  row.Academy,
 			Teacher:  row.Teacher,
 			CourseId: row.CourseId,
 			Rate:     class.Rate,
@@ -102,9 +104,9 @@ func SearchCourses(keyword string, page, limit uint64, th bool) ([]CourseInfoFor
 	return courses, nil
 }
 
-func SearchHistoryCourses(keyword string, page, limit uint64) ([]SearchHistoryCourseInfo, error) {
+func SearchHistoryCourses(keyword string, page, limit uint64, t string) ([]SearchHistoryCourseInfo, error) {
 	keyword = kwReplace(keyword)
-	courseRows, _ := model.AgainstAndMatchHistoryCourses(keyword, page, limit)
+	courseRows, _ := model.AgainstAndMatchHistoryCourses(keyword, page, limit, t)
 	/*	if err != nil {
 			return courses, err
 		}
@@ -131,8 +133,8 @@ func SearchHistoryCourses(keyword string, page, limit uint64) ([]SearchHistoryCo
 	return courses, nil
 }
 
-func GetAllCourses(page, limit uint64, th bool) ([]CourseInfoForAssistant, error) {
-	courseRows, err := model.AllCourses(page, limit, th)
+func GetAllCourses(page, limit uint64, t, a, w, p string) ([]CourseInfoForAssistant, error) {
+	courseRows, err := model.AllCourses(page, limit, t, a, w, p)
 	if err != nil {
 		return nil, err
 	}
@@ -162,9 +164,9 @@ func GetAllCourses(page, limit uint64, th bool) ([]CourseInfoForAssistant, error
 	return courses, nil
 }
 
-func GetAllHistoryCourses(page, limit uint64) ([]SearchHistoryCourseInfo, error) {
+func GetAllHistoryCourses(page, limit uint64, t string) ([]SearchHistoryCourseInfo, error) {
 
-	courseRows, err := model.AllHistoryCourses(page, limit)
+	courseRows, err := model.AllHistoryCourses(page, limit, t)
 	if err != nil {
 		return nil, err
 	}

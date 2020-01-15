@@ -1,9 +1,10 @@
 package router
 
 import (
+	"net/http"
+
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler/collection"
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler/report"
-	"net/http"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler/upload"
 
@@ -82,7 +83,6 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 		courses.POST("/:id/", course.ModifyCourse)
 		courses.DELETE("/:id/", course.DeleteCourse)
 		courses.PUT("/:id/favorite/", course.FavoriteCourse)
-		//courses.GET("/favorite/list/", course.FavoriteList)
 	}
 
 	// // 云课堂课程
