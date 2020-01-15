@@ -2,6 +2,7 @@ package course
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
@@ -103,7 +104,7 @@ func GetCourseInfo(c *gin.Context) {
 		//list2 := make([]TPList, 2)
 		//list3 := make([]TPList, 2)
 		aclass := &model.UsingCourseModel{Hash: hash}
-		if err := aclass.GetClass("45677654", uint64(i)); err != nil {
+		if err := aclass.GetClass("45677654", strconv.Itoa(i)); err != nil {
 			log.Info("course.GetClass() error.")
 			handler.SendError(c, err, nil, "")
 			log.Info(courseid)
