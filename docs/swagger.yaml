@@ -752,7 +752,7 @@ paths:
       tags:
       - evaluation
   /course/using/{id}/favorite/:
-    post:
+    put:
       parameters:
       - description: token
         in: header

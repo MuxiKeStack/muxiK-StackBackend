@@ -255,7 +255,7 @@
             }
         },
         "/course/using/{id}/favorite/": {
-            "post": {
+            "put": {
                 "tags": [
                     "course"
                 ],
