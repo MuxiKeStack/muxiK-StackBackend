@@ -357,13 +357,13 @@ definitions:
       content:
         description: 即为操作对象的内容，如果是对于评课则是评课，如果是对评论则是原评论内容。
         type: string
-      courseId:
+      course_id:
         description: "MessageInfo string `gorm:\"column:message_info\"`\n消息提醒的一些信息，显示出来的字段，用于回复评论的id\to
           represents evaluation or comment information"
         type: string
-      courseName:
+      course_name:
         type: string
-      evaluationId:
+      evaluation_id:
         description: 点击消息提醒中的内容 跳转到 评课 需要 EvaluationId
         type: integer
       is_read:
@@ -371,7 +371,7 @@ definitions:
       kind:
         description: kind 区分 点赞->0 评论->1 举报->2
         type: integer
-      parentCommentId:
+      parent_comment_id:
         type: string
       reply:
         type: string
@@ -462,12 +462,44 @@ definitions:
     properties:
       courses:
         items:
-          $ref: '#/definitions/service.SearchCourseInfo'
+          $ref: '#/definitions/service.CourseInfoForAssistant'
         type: array
       length:
         type: integer
       page:
         type: integer
+    type: object
+  service.CourseInfoForAssistant:
+    properties:
+      academy:
+        type: string
+      course_id:
+        type: string
+      course_name:
+        type: string
+      id:
+        description: 数据库表中记录的id，自增id
+        type: integer
+      place1:
+        type: string
+      place2:
+        type: string
+      place3:
+        type: string
+      rate:
+        type: number
+      region:
+        type: integer
+      stars_num:
+        type: integer
+      teacher:
+        type: string
+      time1:
+        type: string
+      time2:
+        type: string
+      time3:
+        type: string
     type: object
   service.ProducedCourseItem:
     properties:
@@ -481,30 +513,6 @@ definitions:
         type: string
       teacher:
         type: string
-    type: object
-  service.SearchCourseInfo:
-    properties:
-      class_id:
-        description: 课堂编号
-        type: integer
-      course_id:
-        description: 课程编号
-        type: string
-      credit:
-        description: 学分
-        type: number
-      id:
-        description: 主键
-        type: integer
-      name:
-        description: 课程名称
-        type: string
-      teacher:
-        description: 任课教师姓名
-        type: string
-      type:
-        description: 课程类型
-        type: integer
     type: object
   service.SearchHistoryCourseInfo:
     properties:
@@ -526,6 +534,11 @@ definitions:
       stars_num:
         description: 参与评分人数
         type: integer
+      tags:
+        description: 前四的tag
+        items:
+          type: string
+        type: array
       teacher:
         description: 教师姓名
         type: string
@@ -1066,9 +1079,21 @@ paths:
         name: keyword
         required: true
         type: string
-      - description: 是否为通核, 0或者不给表示不筛选
+      - description: 课程类型
         in: query
-        name: th
+        name: type
+        type: string
+      - description: 开课学院
+        in: query
+        name: academy
+        type: string
+      - description: 上课日期
+        in: query
+        name: weekday
+        type: string
+      - description: 上课地点
+        in: query
+        name: place
         type: string
       - description: 页码
         in: query
@@ -1095,6 +1120,10 @@ paths:
         in: query
         name: keyword
         required: true
+        type: string
+      - description: 课程类型
+        in: query
+        name: type
         type: string
       - description: 页码
         in: query
