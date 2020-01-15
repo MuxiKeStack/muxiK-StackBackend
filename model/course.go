@@ -2,6 +2,7 @@ package model
 
 import (
 	// _"database/sql"
+	"fmt"
 	_ "github.com/jinzhu/gorm"
 	// _ "log"
 )
@@ -18,6 +19,10 @@ func (HistoryCourseModel) TableName() string {
 	return "history_course"
 }
 
+func (class *UsingCourseModel) T() {
+	fmt.Println("---")
+}
+
 /*
 func (CourseLikeModel) TableName() string {
 	return "course_like"
@@ -27,10 +32,10 @@ func (CourseLikeModel) TableName() string {
 func (class *UsingCourseModel) Add() error {
 	d := DB.Self.Create(class)
 	return d.Error
+	//return nil
 }
 
 // Delete a course.
-// Fixed by shiina orez at 2019.11.24 evaluation =>> course
 func (class *UsingCourseModel) Delete() error {
 	d := DB.Self.Delete(class)
 	return d.Error
@@ -74,20 +79,6 @@ func (class *UsingCourseModel) GetByTeacher() error {
 	return d.Error
 }
 
-/*
-func GetCourseList(userId uint32) ([]string, error) {
-	var data []CourseLikeModel
-	var result []string
-	d := DB.Self.Where("user_id = ?", userId).Find(&data)
-	if d.RecordNotFound() {
-		return nil, nil
-	}
-	for _, i := range data {
-		result = append(result, i.CourseHash)
-	}
-	return result, d.Error
-}*/
-
 // Get course by its courseid.(course assistant)
 func (class *UsingCourseModel) GetByCourseId(time int, place int) error { //int为映射，作为筛选条件
 	d := DB.Self.Find(class, "course_id = ?", class.CourseId)
@@ -118,6 +109,7 @@ func (class *UsingCourseModel) Unfavorite(userId uint32) error {
 		CourseHashId: class.Hash,
 		UserId:       userId,
 	}
+	fmt.Println(data)
 
 	d := DB.Self.Delete(&data)
 	return d.Error
