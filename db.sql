@@ -187,7 +187,7 @@ CREATE TABLE `using_course` (
   `teacher`        VARCHAR(200)  NOT NULL DEFAULT "",
   `credit`         FLOAT        NOT NULL DEFAULT 0 COMMENT "学分",
   `course_id`      VARCHAR(9)   NOT NULL            COMMENT "课程号",
-  `class_id`       VARCHAR(20)          NOT NULL            COMMENT "教学班编号",
+  `class_id`       VARCHAR(50)          NOT NULL            COMMENT "教学班编号",
   `type`           INT          NOT NULL            COMMENT "通识必修，通识选修，通识核心，专业必修，专业选修分别为 0/1/2/3/4",
   `time1`          VARCHAR(30)  NOT NULL DEFAULT "",
   `place1`         VARCHAR(30)  NOT NULL DEFAULT "",

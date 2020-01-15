@@ -16,7 +16,7 @@ type ClassTableInfo struct {
 
 type ClassInfo struct {
 	CourseId  string           `json:"course_id"`
-	ClassId   uint64           `json:"class_id"` // 教学班编号
+	ClassId   string           `json:"class_id"` // 教学班编号
 	ClassName string           `json:"class_name"`
 	Teacher   string           `json:"teacher"`
 	Places    *[]string        `json:"places"`
