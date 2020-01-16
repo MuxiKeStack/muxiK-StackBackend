@@ -15,7 +15,7 @@ type tagGetResponse struct {
 // @Summary 获取课程评价标签列表
 // @Tags tag
 // @Success 200 {object} tag.tagGetResponse
-// @Router /tag/ [get]
+// @Router /tags/ [get]
 func Get(c *gin.Context) {
 	tags := model.GetTags()
 

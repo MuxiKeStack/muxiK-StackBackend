@@ -1,11 +1,12 @@
-/*
-package main
+package script
+
+/*package main
 
 import (
 	"fmt"
 	"strconv"
 	"strings"
-	
+
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	_ "github.com/go-sql-driver/mysql"
@@ -40,7 +41,7 @@ func judge1(c string) uint8 {
 	default:
 		return 9
 	}
-	return 0
+	return 9
 }
 
 func judge2(c string) uint8 {
@@ -72,56 +73,6 @@ func judge3 (c string) string{
 	}
 	return "error"
 }
-
-//增加一个课程
-// func AddCourse() {
-// 	var float float32
-// 	f, err := excelize.OpenFile("./1.xlsx")
-// 	if err != nil {
-// 		fmt.Println(err)
-// 		return
-// 	}
-// 	rows := f.GetRows("公共课")
-// 	var scourseid string
-// 	var clas uint64
-// 	for n, row := range rows {
-// 		if n == 0{
-// 			continue
-// 		}
-// 		scourseid = row[2]
-// 		teachers := util.GetTeachersSqStrBySplitting(row[8])
-// 		key := util.HashCourseId(scourseid, teachers)
-// 		cred, _ := strconv.ParseFloat(row[4], 32)
-// 		float = float32(cred)
-// 		clas, _ = strconv.ParseUint(row[3], 10, 64)
-// 		onecourse:= &model.UsingCourseModel{
-// 			Hash:      key,
-// 			Name:     test(row[1]),
-// 			CourseId: test(row[2]),
-// 			ClassId:  clas,
-// 			Credit:   float,
-// 			Teacher:  teachers,
-// 			Type:     judge1(row[2][4:5]),
-// 			Time1:    test(row[10]),
-// 			Place1:   test(row[11]),
-// 			Time2:    test(row[12]),
-// 			Place2:   test(row[13]),
-// 			Time3:    test(row[14]),
-// 			Place3:   test(row[15]),
-// 			Weeks1:   test(row[10]),
-// 			Weeks2:   test(row[12]),
-// 			Weeks3:   test(row[14]),
-// 			//Region:   judge2(row[11][0:1]),
-// 		}
-// 		DB.Create(onecourse)
-// 		// fmt.Println(onecourse)
-// 		// if err := onecourse.Add(); err != nil {
-// 		// 	log.Info("add onecourse error")
-// 		// 	return
-// 		//  }
-// 	}
-	
-// }
 
 func chToNum(a string) string{
 	switch a{
@@ -242,24 +193,12 @@ func main(){
 		key := util.HashCourseId(scourseid, teachers)
 		cred, _ := strconv.ParseFloat(row[4], 32)
 		float = float32(cred)
-		onecourse:= &model.UsingCourseModel{
+		onecourse:= &model.HistoryCourseModel{
 			Hash:      key,
 			Name:     name,
-			CourseId: row[2],
-			ClassId:  row[3],
 			Credit:    float,
 			Teacher:  teachers,
 			Type:     judge1(row[2][3:4]),
-			Time1:    analyzeTime(row[10]),
-			Place1:   row[11],
-			Time2:    analyzeTime(row[12]),
-			Place2:  row[13],
-			Time3:   analyzeTime(row[14]),
-			Place3:   row[15],
-			Weeks1:   preAnalyzeWeek(row[10]),
-			Weeks2:   preAnalyzeWeek(row[12]),
-			Weeks3:   preAnalyzeWeek(row[14]),
-			Region:   judge2(delNull(row[11])),
 		}
 		db.Create(onecourse)
 	}
@@ -276,28 +215,15 @@ func main(){
 			key := util.HashCourseId(scourseid, teachers)
 			cred, _ := strconv.ParseFloat(row[4], 32)
 			float = float32(cred)
-			onecourse:= &model.UsingCourseModel{
+			onecourse:= &model.HistoryCourseModel{
 				Hash:      key,
 				Name:     row[1],
-				CourseId: row[2],
-				ClassId:  row[3],
 				Credit:    float,
 				Teacher:  teachers,
 				Type:     judge1(row[2][3:4]),
-				Time1:    analyzeTime(row[10]),
-				Place1:   row[11],
-				Time2:    analyzeTime(row[12]),
-				Place2:  row[13],
-				Time3:   analyzeTime(row[14]),
-				Place3:   row[15],
-				Weeks1:   preAnalyzeWeek(row[10]),
-				Weeks2:   preAnalyzeWeek(row[12]),
-				Weeks3:   preAnalyzeWeek(row[14]),
-				Region:   judge2(delNull(row[11])),
 			}
 			db.Create(onecourse)
 		}
 	}
 	defer db.Close()
-}
-*/
+}*/

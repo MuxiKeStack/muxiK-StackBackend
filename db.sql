@@ -205,14 +205,15 @@ CREATE TABLE `using_course` (
   FULLTEXT KEY (`name`, `course_id`, `teacher`) WITH PARSER ngram
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
-CREATE TABLE `self_course` (
-  `id`      INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `user_id` INT UNSIGNED NOT NULL,
-  `courses` TEXT         NOT NULL COMMENT "课堂 hash id 列表，逗号分隔",
-
-  PRIMARY KEY (`id`),
-  KEY `idx_user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+-- CREATE TABLE `self_course` (
+--   `id`      INT UNSIGNED      NOT NULL AUTO_INCREMENT,
+--   `user_id` INT UNSIGNED      NOT NULL,
+--   `num`     SMALLINT UNSIGNED NOT NULL COMMENT "课程数",
+--   `courses` TEXT              NOT NULL COMMENT "课程 hash id 列表，逗号分隔",
+--
+--   PRIMARY KEY (`id`),
+--   KEY `idx_user_id` (`user_id`)
+-- ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 INSERT INTO `tags` (name) VALUES ("简单易学"), ("干货满满"), ("严谨负责"), ("温柔随风"), ("风趣幽默"), ("作业少"), ("划重点"), ("云课堂资料全");
 

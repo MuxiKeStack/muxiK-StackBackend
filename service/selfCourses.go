@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
@@ -44,10 +45,11 @@ func GetSelfCourseList(userId uint32, sid, pwd, year, term string) (*[]ProducedC
 	return &list, nil
 }
 
+// 获取个人课程备份
 func GetSelfCourseListFromLocal(userId uint32) (*[]ProducedCourseItem, error) {
 	hashIdStr, err := model.GetSelfCoursesByUserId(userId)
 	if err != nil {
-
+		log.Error("GetSelfCoursesByUserId function error", err)
 		return nil, err
 	}
 
@@ -57,6 +59,7 @@ func GetSelfCourseListFromLocal(userId uint32) (*[]ProducedCourseItem, error) {
 	for _, hashId := range hashIds {
 		course := &model.UsingCourseModel{Hash: hashId}
 		if err := course.GetByHash(); err != nil {
+			log.Error("GetByHash function error", err)
 			return nil, err
 		}
 		item := ProducedCourseItem{
@@ -71,26 +74,43 @@ func GetSelfCourseListFromLocal(userId uint32) (*[]ProducedCourseItem, error) {
 	return &list, nil
 }
 
+// 存入备份数据至本地数据库
 func SavingCourseDataToLocal(userId uint32, list *[]ProducedCourseItem) error {
 	var record = &model.SelfCourseModel{UserId: userId}
 	ok, err := record.GetByUserId()
 	if err != nil {
+		log.Error("SelfCourseModel.GetByUserId error", err)
 		return err
 	}
-	// 无记录则新添
-	var hashIds []string
-	for _, item := range *list {
-		hashIds = append(hashIds, item.CourseId)
+
+	curNum := len(*list)
+
+	// 记录存在且课程无变化，无需更新
+	if ok && record.Num == uint32(curNum) {
+		return nil
 	}
-	hashIdStr := strings.Join(hashIds, ",")
+
+	// 无记录则新添
+	//var hashIds []string
+	var hashIdStr string
+	for i, item := range *list {
+		//hashIds = append(hashIds, item.CourseId)
+		if i > 0 {
+			hashIdStr = fmt.Sprintf("%s,%s", hashIdStr, item.CourseId)
+			continue
+		}
+		hashIdStr += item.CourseId
+	}
+	//hashIdStr := strings.Join(hashIds, ",")
+
+	record.Courses = hashIdStr
+	record.Num = uint32(curNum)
 
 	// 不存在记录则新添记录
 	if !ok {
-		record.Courses = hashIdStr
 		err = record.New()
-	} else if len(hashIdStr) != len(record.Courses) {
+	} else {
 		// 若存在且课程变化则更新
-		record.Courses = hashIdStr
 		err = record.Update()
 	}
 

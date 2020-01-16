@@ -42,6 +42,7 @@ type UsingCourseModel struct {
 type SelfCourseModel struct {
 	Id      uint32 `gorm:"column:id"`
 	UserId  uint32 `gorm:"column:user_id"`
+	Num     uint32 `gorm:"column:num"`
 	Courses string `gorm:"column:courses"`
 }
 
