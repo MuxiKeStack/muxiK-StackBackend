@@ -120,7 +120,7 @@ CREATE TABLE `class_table` (
   `id`      INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `user_id` INT UNSIGNED NOT NULL,
   `name`    VARCHAR(20)  NOT NULL DEFAULT "新课表",
-  `classes` TEXT         NOT NULL COMMENT "课堂 hash 列表，逗号分隔",
+  `classes` TEXT         NOT NULL COMMENT "课堂 hash id 列表，逗号分隔",
 
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`)
@@ -205,6 +205,15 @@ CREATE TABLE `using_course` (
   FULLTEXT KEY (`name`, `course_id`, `teacher`) WITH PARSER ngram
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
+CREATE TABLE `self_course` (
+  `id`      INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_id` INT UNSIGNED NOT NULL,
+  `courses` TEXT         NOT NULL COMMENT "课堂 hash id 列表，逗号分隔",
+
+  PRIMARY KEY (`id`),
+  KEY `idx_user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+
 INSERT INTO `tags` (name) VALUES ("简单易学"), ("干货满满"), ("严谨负责"), ("温柔随风"), ("风趣幽默"), ("作业少"), ("划重点"), ("云课堂资料全");
 
 
@@ -224,7 +233,28 @@ INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time
 VALUES ('112d34testsvggase', '高等数学A', '宋冰玉', '45677654', "2", 3, '3-4#1', '5-6#3', '7207', '7105', '2-17#0', '2-15#2', 2);
 
 INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time1, time2,time3, place1, place2, place3, weeks1, weeks2, weeks3, region)
-VALUES ('112d34testsvggase', '高等数学A', '宋冰玉', '45677654', "3", 3, '9-10#2', '5-6#5', '1-2#4', '7207', '7105', '7201', '2-17#0', '2-17#0', '2-17#2', 2);
+VALUES ('112d34testsvggase', '高等数学A', '宋冰玉', '45677654', "3", 3, '9-10#2', '5-6#4', '1-2#5', '7207', '7105', '7201', '2-17#0', '2-17#0', '2-17#2', 2);
+
+INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time1, time2, place1, place2, weeks1, weeks2, region)
+VALUES ('112d34testsvggase', '高等数学A', '宋冰玉', '45677654', "4", 3, '3-4#1', '5-6#3', '7207', '7105', '2-17#0', '2-15#2', 2);
+
+INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time1, time2, place1, place2, weeks1, weeks2, region)
+VALUES ('112d34testsvggase', '高等数学A', '宋冰玉', '45677654', "5", 3, '3-4#1', '5-6#1', '7207', '7105', '2-17#1', '2-15#2', 2);
+
+INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time1, time2, place1, place2, weeks1, weeks2, region)
+VALUES ('112d34testsvggase', '高等数学A', '宋冰玉', '45677654', "6", 3, '3-4#1', '5-6#3', '7207', '7105', '2-17#0', '2-15#1', 2);
+
+INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time1, time2, place1, place2, weeks1, weeks2, region)
+VALUES ('112d34testsvggase', '高等数学A', '宋冰玉', '45677654', "7", 3, '3-4#1', '5-6#3', '7207', '7105', '2-17#1', '2-15#2', 2);
+
+INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time1, time2, place1, place2, weeks1, weeks2, region)
+VALUES ('112d34testsvggase', '高等数学A', '宋冰玉', '45677654', "12", 3, '3-4#1', '5-6#3', '7207', '7105', '2-17#0', '2-15#0', 2);
+
+INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time1, time2, place1, place2, weeks1, weeks2, region)
+VALUES ('112d34testsvggase', '高等数学A', '宋冰玉', '45677654', "42", 3, '3-4#1', '5-6#3', '7207', '7105', '2-17#1', '2-15#2', 2);
+
+INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time1, time2,time3, place1, place2, place3, weeks1, weeks2, weeks3, region)
+VALUES ('112d34testsvggase', '高等数学A', '宋冰玉', '45677654', "55", 3, '1-2#4', '5-6#4', '9-10#4', '7207', '7105', '7201', '2-17#0', '2-17#0', '2-15#2', 2);
 
 INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time1, time2, time3, place1, place2, place3 ,weeks1, weeks2, weeks3, region)
 VALUES ('213f89eyguiguhy', '数据库原理', '喻莹', '98767654', "1", 3, '3-4#2', '7-8#4', '1-2#5', '9201', '8204', '7309', '2-17#0', '5-20#1','2-17#0', 2);
@@ -255,6 +285,9 @@ VALUES ('2e154de56gyubdq', '高级语言程序设计', '沈显军', '56982345', 
 
 INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time1, place1, weeks1, region)
 VALUES ('0s9uighvg121efe', 'Java程序设计', '张连发', '09865423', "1", 3, '9-10#4', '9501', '2-17#0', 2);
+
+INSERT INTO `using_course` (hash, name, teacher, course_id, class_id, type, time1, time2, place1, place2, weeks1, weeks2, region)
+VALUES ('asdf1232314123dasdf', '概率统计A', '涂佳娟', '123712322', "12", 2, '3-4#1', '5-6#3', '7207', '7105', '2-17#0', '2-15#2', 2);
 
 INSERT INTO `course_list` (user_id, course_hash_id) values (1, '0s9uighvg121efe'), (1, '112d34testsvggase');
 INSERT INTO `course_evaluation_like` (user_id, evaluation_id) values (8, 1), (8, 2);

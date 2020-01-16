@@ -38,6 +38,13 @@ type UsingCourseModel struct {
 // time格式：1-2#1 ==> 周一的第一到第二节，#后面的数字代表周几(1-7)
 // week格式：2-17#0 ==> 2-17周，全周；0为全周，1为单周，2为双周
 
+// 个人教学课程物理表
+type SelfCourseModel struct {
+	Id      uint32 `gorm:"column:id"`
+	UserId  uint32 `gorm:"column:user_id"`
+	Courses string `gorm:"column:courses"`
+}
+
 type HistoryCourseInfo struct {
 	Hash     string
 	CourseId string

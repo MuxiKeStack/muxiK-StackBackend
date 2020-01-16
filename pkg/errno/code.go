@@ -58,8 +58,9 @@ var (
 	ErrUploadFile = &Errno{Code: 20702, Message: "Error occurred in uploading file to oss"}
 
 	// course errors
-	ErrCourseExisting = &Errno{Code: 20801, Message: "Course does not exist."}
-	ErrGetSelfCourses = &Errno{Code: 20802, Message: "Error occurred in getting self courses"}
+	ErrCourseExisting   = &Errno{Code: 20801, Message: "Course does not exist."}
+	ErrGetSelfCourses   = &Errno{Code: 20802, Message: "Error occurred in getting self courses"}
+	ErrSavesDataToLocal = &Errno{Code: 20803, Message: "Error occurred in Saving data to local"}
 
 	// report errors
 	ErrCreateReport = &Errno{Code: 20901, Message: "Error occurred in creating new report."}

@@ -21,6 +21,10 @@ func (HistoryCourseModel) TableName() string {
 	return "history_course"
 }
 
+func (*SelfCourseModel) TableName() string {
+	return "self_course"
+}
+
 // Add a new course.
 func (class *UsingCourseModel) Add() error {
 	d := DB.Self.Create(class)
@@ -178,4 +182,31 @@ func AllHistoryCourses(page, limit uint64, t string) ([]HistoryCourseModel, erro
 		DB.Self.Table("history_course").Limit(limit).Offset((page - 1) * limit).Find(courses)
 	}
 	return *courses, nil
+}
+
+/*---------------------------- SelfCourse Operation --------------------------*/
+
+func (data *SelfCourseModel) New() error {
+	return DB.Self.Create(data).Error
+}
+
+func (data *SelfCourseModel) Update() error {
+	return DB.Self.Save(data).Error
+}
+
+func (data *SelfCourseModel) GetByUserId() (bool, error) {
+	d := DB.Self.Where("user_id = ?", data.UserId).First(data)
+	if d.RecordNotFound() {
+		return false, nil
+	}
+	return true, d.Error
+}
+
+func GetSelfCoursesByUserId(userId uint32) (string, error) {
+	var data SelfCourseModel
+	d := DB.Self.Where("user_id = ?", userId).First(&data)
+	if d.RecordNotFound() {
+		return data.Courses, nil
+	}
+	return data.Courses, d.Error
 }
