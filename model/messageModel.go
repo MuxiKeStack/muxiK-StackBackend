@@ -58,7 +58,7 @@ type MessagePub struct {
 //
 type MessageSub struct {
 	UserInfo UserInfoRequest `json:"user_info"`
-	//kind 区分 点赞->0 评论->1 举报->2
+	//kind 区分 点赞->0 评论->1 举报->2 系统提醒->3
 	Kind   uint8  `json:"kind"`
 	IsRead bool   `json:"is_read"`
 	Reply  string `json:"reply"`
