@@ -11,7 +11,7 @@ import (
 )
 
 /*
-系统提醒的用户id为 0或者1<<31
+系统提醒的用户id为 1
 对消息提醒的整理，分为三种，评论，点赞，举报，用kind来表识。
 所有消息提醒都有一个tag，即为MessageInfo，信息有课程名，课程老师名，课程ID
 所有的点击都是返回评课id，所以必须要有的id是前两个。
@@ -31,6 +31,8 @@ import (
 举报分为
 	对评课的举报
 */
+var SystemUserId uint32 = 1
+
 func MessageList(page, limit, uid uint32) (*[]model.MessageSub, error) {
 	messages, err := model.GetMessages(page, limit, uid)
 	if err != nil {
@@ -281,7 +283,7 @@ func NewMessageForReport(userId uint32, evaluationId uint32) error {
 	}
 
 	message := &model.MessagePub{
-		PubUserId:       (uint32)(1 << 31),
+		PubUserId:       SystemUserId,
 		SubUserId:       userId,
 		Kind:            2, //举报
 		IsRead:          false,
@@ -311,7 +313,7 @@ func NewMessageForSystem(userId uint32, usingCourseId uint32) error {
 		return err
 	}
 	message := &model.MessagePub{
-		PubUserId:       (uint32)(1 << 31),
+		PubUserId:       SystemUserId,
 		SubUserId:       userId,
 		Kind:            3, //系统提醒
 		IsRead:          false,
