@@ -267,3 +267,7 @@ func NewMessageForSubCommentLiking(userId uint32, comment *model.SubCommentModel
 }
 
 func NewMessageForReport(userId uint32) {}
+
+func NewMessageForSystem(userId uint32, CourseId string) {
+
+}
