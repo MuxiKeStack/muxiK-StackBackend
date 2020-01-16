@@ -51,6 +51,9 @@ func TableIsExisting(tableId uint32, userId uint32) bool {
 func GetTablesByUserId(userId uint32) (*[]ClassTableModel, error) {
 	var tables []ClassTableModel
 	d := DB.Self.Find(&tables, "user_id = ?", userId)
+	if d.RecordNotFound() {
+		return &tables, nil
+	}
 	return &tables, d.Error
 }
 

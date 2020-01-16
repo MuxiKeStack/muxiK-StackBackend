@@ -25,7 +25,7 @@ func CreateMessage(pub *MessagePub) error {
 
 func GetMessages(page, limit, uid uint32) (*[]Message, error) {
 	var messages []Message
-	DB.Self.Where("sub_user_id = ?", uid).Find(&messages).Limit(limit).Offset((page - 1) * limit).Order("time desc")
+	DB.Self.Where("sub_user_id = ?", uid).Limit(limit).Offset((page - 1) * limit).Order("time desc").Find(&messages)
 	return &messages, nil
 }
 

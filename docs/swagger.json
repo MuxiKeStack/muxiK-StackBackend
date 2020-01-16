@@ -1513,7 +1513,7 @@
             "properties": {
                 "class_id": {
                     "description": "教学班编号",
-                    "type": "integer"
+                    "type": "string"
                 },
                 "class_name": {
                     "type": "string"
@@ -1543,7 +1543,7 @@
             "properties": {
                 "class_id": {
                     "description": "教学班编号",
-                    "type": "integer"
+                    "type": "string"
                 },
                 "class_name": {
                     "type": "string"
@@ -2017,13 +2017,11 @@
         "service.ProducedCourseItem": {
             "type": "object",
             "properties": {
-                "academic": {
-                    "type": "string"
-                },
                 "course_id": {
                     "type": "string"
                 },
                 "has_evaluated": {
+                    "description": "Academic     string `json:\"academic\"`",
                     "type": "boolean"
                 },
                 "name": {

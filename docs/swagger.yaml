@@ -163,7 +163,7 @@ definitions:
     properties:
       class_id:
         description: 教学班编号
-        type: integer
+        type: string
       class_name:
         type: string
       course_id:
@@ -183,7 +183,7 @@ definitions:
     properties:
       class_id:
         description: 教学班编号
-        type: integer
+        type: string
       class_name:
         type: string
       places:
@@ -503,11 +503,10 @@ definitions:
     type: object
   service.ProducedCourseItem:
     properties:
-      academic:
-        type: string
       course_id:
         type: string
       has_evaluated:
+        description: Academic     string `json:"academic"`
         type: boolean
       name:
         type: string
