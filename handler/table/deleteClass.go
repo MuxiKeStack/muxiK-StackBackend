@@ -61,11 +61,17 @@ func DeleteClass(c *gin.Context) {
 
 	var newClasses string
 	if omitEnd != -1 {
+		// 位于中间，和开头
 		// 原始omitEnd是子串中分隔符的位置，需取在母串中的索引
 		newClasses = table.Classes[:omitStart] + table.Classes[omitStart+omitEnd+1:]
-	} else {
+	} else if omitStart > 0 {
+		// 位于最后
 		// 需去除尾部的分隔符
 		newClasses = table.Classes[:omitStart-1]
+	} else {
+		// TO DO：better code
+		// 单个课程，删除
+		newClasses = ""
 	}
 
 	// 更新课表信息
