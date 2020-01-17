@@ -13,6 +13,7 @@ type UserModel struct {
 	Username  string `gorm:"column:username"`
 	Avatar    string `gorm:"column:avatar"`
 	IsBlocked uint8  `gorm:"column:is_blocked"`
+	Licence   bool   `gorm:"column:licence"`
 }
 
 // UserInfoRequest represents a user's info for response

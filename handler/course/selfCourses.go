@@ -8,6 +8,7 @@ import (
 	"github.com/MuxiKeStack/muxiK-StackBackend/util"
 
 	"github.com/gin-gonic/gin"
+	"github.com/lexkong/log"
 )
 
 type selfCoursesResponse struct {
@@ -74,4 +75,22 @@ func GetSelfCourses(c *gin.Context) {
 		Sum:  len(*data),
 		Data: data,
 	})
+
+	if ok, err := model.UserHasLicence(userId); err != nil {
+		log.Error("UserHasLicence function error", err)
+		return
+	} else if !ok {
+		return
+	}
+
+	// 有许可，已加入计划
+	// 爬成绩
+	if err := service.NewGradeRecord(userId, l.Sid, l.Password); err != nil {
+		log.Error("NewGradeRecord function error", err)
+		return
+	}
+	// 导入成绩样本数据
+	if err := service.NewGradeSampleFoCourses(userId); err != nil {
+		log.Error("NewGradeSampleFoCourses function error", err)
+	}
 }

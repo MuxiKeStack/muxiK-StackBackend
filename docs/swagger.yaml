@@ -140,6 +140,29 @@ definitions:
       sum:
         type: integer
     type: object
+  grade.GetGradeResponse:
+    properties:
+      has_licence:
+        type: boolean
+      sample_size:
+        description: 样本数
+        type: integer
+      section_1:
+        description: 成绩区间1,85以上
+        type: number
+      section_2:
+        description: 区间2，70-85
+        type: number
+      section_3:
+        description: 区间3，85以下
+        type: number
+      total_score:
+        description: 总成绩均分
+        type: number
+      usual_score:
+        description: 平时均分
+        type: number
+    type: object
   message.CountModel:
     properties:
       count:
@@ -369,7 +392,7 @@ definitions:
       is_read:
         type: boolean
       kind:
-        description: kind 区分 点赞->0 评论->1 举报->2
+        description: kind 区分 点赞->0 评论->1 举报->2 系统提醒->3
         type: integer
       parent_comment_id:
         type: string
@@ -991,6 +1014,22 @@ paths:
       summary: 举报评课
       tags:
       - report
+  /grade/:
+    get:
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/grade.GetGradeResponse'
+      summary: 获取成绩
+      tags:
+      - grade
   /login/:
     post:
       consumes:
@@ -1276,7 +1315,7 @@ paths:
       summary: 课表重命名
       tags:
       - table
-  /tag/:
+  /tags/:
     get:
       responses:
         "200":
@@ -1414,6 +1453,31 @@ paths:
         "200":
           description: OK
       summary: 上传用户信息
+      tags:
+      - user
+  /user/licence/:
+    post:
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 课程id
+        in: query
+        name: course_id
+        type: string
+      - description: 学号密码
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.LoginModel'
+          type: object
+      responses:
+        "200":
+          description: OK
+      summary: 加入项目计划
       tags:
       - user
 schemes:

@@ -184,6 +184,10 @@ func AllHistoryCourses(page, limit uint64, t string) ([]HistoryCourseModel, erro
 	return *courses, nil
 }
 
+func (course *HistoryCourseModel) UpdateGradeInfo() error {
+	return DB.Self.Save(course).Error
+}
+
 /*---------------------------- SelfCourse Operation --------------------------*/
 
 func (data *SelfCourseModel) New() error {

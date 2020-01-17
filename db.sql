@@ -10,6 +10,7 @@ CREATE TABLE `user` (
   `username`   VARCHAR(25)   ,
   `avatar`     VARCHAR(255)  ,
   `is_blocked` TINYINT       NOT NULL DEFAULT 0,
+  `licence`    TINYINT       NOT NULL DEFAULT 0 COMMENT "成绩查看许可",
 
   PRIMARY KEY (`id`),
   KEY `sid` (`sid`)
@@ -173,6 +174,12 @@ CREATE TABLE `history_course` (
   `rate`      FLOAT        NOT NULL DEFAULT 0 COMMENT "课程评价星级",
   `stars_num` INT          NOT NULL DEFAULT 0 COMMENT "参与评课人数",
   `credit`    FLOAT        NOT NULL DEFAULT 0 COMMENT "学分",
+  `total_grade` FLOAT      NOT NULL DEFAULT 0 COMMENT "总成绩",
+  `usual_grade` FLOAT      NOT NULL DEFAULT 0 COMMENT "平时成绩",
+  `grade_sample_size` INT  NOT NULL DEFAULT 0 COMMENT "成绩样本人数",
+  `grade_section_1` INT    NOT NULL DEFAULT 0 COMMENT "成绩区间1,85以上",
+  `grade_section_2` INT    NOT NULL DEFAULT 0 COMMENT "成绩区间2,70-85",
+  `grade_section_3` INT    NOT NULL DEFAULT 0 COMMENT "成绩区间3,70以下",
 
   PRIMARY KEY (`id`),
   UNIQUE KEY `hash` (`hash`),
@@ -205,6 +212,23 @@ CREATE TABLE `using_course` (
   FULLTEXT KEY (`name`, `course_id`, `teacher`) WITH PARSER ngram
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
+CREATE TABLE `grade` (
+  `id`  INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `course_name`    VARCHAR(50) NOT NULL DEFAULT "",
+  `total_score`    FLOAT NOT NULL DEFAULT 0,
+  `usual_score`    FLOAT NOT NULL DEFAULT 0,
+  `final_exam_score` FLOAT NOT NULL DEFAULT 0,
+  `has_added`        TINYINT(1) NOT NULL DEFAULT 0,
+
+  `user_id` INT UNSIGNED NOT NULL,
+  `course_hash_id` VARCHAR(50) NOT NULL,
+
+  PRIMARY KEY (`id`),
+  KEY `idx_user_id` (`user_id`),
+  KEY `idx_hash` (`course_hash_id`)
+--   KEY `idx_has_added` (`has_added`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+
 -- CREATE TABLE `self_course` (
 --   `id`      INT UNSIGNED      NOT NULL AUTO_INCREMENT,
 --   `user_id` INT UNSIGNED      NOT NULL,
@@ -215,7 +239,8 @@ CREATE TABLE `using_course` (
 --   KEY `idx_user_id` (`user_id`)
 -- ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
-INSERT INTO `tags` (name) VALUES ("简单易学"), ("干货满满"), ("严谨负责"), ("温柔随风"), ("风趣幽默"), ("作业少"), ("划重点"), ("云课堂资料全");
+INSERT INTO `tags` (name) VALUES ("课程简单易学"), ("课程干货满满"), ("老师严谨负责"),
+("老师温柔随和"), ("老师风趣幽默"), ("平时作业少"), ("期末划重点"), ("云课堂资料全");
 
 
 -- mock data

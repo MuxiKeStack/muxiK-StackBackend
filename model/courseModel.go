@@ -2,14 +2,20 @@ package model
 
 //云课堂课程物理表
 type HistoryCourseModel struct {
-	Id       uint32  `gorm:"column:id; primary_key"`
-	Hash     string  `gorm:"column:hash; unique_key"` //教师名和课程hash成的唯一标识
-	Name     string  `gorm:"column:name"`             //课程名称
-	Teacher  string  `gorm:"column:teacher"`          //教师性名
-	Type     uint8   `gorm:"column:type"`             //课程类型，公共课为0，专业课为1
-	Rate     float32 `gorm:"column:rate"`             //课程评价星级
-	StarsNum uint32  `gorm:"column:stars_num"`        //参与评分人数
-	Credit   float32 `gorm:"column:credit"`
+	Id              uint32  `gorm:"column:id; primary_key"`
+	Hash            string  `gorm:"column:hash; unique_key"` //教师名和课程hash成的唯一标识
+	Name            string  `gorm:"column:name"`             //课程名称
+	Teacher         string  `gorm:"column:teacher"`          //教师性名
+	Type            uint8   `gorm:"column:type"`             //课程类型，公共课为0，专业课为1
+	Rate            float32 `gorm:"column:rate"`             //课程评价星级
+	StarsNum        uint32  `gorm:"column:stars_num"`        //参与评分人数
+	Credit          float32 `gorm:"column:credit"`
+	GradeSampleSize uint32  `gorm:"column:grade_sample_size"`
+	TotalGrade      float32 `gorm:"column:total_grade"`
+	UsualGrade      float32 `gorm:"column:usual_grade"`
+	GradeSection1   uint32  `gorm:"column:credit"`
+	GradeSection2   uint32  `gorm:"column:credit"`
+	GradeSection3   uint32  `gorm:"column:credit"`
 }
 
 //选课手册课堂物理表

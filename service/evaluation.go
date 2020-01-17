@@ -28,7 +28,6 @@ func GetEvaluationsForPlayground(lastId, limit int32, userId uint32, visitor boo
 // Get evaluations of one course.
 func GetEvaluationsOfOneCourse(lastId, limit int32, userId uint32, visitor bool, courseId string) (*[]model.EvaluationInfo, error) {
 	evaluations, err := model.GetEvaluationsByCourseIdOrderByTime(courseId, lastId, limit)
-
 	if err != nil {
 		log.Info("GetEvaluationsByCourseIdOrderByTime function error.")
 		return nil, err

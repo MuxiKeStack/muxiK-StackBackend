@@ -16,6 +16,10 @@ func (u *UserModel) UpdateInfo(info *UserInfoRequest) error {
 	return DB.Self.Save(u).Error
 }
 
+func (u *UserModel) UpdateLicence() error {
+	return DB.Self.Save(u).Error
+}
+
 // Validate the fields.
 func (u *UserModel) validate() error {
 	validate := validator.New()
@@ -35,4 +39,10 @@ func (u *UserModel) GetInfo() *UserInfoResponse {
 // Create creates a new user account.
 func CreateUser(sid string) error {
 	return DB.Self.Create(&UserModel{Sid: sid}).Error
+}
+
+func UserHasLicence(id uint32) (bool, error) {
+	var u = UserModel{Id: id}
+	d := DB.Self.First(&u)
+	return u.Licence, d.Error
 }

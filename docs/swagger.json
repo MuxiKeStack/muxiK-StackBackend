@@ -618,6 +618,31 @@
                 }
             }
         },
+        "/grade/": {
+            "get": {
+                "tags": [
+                    "grade"
+                ],
+                "summary": "获取成绩",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "token",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/grade.GetGradeResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/login/": {
             "post": {
                 "description": "用学号登录，返回token，如果isnew==1，就要post用户信息。",
@@ -1049,7 +1074,7 @@
                 }
             }
         },
-        "/tag/": {
+        "/tags/": {
             "get": {
                 "tags": [
                     "tag"
@@ -1250,6 +1275,44 @@
                         "schema": {
                             "type": "object",
                             "$ref": "#/definitions/model.UserInfoRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/user/licence/": {
+            "post": {
+                "tags": [
+                    "user"
+                ],
+                "summary": "加入项目计划",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "token",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "课程id",
+                        "name": "course_id",
+                        "in": "query"
+                    },
+                    {
+                        "description": "学号密码",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/model.LoginModel"
                         }
                     }
                 ],
@@ -1475,6 +1538,38 @@
                 },
                 "sum": {
                     "type": "integer"
+                }
+            }
+        },
+        "grade.GetGradeResponse": {
+            "type": "object",
+            "properties": {
+                "has_licence": {
+                    "type": "boolean"
+                },
+                "sample_size": {
+                    "description": "样本数",
+                    "type": "integer"
+                },
+                "section_1": {
+                    "description": "成绩区间1,85以上",
+                    "type": "number"
+                },
+                "section_2": {
+                    "description": "区间2，70-85",
+                    "type": "number"
+                },
+                "section_3": {
+                    "description": "区间3，85以下",
+                    "type": "number"
+                },
+                "total_score": {
+                    "description": "总成绩均分",
+                    "type": "number"
+                },
+                "usual_score": {
+                    "description": "平时均分",
+                    "type": "number"
                 }
             }
         },
@@ -1817,7 +1912,7 @@
                     "type": "boolean"
                 },
                 "kind": {
-                    "description": "kind 区分 点赞-\u003e0 评论-\u003e1 举报-\u003e2",
+                    "description": "kind 区分 点赞-\u003e0 评论-\u003e1 举报-\u003e2 系统提醒-\u003e3",
                     "type": "integer"
                 },
                 "parent_comment_id": {
