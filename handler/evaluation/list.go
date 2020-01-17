@@ -26,7 +26,7 @@ type evaluationsOfCourseResponse struct {
 // @Param hot_limit query integer true "热评数"
 // @Param limit query integer true "评课数"
 // @Param last_id query integer true "上一次请求的最后一个评课的id，若是初始请求则为0"
-// @Success 200 {object} evaluationsOfCourseResponse
+// @Success 200 {object} evaluation.evaluationsOfCourseResponse
 // @Router /course/history/{id}/evaluations/ [get]
 func EvaluationsOfOneCourse(c *gin.Context) {
 	log.Info("EvaluationsOfOneCourse function is called.")

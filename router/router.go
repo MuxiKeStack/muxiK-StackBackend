@@ -1,6 +1,7 @@
 package router
 
 import (
+	"github.com/MuxiKeStack/muxiK-StackBackend/handler/grade"
 	"net/http"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler/collection"
@@ -47,9 +48,10 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 	{
 		u.POST("/info/", user.PostInfo)
 		u.GET("/info/", user.GetInfo)
+		u.POST("/licence/", user.JoinPro)
 
-		u.GET("/evaluations/", eva.GetHistoryEvaluations)
 		u.POST("/courses/", course.GetSelfCourses)
+		u.GET("/evaluations/", eva.GetHistoryEvaluations)
 	}
 
 	// Upload image to oss
@@ -153,6 +155,15 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 
 	// tag
 	g.GET("/api/v1/tags/", tag.Get)
+
+	// grade
+	grades := g.Group("/api/v1/grade")
+	grades.Use(middleware.AuthMiddleware())
+	{
+		grades.GET("/", grade.Get)
+	}
+
+	//g.POST("/api/v1/grade/", grade.New)
 
 	// search
 	searchGroup := g.Group("/api/v1/search")
