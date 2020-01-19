@@ -474,7 +474,7 @@ definitions:
     properties:
       courses:
         items:
-          $ref: '#/definitions/service.SearchHistoryCourseInfo'
+          $ref: '#/definitions/service.CourseInfoForHistory'
         type: array
       length:
         type: integer
@@ -485,64 +485,42 @@ definitions:
     properties:
       courses:
         items:
-          $ref: '#/definitions/service.CourseInfoForAssistant'
+          $ref: '#/definitions/service.CourseInfoForUsing'
         type: array
       length:
         type: integer
       page:
         type: integer
     type: object
-  service.CourseInfoForAssistant:
+  service.CourseInfoForHistory:
     properties:
-      academy:
-        type: string
-      course_id:
-        type: string
-      course_name:
+      hash:
+        description: 教师名和课程hash成的唯一标识，用于getinfo
         type: string
       id:
         description: 数据库表中记录的id，自增id
         type: integer
-      place1:
-        type: string
-      place2:
-        type: string
-      place3:
+      name:
         type: string
       rate:
         type: number
-      region:
-        type: integer
       stars_num:
         type: integer
+      tags:
+        description: 前二的tag
+        items:
+          type: string
+        type: array
       teacher:
         type: string
-      time1:
-        type: string
-      time2:
-        type: string
-      time3:
-        type: string
     type: object
-  service.ProducedCourseItem:
+  service.CourseInfoForUsing:
     properties:
       course_id:
+        description: 仅用于在UI上进行展示
         type: string
-      has_evaluated:
-        description: Academic     string `json:"academic"`
-        type: boolean
-      name:
-        type: string
-      teacher:
-        type: string
-    type: object
-  service.SearchHistoryCourseInfo:
-    properties:
-      credit:
-        description: 学分
-        type: number
       hash:
-        description: 教师名和课程hash成的唯一标识
+        description: 教师名和课程hash成的唯一标识，用于getinfo
         type: string
       id:
         description: 主键
@@ -557,16 +535,25 @@ definitions:
         description: 参与评分人数
         type: integer
       tags:
-        description: 前四的tag
+        description: 前二的tag
         items:
           type: string
         type: array
       teacher:
         description: 教师姓名
         type: string
-      type:
-        description: 课程类型，公共课为0，专业课为1
-        type: integer
+    type: object
+  service.ProducedCourseItem:
+    properties:
+      course_id:
+        type: string
+      has_evaluated:
+        description: Academic     string `json:"academic"`
+        type: boolean
+      name:
+        type: string
+      teacher:
+        type: string
     type: object
   table.addClassResponseData:
     properties:
