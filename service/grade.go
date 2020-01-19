@@ -1,8 +1,8 @@
 package service
 
 import (
-	"fmt"
 	"strings"
+	"sync"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/util"
@@ -11,15 +11,24 @@ import (
 )
 
 // 爬取成绩
-func NewGradeRecord(userId uint32, sid, pwd string) error {
-	data, err := util.GetGradeFromXK(sid, pwd)
+func NewGradeRecord_2(userId uint32, sid, pwd string) error {
+	// 获取现有成绩数
+	curRecordNum, err := model.GetRecordsNum(userId)
+	if err != nil {
+		log.Error("GetRecordsNum function error", err)
+		return err
+	}
+
+	data, ok, err := util.GetGradeFromXK(sid, pwd, curRecordNum)
 	if err != nil {
 		log.Error("util.GetGradeFromXK function error", err)
 		return err
+	} else if !ok {
+		log.Info("Grades have not updated")
+		return nil
 	}
-	fmt.Println(data)
+	//fmt.Println(data)
 
-	// TO DO: 并发
 	for _, item := range *data {
 		teacher := strings.ReplaceAll(item.Teacher, ";", ",")
 		hash := util.HashCourseId(item.CourseId, teacher)
@@ -46,6 +55,88 @@ func NewGradeRecord(userId uint32, sid, pwd string) error {
 			return err
 		}
 	}
+
+	return nil
+}
+
+// 爬取成绩，并发
+func NewGradeRecord(userId uint32, sid, pwd string) error {
+	// 获取现有成绩数
+	curRecordNum, err := model.GetRecordsNum(userId)
+	if err != nil {
+		log.Error("GetRecordsNum function error", err)
+		return err
+	}
+
+	data, ok, err := util.GetGradeFromXK(sid, pwd, curRecordNum)
+	if err != nil {
+		log.Error("util.GetGradeFromXK function error", err)
+		return err
+	} else if !ok {
+		log.Info("Grades have not updated")
+		return nil
+	}
+	//fmt.Println(data)
+
+	wg := new(sync.WaitGroup)
+	errChan := make(chan error, 1)
+	finished := make(chan bool, 1)
+	gradeChan := make(chan *model.GradeModel, 1)
+
+	for _, item := range *data {
+		wg.Add(1)
+
+		go func(item util.ResultGradeItem) {
+			defer wg.Done()
+
+			teacher := strings.ReplaceAll(item.Teacher, ";", ",")
+			hash := util.HashCourseId(item.CourseId, teacher)
+
+			if ok, err := model.GradeRecordExisting(userId, hash); err != nil {
+				log.Error("GradeRecordExisting function error", err)
+				errChan <- err
+				return
+			} else if ok {
+				//log.Info("The record has existed")
+				//continue
+				return
+			}
+
+			g := &model.GradeModel{
+				UserId:       userId,
+				CourseHashId: hash,
+				CourseName:   item.CourseName,
+				TotalScore:   item.TotalScore,
+				UsualScore:   item.UsualScore,
+				FinalScore:   item.FinalScore,
+				HasAdded:     false,
+			}
+			gradeChan <- g
+		}(item)
+	}
+
+	go func() {
+		wg.Wait()
+		close(gradeChan)
+	}()
+
+	go func() {
+		for g := range gradeChan {
+			if err := g.New(); err != nil {
+				log.Error("Add new grade record error", err)
+				errChan <- err
+				return
+			}
+		}
+		close(finished)
+	}()
+
+	select {
+	case <-finished:
+	case err := <-errChan:
+		return err
+	}
+
 	return nil
 }
 
@@ -58,12 +149,32 @@ func NewGradeSampleFoCourses(userId uint32) error {
 		return err
 	}
 
-	// TO DO: 并发优化
+	wg := new(sync.WaitGroup)
+	errChan := make(chan error, 1)
+	finished := make(chan bool, 1)
+
 	for _, record := range *records {
-		if err := NewGradeDataAdditionForOneCourse(userId, &record); err != nil {
-			log.Error("NewGradeDataAdditionForOneCourse function error", err)
-			return err
-		}
+		wg.Add(1)
+
+		go func(record model.GradeModel) {
+			defer wg.Done()
+
+			if err := NewGradeDataAdditionForOneCourse(userId, &record); err != nil {
+				log.Error("NewGradeDataAdditionForOneCourse function error", err)
+				errChan <- err
+			}
+		}(record)
+	}
+
+	go func() {
+		wg.Wait()
+		close(finished)
+	}()
+
+	select {
+	case <-finished:
+	case err := <-errChan:
+		return err
 	}
 	return nil
 }
@@ -77,17 +188,10 @@ func NewGradeDataAdditionForOneCourse(userId uint32, data *model.GradeModel) err
 		return err
 	}
 
-	// 获取成绩数据
-	//data, _, err := model.GetGradeRecord(userId, hashId)
-	//if err != nil {
-	//	log.Error("GetGradeRecord function error", err)
-	//	return err
-	//}
-
 	// 有数据库写入覆盖的隐患
 	curSampleSize := course.GradeSampleSize
 	course.TotalGrade = (course.TotalGrade*float32(curSampleSize) + data.TotalScore) / float32(curSampleSize+1)
-	course.UsualGrade += (course.UsualGrade*float32(curSampleSize) + data.UsualScore) / float32(curSampleSize+1)
+	course.UsualGrade = (course.UsualGrade*float32(curSampleSize) + data.UsualScore) / float32(curSampleSize+1)
 	course.GradeSampleSize++
 
 	if data.TotalScore > 85 {

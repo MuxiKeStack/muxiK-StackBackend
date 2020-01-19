@@ -92,16 +92,6 @@ func MakeCoursesGetRequest(client *http.Client, sid, year, term string) (*Origin
 	formData.Set("queryModel.sortName", "")
 	formData.Set("queryModel.sortOrder", "asc")
 	formData.Set("time", "5")
-	//formData.Set("kkxy_id", "") // 开课学院
-	//formData.Set("kclbdm", "") // 课程类别
-	//formData.Set("kcxzmc", "") // 课程性质
-	//formData.Set("kch", "") // 课程
-	//formData.Set("kklxdm", "") // 开课类型
-	//formData.Set("xxlx", "") // 选修类型
-	//formData.Set("kkzt", "") // 开课状态
-	//formData.Set("jxbmc", "") // 教学班
-	//formData.Set("jsxx", "") // 教师
-	//formData.Set("kcgsdm", "") // 课程归属
 
 	requestUrl := "http://xk.ccnu.edu.cn/xkcx/xkmdcx_cxXkmdcxIndex.html?doType=query&gnmkdm=N255010&su=" + sid
 	req, err := http.NewRequest("POST", requestUrl, strings.NewReader(formData.Encode()))
@@ -109,7 +99,6 @@ func MakeCoursesGetRequest(client *http.Client, sid, year, term string) (*Origin
 		return nil, err
 	}
 
-	//req.Header.Set("Cookie", "JSESSIONID=D5711D3E720110378219D8BF67DCA71C")
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8")
 	req.Header.Set("Origin", "http://xk.ccnu.edu.cn")
 	req.Header.Set("Host", "xk.ccnu.edu.cn")
