@@ -9,8 +9,8 @@ CREATE TABLE `user` (
   `sid`        VARCHAR(10)   NOT NULL COMMENT   "学生学号",
   `username`   VARCHAR(25)   ,
   `avatar`     VARCHAR(255)  ,
-  `is_blocked` TINYINT       NOT NULL DEFAULT 0,
-  `licence`    TINYINT       NOT NULL DEFAULT 0 COMMENT "成绩查看许可",
+  `is_blocked` TINYINT(1)       NOT NULL DEFAULT 0,
+  `licence`    TINYINT(1)       NOT NULL DEFAULT 0 COMMENT "成绩查看许可",
 
   PRIMARY KEY (`id`),
   KEY `sid` (`sid`)
@@ -213,20 +213,20 @@ CREATE TABLE `using_course` (
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE `grade` (
-  `id`  INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `course_name`    VARCHAR(50) NOT NULL DEFAULT "",
-  `total_score`    FLOAT NOT NULL DEFAULT 0,
-  `usual_score`    FLOAT NOT NULL DEFAULT 0,
-  `final_exam_score` FLOAT NOT NULL DEFAULT 0,
-  `has_added`        TINYINT(1) NOT NULL DEFAULT 0,
+  `id`          INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `course_name` VARCHAR(50)  NOT NULL DEFAULT "",
+  `total_score` FLOAT        NOT NULL DEFAULT 0 COMMENT "总成绩",
+  `usual_score` FLOAT        NOT NULL DEFAULT 0 COMMENT "平时成绩",
+  `final_score` FLOAT        NOT NULL DEFAULT 0 COMMENT "期末成绩",
+  `has_added`   TINYINT(1)   NOT NULL DEFAULT 0 COMMENT "是否已加入统计样本中",
 
   `user_id` INT UNSIGNED NOT NULL,
   `course_hash_id` VARCHAR(50) NOT NULL,
 
   PRIMARY KEY (`id`),
   KEY `idx_user_id` (`user_id`),
-  KEY `idx_hash` (`course_hash_id`)
---   KEY `idx_has_added` (`has_added`)
+  KEY `idx_hash` (`course_hash_id`),
+  KEY `idx_has_added` (`has_added`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 -- CREATE TABLE `self_course` (
