@@ -1,4 +1,5 @@
 package script
+
 /*
 package main
 

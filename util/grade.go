@@ -2,7 +2,6 @@ package util
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/http/cookiejar"
@@ -17,7 +16,7 @@ import (
 )
 
 type OriginalGrade struct {
-	Items *[]GradeItem `json:"items" binding:"required"`
+	Items *[]GradeItem `json:"items"`
 }
 
 type GradeItem struct {
@@ -39,16 +38,16 @@ type ResultGradeItem struct {
 	FinalScore float32 `json:"final_score"` // 期末成绩
 }
 
-func GetGradeFromXK(sid, password string) (*[]ResultGradeItem, error) {
+func GetGradeFromXK(sid, password string, curRecordNum int) (*[]ResultGradeItem, bool, error) {
 	params, err := MakeAccountPreflightRequest()
 	if err != nil {
 		log.Error("MakeAccountPreflightRequest function error", err)
-		return nil, err
+		return nil, false, err
 	}
 
 	jar, err := cookiejar.New(&cookiejar.Options{PublicSuffixList: publicsuffix.List})
 	if err != nil {
-		return nil, err
+		return nil, false, err
 	}
 
 	client := &http.Client{
@@ -58,12 +57,12 @@ func GetGradeFromXK(sid, password string) (*[]ResultGradeItem, error) {
 
 	if err := MakeAccountRequest(sid, password, params, client); err != nil {
 		log.Error("MakeAccountRequest function err", err)
-		return nil, err
+		return nil, false, err
 	}
 
 	if err := MakeXKLogin(client); err != nil {
 		log.Error("MakeXKLogin function error", err)
-		return nil, err
+		return nil, false, err
 	}
 
 	formData := url.Values{}
@@ -80,7 +79,7 @@ func GetGradeFromXK(sid, password string) (*[]ResultGradeItem, error) {
 	requestUrl := "http://xk.ccnu.edu.cn/cjcx/cjcx_cxDgXscj.html?doType=query&gnmkdm=N305005"
 	req, err := http.NewRequest("POST", requestUrl, strings.NewReader(formData.Encode()))
 	if err != nil {
-		return nil, err
+		return nil, false, err
 	}
 
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8")
@@ -92,31 +91,35 @@ func GetGradeFromXK(sid, password string) (*[]ResultGradeItem, error) {
 	resp, err := client.Do(req)
 	if err != nil {
 		log.Error("Request error", err)
-		return nil, err
+		return nil, false, err
+
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)
 	defer resp.Body.Close()
 	if err != nil {
-		return nil, err
+		return nil, false, err
+
 	}
 	//fmt.Println(string(body))
 
 	var data = OriginalGrade{}
 	if err := json.Unmarshal(body, &data); err != nil {
 		log.Error("Json unmarshal failed, maybe login error, need to enter verification code", err)
-		return nil, err
+		return nil, false, err
 	}
 
-	fmt.Println(data)
+	if len(*data.Items) <= curRecordNum {
+		return nil, false, nil
+	}
 
 	var result []ResultGradeItem
 
 	for _, d := range *data.Items {
+		// 获取平时和期末成绩
 		u, f, err := GetUsualAndFinalGradeFromXK(client, d.JxbId, d.Kcmc, d.Xnm, d.Xqm)
 		if err != nil {
 			log.Error("GetUsualAndFinalGradeFromXK function error", err)
-			return nil, err
 		}
 		t, _ := strconv.ParseFloat(d.Cj, 32)
 		item := ResultGradeItem{
@@ -128,11 +131,10 @@ func GetGradeFromXK(sid, password string) (*[]ResultGradeItem, error) {
 			FinalScore: f,
 		}
 		result = append(result, item)
-		//data.Items[i].UsualScore = u
-		//data.Items[i].FinalExamScore = f
 	}
 
-	return &result, nil
+	log.Info("Get grades successfully")
+	return &result, true, nil
 }
 
 // 发起请求，获取平时和期末成绩
@@ -168,7 +170,7 @@ func GetUsualAndFinalGradeFromXK(client *http.Client, jxbid, kcmc, xnm, xqm stri
 		return 0, 0, err
 	}
 
-	fmt.Println(string(body))
+	//fmt.Println(string(body))
 
 	return ParseByRegexp(string(body))
 }
@@ -198,8 +200,6 @@ func ParseByRegexp(bodyStr string) (float32, float32, error) {
 			return 0, 0, err
 		}
 	}
-	//u, err := strconv.ParseFloat(result[0][1], 32)
-	//f, err := strconv.ParseFloat(result[1][1], 32)
 
 	return float32(score[0]), float32(score[1]), nil
 }

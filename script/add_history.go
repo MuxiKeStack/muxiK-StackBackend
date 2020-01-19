@@ -102,7 +102,7 @@ func main(){
 			teacher := b.Data.List[i2].Teacher
 			name := b.Data.List[i2].Name
 			key := util.HashCourseId(courseId, teacher)
-			
+
 			onecourse := &model.HistoryCourseModel{
 				Hash:      key,
 				Name:     name,
@@ -114,7 +114,7 @@ func main(){
 				db.Create(onecourse)
 			}else{
 				continue
-			}	
+			}
 		}
 		fmt.Println( (i1+1)*1200, 33600-(i1+1)*1200)
 		time.Sleep(time.Duration(2)*time.Second)

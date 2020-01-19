@@ -45,6 +45,15 @@ func GradeRecordExisting(userId uint32, hashId string) (bool, error) {
 	return true, d.Error
 }
 
+func GetRecordsNum(userId uint32) (int, error) {
+	var count int
+	d := DB.Self.Table("grade").Where("user_id = ?", userId).Count(&count)
+	if d.RecordNotFound() {
+		return 0, nil
+	}
+	return count, d.Error
+}
+
 func GradeRecordUserHasGotten(userId uint32) (bool, error) {
 	d := DB.Self.Where("user_id = ?", userId).First(GradeModel{})
 	if d.RecordNotFound() {
