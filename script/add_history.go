@@ -92,7 +92,7 @@ func main() {
 		// fmt.Println(b.Data.List[5].Name)
 		//defer resp.Body.Close()
 		for i2 = 0; i2 < 1200; i2++ {
-			fmt.Println(i2)
+			fmt.Print(i2, " ")
 			courseId := b.Data.List[i2].CourseId
 			//fmt.Println(courseId)
 			teacher := b.Data.List[i2].Teacher
