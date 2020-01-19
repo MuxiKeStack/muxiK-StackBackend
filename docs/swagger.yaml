@@ -1009,6 +1009,11 @@ paths:
         name: token
         required: true
         type: string
+      - description: 课程hash id
+        in: query
+        name: course_id
+        required: true
+        type: string
       responses:
         "200":
           description: OK
@@ -1449,10 +1454,6 @@ paths:
         in: header
         name: token
         required: true
-        type: string
-      - description: 课程id
-        in: query
-        name: course_id
         type: string
       - description: 学号密码
         in: body

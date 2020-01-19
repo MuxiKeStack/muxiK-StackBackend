@@ -5,12 +5,12 @@ CREATE DATABASE `muxikstack`;
 USE `muxikstack`;
 
 CREATE TABLE `user` (
-  `id`         INT UNSIGNED  NOT NULL AUTO_INCREMENT,
-  `sid`        VARCHAR(10)   NOT NULL COMMENT   "学生学号",
-  `username`   VARCHAR(25)   ,
-  `avatar`     VARCHAR(255)  ,
-  `is_blocked` TINYINT(1)       NOT NULL DEFAULT 0,
-  `licence`    TINYINT(1)       NOT NULL DEFAULT 0 COMMENT "成绩查看许可",
+  `id`         INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `sid`        VARCHAR(10)  NOT NULL COMMENT   "学生学号",
+  `username`   VARCHAR(25)  ,
+  `avatar`     VARCHAR(255) ,
+  `is_blocked` TINYINT(1)   NOT NULL DEFAULT 0,
+  `licence`    TINYINT(1)   NOT NULL DEFAULT 0 COMMENT "成绩查看许可",
 
   PRIMARY KEY (`id`),
   KEY `sid` (`sid`)
