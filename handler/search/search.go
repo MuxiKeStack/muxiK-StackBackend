@@ -11,15 +11,15 @@ import (
 )
 
 type searchResponse struct {
-	Courses []service.CourseInfoForAssistant `json:"courses"`
-	Length  int                              `json:"length"`
-	Page    uint64                           `json:"page"`
+	Courses []service.CourseInfoForUsing `json:"courses"`
+	Length  int                          `json:"length"`
+	Page    uint64                       `json:"page"`
 }
 
 type searchHistoryCourseResponse struct {
-	Courses []service.SearchHistoryCourseInfo `json:"courses"`
-	Length  int                               `json:"length"`
-	Page    uint64                            `json:"page"`
+	Courses []service.CourseInfoForHistory `json:"courses"`
+	Length  int                            `json:"length"`
+	Page    uint64                         `json:"page"`
 }
 
 // SearchCourse API means to search the courses by courseName, courseID and teacherName
@@ -53,7 +53,7 @@ func SearchCourse(c *gin.Context) {
 	w := c.DefaultQuery("weekday", "")
 	p := c.DefaultQuery("place", "")
 
-	courseList := []service.CourseInfoForAssistant{}
+	courseList := []service.CourseInfoForUsing{}
 	if keyword != "" {
 		courseList, err = service.SearchCourses(keyword, page, limit, t, a, w, p)
 	} else {
@@ -96,7 +96,7 @@ func SearchHistoryCourse(c *gin.Context) {
 	keyword := c.DefaultQuery("keyword", "")
 	t := c.DefaultQuery("type", "")
 
-	courseList := []service.SearchHistoryCourseInfo{}
+	courseList := []service.CourseInfoForHistory{}
 	if keyword != "" {
 		courseList, err = service.SearchHistoryCourses(keyword, page, limit, t)
 	} else {
