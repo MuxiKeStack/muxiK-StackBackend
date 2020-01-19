@@ -1,5 +1,4 @@
 package script
-
 /*
 package main
 
@@ -8,9 +7,10 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/360EntSecGroup-Skylar/excelize"
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/util"
+
+	"github.com/360EntSecGroup-Skylar/excelize"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
@@ -207,12 +207,14 @@ func analyzeClass(classid string) string {
 }
 
 func main() {
-	db, err := gorm.Open("mysql", "***:***@(***.**.**.**:****)/muxikstack?charset=utf8&parseTime=True")
+	db, err := gorm.Open("mysql", "lawler@/muxikstack?charset=utf8&parseTime=True")
+	//db, err := gorm.Open("mysql", "***:***@(***.**.**.**:****)/muxikstack?charset=utf8&parseTime=True")
 	if err != nil {
 		fmt.Println(err)
-	} else {
-		fmt.Println("connection succeed")
+		return
 	}
+	fmt.Println("connection succeed")
+
 
 	db.SingularTable(true)
 	//db.CreateTable(User123{})

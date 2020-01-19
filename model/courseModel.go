@@ -13,9 +13,9 @@ type HistoryCourseModel struct {
 	GradeSampleSize uint32  `gorm:"column:grade_sample_size"`
 	TotalGrade      float32 `gorm:"column:total_grade"`
 	UsualGrade      float32 `gorm:"column:usual_grade"`
-	GradeSection1   uint32  `gorm:"column:credit"`
-	GradeSection2   uint32  `gorm:"column:credit"`
-	GradeSection3   uint32  `gorm:"column:credit"`
+	GradeSection1   uint32  `gorm:"column:grade_section_1"`
+	GradeSection2   uint32  `gorm:"column:grade_section_2"`
+	GradeSection3   uint32  `gorm:"column:grade_section_3"`
 }
 
 //选课手册课堂物理表
