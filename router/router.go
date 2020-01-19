@@ -76,7 +76,6 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 	// 选课手册课程
 	// g.GET("/api/v1/course/using/home/", course.GetCourseInfo)
 	// g.GET("/api/v1/course/using/:id/query/", course.QueryCourse)
-	// course := g.Group("/api/v1/course/using")
 	courses := g.Group("/api/v1/course/using")
 	courses.Use(middleware.AuthMiddleware())
 	{
@@ -86,17 +85,6 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 		courses.DELETE("/:id/", course.DeleteCourse)
 		courses.PUT("/:id/favorite/", course.FavoriteCourse)
 	}
-
-	// // 云课堂课程
-	// g.GET("/api/v1/course/history/home/", course.GetCourseInfo)
-	// g.GET("/api/v1/course/history/:id/query/", course.QueryCourse)
-	// course := g.Group("/api/v1/course/history")
-	// course.Use(middleware.AuthMiddleware())
-	// {
-	// 	course.PUT("/:id/add", course.AddHistoryCourse)
-	// 	course.POST("/:id/modify", course.ModifyHistoryCourse)
-	// 	course.DELETE("/:id/delete", course.DeleteHistoryCourse)
-	// }
 
 	// Router for course evaluations
 
@@ -162,8 +150,6 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 	{
 		grades.GET("/", grade.Get)
 	}
-
-	//g.POST("/api/v1/grade/", grade.New)
 
 	// search
 	searchGroup := g.Group("/api/v1/search")

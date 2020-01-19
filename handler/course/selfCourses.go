@@ -76,6 +76,7 @@ func GetSelfCourses(c *gin.Context) {
 		Data: data,
 	})
 
+	// 检查是否加入成绩共享计划
 	if ok, err := model.UserHasLicence(userId); err != nil {
 		log.Error("UserHasLicence function error", err)
 		return
@@ -83,14 +84,10 @@ func GetSelfCourses(c *gin.Context) {
 		return
 	}
 
-	// 有许可，已加入计划
-	// 爬成绩
-	if err := service.NewGradeRecord(userId, l.Sid, l.Password); err != nil {
-		log.Error("NewGradeRecord function error", err)
+	// 有许可，导入成绩至统计样本
+	if err := service.GradeImportService(userId, l.Sid, l.Password); err != nil {
+		log.Error("Grade import failed", err)
 		return
 	}
-	// 导入成绩样本数据
-	if err := service.NewGradeSampleFoCourses(userId); err != nil {
-		log.Error("NewGradeSampleFoCourses function error", err)
-	}
+	log.Info("Grade sample imported successfully")
 }
