@@ -107,6 +107,18 @@ func (class *UsingCourseModel) Unfavorite(id uint32) error {
 	d := DB.Self.Delete(&data)
 	return d.Error
 }
+/*
+// Get attendance check type amount of a course by identifier.
+func GetAttendanceTypeMaxChosenByCode(courseId string, code int) (max uint32) {
+	DB.Self.Table("course_evaluation").Where("course_id = ? AND attendance_check_type = ?", courseId, code).Order("id desc").First(&max)
+	return
+}
+
+// Get exam check type amount of a course by identifier.
+func GetExamCheckTypeMaxChosenByCode(courseId string, code int) (max uint32) {
+	DB.Self.Table("course_evaluation").Where("course_id = ? AND exam_check_type = ?", courseId, code).Order("id desc").First(&max)
+	return
+}*/
 
 // Search course by name, courseId or teacher
 // Use fulltext search, against and match
