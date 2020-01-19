@@ -208,8 +208,7 @@ func analyzeClass(classid string) string {
 }
 
 func main() {
-	db, err := gorm.Open("mysql", "lawler@/muxikstack?charset=utf8&parseTime=True")
-	//db, err := gorm.Open("mysql", "***:***@(***.**.**.**:****)/muxikstack?charset=utf8&parseTime=True")
+	db, err := gorm.Open("mysql", "***:***@(***.**.**.**:****)/muxikstack?charset=utf8&parseTime=True")
 	if err != nil {
 		fmt.Println(err)
 		return
