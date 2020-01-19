@@ -5,9 +5,9 @@ import (
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
 	"github.com/MuxiKeStack/muxiK-StackBackend/service"
-	"github.com/lexkong/log"
 
 	"github.com/gin-gonic/gin"
+	"github.com/lexkong/log"
 )
 
 // @Tags user
@@ -50,14 +50,10 @@ func JoinPro(c *gin.Context) {
 
 	handler.SendResponse(c, nil, nil)
 
-	// 爬取成绩
-	if err := service.NewGradeRecord(userId, l.Sid, l.Password); err != nil {
-		//handler.SendError(c, errno.ErrAddSampleData, nil, err.Error())
-		log.Error("NewGradeRecord function error", err)
+	// 成绩导入统计样本
+	if err := service.GradeImportService(userId, l.Sid, l.Password); err != nil {
+		log.Error("Grade import failed", err)
 		return
 	}
-	// 导入成绩样本数据
-	if err := service.NewGradeSampleFoCourses(userId); err != nil {
-		log.Error("NewGradeSampleFoCourses function error", err)
-	}
+	log.Info("Grade sample imported successfully")
 }

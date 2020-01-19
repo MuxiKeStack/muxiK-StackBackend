@@ -1,14 +1,14 @@
 package model
 
 type GradeModel struct {
-	Id             uint32  `gorm:"column:id"`
-	UserId         uint32  `gorm:"column:user_id"`
-	CourseHashId   string  `gorm:"column:course_hash_id"`
-	CourseName     string  `gorm:"column:course_name"`
-	TotalScore     float32 `gorm:"column:total_score"`
-	UsualScore     float32 `gorm:"column:usual_score"`
-	FinalExamScore float32 `gorm:"column:final_exam_score"`
-	HasAdded       bool    `gorm:"column:has_added"`
+	Id           uint32  `gorm:"column:id"`
+	UserId       uint32  `gorm:"column:user_id"`
+	CourseHashId string  `gorm:"column:course_hash_id"`
+	CourseName   string  `gorm:"column:course_name"`
+	TotalScore   float32 `gorm:"column:total_score"`
+	UsualScore   float32 `gorm:"column:usual_score"`
+	FinalScore   float32 `gorm:"column:final_score"`
+	HasAdded     bool    `gorm:"column:has_added"`
 }
 
 func (*GradeModel) TableName() string {
