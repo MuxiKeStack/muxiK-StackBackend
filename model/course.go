@@ -107,6 +107,7 @@ func (class *UsingCourseModel) Unfavorite(id uint32) error {
 	d := DB.Self.Delete(&data)
 	return d.Error
 }
+
 /*
 // Get attendance check type amount of a course by identifier.
 func GetAttendanceTypeMaxChosenByCode(courseId string, code int) (max uint32) {
