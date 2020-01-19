@@ -631,6 +631,13 @@
                         "name": "token",
                         "in": "header",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "课程hash id",
+                        "name": "course_id",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -1298,12 +1305,6 @@
                         "name": "token",
                         "in": "header",
                         "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "课程id",
-                        "name": "course_id",
-                        "in": "query"
                     },
                     {
                         "description": "学号密码",

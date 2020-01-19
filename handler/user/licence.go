@@ -13,7 +13,6 @@ import (
 // @Tags user
 // @Summary 加入项目计划
 // @Param token header string true "token"
-// @Param course_id query string false "课程id"
 // @Param data body model.LoginModel true "学号密码"
 // @Success 200 "OK"
 // @Router /user/licence/ [post]

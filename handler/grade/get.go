@@ -21,6 +21,7 @@ type GetGradeResponse struct {
 // @Tags grade
 // @Summary 获取成绩
 // @Param token header string true "token"
+// @Param course_id query string true "课程hash id"
 // @Success 200 {object} grade.GetGradeResponse
 // @Router /grade/ [get]
 func Get(c *gin.Context) {
