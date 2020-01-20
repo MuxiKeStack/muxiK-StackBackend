@@ -232,11 +232,15 @@ CREATE TABLE `grade` (
 -- CREATE TABLE `self_course` (
 --   `id`      INT UNSIGNED      NOT NULL AUTO_INCREMENT,
 --   `user_id` INT UNSIGNED      NOT NULL,
---   `num`     SMALLINT UNSIGNED NOT NULL COMMENT "课程数",
---   `courses` TEXT              NOT NULL COMMENT "课程 hash id 列表，逗号分隔",
+--   `course_hash_id` VARCHAR(50) NOT NULL,
+--   `year_term`      CHAR(5)   NOT NULL DEFAULT '' COMMENT "学年和学期，'20181'->2018学年第一学期",
+-- --   `num`     SMALLINT UNSIGNED NOT NULL COMMENT "课程数",
+-- --   `courses` TEXT              NOT NULL COMMENT "课程 hash id 列表，逗号分隔",
 --
 --   PRIMARY KEY (`id`),
---   KEY `idx_user_id` (`user_id`)
+--   KEY `idx_user_id` (`user_id`),
+--   KEY `idx_year_term` (`year_term`),
+--   KEY `idx_hash_id` (`course_hash_id`)
 -- ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 INSERT INTO `tags` (name) VALUES ("课程简单易学"), ("课程干货满满"), ("老师严谨负责"),

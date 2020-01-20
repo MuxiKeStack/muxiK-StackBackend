@@ -27,6 +27,7 @@ func (grade *GradeModel) Update() error {
 	return DB.Self.Save(grade).Error
 }
 
+// Get grade record by userId and courseHashId.
 func GetGradeRecord(userId uint32, hashId string) (*GradeModel, bool, error) {
 	var g GradeModel
 	d := DB.Self.Where("user_id = ? AND course_hash_id = ?", userId, hashId).First(&g)
@@ -36,6 +37,7 @@ func GetGradeRecord(userId uint32, hashId string) (*GradeModel, bool, error) {
 	return &g, true, d.Error
 }
 
+// Check whether the grade record exists by userId and courseHashId.
 func GradeRecordExisting(userId uint32, hashId string) (bool, error) {
 	var record GradeModel
 	d := DB.Self.Where("user_id = ? AND course_hash_id = ?", userId, hashId).First(&record)
@@ -45,6 +47,7 @@ func GradeRecordExisting(userId uint32, hashId string) (bool, error) {
 	return true, d.Error
 }
 
+// Get the amount of grade records by userId.
 func GetRecordsNum(userId uint32) (int, error) {
 	var count int
 	d := DB.Self.Table("grade").Where("user_id = ?", userId).Count(&count)
@@ -54,14 +57,7 @@ func GetRecordsNum(userId uint32) (int, error) {
 	return count, d.Error
 }
 
-func GradeRecordUserHasGotten(userId uint32) (bool, error) {
-	d := DB.Self.Where("user_id = ?", userId).First(GradeModel{})
-	if d.RecordNotFound() {
-		return false, nil
-	}
-	return true, d.Error
-}
-
+// Get user's all grade records that have not added to statistical sample.
 func GetGradeRecordsByUserId(userId uint32) (*[]GradeModel, error) {
 	var records []GradeModel
 	d := DB.Self.Where("user_id = ? AND has_added = 0", userId).Find(&records)
