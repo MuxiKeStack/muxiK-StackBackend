@@ -68,11 +68,13 @@ func NewGradeRecord(userId uint32, sid, pwd string) error {
 		return err
 	}
 
+	//教务处获取成绩
 	data, ok, err := util.GetGradeFromXK(sid, pwd, curRecordNum)
 	if err != nil {
 		log.Error("util.GetGradeFromXK function error", err)
 		return err
 	} else if !ok {
+		// 若成绩未更新则不处理
 		log.Info("Grades have not updated")
 		return nil
 	}
@@ -83,6 +85,7 @@ func NewGradeRecord(userId uint32, sid, pwd string) error {
 	finished := make(chan bool, 1)
 	gradeChan := make(chan *model.GradeModel, 1)
 
+	// 新增记录，并发
 	for _, item := range *data {
 		wg.Add(1)
 
@@ -92,13 +95,13 @@ func NewGradeRecord(userId uint32, sid, pwd string) error {
 			teacher := strings.ReplaceAll(item.Teacher, ";", ",")
 			hash := util.HashCourseId(item.CourseId, teacher)
 
+			// 验证该记录是否已存在
 			if ok, err := model.GradeRecordExisting(userId, hash); err != nil {
 				log.Error("GradeRecordExisting function error", err)
 				errChan <- err
 				return
 			} else if ok {
 				//log.Info("The record has existed")
-				//continue
 				return
 			}
 
@@ -142,7 +145,7 @@ func NewGradeRecord(userId uint32, sid, pwd string) error {
 
 // 将成绩导入到各课程的成绩统计中
 func NewGradeSampleFoCourses(userId uint32) error {
-	// 获取未添加的成绩数据
+	// 获取未添加导入的成绩数据
 	records, err := model.GetGradeRecordsByUserId(userId)
 	if err != nil {
 		log.Error("GetGradeRecordsByUserId function error", err)
@@ -153,6 +156,7 @@ func NewGradeSampleFoCourses(userId uint32) error {
 	errChan := make(chan error, 1)
 	finished := make(chan bool, 1)
 
+	// 逐个导入，并发
 	for _, record := range *records {
 		wg.Add(1)
 
@@ -216,6 +220,7 @@ func NewGradeDataAdditionForOneCourse(userId uint32, data *model.GradeModel) err
 	return nil
 }
 
+// 成绩服务，包括成绩爬取和导入统计样本
 func GradeImportService(userId uint32, sid, pwd string) error {
 	log.Info("Grade import service is called")
 
