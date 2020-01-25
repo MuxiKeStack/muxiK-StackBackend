@@ -50,6 +50,15 @@ func (class *UsingCourseModel) GetByHash() error {
 	return d.Error
 }
 
+// Get course by its hash.
+func (class *UsingCourseModel) GetByHash2() (uint8, error) {
+	d := DB.Self.First(class, "hash = ?", class.Hash)
+	if d.RecordNotFound() {
+		return 1, nil
+	}
+	return 0, d.Error
+}
+
 // Get history course by its hash.
 func (class *HistoryCourseModel) GetHistoryByHash() error {
 	d := DB.Self.First(class, "hash = ?", class.Hash)
@@ -62,6 +71,12 @@ func (class *UsingCourseModel) GetClass(courseId string, classId string) error {
 		return nil
 	}
 	return d.Error
+}
+
+func GetAllClass(hash string) ([]UsingCourseModel, error) {
+	var c []UsingCourseModel
+	d := DB.Self.Table("using_course").Where("hash = ?", hash).Find(&c)
+	return c, d.Error
 }
 
 // Get course by its type.(course list)
@@ -107,19 +122,6 @@ func (class *UsingCourseModel) Unfavorite(id uint32) error {
 	d := DB.Self.Delete(&data)
 	return d.Error
 }
-
-/*
-// Get attendance check type amount of a course by identifier.
-func GetAttendanceTypeMaxChosenByCode(courseId string, code int) (max uint32) {
-	DB.Self.Table("course_evaluation").Where("course_id = ? AND attendance_check_type = ?", courseId, code).Order("id desc").First(&max)
-	return
-}
-
-// Get exam check type amount of a course by identifier.
-func GetExamCheckTypeMaxChosenByCode(courseId string, code int) (max uint32) {
-	DB.Self.Table("course_evaluation").Where("course_id = ? AND exam_check_type = ?", courseId, code).Order("id desc").First(&max)
-	return
-}*/
 
 // Search course by name, courseId or teacher
 // Use fulltext search, against and match
@@ -199,6 +201,19 @@ func AllHistoryCourses(page, limit uint64, t string) ([]HistoryCourseModel, erro
 
 func (course *HistoryCourseModel) UpdateGradeInfo() error {
 	return DB.Self.Save(course).Error
+}
+
+func GetCourseTags(hash string) ([]CourseTagModel, error) {
+	var tags []CourseTagModel
+	d := DB.Self.Where("course_id = ?", hash).Find(&tags)
+	return tags, d.Error
+}
+
+// Get tag name by id.
+func GetTagNameById32(id uint32) (string, error) {
+	var tag TagModel
+	d := DB.Self.Where("id = ?", id).First(&tag)
+	return tag.Name, d.Error
 }
 
 /*---------------------------- SelfCourse Operation --------------------------*/

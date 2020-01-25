@@ -1,26 +1,23 @@
-package script
-
-/*
 package main
 
 import (
-	"fmt"
-	"net/http"
-	"io/ioutil"
 	"encoding/json"
-	"time"
+	"fmt"
+	"io/ioutil"
+	"net/http"
 	"net/url"
 	"strconv"
+	"time"
 
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/util"
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
-func fill(courseid string) string{
-	for i:=len(courseid);i<=8;i++{
+func fill(courseid string) string {
+	for i := len(courseid); i <= 8; i++ {
 		courseid = courseid + "0"
 	}
 	return courseid
@@ -46,41 +43,41 @@ func judge1(c string) uint8 {
 
 type Outside struct {
 	Code float64 `json:"code"`
-	Msg  string `json:"msg"`
-	Data Middle `json:"data"`
+	Msg  string  `json:"msg"`
+	Data Middle  `json:"data"`
 }
 
-type Middle struct{
-	PageNum float64 `json:"pagenum"`
-	PageSize float64 `json:"pageSize"`
-	Size float64 `json:"size"`
-	StartRow float64 `json:"startRow"`
-	EndRow float64 `json:"endRow"`
-	Total float64 `json:"total"`
-	Pages float64 `json:"pages"`
-	List [1200]Inside `json:"list"`
+type Middle struct {
+	PageNum  float64      `json:"pagenum"`
+	PageSize float64      `json:"pageSize"`
+	Size     float64      `json:"size"`
+	StartRow float64      `json:"startRow"`
+	EndRow   float64      `json:"endRow"`
+	Total    float64      `json:"total"`
+	Pages    float64      `json:"pages"`
+	List     [1200]Inside `json:"list"`
 }
 
-type Inside struct{
-	SiteId string `json:"siteId"`
+type Inside struct {
+	SiteId   string `json:"siteId"`
 	CourseId string `json:"courseCode"`
-	Teacher string `json:"teacherName"`
-	Name string `json:"courseName"`
-	Team string `json:"termName"`
-	Domain string `json:"domainName"`
+	Teacher  string `json:"teacherName"`
+	Name     string `json:"courseName"`
+	Team     string `json:"termName"`
+	Domain   string `json:"domainName"`
 }
 
-func main(){
-	db, err := gorm.Open("mysql", "**:**@(*.*.*.*:****)/muxikstack?charset=utf8&parseTime=True")
-	if err != nil{
+func main() {
+	db, err := gorm.Open("mysql", "muxi:123@(127.0.0.1:3306)/muxikstack?charset=utf8&parseTime=True")
+	if err != nil {
 		fmt.Println(err)
-	}else {
+	} else {
 		fmt.Println("connection succeed")
 	}
 
-	var i1,i2 int
-	for i1=0; i1 < 28; i1++{
-		stri := strconv.Itoa(i1+1)
+	var i1, i2 int
+	for i1 = 0; i1 < 28; i1++ {
+		stri := strconv.Itoa(i1 + 1)
 		resp, err := http.PostForm("http://spoc.ccnu.edu.cn/courseCenterController/fuzzyQuerySitesByConditions", url.Values{"pageNum": {stri}, "pageSize": {"1200"}})
 		if err != nil {
 			fmt.Println(err)
@@ -90,7 +87,7 @@ func main(){
 		if err != nil {
 			fmt.Println(err)
 		}
-		var b  Outside
+		var b Outside
 		json.Unmarshal([]byte(body), &b)
 		// fmt.Printf("%+v\n",b)
 		// fmt.Println(b.Data.List[5].Name)
@@ -104,21 +101,20 @@ func main(){
 			key := util.HashCourseId(courseId, teacher)
 
 			onecourse := &model.HistoryCourseModel{
-				Hash:      key,
-				Name:     name,
-				Teacher:  teacher,
-				Type:        judge1(courseId[3:4]),
+				Hash:    key,
+				Name:    name,
+				Teacher: teacher,
+				Type:    judge1(courseId[3:4]),
 			}
 			d := db.Where("hash = ?", key).First(&onecourse)
-			if d.RecordNotFound(){
+			if d.RecordNotFound() {
 				db.Create(onecourse)
-			}else{
+			} else {
 				continue
 			}
 		}
-		fmt.Println( (i1+1)*1200, 33600-(i1+1)*1200)
-		time.Sleep(time.Duration(2)*time.Second)
+		fmt.Println((i1+1)*1200, 33600-(i1+1)*1200)
+		time.Sleep(time.Duration(2) * time.Second)
 	}
 	return
 }
-*/

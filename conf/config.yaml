@@ -16,9 +16,9 @@ log:
   log_backup_count: 7
 db:  # DB 配置 部署时环境变量覆盖
   name: muxikstack
-  addr: 0.0.0.0:3306
+  addr: 127.0.0.1:3306
   username: muxi
-  password: muxi
+  password: 123
 oss:
   access_key:
   secret_key:

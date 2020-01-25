@@ -1,8 +1,9 @@
 package course
 
 import (
-	"fmt"
-	"strconv"
+	//"fmt"
+	//"strconv"
+	"strings"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
@@ -12,6 +13,16 @@ import (
 	"github.com/lexkong/log"
 )
 
+type TagList struct {
+	Id   uint32 `json:"id"`
+	Data OneTag `json:"data"`
+}
+
+type OneTag struct {
+	Name string `json:"name"`
+	Num  uint32 `json:"num"`
+}
+
 type TPList struct {
 	Id    uint32
 	Time  string
@@ -20,8 +31,9 @@ type TPList struct {
 }
 
 type TTPL struct {
-	Id   uint32   `json:"id"`
-	List []TPList `json:"list"`
+	Id      uint32   `json:"id"`
+	ClassId string   `json:"class_id"`
+	List    []TPList `json:"list"`
 }
 
 /*type ClassList struct {
@@ -33,28 +45,45 @@ type InfoClass struct {
 }*/
 
 type ResponseInfo struct {
+	CourseName     string  `json:"course_name"`
+	TeacherName    string  `json:"teacher_name"`
+	CourseCategory uint8   `json:"course_category"`
+	CourseCredit   float32 `json:"course_credit"`
+	Rate           float32 `json:"rate"`
+	StarsNum       uint32  `json:"stars_num"`
+	//Score          map[uint32]uint32 `json:"score"`
+	//ScoreNum       uint32            `json:"score_num"`
+	Attendance map[string]uint32 `json:"attendance"`
+	Exam       map[string]uint32 `json:"exam"`
+	ClassInfo  []TTPL            `json:"class_info"`
+	Tag        []TagList         `json:"tag"`
+	//TotalScore     float32           `json:"total_score"`
+	//OrdinaryScore  float32           `json:"ordinary_score"`
+}
+
+type HistoryResponseInfo struct {
 	CourseName     string            `json:"course_name"`
 	TeacherName    string            `json:"teacher_name"`
 	CourseCategory uint8             `json:"course_category"`
 	CourseCredit   float32           `json:"course_credit"`
 	Rate           float32           `json:"rate"`
 	StarsNum       uint32            `json:"stars_num"`
-	Score          map[uint32]uint32 `json:"score"`
-	ScoreNum       uint32            `json:"score_num"`
 	Attendance     map[string]uint32 `json:"attendance"`
 	Exam           map[string]uint32 `json:"exam"`
-	ClassInfo      []TTPL            `json:"class_info"`
-	TotalScore     float32           `json:"total_score"`
-	OrdinaryScore  float32           `json:"ordinary_score"`
-	CourseFeature1 uint32            `json:"course_feature_1"`
-	CourseFeature2 uint32            `json:"course_feature_2"`
-	CourseFeature3 uint32            `json:"course_feature_3"`
-	CourseFeature4 uint32            `json:"course_feature_4"`
-	CourseFeature5 uint32            `json:"course_feature_5"`
-	CourseFeature6 uint32            `json:"course_feature_6"`
+	Tag            []TagList         `json:"tag"`
 }
 
-//获取课程信息
+func judge(classid string) string {
+	if strings.Contains(classid, "课堂") {
+		split := strings.Index(classid, "堂")
+		var finstr string
+		finstr = classid[split+4:] + classid[:split-3]
+		return finstr
+	}
+	return classid
+}
+
+//获取现用课程信息
 func GetCourseInfo(c *gin.Context) {
 	log.Info("GetInfo function is called")
 
@@ -66,114 +95,137 @@ func GetCourseInfo(c *gin.Context) {
 		return
 	}
 
-	course := &model.UsingCourseModel{Hash: hash}
-	if err := course.GetByHash(); err != nil {
-		log.Info("course.GetByHash() error.")
-		return
+	//获取tag
+	tags, err := model.GetCourseTags(hash)
+	if err != nil {
+		log.Info("Get Tags error")
+	}
+	tag := make([]TagList, 0)
+	for n, v := range tags {
+		a, err := model.GetTagNameById32(v.TagId)
+		if err != nil {
+			log.Info("Get TagNameById error")
+		}
+		b := v.Num
+		in := OneTag{a, b}
+		out := TagList{uint32(n + 1), in}
+		tag = append(tag, out)
 	}
 
-	courseid := course.CourseId
-	fmt.Println(courseid)
+	//判断是否为历史课程
+	course := &model.UsingCourseModel{Hash: hash}
+	j, err := course.GetByHash2()
+	if j == 1 {
+		historyInfo := GetHistoryCourseInfo(hash, tag)
+		handler.SendResponse(c, nil, historyInfo)
+		log.Info("This is a HistoryCourse")
+	} else {
+		if err != nil {
+			log.Info("course.GetByHash() error.")
+			return
+		}
+		log.Info("This is a UsingCourse")
 
-	class := &model.HistoryCourseModel{Hash: hash}
-	if err := class.GetHistoryByHash(); err != nil {
+		courseid := course.CourseId
+
+		//获取所有课堂
+		classid, err := model.GetAllClass(hash)
+		if err != nil {
+			log.Info("course.GetAllClass() error.")
+		}
+
+		class := &model.HistoryCourseModel{Hash: hash}
+		if err := class.GetHistoryByHash(); err != nil {
+			log.Info("course.GetHistoryByHash() error.")
+		}
+
+		//var score = map[uint32]uint32{70: 11, 7085: 76, 85: 13}
+
+		var attendanceMap = service.GetAttendanceCheckTypeNumForCourseInfoEnglish(hash)
+
+		var examMap = service.GetExamCheckTypeNumForCourseInfoEnglish(hash)
+		//var test InfoClass
+		test := make([]TTPL, 0, 60)
+
+		//	var i int
+		//	for i = 0; i <= len(classid); i++ {
+		for _, v := range classid {
+			list := make([]TPList, 0, 3)
+			aclass := &model.UsingCourseModel{Hash: hash}
+			if err := aclass.GetClass(courseid, v.ClassId); err != nil {
+				log.Info("course.GetClass() error.")
+				handler.SendError(c, err, nil, "")
+				log.Info(courseid)
+			}
+			a := aclass.Time1
+			b := aclass.Place1
+			x := aclass.Weeks1
+			c := aclass.Time2
+			d := aclass.Place2
+			y := aclass.Weeks2
+			e := aclass.Time3
+			f := aclass.Place3
+			z := aclass.Weeks3
+			list1 := TPList{1, a, b, x}
+			list2 := TPList{2, c, d, y}
+			list3 := TPList{3, e, f, z}
+			if a != "" || b != "" {
+				list = append(list, list1)
+			}
+			if c != "" || d != "" {
+				list = append(list, list2)
+			}
+			if e != "" || f != "" {
+				list = append(list, list3)
+			}
+			//fmt.Print(list)
+			if len(list) != 0 {
+				n1++
+				LIST := TTPL{n1, judge(v.ClassId), list}
+				test = append(test, LIST)
+				//fmt.Print(test)
+			}
+		}
+
+		courseResponse := ResponseInfo{
+			CourseName:     course.Name,
+			TeacherName:    course.Teacher,
+			CourseCategory: course.Type,
+			CourseCredit:   course.Credit,
+			Rate:           class.Rate,
+			StarsNum:       class.StarsNum,
+			Attendance:     attendanceMap,
+			Exam:           examMap,
+			ClassInfo:      test,
+			Tag:            tag,
+		}
+
+		handler.SendResponse(c, nil, courseResponse) //*
+	}
+}
+
+//获取历史课程信息
+func GetHistoryCourseInfo(hash string, tag []TagList) HistoryResponseInfo {
+	course := &model.HistoryCourseModel{Hash: hash}
+	if err := course.GetHistoryByHash(); err != nil {
 		log.Info("course.GetHistoryByHash() error.")
 	}
-
-	var score = map[uint32]uint32{70: 11, 7085: 76, 85: 13}
 
 	var attendanceMap = service.GetAttendanceCheckTypeNumForCourseInfoEnglish(hash)
 
 	var examMap = service.GetExamCheckTypeNumForCourseInfoEnglish(hash)
-	//var test InfoClass
-	test := make([]TTPL, 0, 60)
 
-	tag1, _ := model.GetTagsNumber(1, course.CourseId)
-	tag2, _ := model.GetTagsNumber(2, course.CourseId)
-	tag3, _ := model.GetTagsNumber(3, course.CourseId)
-	tag4, _ := model.GetTagsNumber(4, course.CourseId)
-	tag5, _ := model.GetTagsNumber(5, course.CourseId)
-	tag6, _ := model.GetTagsNumber(6, course.CourseId)
-
-	var i int
-	for i = 1; i <= 10; i++ {
-		list := make([]TPList, 0, 3)
-		//var list ClassList
-		//var list2, list3 TPList
-		//list1 := make([]TPList, 2)
-		//list2 := make([]TPList, 2)
-		//list3 := make([]TPList, 2)
-		aclass := &model.UsingCourseModel{Hash: hash}
-		if err := aclass.GetClass("45677654", strconv.Itoa(i)); err != nil {
-			log.Info("course.GetClass() error.")
-			handler.SendError(c, err, nil, "")
-			log.Info(courseid)
-			//log.Println("%s", courseid)
-			//fmt.Print(courseid, uint64(i))
-		}
-		//log.Info(aclass.Time1)
-		//log.Info(aclass.Place1)
-		a := aclass.Time1
-		b := aclass.Place1
-		x := aclass.Weeks1
-		c := aclass.Time2
-		d := aclass.Place2
-		y := aclass.Weeks2
-		e := aclass.Time3
-		f := aclass.Place3
-		z := aclass.Weeks3
-		list1 := TPList{1, a, b, x}
-		list2 := TPList{2, c, d, y}
-		list3 := TPList{3, e, f, z}
-		//fmt.Print(list4)
-		//list1.time = aclass.Time1
-		//list1.place = aclass.Place1
-		if a != "" || b != "" {
-			list = append(list, list1)
-		}
-		if c != "" || d != "" {
-			list = append(list, list2)
-		}
-		if e != "" || f != "" {
-			list = append(list, list3)
-		}
-		//fmt.Print(list)
-		if len(list) != 0 {
-			n1++
-			LIST := TTPL{n1, list}
-			test = append(test, LIST)
-			//fmt.Print(test)
-		}
-	}
-	//var test2 *[][]TPList
-	//*test2 = make([][]TPList, 60)
-	//test2 = &test
-	//fmt.Print(test)
-
-	courseResponse := ResponseInfo{
+	courseResponse := HistoryResponseInfo{
 		CourseName:     course.Name,
 		TeacherName:    course.Teacher,
 		CourseCategory: course.Type,
 		CourseCredit:   course.Credit,
-		Rate:           class.Rate,
-		StarsNum:       class.StarsNum,
-		Score:          score,
-		ScoreNum:       89,
+		Rate:           course.Rate,
+		StarsNum:       course.StarsNum,
 		Attendance:     attendanceMap,
 		Exam:           examMap,
-		ClassInfo:      test,
-		TotalScore:     80.0,
-		OrdinaryScore:  80.0,
-		CourseFeature1: tag1,
-		CourseFeature2: tag2,
-		CourseFeature3: tag3,
-		CourseFeature4: tag4,
-		CourseFeature5: tag5,
-		CourseFeature6: tag6,
+		Tag:            tag,
 	}
 
-	// fmt.Print(courseResponse)
-
-	//SendInfo(c, nil, courseResponse)
-	handler.SendResponse(c, nil, courseResponse) //*
+	return courseResponse
 }
