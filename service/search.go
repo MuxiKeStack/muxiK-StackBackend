@@ -7,25 +7,59 @@ import (
 
 // 现用课堂信息
 type CourseInfoForUsing struct {
-	Id       uint32   `json:"id"`        //主键
-	Hash     string   `json:"hash"`      //教师名和课程hash成的唯一标识，用于getinfo
-	CourseId string   `json:"course_id"` //仅用于在UI上进行展示
-	Name     string   `json:"name"`      //课程名称
-	Teacher  string   `json:"teacher"`   //教师姓名
-	Rate     float32  `json:"rate"`      //课程评价星级
-	StarsNum uint32   `json:"stars_num"` //参与评分人数
-	Tags     []string `json:"tags"`      //前二的tag
+	Id         uint32   `json:"id"`         //主键
+	Hash       string   `json:"hash"`       //教师名和课程hash成的唯一标识，用于getinfo
+	CourseId   string   `json:"course_id"`  //仅用于在UI上进行展示
+	Name       string   `json:"name"`       //课程名称
+	Teacher    string   `json:"teacher"`    //教师姓名
+	Rate       float32  `json:"rate"`       //课程评价星级
+	StarsNum   uint32   `json:"stars_num"`  //参与评分人数
+	Attendance string   `json:"attendance"` //点名方式
+	Exam       string   `json:"exam"`       //考核方式
+	Tags       []string `json:"tags"`       //前二的tag
 }
 
 // 搜索查询的课程列表（历史课堂信息）
 type CourseInfoForHistory struct {
-	Id       uint32   `json:"id"`   //数据库表中记录的id，自增id
-	Hash     string   `json:"hash"` //教师名和课程hash成的唯一标识，用于getinfo
-	Name     string   `json:"name"`
-	Teacher  string   `json:"teacher"`
-	Rate     float32  `json:"rate"`
-	StarsNum uint32   `json:"stars_num"`
-	Tags     []string `json:"tags"` //前二的tag
+	Id         uint32   `json:"id"`   //数据库表中记录的id，自增id
+	Hash       string   `json:"hash"` //教师名和课程hash成的唯一标识，用于getinfo
+	Name       string   `json:"name"`
+	Teacher    string   `json:"teacher"`
+	Rate       float32  `json:"rate"`
+	StarsNum   uint32   `json:"stars_num"`
+	Attendance string   `json:"attendance"` //点名方式
+	Exam       string   `json:"exam"`       //考核方式
+	Tags       []string `json:"tags"`       //前二的tag
+}
+
+func GetAttendanceTypeMax(hash string) string {
+	var fin string
+	var max uint32
+	result := make(map[string]uint32)
+	for i := 1; i < 4; i++ {
+		name := GetAttendanceCheckTypeByCode(uint8(i))
+		result[name] = model.GetAttendanceTypeNumChosenByCode(hash, i)
+		if result[name] >= max {
+			max = result[name]
+			fin = name
+		}
+	}
+	return fin
+}
+
+func GetExamCheckTypeMax(hash string) string {
+	var fin string
+	var max uint32
+	result := make(map[string]uint32)
+	for i := 1; i < 5; i++ {
+		name := GetExamCheckTypeByCode(uint8(i))
+		result[name] = model.GetExamCheckTypeNumChosenByCode(hash, i)
+		if result[name] >= max {
+			max = result[name]
+			fin = name
+		}
+	}
+	return fin
 }
 
 func kwReplace(kw string) string {
@@ -71,14 +105,16 @@ func SearchCourses(keyword string, page, limit uint64, t, a, w, p string) ([]Cou
 		}
 
 		courses[i] = CourseInfoForUsing{
-			Id:       row.Id,
-			Hash:     row.Hash,
-			Name:     row.Name,
-			CourseId: row.CourseId,
-			Teacher:  row.Teacher,
-			Rate:     class.Rate,
-			StarsNum: class.StarsNum,
-			Tags:     result,
+			Id:         row.Id,
+			Hash:       row.Hash,
+			Name:       row.Name,
+			CourseId:   row.CourseId,
+			Teacher:    row.Teacher,
+			Rate:       class.Rate,
+			StarsNum:   class.StarsNum,
+			Attendance: GetAttendanceTypeMax(row.Hash),
+			Exam:       GetExamCheckTypeMax(row.Hash),
+			Tags:       result,
 		}
 	}
 	return courses, nil
@@ -96,13 +132,15 @@ func SearchHistoryCourses(keyword string, page, limit uint64, t string) ([]Cours
 		}
 
 		courses[i] = CourseInfoForHistory{
-			Id:       row.Id,
-			Hash:     row.Hash,
-			Name:     row.Name,
-			Teacher:  row.Teacher,
-			Rate:     row.Rate,
-			StarsNum: row.StarsNum,
-			Tags:     result,
+			Id:         row.Id,
+			Hash:       row.Hash,
+			Name:       row.Name,
+			Teacher:    row.Teacher,
+			Rate:       row.Rate,
+			StarsNum:   row.StarsNum,
+			Attendance: GetAttendanceTypeMax(row.Hash),
+			Exam:       GetExamCheckTypeMax(row.Hash),
+			Tags:       result,
 		}
 	}
 	return courses, nil
@@ -110,6 +148,7 @@ func SearchHistoryCourses(keyword string, page, limit uint64, t string) ([]Cours
 
 //Using
 func GetAllCourses(page, limit uint64, t, a, w, p string) ([]CourseInfoForUsing, error) {
+	log.Info("sjduvnusbvfuawcbiawciuascvbuyasbcuiawbfvedsyv")
 	courseRows, err := model.AllCourses(page, limit, t, a, w, p)
 	if err != nil {
 		return nil, err
@@ -127,14 +166,16 @@ func GetAllCourses(page, limit uint64, t, a, w, p string) ([]CourseInfoForUsing,
 		}
 
 		courses[i] = CourseInfoForUsing{
-			Id:       row.Id,
-			Hash:     row.Hash,
-			Name:     row.Name,
-			Teacher:  row.Teacher,
-			CourseId: row.CourseId,
-			Rate:     class.Rate,
-			StarsNum: class.StarsNum,
-			Tags:     result,
+			Id:         row.Id,
+			Hash:       row.Hash,
+			Name:       row.Name,
+			Teacher:    row.Teacher,
+			CourseId:   row.CourseId,
+			Rate:       class.Rate,
+			StarsNum:   class.StarsNum,
+			Attendance: GetAttendanceTypeMax(row.Hash),
+			Exam:       GetExamCheckTypeMax(row.Hash),
+			Tags:       result,
 		}
 	}
 	return courses, nil
@@ -155,13 +196,15 @@ func GetAllHistoryCourses(page, limit uint64, t string) ([]CourseInfoForHistory,
 		}
 
 		courses[i] = CourseInfoForHistory{
-			Id:       row.Id,
-			Hash:     row.Hash,
-			Name:     row.Name,
-			Teacher:  row.Teacher,
-			Rate:     row.Rate,
-			StarsNum: row.StarsNum,
-			Tags:     result,
+			Id:         row.Id,
+			Hash:       row.Hash,
+			Name:       row.Name,
+			Teacher:    row.Teacher,
+			Rate:       row.Rate,
+			StarsNum:   row.StarsNum,
+			Attendance: GetAttendanceTypeMax(row.Hash),
+			Exam:       GetExamCheckTypeMax(row.Hash),
+			Tags:       result,
 		}
 	}
 	return courses, nil
