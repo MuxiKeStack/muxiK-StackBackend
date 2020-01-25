@@ -1,3 +1,6 @@
+package script
+
+/*
 package main
 
 import (
@@ -68,7 +71,7 @@ type Inside struct {
 }
 
 func main() {
-	db, err := gorm.Open("mysql", "muxi:123@(127.0.0.1:3306)/muxikstack?charset=utf8&parseTime=True")
+	db, err := gorm.Open("mysql", "*:*@(*.*.*.*:*)/muxikstack?charset=utf8&parseTime=True")
 	if err != nil {
 		fmt.Println(err)
 	} else {
@@ -117,4 +120,4 @@ func main() {
 		time.Sleep(time.Duration(2) * time.Second)
 	}
 	return
-}
+}*/

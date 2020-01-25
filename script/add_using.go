@@ -1,3 +1,5 @@
+package script
+/*
 package main
 
 import (
@@ -205,7 +207,7 @@ func analyzeClass(classid string) string {
 }
 
 func main() {
-	db, err := gorm.Open("mysql", "muxi:123@(127.0.0.1:3306)/muxikstack?charset=utf8&parseTime=True")
+	db, err := gorm.Open("mysql", "*:*@(*.*.*.*:*)/muxikstack?charset=utf8&parseTime=True")
 	//db, err := gorm.Open("mysql", "root:mashiro@(116.62.7.230:3306)/muxikstack?charset=utf8&parseTime=True")
 	if err != nil {
 		fmt.Println(err)
@@ -298,4 +300,4 @@ func main() {
 		}
 	}
 	defer db.Close()
-}
+}*/
