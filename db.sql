@@ -1,12 +1,12 @@
-DROP DATABASE IF EXISTS `muxikstack`;
+-- DROP DATABASE IF EXISTS `muxikstack`;
 
-CREATE DATABASE `muxikstack`;
+CREATE DATABASE `muxikstack` IF NOT EXISTS;
 
 USE `muxikstack`;
 
 CREATE TABLE `user` (
   `id`         INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `sid`        VARCHAR(10)  NOT NULL COMMENT   "学生学号",
+  `sid`        VARCHAR(10)  NOT NULL COMMENT "学生学号",
   `username`   VARCHAR(25)  ,
   `avatar`     VARCHAR(255) ,
   `is_blocked` TINYINT(1)   NOT NULL DEFAULT 0,
@@ -177,9 +177,9 @@ CREATE TABLE `history_course` (
   `total_grade` FLOAT      NOT NULL DEFAULT 0 COMMENT "总成绩",
   `usual_grade` FLOAT      NOT NULL DEFAULT 0 COMMENT "平时成绩",
   `grade_sample_size` INT  NOT NULL DEFAULT 0 COMMENT "成绩样本人数",
-  `grade_section_1` INT    NOT NULL DEFAULT 0 COMMENT "成绩区间1,85以上",
-  `grade_section_2` INT    NOT NULL DEFAULT 0 COMMENT "成绩区间2,70-85",
-  `grade_section_3` INT    NOT NULL DEFAULT 0 COMMENT "成绩区间3,70以下",
+  `grade_section_1`   INT  NOT NULL DEFAULT 0 COMMENT "成绩区间1,85以上",
+  `grade_section_2`   INT  NOT NULL DEFAULT 0 COMMENT "成绩区间2,70-85",
+  `grade_section_3`   INT  NOT NULL DEFAULT 0 COMMENT "成绩区间3,70以下",
 
   PRIMARY KEY (`id`),
   UNIQUE KEY `hash` (`hash`),
@@ -191,10 +191,10 @@ CREATE TABLE `using_course` (
   `hash`           VARCHAR(50)  NOT NULL            COMMENT "课程id + 教师名 hash 生成的唯一标识",
   `name`           VARCHAR(50)  NOT NULL DEFAULT "",
   `academy`        VARCHAR(25)  NOT NULL DEFAULT "" COMMENT "开课学院",
-  `teacher`        VARCHAR(200)  NOT NULL DEFAULT "",
-  `credit`         FLOAT        NOT NULL DEFAULT 0 COMMENT "学分",
+  `teacher`        VARCHAR(200) NOT NULL DEFAULT "",
+  `credit`         FLOAT        NOT NULL DEFAULT 0  COMMENT "学分",
   `course_id`      VARCHAR(9)   NOT NULL            COMMENT "课程号",
-  `class_id`       VARCHAR(50)          NOT NULL            COMMENT "教学班编号",
+  `class_id`       VARCHAR(50)  NOT NULL            COMMENT "教学班编号",
   `type`           INT          NOT NULL            COMMENT "通识必修，通识选修，通识核心，专业必修，专业选修分别为 0/1/2/3/4",
   `time1`          VARCHAR(30)  NOT NULL DEFAULT "",
   `place1`         VARCHAR(30)  NOT NULL DEFAULT "",
@@ -225,8 +225,7 @@ CREATE TABLE `grade` (
 
   PRIMARY KEY (`id`),
   KEY `idx_user_id` (`user_id`),
-  KEY `idx_hash` (`course_hash_id`),
-  KEY `idx_has_added` (`has_added`)
+  KEY `idx_hash` (`course_hash_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 -- CREATE TABLE `self_course` (

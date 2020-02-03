@@ -5,6 +5,7 @@ url: http://127.0.0.1:4096   # pingServer函数请求的API服务器的ip:port
 max_ping_count: 10           # pingServer函数try的次数
 jwt_secret: muxikestackmuxistudiomuxiniubi
 data_service_url: 127.0.0.1:50051
+grade_crawl: true      # 获取个人课程时成绩是否爬取
 log:
   writers: file,stdout # 部署时输出到 stdout
   logger_level: DEBUG
