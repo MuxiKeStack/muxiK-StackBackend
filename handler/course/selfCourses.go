@@ -9,6 +9,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/lexkong/log"
+	"github.com/spf13/viper"
 )
 
 type selfCoursesResponse struct {
@@ -49,23 +50,23 @@ func GetSelfCourses(c *gin.Context) {
 	term := c.DefaultQuery("term", "0")
 
 	data, err := service.GetSelfCourseList(userId, l.Sid, l.Password, year, term)
-	//if err != nil {
-	//	// 从教务处获取选课课表失败，从本地数据库中获取备份
-	//	log.Error("GetSelfCourseList function error", err)
-	//	//handler.SendError(c, errno.ErrGetSelfCourses, nil, err.Error())
-	//	// return
-	//	log.Info("Enter GetSelfCourseListFromLocal function")
-	//
-	//	if data, err = service.GetSelfCourseListFromLocal(userId); err != nil {
-	//		handler.SendError(c, errno.ErrGetSelfCourses, nil, err.Error())
-	//		return
-	//	}
-	//
-	//	// 获取成功则将数据备份到本地数据库
-	//} else if err = service.SavingCourseDataToLocal(userId, data); err != nil {
-	//	handler.SendError(c, errno.ErrSavesDataToLocal, nil, err.Error())
-	//	return
-	//}
+/*	if err != nil {
+		// 从教务处获取选课课表失败，从本地数据库中获取备份
+		log.Error("GetSelfCourseList function error", err)
+		//handler.SendError(c, errno.ErrGetSelfCourses, nil, err.Error())
+		// return
+		log.Info("Enter GetSelfCourseListFromLocal function")
+
+		if data, err = service.GetSelfCourseListFromLocal(userId); err != nil {
+			handler.SendError(c, errno.ErrGetSelfCourses, nil, err.Error())
+			return
+		}
+
+		// 获取成功则将数据备份到本地数据库
+	} else if err = service.SavingCourseDataToLocal(userId, data); err != nil {
+		handler.SendError(c, errno.ErrSavesDataToLocal, nil, err.Error())
+		return
+	}*/
 	if err != nil {
 		handler.SendError(c, errno.ErrGetSelfCourses, nil, err.Error())
 		return
@@ -76,6 +77,15 @@ func GetSelfCourses(c *gin.Context) {
 		Data: data,
 	})
 
+
+	/* ------ 成绩爬取服务 ------ */
+
+	// 环境变量设置，是否爬取成绩
+	// export MUXIKSTACK_GRADE_CRAWL=true
+	if gradeSwitch := viper.GetBool("grade_crawl"); !gradeSwitch {
+		return
+	}
+
 	// 检查是否加入成绩共享计划
 	if ok, err := model.UserHasLicence(userId); err != nil {
 		log.Error("UserHasLicence function error", err)
@@ -83,6 +93,7 @@ func GetSelfCourses(c *gin.Context) {
 	} else if !ok {
 		return
 	}
+	log.Info("Crawling grades begins")
 
 	// 有许可，导入成绩至统计样本
 	if err := service.GradeImportService(userId, l.Sid, l.Password); err != nil {

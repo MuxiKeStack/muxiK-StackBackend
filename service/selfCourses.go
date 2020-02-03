@@ -14,7 +14,6 @@ type ProducedCourseItem struct {
 	CourseId string `json:"course_id"`
 	Name     string `json:"name"`
 	Teacher  string `json:"teacher"`
-	// Academic     string `json:"academic"`
 	HasEvaluated bool `json:"has_evaluated"`
 }
 

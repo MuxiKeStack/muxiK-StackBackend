@@ -43,10 +43,8 @@ func GetTeachersSqStrBySplitting(s string) string {
 
 // 根据课程号和教师名字符串hash
 func HashCourseId(courseNumStr, teachers string) string {
-	//fmt.Println(courseNumStr, teachers)
 	hash := md5.New()
 	hash.Write([]byte(courseNumStr + teachers))
-	//id := hash.Sum(nil)
 
 	return fmt.Sprintf("%x", hash.Sum(nil))
 }
