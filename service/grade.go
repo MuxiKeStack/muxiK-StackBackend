@@ -10,55 +10,6 @@ import (
 	"github.com/lexkong/log"
 )
 
-// 爬取成绩
-func NewGradeRecord_2(userId uint32, sid, pwd string) error {
-	// 获取现有成绩数
-	curRecordNum, err := model.GetRecordsNum(userId)
-	if err != nil {
-		log.Error("GetRecordsNum function error", err)
-		return err
-	}
-
-	data, ok, err := util.GetGradeFromXK(sid, pwd, curRecordNum)
-	if err != nil {
-		log.Error("util.GetGradeFromXK function error", err)
-		return err
-	} else if !ok {
-		log.Info("Grades have not updated")
-		return nil
-	}
-	//fmt.Println(data)
-
-	for _, item := range *data {
-		teacher := strings.ReplaceAll(item.Teacher, ";", ",")
-		hash := util.HashCourseId(item.CourseId, teacher)
-
-		if ok, err := model.GradeRecordExisting(userId, hash); err != nil {
-			log.Error("GradeRecordExisting function error", err)
-			return err
-		} else if ok {
-			//log.Info("The record has existed")
-			continue
-		}
-
-		g := &model.GradeModel{
-			UserId:       userId,
-			CourseHashId: hash,
-			CourseName:   item.CourseName,
-			TotalScore:   item.TotalScore,
-			UsualScore:   item.UsualScore,
-			FinalScore:   item.FinalScore,
-			HasAdded:     false,
-		}
-		if err := g.New(); err != nil {
-			log.Error("Add new grade record error", err)
-			return err
-		}
-	}
-
-	return nil
-}
-
 // 爬取成绩，并发
 func NewGradeRecord(userId uint32, sid, pwd string) error {
 	// 获取现有成绩数
@@ -78,7 +29,6 @@ func NewGradeRecord(userId uint32, sid, pwd string) error {
 		log.Info("Grades have not updated")
 		return nil
 	}
-	//fmt.Println(data)
 
 	wg := new(sync.WaitGroup)
 	errChan := make(chan error, 1)
