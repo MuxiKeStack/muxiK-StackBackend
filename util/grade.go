@@ -38,6 +38,7 @@ type ResultGradeItem struct {
 	FinalScore float32 `json:"final_score"` // 期末成绩
 }
 
+// 从教务处获取成绩
 func GetGradeFromXK(sid, password string, curRecordNum int) (*[]ResultGradeItem, bool, error) {
 	params, err := MakeAccountPreflightRequest()
 	if err != nil {
@@ -101,7 +102,6 @@ func GetGradeFromXK(sid, password string, curRecordNum int) (*[]ResultGradeItem,
 		return nil, false, err
 
 	}
-	//fmt.Println(string(body))
 
 	var data = OriginalGrade{}
 	if err := json.Unmarshal(body, &data); err != nil {
@@ -109,6 +109,7 @@ func GetGradeFromXK(sid, password string, curRecordNum int) (*[]ResultGradeItem,
 		return nil, false, err
 	}
 
+	// 未发布新成绩成绩，直接返回
 	if len(*data.Items) <= curRecordNum {
 		return nil, false, nil
 	}
@@ -169,8 +170,6 @@ func GetUsualAndFinalGradeFromXK(client *http.Client, jxbid, kcmc, xnm, xqm stri
 	if err != nil {
 		return 0, 0, err
 	}
-
-	//fmt.Println(string(body))
 
 	return ParseByRegexp(string(body))
 }
