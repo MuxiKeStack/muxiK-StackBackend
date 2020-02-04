@@ -15,14 +15,17 @@ func (*GradeModel) TableName() string {
 	return "grade"
 }
 
+// Create new grade record.
 func (grade *GradeModel) New() error {
 	return DB.Self.Create(grade).Error
 }
 
+// Get grade record by id.
 func (grade *GradeModel) Get() error {
 	return DB.Self.Create(grade).Error
 }
 
+// Update grade record.
 func (grade *GradeModel) Update() error {
 	return DB.Self.Save(grade).Error
 }
@@ -39,21 +42,17 @@ func GetGradeRecord(userId uint32, hashId string) (*GradeModel, bool, error) {
 
 // Check whether the grade record exists by userId and courseHashId.
 func GradeRecordExisting(userId uint32, hashId string) (bool, error) {
-	var record GradeModel
-	d := DB.Self.Where("user_id = ? AND course_hash_id = ?", userId, hashId).First(&record)
-	if d.RecordNotFound() {
-		return false, nil
-	}
-	return true, d.Error
+	var count int
+	d := DB.Self.Table("grade").Where("user_id = ? AND course_hash_id = ?", userId, hashId).Count(&count)
+	//d := DB.Self.Exec("SELECT id FROM grade WHERE user_id = ? AND course_hash_id = ?;", userId, hashId)
+	//d := DB.Self.Where("user_id = ? AND course_hash_id = ?", userId, hashId).First(&GradeModel{})
+	return count != 0, d.Error
 }
 
 // Get the amount of grade records by userId.
 func GetRecordsNum(userId uint32) (int, error) {
 	var count int
 	d := DB.Self.Table("grade").Where("user_id = ?", userId).Count(&count)
-	if d.RecordNotFound() {
-		return 0, nil
-	}
 	return count, d.Error
 }
 

@@ -52,12 +52,11 @@ CREATE TABLE `course_evaluation` (
   `deleted_at`            TIMESTAMP    NULL     DEFAULT NULL,
 
   `course_id`             VARCHAR(50)  NOT NULL,
-  `user_id`               INT UNSIGNED NOT NULl,
+  `user_id`               INT UNSIGNED NOT NULL,
 
   PRIMARY KEY (`id`),
   KEY `course_id` (`course_id`),
-  KEY `user_id` (`user_id`),
-  KEY `deleted_at` (`deleted_at`)
+  KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE `parent_comment` (
@@ -74,8 +73,7 @@ CREATE TABLE `parent_comment` (
 
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
-  KEY `evaluation_id` (`evaluation_id`),
-  KEY `deleted_at` (`deleted_at`)
+  KEY `evaluation_id` (`evaluation_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE `sub_comment` (
@@ -93,8 +91,7 @@ CREATE TABLE `sub_comment` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `parent_id` (`parent_id`),
-  KEY `target_user_id` (`target_user_id`),
-  KEY `deleted_at` (`deleted_at`)
+  KEY `target_user_id` (`target_user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE `course_evaluation_like` (
@@ -220,12 +217,13 @@ CREATE TABLE `grade` (
   `final_score` FLOAT        NOT NULL DEFAULT 0 COMMENT "期末成绩",
   `has_added`   TINYINT(1)   NOT NULL DEFAULT 0 COMMENT "是否已加入统计样本中",
 
-  `user_id` INT UNSIGNED NOT NULL,
-  `course_hash_id` VARCHAR(50) NOT NULL,
+  `user_id`        INT UNSIGNED NOT NULL,
+  `course_hash_id` VARCHAR(50)  NOT NULL,
 
   PRIMARY KEY (`id`),
-  KEY `idx_user_id` (`user_id`),
-  KEY `idx_hash` (`course_hash_id`)
+  KEY `idx_user_hash` (`user_id`, `course_hash_id`)
+--   KEY `idx_user_id` (`user_id`),
+--   KEY `idx_hash` (`course_hash_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 -- CREATE TABLE `self_course` (

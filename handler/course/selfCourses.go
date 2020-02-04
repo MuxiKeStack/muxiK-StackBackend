@@ -50,23 +50,23 @@ func GetSelfCourses(c *gin.Context) {
 	term := c.DefaultQuery("term", "0")
 
 	data, err := service.GetSelfCourseList(userId, l.Sid, l.Password, year, term)
-/*	if err != nil {
-		// 从教务处获取选课课表失败，从本地数据库中获取备份
-		log.Error("GetSelfCourseList function error", err)
-		//handler.SendError(c, errno.ErrGetSelfCourses, nil, err.Error())
-		// return
-		log.Info("Enter GetSelfCourseListFromLocal function")
+	/*	if err != nil {
+			// 从教务处获取选课课表失败，从本地数据库中获取备份
+			log.Error("GetSelfCourseList function error", err)
+			//handler.SendError(c, errno.ErrGetSelfCourses, nil, err.Error())
+			// return
+			log.Info("Enter GetSelfCourseListFromLocal function")
 
-		if data, err = service.GetSelfCourseListFromLocal(userId); err != nil {
-			handler.SendError(c, errno.ErrGetSelfCourses, nil, err.Error())
+			if data, err = service.GetSelfCourseListFromLocal(userId); err != nil {
+				handler.SendError(c, errno.ErrGetSelfCourses, nil, err.Error())
+				return
+			}
+
+			// 获取成功则将数据备份到本地数据库
+		} else if err = service.SavingCourseDataToLocal(userId, data); err != nil {
+			handler.SendError(c, errno.ErrSavesDataToLocal, nil, err.Error())
 			return
-		}
-
-		// 获取成功则将数据备份到本地数据库
-	} else if err = service.SavingCourseDataToLocal(userId, data); err != nil {
-		handler.SendError(c, errno.ErrSavesDataToLocal, nil, err.Error())
-		return
-	}*/
+		}*/
 	if err != nil {
 		handler.SendError(c, errno.ErrGetSelfCourses, nil, err.Error())
 		return
@@ -76,7 +76,6 @@ func GetSelfCourses(c *gin.Context) {
 		Sum:  len(*data),
 		Data: data,
 	})
-
 
 	/* ------ 成绩爬取服务 ------ */
 
