@@ -3,6 +3,7 @@ package config
 import (
 	"strings"
 
+	_ "github.com/360EntSecGroup-Skylar/excelize"
 	"github.com/fsnotify/fsnotify"
 	"github.com/lexkong/log"
 	"github.com/spf13/viper"

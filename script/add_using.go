@@ -4,6 +4,7 @@ package script
 package main
 
 import (
+	"flag"
 	"fmt"
 	"strconv"
 	"strings"
@@ -15,9 +16,30 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"github.com/spf13/viper"
 )
 
-var DB gorm.DB
+var (
+	DB     gorm.DB
+	DBAddr string
+	DBUser string
+	DBPwd  string
+	fileFg = flag.String("file", "sample.xlsx", "set using-course manual excel file (*.xlsx)")
+)
+
+func init() {
+	flag.Parse()
+
+	// 配置环境变量
+	// export MUXIKSTACK_DB_ADDR=127.0.0.1:3306
+	// export MUXIKSTACK_DB_USERNAME=muxi
+	// export MUXIKSTACK_DB_PASSWORD=muxi
+	viper.AutomaticEnv()
+	viper.SetEnvPrefix("MUXIKSTACK")
+	DBAddr = viper.GetString("DB_ADDR")
+	DBUser = viper.GetString("DB_USERNAME")
+	DBPwd = viper.GetString("DB_PASSWORD")
+}
 
 func delNull(c string) string {
 	if c == "" {
@@ -72,74 +94,30 @@ func judge3(c string) string {
 	return "error"
 }
 
-//增加一个课程
-// func AddCourse() {
-// 	var float float32
-// 	f, err := excelize.OpenFile("./2.xlsx")
-// 	if err != nil {
-// 		fmt.Println(err)
-// 		return
-// 	}
-// 	rows := f.GetRows("公共课")
-// 	var scourseid string
-// 	var clas uint64
-// 	for n, row := range rows {
-// 		if n == 0{
-// 			continue
-// 		}
-// 		scourseid = row[2]
-// 		teachers := util.GetTeachersSqStrBySplitting(row[8])
-// 		key := util.HashCourseId(scourseid, teachers)
-// 		cred, _ := strconv.ParseFloat(row[4], 32)
-// 		float = float32(cred)
-// 		clas, _ = strconv.ParseUint(row[3], 10, 64)
-// 		onecourse:= &model.UsingCourseModel{
-// 			Hash:      key,
-// 			Name:     test(row[1]),
-// 			CourseId: test(row[2]),
-// 			ClassId:  clas,
-// 			Credit:   float,
-// 			Teacher:  teachers,
-// 			Type:     judge1(row[2][4:5]),
-// 			Time1:    test(row[10]),
-// 			Place1:   test(row[11]),
-// 			Time2:    test(row[12]),
-// 			Place2:   test(row[13]),
-// 			Time3:    test(row[14]),
-// 			Place3:   test(row[15]),
-// 			Weeks1:   test(row[10]),
-// 			Weeks2:   test(row[12]),
-// 			Weeks3:   test(row[14]),
-// 			//Region:   judge2(row[11][0:1]),
-// 		}
-// 		DB.Create(onecourse)
-// 		// fmt.Println(onecourse)
-// 		// if err := onecourse.Add(); err != nil {
-// 		// 	log.Info("add onecourse error")
-// 		// 	return
-// 		//  }
-// 	}
-
-// }
-
 func chToNum(a string) string {
-	switch a {
-	case "一":
-		return "1"
-	case "二":
-		return "2"
-	case "三":
-		return "3"
-	case "四":
-		return "4"
-	case "五":
-		return "5"
-	case "六":
-		return "6"
-	case "日":
-		return "7"
+	dayMap := map[string]string{"一": "1", "二": "2", "三": "3", "四": "4", "五": "5", "六": "6", "日": "7"}
+	if day, ok := dayMap[a]; ok {
+		return day
 	}
 	return "error"
+
+	//switch a {
+	//case "一":
+	//	return "1"
+	//case "二":
+	//	return "2"
+	//case "三":
+	//	return "3"
+	//case "四":
+	//	return "4"
+	//case "五":
+	//	return "5"
+	//case "六":
+	//	return "6"
+	//case "日":
+	//	return "7"
+	//}
+	//return "error"
 }
 
 func analyzeTime(time string) string {
@@ -195,25 +173,31 @@ func analyzeWeek(time string) string {
 
 func analyzeManyWeek(section string) string {
 	split1 := strings.Index(section, "周")
-	var finstr string
-	finstr = section[:split1]
-	//fmt.Println(finstr)
-	return finstr
+	var finStr string
+	finStr = section[:split1]
+	//fmt.Println(finStr)
+	return finStr
 }
 
 func analyzeClass(classid string) string {
 	split1 := strings.Index(classid, "堂")
-	finstr := "(" + classid[split1+4:] + ")"
-	return finstr
+	finStr := "(" + classid[split1+4:] + ")"
+	return finStr
 }
 
 func main() {
-	db, err := gorm.Open("mysql", "*:*@(*.*.*.*:*)/muxikstack?charset=utf8&parseTime=True")
+	if DBAddr == "" || DBUser == "" {
+		fmt.Println("Database config error, required env settings")
+		return
+	}
+	dbOpenCmd := fmt.Sprintf("%s:%s@(%s)/muxikstack?charset=utf8&parseTime=True", DBUser, DBPwd, DBAddr)
+	db, err := gorm.Open("mysql", dbOpenCmd)
 	//db, err := gorm.Open("mysql", "*:*@(*.*.*.*:*)/muxikstack?charset=utf8&parseTime=True")
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
+	defer db.Close()
 	fmt.Println("connection succeed")
 
 	db.SingularTable(true)
@@ -221,14 +205,18 @@ func main() {
 	//user := &User123{Sid:"2018212693"}
 	//db.Create(user)
 
-	var float float32
-	f, err := excelize.OpenFile("./2.xlsx")
+	//f, err := excelize.OpenFile("./2.xlsx")
+	f, err := excelize.OpenFile(*fileFg)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
+	fmt.Println("Open excel file successfully")
+	fmt.Println("Start importing...")
+
 	rows := f.GetRows("公共课")
-	var scourseid string
+	var sCourseId string
+	var float float32
 	for n, row := range rows {
 		if n == 0 {
 			continue
@@ -237,12 +225,12 @@ func main() {
 		if strings.Contains(name, "大学体育") {
 			name = name + analyzeClass(row[3])
 		}
-		scourseid = row[2]
+		sCourseId = row[2]
 		teachers := util.GetTeachersSqStrBySplitting(row[8])
-		key := util.HashCourseId(scourseid, teachers)
+		key := util.HashCourseId(sCourseId, teachers)
 		cred, _ := strconv.ParseFloat(row[4], 32)
 		float = float32(cred)
-		onecourse := &model.UsingCourseModel{
+		oneCourse := &model.UsingCourseModel{
 			Hash:     key,
 			Academy:  row[0],
 			Name:     name,
@@ -262,22 +250,23 @@ func main() {
 			Weeks3:   preAnalyzeWeek(row[14]),
 			Region:   judge2(delNull(row[11])),
 		}
-		db.Create(onecourse)
+		db.Create(oneCourse)
+
+		fmt.Printf("正在导入第  %d  条记录...\r", oneCourse.Id)
 	}
 
 	for i := 6; i <= 9; i++ {
-		stri := strconv.Itoa(i)
-		rows = f.GetRows("201" + stri + "级")
+		rows = f.GetRows("201" + strconv.Itoa(i) + "级")
 		for n, row := range rows {
 			if n == 0 {
 				continue
 			}
-			scourseid = row[2]
+			sCourseId = row[2]
 			teachers := util.GetTeachersSqStrBySplitting(row[8])
-			key := util.HashCourseId(scourseid, teachers)
+			key := util.HashCourseId(sCourseId, teachers)
 			cred, _ := strconv.ParseFloat(row[4], 32)
 			float = float32(cred)
-			onecourse := &model.UsingCourseModel{
+			oneCourse := &model.UsingCourseModel{
 				Hash:     key,
 				Academy:  row[0],
 				Name:     row[1],
@@ -297,8 +286,9 @@ func main() {
 				Weeks3:   preAnalyzeWeek(row[14]),
 				Region:   judge2(delNull(row[11])),
 			}
-			db.Create(onecourse)
+			db.Create(oneCourse)
+
+			fmt.Printf("第  %d  条记录\r", oneCourse.Id)
 		}
 	}
-	defer db.Close()
 }*/
