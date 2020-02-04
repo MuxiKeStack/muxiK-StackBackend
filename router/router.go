@@ -79,11 +79,16 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 	courses := g.Group("/api/v1/course/using")
 	courses.Use(middleware.AuthMiddleware())
 	{
-		courses.GET("/info/:hash/", course.GetCourseInfo)
 		courses.PUT("/:id/", course.AddCourse)
 		courses.POST("/:id/", course.ModifyCourse)
 		courses.DELETE("/:id/", course.DeleteCourse)
 		courses.PUT("/:id/favorite/", course.FavoriteCourse)
+	}
+
+	courses2 := g.Group("/api/v1/course/using/info")
+	courses2.Use(middleware.VisitorAuthMiddleware())
+	{
+		courses2.GET("/:hash/", course.GetCourseInfo)
 	}
 
 	// Router for course evaluations
