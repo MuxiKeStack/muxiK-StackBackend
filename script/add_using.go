@@ -1,5 +1,4 @@
 package script
-
 /*
 package main
 
@@ -75,7 +74,7 @@ func judge3(c string) string {
 //增加一个课程
 // func AddCourse() {
 // 	var float float32
-// 	f, err := excelize.OpenFile("./1.xlsx")
+// 	f, err := excelize.OpenFile("./2.xlsx")
 // 	if err != nil {
 // 		fmt.Println(err)
 // 		return
@@ -208,13 +207,13 @@ func analyzeClass(classid string) string {
 }
 
 func main() {
-	db, err := gorm.Open("mysql", "***:***@(***.**.**.**:****)/muxikstack?charset=utf8&parseTime=True")
+	db, err := gorm.Open("mysql", "*:*@(*.*.*.*:*)/muxikstack?charset=utf8&parseTime=True")
+	//db, err := gorm.Open("mysql", "*:*@(*.*.*.*:*)/muxikstack?charset=utf8&parseTime=True")
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 	fmt.Println("connection succeed")
-
 
 	db.SingularTable(true)
 	//db.CreateTable(User123{})
@@ -244,6 +243,7 @@ func main() {
 		float = float32(cred)
 		onecourse := &model.UsingCourseModel{
 			Hash:     key,
+			Academy:  row[0],
 			Name:     name,
 			CourseId: row[2],
 			ClassId:  row[3],
@@ -278,6 +278,7 @@ func main() {
 			float = float32(cred)
 			onecourse := &model.UsingCourseModel{
 				Hash:     key,
+				Academy:  row[0],
 				Name:     row[1],
 				CourseId: row[2],
 				ClassId:  row[3],
@@ -299,5 +300,4 @@ func main() {
 		}
 	}
 	defer db.Close()
-}
-*/
+}*/
