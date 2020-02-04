@@ -4,7 +4,6 @@ name: muxikstack              # API Server的名字
 url: http://127.0.0.1:4096   # pingServer函数请求的API服务器的ip:port
 max_ping_count: 10           # pingServer函数try的次数
 jwt_secret: muxikestackmuxistudiomuxiniubi
-data_service_url: 127.0.0.1:50051
 grade_crawl: true      # 获取个人课程时成绩是否爬取
 log:
   writers: file,stdout # 部署时输出到 stdout
@@ -17,8 +16,8 @@ log:
   log_backup_count: 7
 db:  # DB 配置 部署时环境变量覆盖
   name: muxikstack
-  addr: 0.0.0.0:3306
-  username: root
+  addr: 127.0.0.1:3306
+  username: muxi
   password: muxi
 oss:
   access_key:

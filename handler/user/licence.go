@@ -49,6 +49,7 @@ func JoinPro(c *gin.Context) {
 
 	handler.SendResponse(c, nil, nil)
 
+	// 成绩统计样本服务
 	// 成绩导入统计样本
 	if err := service.GradeImportService(userId, l.Sid, l.Password); err != nil {
 		log.Error("Grade import failed", err)

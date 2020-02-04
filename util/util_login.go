@@ -101,7 +101,7 @@ func MakeAccountPreflightRequest() (*AccountReqeustParams, error) {
 	}
 	_eventId = _eventIdArr[1]
 
-	log.Println("Get params successfully", lt, execution, _eventId)
+	//log.Println("Get params successfully", lt, execution, _eventId)
 
 	params.lt = lt
 	params.execution = execution

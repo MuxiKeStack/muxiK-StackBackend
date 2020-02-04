@@ -11,10 +11,10 @@ import (
 )
 
 type ProducedCourseItem struct {
-	CourseId string `json:"course_id"`
-	Name     string `json:"name"`
-	Teacher  string `json:"teacher"`
-	HasEvaluated bool `json:"has_evaluated"`
+	CourseId     string `json:"course_id"`
+	Name         string `json:"name"`
+	Teacher      string `json:"teacher"`
+	HasEvaluated bool   `json:"has_evaluated"`
 }
 
 // Get one's all courses from XK.
