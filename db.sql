@@ -1,6 +1,6 @@
 -- DROP DATABASE IF EXISTS `muxikstack`;
 
-CREATE DATABASE `muxikstack` IF NOT EXISTS;
+CREATE DATABASE IF NOT EXISTS `muxikstack`;
 
 USE `muxikstack`;
 
