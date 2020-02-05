@@ -41,7 +41,7 @@ func init() {
 }
 
 func fill(courseId string) string {
-	for i := len(courseId); i <= 8; i++ {
+	for i := len(courseId); i < 8; i++ {
 		courseId = courseId + "0"
 	}
 	return courseId
