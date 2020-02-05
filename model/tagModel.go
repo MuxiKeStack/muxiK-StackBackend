@@ -1,8 +1,8 @@
 package model
 
 type TagModel struct {
-	Id   uint32 `gorm:"column:id"`
-	Name string `gorm:"column:name"`
+	Id   uint32 `gorm:"column:id" json:"id"`
+	Name string `gorm:"column:name" json:"name"`
 }
 
 type CourseTagModel struct {
