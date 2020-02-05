@@ -287,7 +287,8 @@ func main() {
 			}
 			db.Create(oneCourse)
 
-			fmt.Printf("第  %d  条记录\r", oneCourse.Id)
+			fmt.Printf("正在导入第  %d  条记录...\r", oneCourse.Id)
 		}
 	}
+	fmt.Println("Import has completed")
 }*/
