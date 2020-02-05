@@ -222,8 +222,6 @@ CREATE TABLE `grade` (
 
   PRIMARY KEY (`id`),
   KEY `idx_user_hash` (`user_id`, `course_hash_id`)
---   KEY `idx_user_id` (`user_id`),
---   KEY `idx_hash` (`course_hash_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 -- CREATE TABLE `self_course` (
@@ -245,7 +243,7 @@ INSERT INTO `tags` (name) VALUES ("课程简单易学"), ("课程干货满满"),
 
 
 -- mock data
-
+/*
 INSERT INTO `history_course` (hash, name, teacher, type) VALUES ('112d34testsvggase', '高等数学A', '宋冰玉', 0);
 INSERT INTO `history_course` (hash, name, teacher, type) VALUES ('213f89eyguiguhy', '数据库原理', '喻莹', 0);
 INSERT INTO `history_course` (hash, name, teacher, type) VALUES ('2e154de56gyubdq', '高级语言程序设计', '沈显军', 1);
@@ -391,3 +389,4 @@ VALUES ('5', '45677654', '10');
 
 INSERT INTO `course_tag` (`tag_id`, `course_id`, `num`)
 VALUES ('6', '45677654', '6');
+*/
