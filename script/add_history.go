@@ -15,7 +15,6 @@ import (
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/util"
 
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/spf13/viper"
@@ -131,9 +130,7 @@ func main() {
 		for i2 := 0; i2 < 1200; i2++ {
 			count++
 			fmt.Printf("正在载入第  %d  个课程...\r", count)
-			//fmt.Print(i2, " ")
 			courseId := fill(b.Data.List[i2].CourseId)
-			//fmt.Println(courseId)
 			teacher := b.Data.List[i2].Teacher
 			name := b.Data.List[i2].Name
 			key := util.HashCourseId(courseId, teacher)
@@ -152,4 +149,5 @@ func main() {
 		fmt.Println((i1+1)*1200, 33600-(i1+1)*1200)
 		time.Sleep(time.Duration(2) * time.Second)
 	}
+	fmt.Println("Import has completed")
 }*/
