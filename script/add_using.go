@@ -249,7 +249,10 @@ func main() {
 			Weeks3:   preAnalyzeWeek(row[14]),
 			Region:   judge2(delNull(row[11])),
 		}
-		db.Create(oneCourse)
+		d := db.Where("hash = ? AND class_id = ?", key, row[3]).First(&onecourse)
+		if d.RecordNotFound() {
+			db.Create(onecourse)
+		}
 
 		fmt.Printf("正在导入第  %d  条记录...\r", oneCourse.Id)
 	}
@@ -285,7 +288,10 @@ func main() {
 				Weeks3:   preAnalyzeWeek(row[14]),
 				Region:   judge2(delNull(row[11])),
 			}
-			db.Create(oneCourse)
+			d := db.Where("hash = ? AND class_id = ?", key, row[3]).First(&onecourse)
+			if d.RecordNotFound() {
+				db.Create(onecourse)
+			}
 
 			fmt.Printf("正在导入第  %d  条记录...\r", oneCourse.Id)
 		}
