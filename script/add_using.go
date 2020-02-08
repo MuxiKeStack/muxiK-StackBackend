@@ -252,6 +252,8 @@ func main() {
 		d := db.Where("hash = ? AND class_id = ?", key, row[3]).First(&onecourse)
 		if d.RecordNotFound() {
 			db.Create(onecourse)
+		} else {
+			db.Save(onecourse)
 		}
 
 		fmt.Printf("正在导入第  %d  条记录...\r", oneCourse.Id)
@@ -291,6 +293,8 @@ func main() {
 			d := db.Where("hash = ? AND class_id = ?", key, row[3]).First(&onecourse)
 			if d.RecordNotFound() {
 				db.Create(onecourse)
+			} else {
+				db.Save(onecourse)
 			}
 
 			fmt.Printf("正在导入第  %d  条记录...\r", oneCourse.Id)
