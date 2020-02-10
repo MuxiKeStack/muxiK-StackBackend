@@ -57,6 +57,25 @@ func GetTagsNumber(tagId uint32, courseId string) (uint32, error) {
 	return data.Num, d.Error
 }
 
+// 获取课程的前二的tag的名字
+func GetTwoMostTagNamesOfCourseByHashId(courseID string) ([]string, error) {
+	var names []struct{ Name string }
+	d := DB.Self.Table("course_tag").
+		Select("tags.name").
+		Joins("JOIN tags ON tags.id = course_tag.tag_id").
+		Where("course_tag.course_id = ?", courseID).
+		Order("num desc").Limit(2).Scan(&names)
+	res := make([]string, len(names))
+	for i, name := range names {
+		res[i] = name.Name
+	}
+
+	if d.RecordNotFound() {
+		return res, nil
+	}
+	return res, d.Error
+}
+
 // Get two most tags' ids of a course by its hash id.
 func GetTwoMostTagIdsOfCourseByHashId(courseId string) ([]int, error) {
 	var tags []struct{ Id int }
