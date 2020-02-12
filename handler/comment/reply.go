@@ -59,10 +59,10 @@ func Reply(c *gin.Context) {
 	}
 
 	// 一级评论不匿名但没有传sid
-	if !parentComment.IsAnonymous && sid == "0" {
-		handler.SendBadRequest(c, errno.ErrGetQuery, nil, "Target-user's sid should not be 0!")
-		return
-	}
+	// if !parentComment.IsAnonymous && sid == "0" {
+	// 	handler.SendBadRequest(c, errno.ErrGetQuery, nil, "Target-user's sid should not be 0!")
+	// 	return
+	// }
 
 	// Check whether the targetUserId is right
 	//if !(parentComment.IsAnonymous && targetUserId == 0 || !parentComment.IsAnonymous && parentComment.UserId == targetUserId) {
@@ -112,7 +112,7 @@ func Reply(c *gin.Context) {
 	handler.SendResponse(c, nil, commentInfo)
 
 	// New message reminder
-	err = service.NewMessageForSubComment(userId, sid, comment, parentComment)
+	err = service.NewMessageForSubComment(userId, comment, parentComment)
 	if err != nil {
 		log.Error("NewMessageForSubComment failed", err)
 	}

@@ -75,6 +75,8 @@ func MessageList(page, limit, uid uint32) (*[]model.MessageSub, error) {
 // 	GetEvaluation() *model.CourseEvaluationModel
 // }
 
+// 作出一级评论时，建立新的消息提醒
+// 传的sid应为本用户的sid
 func NewMessageForParentComment(userId uint32, comment *model.ParentCommentModel, evaluation *model.CourseEvaluationModel) error {
 	teacher, err := model.GetTeacherByCourseId(evaluation.CourseId)
 	if err != nil {
@@ -94,7 +96,7 @@ func NewMessageForParentComment(userId uint32, comment *model.ParentCommentModel
 		Teacher:         teacher,
 		EvaluationId:    evaluation.Id,
 		Content:         evaluation.Content,
-		Sid:             GetSidById(evaluation.UserId),
+		Sid:             GetSidById(userId),
 		ParentCommentId: comment.Id,
 	}
 
@@ -106,7 +108,9 @@ func NewMessageForParentComment(userId uint32, comment *model.ParentCommentModel
 	return nil
 }
 
-func NewMessageForSubComment(userId uint32, sid string, comment *model.SubCommentModel, parentComment *model.ParentCommentModel) error {
+// 作出二级评论（回复）时，建立新的消息提醒
+// 传的sid应为本用户的sid
+func NewMessageForSubComment(userId uint32, comment *model.SubCommentModel, parentComment *model.ParentCommentModel) error {
 	evaluation := &model.CourseEvaluationModel{Id: parentComment.EvaluationId}
 	if err := evaluation.GetById(); err != nil {
 		fmt.Println(parentComment.EvaluationId)
@@ -132,8 +136,8 @@ func NewMessageForSubComment(userId uint32, sid string, comment *model.SubCommen
 		Teacher:         teacher,
 		EvaluationId:    parentComment.EvaluationId,
 		Content:         parentComment.Content,
-		Sid:             sid,
-		ParentCommentId: comment.Id,
+		Sid:             GetSidById(userId),
+		ParentCommentId: parentComment.Id,
 	}
 
 	err = model.CreateMessage(message)
