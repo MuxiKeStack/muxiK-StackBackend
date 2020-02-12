@@ -28,7 +28,7 @@ type Message struct {
 	ParentCommentId string `gorm:"column:parent_comment_id"`
 }
 
-//
+// MessagePub 消息提醒的发送者。
 type MessagePub struct {
 	PubUserId uint32 `json:"pub_user_id"`
 	SubUserId uint32 `json:"sub_user_id"`
@@ -55,7 +55,7 @@ type MessagePub struct {
 	ParentCommentId string `json:"parent_comment_id"`
 }
 
-//
+// MessageSub 消息提醒的接受model
 type MessageSub struct {
 	UserInfo UserInfoRequest `json:"user_info"`
 	//kind 区分 点赞->0 评论->1 举报->2 系统提醒->3
