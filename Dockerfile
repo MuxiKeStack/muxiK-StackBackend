@@ -1,5 +1,6 @@
 FROM golang:1.12.13 
 ENV GO111MODULE "on"
+ENV GOPROXY "https://goproxy.cn"
 WORKDIR $GOPATH/src/github.com/MuxiKeStack/muxiK-StackBackend
 COPY . $GOPATH/src/github.com/MuxiKeStack/muxiK-StackBackend
 RUN make
