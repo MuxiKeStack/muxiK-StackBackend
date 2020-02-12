@@ -257,6 +257,7 @@ func GetSubCommentInfoById(id string, userId uint32, visitor bool) (*model.Comme
 		LikeNum:        model.GetCommentLikeSum(comment.Id),
 		IsLike:         isLike,
 		IsValid:        true,
+		IsAnonymous:    comment.IsAnonymous,
 		Time:           comment.Time.Unix(),
 		UserInfo:       commentUser,
 		TargetUserInfo: targetUser,
