@@ -67,13 +67,13 @@ func MessageList(page, limit, uid uint32) (*[]model.MessageSub, error) {
 //所以对于消息提醒暂时分为三种，所有的信息返回也就是这三种。
 //所以我的想法是使用interface将其封装，而不应该是这样多个函数。
 //TODO FIX TO interface
-type MessageForComment interface {
-	GetEvaluation() *model.CourseEvaluationModel
-	// GetComment() *model.CommentModel
-}
-type MessageForLiking interface {
-	GetEvaluation() *model.CourseEvaluationModel
-}
+// type MessageForComment interface {
+// 	GetEvaluation() *model.CourseEvaluationModel
+// 	// GetComment() *model.CommentModel
+// }
+// type MessageForLiking interface {
+// 	GetEvaluation() *model.CourseEvaluationModel
+// }
 
 func NewMessageForParentComment(userId uint32, comment *model.ParentCommentModel, evaluation *model.CourseEvaluationModel) error {
 	teacher, err := model.GetTeacherByCourseId(evaluation.CourseId)
@@ -123,7 +123,7 @@ func NewMessageForSubComment(userId uint32, sid string, comment *model.SubCommen
 	message := &model.MessagePub{
 		PubUserId:       userId,
 		SubUserId:       parentComment.UserId,
-		Kind:            0,
+		Kind:            1,
 		IsRead:          false,
 		Reply:           comment.Content,
 		Time:            strconv.FormatInt(comment.Time.Unix(), 10),
@@ -249,7 +249,7 @@ func NewMessageForSubCommentLiking(userId uint32, comment *model.SubCommentModel
 	message := &model.MessagePub{
 		PubUserId:       userId,
 		SubUserId:       comment.UserId,
-		Kind:            0,
+		Kind:            0, //点赞
 		IsRead:          false,
 		Reply:           "",
 		Time:            strconv.FormatInt(time.Now().Unix(), 10),
