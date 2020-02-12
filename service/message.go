@@ -31,6 +31,7 @@ import (
 举报分为
 	对评课的举报
 */
+// 系统用户
 var SystemUserId uint32 = 1
 
 func MessageList(page, limit, uid uint32) (*[]model.MessageSub, error) {
@@ -53,7 +54,7 @@ func MessageList(page, limit, uid uint32) (*[]model.MessageSub, error) {
 			Sid:             message.Sid,
 			ParentCommentId: message.ParentCommentId,
 		}
-		userInfo, err := GetUserInfoRById(uid)
+		userInfo, err := GetUserInfoRById(message.PubUserId)
 		if err != nil {
 			return nil, err
 		}

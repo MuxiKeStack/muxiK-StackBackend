@@ -6,7 +6,6 @@ clean:
 gotool:
 	gofmt -w .
 	go mod tidy
-	go mod verify
 	go vet .
 test:
 	@go test -v -count=1  ./...
