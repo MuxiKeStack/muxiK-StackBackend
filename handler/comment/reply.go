@@ -6,6 +6,7 @@ import (
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
 	"github.com/MuxiKeStack/muxiK-StackBackend/service"
 	"github.com/MuxiKeStack/muxiK-StackBackend/util"
+
 	"github.com/gin-gonic/gin"
 	"github.com/lexkong/log"
 	uuid "github.com/satori/go.uuid"
@@ -35,7 +36,7 @@ func Reply(c *gin.Context) {
 	// Get the user's sid whom is reply to.
 	sid, ok := c.GetQuery("sid")
 	if !ok {
-		handler.SendBadRequest(c, errno.ErrGetQuery, nil, "Target user's sid is expected.")
+		handler.SendBadRequest(c, errno.ErrGetQuery, nil, "Target-user's sid is expected.")
 		return
 	}
 
@@ -45,7 +46,7 @@ func Reply(c *gin.Context) {
 	if sid != "0" {
 		targetUserId, err = service.GetIdBySid(sid)
 		if err != nil {
-			handler.SendBadRequest(c, errno.ErrGetQuery, nil, "Target user sid is error.")
+			handler.SendBadRequest(c, errno.ErrGetQuery, nil, "Target-user's sid is error.")
 			return
 		}
 	}
@@ -57,6 +58,12 @@ func Reply(c *gin.Context) {
 		return
 	}
 
+	// 一级评论不匿名但没有传sid
+	if !parentComment.IsAnonymous && sid == "0" {
+		handler.SendBadRequest(c, errno.ErrGetQuery, nil, "Target-user's sid should not be 0!")
+		return
+	}
+
 	// Check whether the targetUserId is right
 	//if !(parentComment.IsAnonymous && targetUserId == 0 || !parentComment.IsAnonymous && parentComment.UserId == targetUserId) {
 	//	handler.SendBadRequest(c, errno.ErrGetQuery, nil, "Sid is error, doesn't match the parentComment's")
@@ -65,7 +72,7 @@ func Reply(c *gin.Context) {
 
 	// Words are limited to 200
 	if len(data.Content) > 200 {
-		handler.SendBadRequest(c, errno.ErrWordLimitation, nil, "Comment's content is limited to 400.")
+		handler.SendBadRequest(c, errno.ErrWordLimitation, nil, "Comment's content is limited to 200.")
 		return
 	}
 

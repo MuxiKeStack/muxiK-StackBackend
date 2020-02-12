@@ -1,8 +1,9 @@
-package service //改需求了。。。（待优化）
+package service
 
 import (
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/lexkong/log"
+	"sync"
 )
 
 // 现用课堂信息
@@ -32,34 +33,16 @@ type CourseInfoForHistory struct {
 	Tags       []string `json:"tags"`       //前二的tag
 }
 
+// 获取点名方式
 func GetAttendanceTypeMax(hash string) string {
-	var fin string
-	var max uint32
-	result := make(map[string]uint32)
-	for i := 1; i < 4; i++ {
-		name := GetAttendanceCheckTypeByCode(uint8(i))
-		result[name] = model.GetAttendanceTypeNumChosenByCode(hash, i)
-		if result[name] >= max {
-			max = result[name]
-			fin = name
-		}
-	}
-	return fin
+	i := model.GetAttendanceType(hash)
+	return GetAttendanceCheckTypeByCode(i)
 }
 
+// 获取期末考核方式
 func GetExamCheckTypeMax(hash string) string {
-	var fin string
-	var max uint32
-	result := make(map[string]uint32)
-	for i := 1; i < 5; i++ {
-		name := GetExamCheckTypeByCode(uint8(i))
-		result[name] = model.GetExamCheckTypeNumChosenByCode(hash, i)
-		if result[name] >= max {
-			max = result[name]
-			fin = name
-		}
-	}
-	return fin
+	i := model.GetExamCheckType(hash)
+	return GetExamCheckTypeByCode(i)
 }
 
 func kwReplace(kw string) string {
@@ -69,143 +52,168 @@ func kwReplace(kw string) string {
 	return kw
 }
 
-func GetTag(CourseId string) ([]string, error) {
-	tagIds, err := model.GetTwoMostTagIdsOfCourseByHashId(CourseId)
-	if err != nil {
-		log.Error("GetTwoMostTagsOfCourseByHashId function error", err)
-		return nil, err
-	}
-
-	var result []string
-	for _, id := range tagIds {
-		tag, err := model.GetTagNameById(id)
-		if err != nil {
-			log.Error("GetTagNameById function error", err)
-			return nil, err
-		}
-		result = append(result, tag)
-	}
-	return result, nil
-}
-
-//Using
+// Using
 func SearchCourses(keyword string, page, limit uint64, t, a, w, p string) ([]CourseInfoForUsing, error) {
 	keyword = kwReplace(keyword)
 	courseRows, _ := model.AgainstAndMatchCourses(keyword, page, limit, t, a, w, p)
+
 	courses := make([]CourseInfoForUsing, len(courseRows))
+	locker := sync.Mutex{}
+	wg := sync.WaitGroup{}
+
 	for i, row := range courseRows {
-		class := &model.HistoryCourseModel{Hash: row.Hash}
-		if err := class.GetHistoryByHash(); err != nil {
-			log.Info("course.GetHistoryByHash() error.")
-		}
+		wg.Add(1)
+		go func(index int, row model.UsingCourseSearchModel) {
+			result, err := model.GetTwoMostTagNamesOfCourseByHashId(row.Hash)
+			if err != nil {
+				log.Error("Get Tag Name error", err)
+			}
+			attendance := GetAttendanceTypeMax(row.Hash)
+			exam := GetExamCheckTypeMax(row.Hash)
 
-		result, err := GetTag(row.Hash)
-		if err != nil {
-			log.Error("GetTag error", err)
-		}
-
-		courses[i] = CourseInfoForUsing{
-			Id:         row.Id,
-			Hash:       row.Hash,
-			Name:       row.Name,
-			CourseId:   row.CourseId,
-			Teacher:    row.Teacher,
-			Rate:       class.Rate,
-			StarsNum:   class.StarsNum,
-			Attendance: GetAttendanceTypeMax(row.Hash),
-			Exam:       GetExamCheckTypeMax(row.Hash),
-			Tags:       result,
-		}
+			locker.Lock()
+			defer locker.Unlock()
+			courses[index] = CourseInfoForUsing{
+				Id:         row.Id,
+				Hash:       row.Hash,
+				Name:       row.Name,
+				CourseId:   row.CourseId,
+				Teacher:    row.Teacher,
+				Rate:       row.Rate,
+				StarsNum:   row.StarsNum,
+				Attendance: attendance,
+				Exam:       exam,
+				Tags:       result,
+			}
+			wg.Done()
+		}(i, row)
 	}
+	wg.Wait()
+
 	return courses, nil
 }
 
-//History
+// History
 func SearchHistoryCourses(keyword string, page, limit uint64, t string) ([]CourseInfoForHistory, error) {
 	keyword = kwReplace(keyword)
 	courseRows, _ := model.AgainstAndMatchHistoryCourses(keyword, page, limit, t)
-	courses := make([]CourseInfoForHistory, len(courseRows))
-	for i, row := range courseRows {
-		result, err := GetTag(row.Hash)
-		if err != nil {
-			log.Error("GetTag error", err)
-		}
 
-		courses[i] = CourseInfoForHistory{
-			Id:         row.Id,
-			Hash:       row.Hash,
-			Name:       row.Name,
-			Teacher:    row.Teacher,
-			Rate:       row.Rate,
-			StarsNum:   row.StarsNum,
-			Attendance: GetAttendanceTypeMax(row.Hash),
-			Exam:       GetExamCheckTypeMax(row.Hash),
-			Tags:       result,
-		}
+	courses := make([]CourseInfoForHistory, len(courseRows))
+	locker := sync.Mutex{}
+	wg := sync.WaitGroup{}
+
+	for i, row := range courseRows {
+		wg.Add(1)
+		go func(index int, row model.HistoryCourseModel) {
+			result, err := model.GetTwoMostTagNamesOfCourseByHashId(row.Hash)
+			attendance := GetAttendanceTypeMax(row.Hash)
+			exam := GetExamCheckTypeMax(row.Hash)
+			if err != nil {
+				log.Error("Get Tag Name error", err)
+			}
+
+			locker.Lock()
+			defer locker.Unlock()
+			courses[index] = CourseInfoForHistory{
+				Id:         row.Id,
+				Hash:       row.Hash,
+				Name:       row.Name,
+				Teacher:    row.Teacher,
+				Rate:       row.Rate,
+				StarsNum:   row.StarsNum,
+				Attendance: attendance,
+				Exam:       exam,
+				Tags:       result,
+			}
+			wg.Done()
+		}(i, row)
 	}
+	wg.Wait()
+
 	return courses, nil
 }
 
-//Using
+// Using
 func GetAllCourses(page, limit uint64, t, a, w, p string) ([]CourseInfoForUsing, error) {
-	log.Info("sjduvnusbvfuawcbiawciuascvbuyasbcuiawbfvedsyv")
 	courseRows, err := model.AllCourses(page, limit, t, a, w, p)
 	if err != nil {
 		return nil, err
 	}
+
 	courses := make([]CourseInfoForUsing, len(courseRows))
+	locker := sync.Mutex{}
+	wg := sync.WaitGroup{}
+
 	for i, row := range courseRows {
-		class := &model.HistoryCourseModel{Hash: row.Hash}
-		if err := class.GetHistoryByHash(); err != nil {
-			log.Info("course.GetHistoryByHash() error.")
-		}
+		wg.Add(1)
+		go func(index int, row model.UsingCourseSearchModel) {
+			result, err := model.GetTwoMostTagNamesOfCourseByHashId(row.Hash)
+			if err != nil {
+				log.Error("Get Tag Name error", err)
+			}
+			attendance := GetAttendanceTypeMax(row.Hash)
+			exam := GetExamCheckTypeMax(row.Hash)
 
-		result, err := GetTag(row.Hash)
-		if err != nil {
-			log.Error("GetTag error", err)
-		}
-
-		courses[i] = CourseInfoForUsing{
-			Id:         row.Id,
-			Hash:       row.Hash,
-			Name:       row.Name,
-			Teacher:    row.Teacher,
-			CourseId:   row.CourseId,
-			Rate:       class.Rate,
-			StarsNum:   class.StarsNum,
-			Attendance: GetAttendanceTypeMax(row.Hash),
-			Exam:       GetExamCheckTypeMax(row.Hash),
-			Tags:       result,
-		}
+			locker.Lock()
+			defer locker.Unlock()
+			courses[index] = CourseInfoForUsing{
+				Id:         row.Id,
+				Hash:       row.Hash,
+				Name:       row.Name,
+				Teacher:    row.Teacher,
+				CourseId:   row.CourseId,
+				Rate:       row.Rate,
+				StarsNum:   row.StarsNum,
+				Attendance: attendance,
+				Exam:       exam,
+				Tags:       result,
+			}
+			wg.Done()
+		}(i, row)
 	}
+	wg.Wait()
+
 	return courses, nil
 }
 
-//History
+// History
 func GetAllHistoryCourses(page, limit uint64, t string) ([]CourseInfoForHistory, error) {
-
 	courseRows, err := model.AllHistoryCourses(page, limit, t)
 	if err != nil {
 		return nil, err
 	}
-	courses := make([]CourseInfoForHistory, len(courseRows))
-	for i, row := range courseRows {
-		result, err := GetTag(row.Hash)
-		if err != nil {
-			log.Error("GetTag error", err)
-		}
 
-		courses[i] = CourseInfoForHistory{
-			Id:         row.Id,
-			Hash:       row.Hash,
-			Name:       row.Name,
-			Teacher:    row.Teacher,
-			Rate:       row.Rate,
-			StarsNum:   row.StarsNum,
-			Attendance: GetAttendanceTypeMax(row.Hash),
-			Exam:       GetExamCheckTypeMax(row.Hash),
-			Tags:       result,
-		}
+	courses := make([]CourseInfoForHistory, len(courseRows))
+	locker := sync.Mutex{}
+	wg := sync.WaitGroup{}
+
+	for i, row := range courseRows {
+		wg.Add(1)
+		go func(index int, row model.HistoryCourseModel) {
+			result, err := model.GetTwoMostTagNamesOfCourseByHashId(row.Hash)
+			if err != nil {
+				log.Error("Get Tag Name error", err)
+			}
+			attendance := GetAttendanceTypeMax(row.Hash)
+			exam := GetExamCheckTypeMax(row.Hash)
+
+			locker.Lock()
+			defer locker.Unlock()
+			courses[index] = CourseInfoForHistory{
+				Id:         row.Id,
+				Hash:       row.Hash,
+				Name:       row.Name,
+				Teacher:    row.Teacher,
+				Rate:       row.Rate,
+				StarsNum:   row.StarsNum,
+				Attendance: attendance,
+				Exam:       exam,
+				Tags:       result,
+			}
+			wg.Done()
+		}(i, row)
 	}
+	wg.Wait()
+
 	return courses, nil
 }

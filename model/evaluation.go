@@ -165,10 +165,40 @@ func HasEvaluated(userId uint32, courseId string) bool {
 	return !d.RecordNotFound()
 }
 
+// 获取一个课程中评价最多的点名方式
+func GetAttendanceType(courseID string) uint8 {
+	var res []struct{ AttendanceCheckType uint8 }
+	d := DB.Self.Debug().Table("course_evaluation").
+		Select("attendance_check_type, count( * ) AS count").
+		Where("course_id = ?", courseID).
+		Group("attendance_check_type").
+		Order("count DESC").
+		Limit(1).Scan(&res)
+	if d.RecordNotFound() || len(res) == 0 {
+		return 0
+	}
+	return res[0].AttendanceCheckType
+}
+
 // Get attendance check type amount of a course by identifier.
 func GetAttendanceTypeNumChosenByCode(courseId string, code int) (count uint32) {
 	DB.Self.Table("course_evaluation").Where("course_id = ? AND attendance_check_type = ?", courseId, code).Count(&count)
 	return
+}
+
+// 获取一个课程中评价最多的点名方式
+func GetExamCheckType(courseID string) uint8 {
+	var res []struct{ ExamCheckType uint8 }
+	d := DB.Self.Table("course_evaluation").
+		Select("exam_check_type, count( * ) AS count").
+		Where("course_id = ?", courseID).
+		Group("exam_check_type").
+		Order("count DESC").
+		Limit(1).Scan(&res)
+	if d.RecordNotFound() || len(res) == 0 {
+		return 0
+	}
+	return res[0].ExamCheckType
 }
 
 // Get exam check type amount of a course by identifier.

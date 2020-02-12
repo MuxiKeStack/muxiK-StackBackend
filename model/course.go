@@ -5,9 +5,9 @@ import (
 )
 
 const (
-	typeTemp       = "AND RIGHT(LEFT(`course_id`, 4), 1) = %s "
-	typeCourseTemp = "AND `type` = %s "
-	academyTemp    = "AND `academy` = %s "
+	typeTemp       = "AND RIGHT(LEFT(using_course.course_id, 4), 1) = %s "
+	typeCourseTemp = "AND using_course.type = %s "
+	academyTemp    = "AND using_course.academy = '%s' "
 	weekdayTemp    = "AND (RIGHT(`time1`, 1) = %s OR RIGHT(`time2`, 1) = %s OR RIGHT(`time3`, 1) = %s) "
 	nPlaceTemp     = "AND LEFT(`place1`, 1) = 'N' AND (`place2` = '' OR LEFT(`place2`, 1) = 'N') AND (`place3` = '' OR LEFT(`place3`, 1) = 'N') "
 	bPlaceTemp     = "AND LEFT(`place1`, 1) != 'N' AND (`place2` = '' OR LEFT(`place2`, 1) != 'N') AND (`place3` = '' OR LEFT(`place3`, 1) != 'N') "
@@ -126,9 +126,10 @@ func (class *UsingCourseModel) Unfavorite(id uint32) error {
 // Search course by name, courseId or teacher
 // Use fulltext search, against and match
 // 2020-01-15: Add New Filter: type, academy, weekday, place
-func AgainstAndMatchCourses(kw string, page, limit uint64, t, a, w, p string) ([]UsingCourseModel, error) {
-	courses := &[]UsingCourseModel{}
-	where := "MATCH (`name`, `course_id`, `teacher`) AGAINST ('" + kw + "') "
+// 2020-02-10: Add Join History Course SQL: join hash, get stars_num and rate
+func AgainstAndMatchCourses(kw string, page, limit uint64, t, a, w, p string) ([]UsingCourseSearchModel, error) {
+	courses := &[]UsingCourseSearchModel{}
+	where := "MATCH (using_course.name, using_course.course_id, using_course.teacher) AGAINST ('" + kw + "') "
 	if t != "" {
 		where += fmt.Sprintf(typeTemp, t)
 	}
@@ -144,7 +145,14 @@ func AgainstAndMatchCourses(kw string, page, limit uint64, t, a, w, p string) ([
 	if p == "南湖校区" {
 		where += nPlaceTemp
 	}
-	DB.Self.Debug().Table("using_course").Where(where).Limit(limit).Offset((page - 1) * limit).Find(courses)
+
+	DB.Self.Debug().Table("using_course").
+		Select("using_course.*, history_course.stars_num, history_course.rate").
+		Where(where).
+		Joins("LEFT JOIN history_course ON using_course.hash = history_course.hash").
+		Limit(limit).Offset((page - 1) * limit).
+		Find(courses)
+
 	return *courses, nil
 }
 
@@ -162,8 +170,8 @@ func AgainstAndMatchHistoryCourses(kw string, page, limit uint64, t string) ([]H
 }
 
 // Get all courses
-func AllCourses(page, limit uint64, t, a, w, p string) ([]UsingCourseModel, error) {
-	courses := &[]UsingCourseModel{}
+func AllCourses(page, limit uint64, t, a, w, p string) ([]UsingCourseSearchModel, error) {
+	courses := &[]UsingCourseSearchModel{}
 	where := ""
 	if t != "" {
 		where += fmt.Sprintf(typeTemp, t)
@@ -181,9 +189,14 @@ func AllCourses(page, limit uint64, t, a, w, p string) ([]UsingCourseModel, erro
 		where += nPlaceTemp
 	}
 	if where == "" {
-		DB.Self.Table("using_course").Limit(limit).Offset((page - 1) * limit).Find(&courses)
+		DB.Self.Table("using_course").
+			Joins("LEFT JOIN history_course ON using_course.hash = history_course.hash").
+			Limit(limit).Offset((page - 1) * limit).Find(&courses)
 	} else {
-		DB.Self.Table("using_course").Where(where).Limit(limit).Offset((page - 1) * limit).Find(&courses)
+		DB.Self.Table("using_course").
+			Joins("LEFT JOIN history_course ON using_course.hash = history_course.hash").
+			Where(where).
+			Limit(limit).Offset((page - 1) * limit).Find(&courses)
 	}
 	return *courses, nil
 }

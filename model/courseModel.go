@@ -41,6 +41,13 @@ type UsingCourseModel struct {
 	Region   uint8   `gorm:"column:region"`           //上课地区，暂定：东区，西区，其他。加索引（筛选条件）
 }
 
+// 添加了搜索时需要返回的字段
+type UsingCourseSearchModel struct {
+	UsingCourseModel
+	Rate     float32 `gorm:"column:rate"`      //课程评价星级
+	StarsNum uint32  `gorm:"column:stars_num"` //参与评分人数
+}
+
 // time格式：1-2#1 ==> 周一的第一到第二节，#后面的数字代表周几(1-7)
 // week格式：2-17#0 ==> 2-17周，全周；0为全周，1为单周，2为双周
 

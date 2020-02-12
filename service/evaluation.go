@@ -193,6 +193,8 @@ func GetHistoryEvaluationsByUserId(userId uint32, lastId, limit int32) (*[]model
 	return GetEvaluationInfosByOriginModels(evaluations, userId, false)
 }
 
+// 序号不可以为0, 0代表没有人评论过的情况
+
 // Get attendance-check type name by identifier code.
 func GetAttendanceCheckTypeByCode(code uint8) string {
 	switch code {
@@ -203,7 +205,7 @@ func GetAttendanceCheckTypeByCode(code uint8) string {
 	case 3:
 		return "签到点名"
 	}
-	return ""
+	return "暂时没有人评价点名方式"
 }
 
 // Get exam-check type name by identifier code.
@@ -218,7 +220,7 @@ func GetExamCheckTypeByCode(code uint8) string {
 	case 4:
 		return "论文考核"
 	}
-	return ""
+	return "暂时没有人评价期末考核方式"
 }
 
 // Get attendance-check type name by identifier code.
