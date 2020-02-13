@@ -1,8 +1,9 @@
 package router
 
 import (
-	"github.com/MuxiKeStack/muxiK-StackBackend/handler/grade"
 	"net/http"
+
+	"github.com/MuxiKeStack/muxiK-StackBackend/handler/grade"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler/collection"
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler/report"
@@ -70,8 +71,9 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 		m.POST("/readall/", message.ReadAll)
 	}
 
-	url := ginSwagger.URL("http://kstack.test.muxi-tech.xyz/swagger/doc.json") // The url pointing to API definition
-	g.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
+	//默认是转到docs文件下的json，不需要修改。
+	//url := ginSwagger.URL("http://kstack.test.muxi-tech.xyz/swagger/doc.json") // The url pointing to API definition
+	g.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// 选课手册课程
 	// g.GET("/api/v1/course/using/home/", course.GetCourseInfo)

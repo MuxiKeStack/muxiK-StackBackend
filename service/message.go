@@ -270,10 +270,16 @@ func NewMessageForSubCommentLiking(userId uint32, comment *model.SubCommentModel
 	return nil
 }
 
-func NewMessageForReport(userId uint32, evaluationId uint32) error {
+func NewMessageForReport(evaluationId uint32) error {
 	evaluation := &model.CourseEvaluationModel{Id: evaluationId}
 	if err := evaluation.GetById(); err != nil {
 		log.Info("evaluation.GetById function error")
+		return err
+	}
+
+	userID, err := model.GetUIDByEvaliationID(evaluationId)
+	if err != nil {
+		log.Info("evaluation.GetUIDByEvaliationID function error")
 		return err
 	}
 
@@ -285,10 +291,10 @@ func NewMessageForReport(userId uint32, evaluationId uint32) error {
 
 	message := &model.MessagePub{
 		PubUserId:       SystemUserId,
-		SubUserId:       userId,
+		SubUserId:       userID,
 		Kind:            2, //举报
 		IsRead:          false,
-		Reply:           "你的评价被多人举报已被删除",
+		Reply:           "你的评课被多人举报已被删除",
 		Time:            strconv.FormatInt(time.Now().Unix(), 10),
 		CourseId:        evaluation.CourseId,
 		CourseName:      evaluation.CourseName,

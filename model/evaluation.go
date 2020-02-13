@@ -260,3 +260,10 @@ func IsCourseExisting(id string) bool {
 	d := DB.Self.Where("hash = ?", id).First(&course)
 	return !d.RecordNotFound()
 }
+
+// 通过评课id 获得评课人的userID block时候只知道是评课id，不知道是谁评的 用于消息提醒
+func GetUIDByEvaliationID(eid uint32) (uint32, error) {
+	var e CourseEvaluationModel
+	d := DB.Self.Where("id = ?", eid).First(&e)
+	return e.UserId, d.Error
+}

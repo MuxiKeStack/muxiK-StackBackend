@@ -1,13 +1,15 @@
 package report
 
 import (
+	"strconv"
+	"sync"
+
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/constvar"
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
+	"github.com/MuxiKeStack/muxiK-StackBackend/service"
 	"github.com/gin-gonic/gin"
-	"strconv"
-	"sync"
 )
 
 // @Summary 折叠评课
@@ -77,6 +79,10 @@ func BlockEvaluation(c *gin.Context) {
 				}
 			}
 		}
+
+		//添加举报成功消息提醒
+		service.NewMessageForReport(uint32(eid))
+
 		handler.SendResponse(c, nil, "Block Evaluation Successful! All about reports be passed.")
 	} else {
 		handler.SendResponse(c, nil, "Evaluation: "+strconv.Itoa(int(eid))+" be reported less than "+strconv.Itoa(constvar.AllowRemindAdminLimit)+" times.")

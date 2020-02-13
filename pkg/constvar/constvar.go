@@ -41,7 +41,7 @@ const (
 								<p>驿站检测到了多封对于 评课（ID：EVALUATION_ID）的举报信，该评课被举报次数为：</p>
 									<div style="text-align: center;">
 										<p dir="ltr">
-											<strong style="text-align: center; font-size: 24px; font-weight: bold;">REPORT_TOT</strong>
+											<strong style="text-align: kecenter; font-size: 24px; font-weight: bold;">REPORT_TOT</strong>
 										</p>
 									</div>
 									<p>以下是所有的举报该 评课 的来自五湖四海的内容：</p>
