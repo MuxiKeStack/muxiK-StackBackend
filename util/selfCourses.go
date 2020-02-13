@@ -25,8 +25,8 @@ type OriginalCourseItem struct {
 	Xnm    string `json:"xnm" binding:"required"`  // 学年名，如 2019
 	Xqmc   string `json:"xqmc" binding:"required"` // 学期名称，如 1/2/3
 	Kkxymc string `json:"kkxymc"`                  // 开课学院
-	Kclbmc string `json:"kclbmc"`                  // 课程类别名称，如公共课/专业课
-	Kcxzmc string `json:"kcxzmc"`                  // 课程性质，如专业主干课程/通识必修课
+	// Kclbmc string `json:"kclbmc"`                  // 课程类别名称，如公共课/专业课
+	// Kcxzmc string `json:"kcxzmc"`                  // 课程性质，如专业主干课程/通识必修课
 }
 
 // 获取个人已上过的课程

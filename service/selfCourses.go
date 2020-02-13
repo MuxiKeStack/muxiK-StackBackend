@@ -3,6 +3,7 @@ package service
 import (
 	"fmt"
 	"strings"
+	"sync"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/util"
@@ -25,25 +26,42 @@ func GetSelfCourseList(userId uint32, sid, pwd, year, term string) (*[]ProducedC
 		return nil, err
 	}
 
+	wg := sync.WaitGroup{}
+	infoChan := make(chan ProducedCourseItem, 5)
 	var list []ProducedCourseItem
 	//(*originalCourses.Items)[0].Jsxx = "2006982627/葛非,2006982646/彭熙,2006982670/刘明,2007980066/姚华雄"
 
 	for _, item := range *originalCourses.Items {
-		teacher := util.GetTeachersSqStrBySplitting(item.Jsxx)
-		hashId := util.HashCourseId(item.Kch, teacher)
-		info := ProducedCourseItem{
-			CourseId: hashId,
-			Name:     item.Kcmc,
-			Teacher:  teacher,
-			// Academic:     item.Kkxymc,
-			HasEvaluated: model.HasEvaluated(userId, hashId),
-		}
+		wg.Add(1)
+		go func(item util.OriginalCourseItem) {
+			defer wg.Done()
+
+			teacher := util.GetTeachersSqStrBySplitting(item.Jsxx)
+			hashId := util.HashCourseId(item.Kch, teacher)
+			info := ProducedCourseItem{
+				CourseId:     hashId,
+				Name:         item.Kcmc,
+				Teacher:      teacher,
+				HasEvaluated: model.HasEvaluated(userId, hashId),
+			}
+			infoChan <- info
+		}(item)
+		// list = append(list, info)
+	}
+
+	go func() {
+		wg.Wait()
+		close(infoChan)
+	}()
+
+	for info := range infoChan {
 		list = append(list, info)
 	}
 
 	return &list, nil
 }
 
+// 暂时废弃...
 // 获取个人课程备份
 func GetSelfCourseListFromLocal(userId uint32) (*[]ProducedCourseItem, error) {
 	hashIdStr, err := model.GetSelfCoursesByUserId(userId)
@@ -73,6 +91,7 @@ func GetSelfCourseListFromLocal(userId uint32) (*[]ProducedCourseItem, error) {
 	return &list, nil
 }
 
+// 暂时废弃...
 // 存入备份数据至本地数据库
 func SavingCourseDataToLocal(userId uint32, list *[]ProducedCourseItem) error {
 	var record = &model.SelfCourseModel{UserId: userId}

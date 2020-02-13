@@ -36,7 +36,7 @@ func GetSelfCourses(c *gin.Context) {
 
 	// 验证学号是否属于该用户
 	if service.GetSidById(userId) != l.Sid {
-		handler.SendBadRequest(c, errno.ErrAuthFailed, nil, "")
+		handler.SendBadRequest(c, errno.ErrAuthFailed, nil, "sid error for this user")
 		return
 	}
 
