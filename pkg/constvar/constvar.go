@@ -72,3 +72,28 @@ const (
 		</tbody>
 	</table>`
 )
+
+var (
+	Attendance map[uint8]string = map[uint8]string{
+		1: "经常点名",
+		2: "偶尔点名",
+		3: "签到点名",
+	}
+	Exam map[uint8]string = map[uint8]string{
+		1: "无考核",
+		2: "闭卷考试",
+		3: "开卷考试",
+		4: "论文考核",
+	}
+	AttendanceEnglish map[uint8]string = map[uint8]string{
+		1: "Often",
+		2: "Occasionally",
+		3: "Sign In",
+	}
+	ExamEnglish map[uint8]string = map[uint8]string{
+		1: "None",
+		2: "Close",
+		3: "Open",
+		4: "Eassay",
+	}
+)

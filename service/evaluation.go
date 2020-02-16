@@ -5,6 +5,7 @@ import (
 	"sync"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
+	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/constvar"
 
 	"github.com/lexkong/log"
 )
@@ -197,56 +198,32 @@ func GetHistoryEvaluationsByUserId(userId uint32, lastId, limit int32) (*[]model
 
 // Get attendance-check type name by identifier code.
 func GetAttendanceCheckTypeByCode(code uint8) string {
-	switch code {
-	case 1:
-		return "经常点名"
-	case 2:
-		return "偶尔点名"
-	case 3:
-		return "签到点名"
+	if attendance, ok := constvar.Attendance[code]; ok {
+		return attendance
 	}
-	return "暂时没有人评价点名方式"
+	return ""
 }
 
 // Get exam-check type name by identifier code.
 func GetExamCheckTypeByCode(code uint8) string {
-	switch code {
-	case 1:
-		return "无考核"
-	case 2:
-		return "闭卷考试"
-	case 3:
-		return "开卷考试"
-	case 4:
-		return "论文考核"
+	if exam, ok := constvar.Exam[code]; ok {
+		return exam
 	}
-	return "暂时没有人评价期末考核方式"
+	return ""
 }
 
 // Get attendance-check type name by identifier code.
 func GetAttendanceCheckTypeByCodeEnglish(code uint8) string {
-	switch code {
-	case 1:
-		return "often"
-	case 2:
-		return "occasionally"
-	case 3:
-		return "Sign in"
+	if attendance, ok := constvar.AttendanceEnglish[code]; ok {
+		return attendance
 	}
 	return ""
 }
 
 // Get exam-check type name by identifier code.
 func GetExamCheckTypeByCodeEnglish(code uint8) string {
-	switch code {
-	case 1:
-		return "no"
-	case 2:
-		return "close"
-	case 3:
-		return "open"
-	case 4:
-		return "eassay"
+	if exam, ok := constvar.ExamEnglish[code]; ok {
+		return exam
 	}
 	return ""
 }
