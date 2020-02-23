@@ -99,16 +99,16 @@ func (class *UsingCourseModel) GetByCourseId(time int, place int) error { //intä
 
 // Judge whether a course has already favorited by the current user,
 // return record id and bool type.
-func (class *UsingCourseModel) HasFavorited(userId uint32) (uint32, bool) {
+func HasFavorited(userId uint32, hash string) (uint32, bool) {
 	var data CourseListModel
-	d := DB.Self.Where("user_id = ? AND course_hash_id = ? ", userId, class.Hash).First(&data)
+	d := DB.Self.Where("user_id = ? AND course_hash_id = ? ", userId, hash).First(&data)
 	return data.Id, !d.RecordNotFound()
 }
 
 // Favorite a course by the current user.
-func (class *UsingCourseModel) Favorite(userId uint32) error {
+func Favorite(userId uint32, hash string) error {
 	var data = CourseListModel{
-		CourseHashId: class.Hash,
+		CourseHashId: hash,
 		UserId:       userId,
 	}
 
@@ -117,7 +117,7 @@ func (class *UsingCourseModel) Favorite(userId uint32) error {
 }
 
 // Cancel a course's favorite by the current user.
-func (class *UsingCourseModel) Unfavorite(id uint32) error {
+func Unfavorite(id uint32) error {
 	var data = CourseListModel{Id: id}
 	d := DB.Self.Delete(&data)
 	return d.Error

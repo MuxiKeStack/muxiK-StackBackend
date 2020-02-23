@@ -31,14 +31,7 @@ func FavoriteCourse(c *gin.Context) {
 
 	userId := c.MustGet("id").(uint32)
 
-	var course = &model.UsingCourseModel{Hash: hash}
-	if err := course.GetByHash(); err != nil {
-		log.Info("Course.GetByHash function error")
-		handler.SendError(c, errno.ErrDatabase, nil, err.Error())
-		return
-	}
-
-	recordId, hasLiked := course.HasFavorited(userId)
+	recordId, hasLiked := model.HasFavorited(userId, hash)
 
 	// 获取请求中当前的收藏状态
 	var bodyData likeDataRequest
@@ -62,9 +55,9 @@ func FavoriteCourse(c *gin.Context) {
 
 	// 收藏或者取消收藏
 	if bodyData.LikeState {
-		err = course.Unfavorite(recordId)
+		err = model.Unfavorite(recordId)
 	} else {
-		err = course.Favorite(userId)
+		err = model.Favorite(userId, hash)
 	}
 
 	if err != nil {
