@@ -112,6 +112,9 @@ func Reply(c *gin.Context) {
 	handler.SendResponse(c, nil, commentInfo)
 
 	// New message reminder
+	if commentInfo.IsAnonymous {
+		userId = 2 //匿名用户
+	}
 	err = service.NewMessageForSubComment(userId, comment, parentComment)
 	if err != nil {
 		log.Error("NewMessageForSubComment failed", err)

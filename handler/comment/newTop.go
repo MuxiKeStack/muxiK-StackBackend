@@ -87,6 +87,9 @@ func CreateTopComment(c *gin.Context) {
 	handler.SendResponse(c, nil, commentInfo)
 
 	// New message reminder
+	if commentInfo.IsAnonymous {
+		userId = 2 //匿名用户
+	}
 	err = service.NewMessageForParentComment(userId, comment, evaluation)
 	if err != nil {
 		log.Error("NewMessageForParentComment failed", err)

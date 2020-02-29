@@ -241,10 +241,13 @@ CREATE TABLE `grade` (
 INSERT INTO `tags` (name) VALUES ("课程简单易学"), ("课程干货满满"), ("老师严谨负责"),
 ("老师温柔随和"), ("老师风趣幽默"), ("平时作业少"), ("期末划重点"), ("云课堂资料全");
 
--- 系统用户
+-- 系统用户 以及 匿名用户信息
 
-INSERT INTO `user` (`id`， `sid`, `username`, `is_blocked`)
-VALUES (1，'0', '系统提醒', '0');
+INSERT INTO `user` 
+  (`id`， `sid`, `username`, `is_blocked`)
+VALUES 
+  (1，'0', '系统提醒', '0'),
+  (2, '0', '匿名用户'， '0');
 
 -- mock data
 /*
