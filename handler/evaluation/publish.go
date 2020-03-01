@@ -35,8 +35,6 @@ type evaluationPublishResponse struct {
 // @Success 200 {object} evaluation.evaluationPublishResponse
 // @Router /evaluation/ [post]
 func Publish(c *gin.Context) {
-	log.Info("Evaluation Publish function is called.")
-
 	var data evaluationPublishRequest
 	if err := c.ShouldBindJSON(&data); err != nil {
 		handler.SendBadRequest(c, errno.ErrBind, nil, err.Error())

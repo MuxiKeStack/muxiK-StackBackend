@@ -1,7 +1,6 @@
 package service
 
 import (
-	"fmt"
 	"sync"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
@@ -19,7 +18,7 @@ type EvaluationInfoList struct {
 func GetEvaluationsForPlayground(lastId, limit int32, userId uint32, visitor bool) (*[]model.EvaluationInfo, error) {
 	evaluations, err := model.GetEvaluations(lastId, limit)
 	if err != nil {
-		log.Info("GetEvaluations function error.")
+		log.Error("GetEvaluations function error.", err)
 		return nil, err
 	}
 
@@ -30,7 +29,7 @@ func GetEvaluationsForPlayground(lastId, limit int32, userId uint32, visitor boo
 func GetEvaluationsOfOneCourse(lastId, limit int32, userId uint32, visitor bool, courseId string) (*[]model.EvaluationInfo, error) {
 	evaluations, err := model.GetEvaluationsByCourseIdOrderByTime(courseId, lastId, limit)
 	if err != nil {
-		log.Info("GetEvaluationsByCourseIdOrderByTime function error.")
+		log.Error("GetEvaluationsByCourseIdOrderByTime function error.", err)
 		return nil, err
 	}
 
@@ -57,9 +56,9 @@ func GetEvaluationInfosByOriginModels(evaluations *[]model.CourseEvaluationModel
 		go func(evaluation model.CourseEvaluationModel) {
 			defer wg.Done()
 
-			data, err := GetEvaluationInfo(evaluation.Id, userId, visitor)
+			data, err := GetEvaluationInfo(&evaluation, userId, visitor)
 			if err != nil {
-				log.Info("GetEvaluationInfo function error.")
+				log.Error("GetEvaluationInfo function error.", err)
 				errChan <- err
 				return
 			}
@@ -91,23 +90,16 @@ func GetEvaluationInfosByOriginModels(evaluations *[]model.CourseEvaluationModel
 	return &infos, nil
 }
 
-// Get the response data information of a course evaluation.
-func GetEvaluationInfo(id, userId uint32, visitor bool) (*model.EvaluationInfo, error) {
+// Get the response data information of a course evaluation by original evaluation model.
+func GetEvaluationInfo(evaluation *model.CourseEvaluationModel, userId uint32, visitor bool) (*model.EvaluationInfo, error) {
 	var err error
-
-	// Get evaluation from Database
-	evaluation := &model.CourseEvaluationModel{Id: id}
-	if err := evaluation.GetById(); err != nil {
-		log.Info("evaluation.GetById() error.")
-		return nil, err
-	}
 
 	// Get evaluation user info if not anonymous
 	u := &model.UserInfoResponse{}
 	if !evaluation.IsAnonymous {
 		u, err = GetUserInfoById(evaluation.UserId)
 		if err != nil {
-			log.Info("GetUserInfoById function error.")
+			log.Error("GetUserInfoById function error.", err)
 			return nil, err
 		}
 	}
@@ -115,7 +107,7 @@ func GetEvaluationInfo(id, userId uint32, visitor bool) (*model.EvaluationInfo, 
 	// Get teacher
 	teacher, err := model.GetTeacherByCourseId(evaluation.CourseId)
 	if err != nil {
-		log.Info("GetTeacherByCourseId function error.")
+		log.Error("GetTeacherByCourseId function error.", err)
 		return nil, err
 	}
 
@@ -134,8 +126,7 @@ func GetEvaluationInfo(id, userId uint32, visitor bool) (*model.EvaluationInfo, 
 	// Get tag names
 	tagNames, err := GetTagNamesByIdStr(evaluation.Tags)
 	if err != nil {
-		fmt.Println(tagNames, evaluation.Tags)
-		log.Info("GetTagNamesByIdStr function error.")
+		log.Error("GetTagNamesByIdStr function error.", err)
 		return nil, err
 	}
 
@@ -176,7 +167,7 @@ func GetEvaluationInfo(id, userId uint32, visitor bool) (*model.EvaluationInfo, 
 func GetHotEvaluations(courseId string, limit int32, userId uint32, visitor bool) (*[]model.EvaluationInfo, error) {
 	evaluations, err := model.GetEvaluationsByCourseIdOrderByLikeNum(courseId, limit)
 	if err != nil {
-		log.Info("GetEvaluationsByCourseIdOrderByLikeNum functions error.")
+		log.Error("GetEvaluationsByCourseIdOrderByLikeNum functions error.", err)
 		return nil, err
 	}
 
@@ -187,7 +178,7 @@ func GetHotEvaluations(courseId string, limit int32, userId uint32, visitor bool
 func GetHistoryEvaluationsByUserId(userId uint32, lastId, limit int32) (*[]model.EvaluationInfo, error) {
 	evaluations, err := model.GetEvaluationsByUserId(userId, lastId, limit)
 	if err != nil {
-		log.Info("GetEvaluationsByUserId functions error.")
+		log.Error("GetEvaluationsByUserId functions error.", err)
 		return nil, err
 	}
 

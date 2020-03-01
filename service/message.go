@@ -281,9 +281,9 @@ func NewMessageForReport(evaluationId uint32) error {
 		return err
 	}
 
-	userID, err := model.GetUIDByEvaliationID(evaluationId)
+	userID, err := model.GetUIDByEvaluationID(evaluationId)
 	if err != nil {
-		log.Info("evaluation.GetUIDByEvaliationID function error")
+		log.Info("evaluation.GetUIDByEvaluationID function error")
 		return err
 	}
 

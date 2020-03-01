@@ -13,8 +13,6 @@ import (
 
 // Get table info by table id.
 func GetTableInfoById(id uint32) (*model.ClassTableInfo, error) {
-	log.Info("GetTableInfoById function is called")
-
 	table := &model.ClassTableModel{Id: id}
 	if err := table.GetById(); err != nil {
 		log.Error("table.GetById function error", err)

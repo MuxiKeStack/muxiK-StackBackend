@@ -39,6 +39,7 @@ var (
 	ErrDeleteComment         = &Errno{Code: 20311, Message: "Error occurred while deleting a comment "}
 	ErrHasEvaluated          = &Errno{Code: 20312, Message: "User has evaluated the course"}
 	ErrWordLimitation        = &Errno{Code: 20313, Message: "Word limit exceeded"}
+	ErrGetEvaluationInfo     = &Errno{Code: 20314, Message: "Error occurred while getting evaluation info"}
 
 	// table errors
 	ErrTableExisting    = &Errno{Code: 20401, Message: "The table does not exist"}

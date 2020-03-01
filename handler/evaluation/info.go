@@ -4,6 +4,7 @@ import (
 	"strconv"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
+	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
 	"github.com/MuxiKeStack/muxiK-StackBackend/service"
 
@@ -11,7 +12,6 @@ import (
 	"github.com/lexkong/log"
 )
 
-// 获取评课详情
 // @Summary 获取评课详情
 // @Tags evaluation
 // @Param token header string false "游客登录则不需要此字段或为空"
@@ -37,9 +37,17 @@ func GetEvaluation(c *gin.Context) {
 		log.Info("User auth successful.")
 	}
 
-	data, err := service.GetEvaluationInfo(uint32(id), userId, visitor)
+	// 从数据库中获取评课记录
+	evaluation := &model.CourseEvaluationModel{Id: uint32(id)}
+	if err := evaluation.GetById(); err != nil {
+		log.Error("evaluation.GetById function error.", err)
+		handler.SendError(c, errno.ErrGetEvaluationInfo, nil, err.Error())
+		return
+	}
+
+	data, err := service.GetEvaluationInfo(evaluation, userId, visitor)
 	if err != nil {
-		handler.SendError(c, err, nil, err.Error())
+		handler.SendError(c, errno.ErrGetEvaluationInfo, nil, err.Error())
 		return
 	}
 
