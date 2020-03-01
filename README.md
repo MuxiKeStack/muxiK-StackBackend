@@ -38,6 +38,6 @@ go run add_using.go -file sample.xlsx
 另外，设置环境变量`MUXIKSTACK_GRADE_CRAWL`决定在*查看个人课程*时是否爬取成绩
 
 ```shell
-export MUXIKSTACK_GRADE_CRAWL=true  # 爬取，临近期末时设置
-export MUXIKSTACK_GRADE_CRAWL=false # 不爬取，下学期开学时设置
+export MUXIKSTACK_GRADE_CRAWL=on  # 爬取，临近期末时设置
+export MUXIKSTACK_GRADE_CRAWL=off # 不爬取，下学期开学时设置
 ```

@@ -24,6 +24,7 @@ var (
 	ErrGetUserInfo   = &Errno{Code: 20204, Message: "Error in getting user info"}
 	ErrUserInfo      = &Errno{Code: 20205, Message: "The user information json cannot be null"}
 	ErrAddSampleData = &Errno{Code: 20206, Message: "Error occurred in joining project"}
+	ErrAddLicence    = &Errno{Code: 20207, Message: "Error occurred in grade licence getting"}
 
 	// comment errors
 	ErrNotLiked              = &Errno{Code: 20301, Message: "User has not liked yet. "}

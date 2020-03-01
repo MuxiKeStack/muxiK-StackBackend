@@ -11,7 +11,7 @@ import (
 )
 
 // @Tags user
-// @Summary 加入项目计划
+// @Summary 加入成绩共享计划
 // @Param token header string true "token"
 // @Param data body model.LoginModel true "学号密码"
 // @Success 200 "OK"
@@ -27,7 +27,7 @@ func JoinPro(c *gin.Context) {
 
 	// 检查该用户是否有查看成绩的许可
 	if ok, err := model.UserHasLicence(userId); err != nil {
-		handler.SendError(c, err, nil, err.Error())
+		handler.SendError(c, errno.ErrAddLicence, nil, err.Error())
 		return
 	} else if ok {
 		// 已加入计划
