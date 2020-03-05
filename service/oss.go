@@ -28,7 +28,7 @@ var initOSS = func() {
 	secretKey = viper.GetString("oss.secret_key")
 	bucketName = viper.GetString("oss.bucket_name")
 	domainName = viper.GetString("oss.domain_name")
-	typeMap = map[string]bool{".jpg": true, ".png": true, ".bmp": true, "jpeg": true, "gif": true}
+	typeMap = map[string]bool{".jpg": true, ".png": true, ".bmp": true, ".jpeg": true, ".gif": true}
 }
 
 func getType(filename string) (string, error) {
