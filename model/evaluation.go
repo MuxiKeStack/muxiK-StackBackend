@@ -134,7 +134,10 @@ func GetEvaluationsByCourseIdOrderByTime(id string, lastId, limit int32) (*[]Cou
 // Get a course's hot evaluations by id.
 func GetEvaluationsByCourseIdOrderByLikeNum(courseId string, limit int32) (*[]CourseEvaluationModel, error) {
 	var evaluations []CourseEvaluationModel
-	d := DB.Self.Where("course_id = ? AND like_num > 0", courseId).Order("like_num desc, id desc").Limit(limit).Find(&evaluations)
+	d := DB.Self.Where("course_id = ? AND like_num > 0", courseId).
+		Order("like_num desc, id desc").
+		Limit(limit).
+		Find(&evaluations)
 
 	if d.RecordNotFound() {
 		return &evaluations, nil
@@ -207,9 +210,7 @@ func GetExamCheckTypeNumChosenByCode(courseId string, code int) (count uint32) {
 	return
 }
 
-/*--------------- Course Operation -------------*/
-
-// 新增评课时更新课程的评课信息，先暂时放这里，避免冲突
+// 新增评课时更新课程的评课信息
 func UpdateCourseRateByEvaluation(id string, rate float32) error {
 	var c HistoryCourseModel
 	if d := DB.Self.First(&c, "hash = ?", id); d.Error != nil {
@@ -240,29 +241,8 @@ func UpdateCourseInfoAfterDeletingEvaluation(id string, rate float32) error {
 	return DB.Self.Save(&c).Error
 }
 
-// 根据课程id获取教师名
-func GetTeacherByCourseId(id string) (string, error) {
-	var course HistoryCourseModel
-	d := DB.Self.First(&course, "hash = ?", id)
-	return course.Teacher, d.Error
-}
-
-// Get history course by hash id.
-func GetHistoryCourseByHashId(id string) (*HistoryCourseModel, error) {
-	var course HistoryCourseModel
-	d := DB.Self.First(&course, "hash = ?", id)
-	return &course, d.Error
-}
-
-// 判断课程是否存在
-func IsCourseExisting(id string) bool {
-	var course HistoryCourseModel
-	d := DB.Self.Where("hash = ?", id).First(&course)
-	return !d.RecordNotFound()
-}
-
 // 通过评课id 获得评课人的userID block时候只知道是评课id，不知道是谁评的 用于消息提醒
-func GetUIDByEvaliationID(eid uint32) (uint32, error) {
+func GetUIDByEvaluationID(eid uint32) (uint32, error) {
 	var e CourseEvaluationModel
 	d := DB.Self.Where("id = ?", eid).First(&e)
 	return e.UserId, d.Error

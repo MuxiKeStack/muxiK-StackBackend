@@ -24,6 +24,7 @@ var (
 	ErrGetUserInfo   = &Errno{Code: 20204, Message: "Error in getting user info"}
 	ErrUserInfo      = &Errno{Code: 20205, Message: "The user information json cannot be null"}
 	ErrAddSampleData = &Errno{Code: 20206, Message: "Error occurred in joining project"}
+	ErrAddLicence    = &Errno{Code: 20207, Message: "Error occurred in grade licence getting"}
 
 	// comment errors
 	ErrNotLiked              = &Errno{Code: 20301, Message: "User has not liked yet. "}
@@ -39,6 +40,7 @@ var (
 	ErrDeleteComment         = &Errno{Code: 20311, Message: "Error occurred while deleting a comment "}
 	ErrHasEvaluated          = &Errno{Code: 20312, Message: "User has evaluated the course"}
 	ErrWordLimitation        = &Errno{Code: 20313, Message: "Word limit exceeded"}
+	ErrGetEvaluationInfo     = &Errno{Code: 20314, Message: "Error occurred while getting evaluation info"}
 
 	// table errors
 	ErrTableExisting    = &Errno{Code: 20401, Message: "The table does not exist"}

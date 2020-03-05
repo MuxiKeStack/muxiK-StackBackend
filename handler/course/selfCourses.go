@@ -80,8 +80,8 @@ func GetSelfCourses(c *gin.Context) {
 	/* ------ 成绩爬取服务 ------ */
 
 	// 环境变量设置，是否爬取成绩
-	// export MUXIKSTACK_GRADE_CRAWL=true
-	if gradeSwitch := viper.GetBool("grade_crawl"); !gradeSwitch {
+	// export MUXIKSTACK_GRADE_CRAWL=on
+	if gradeSwitch := viper.GetString("grade_crawl"); gradeSwitch != "on" {
 		return
 	}
 

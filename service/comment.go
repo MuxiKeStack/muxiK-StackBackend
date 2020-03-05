@@ -21,8 +21,6 @@ type SubCommentInfoList struct {
 
 // Get comment list.
 func CommentList(evaluationId uint32, limit, offset int32, userId uint32, visitor bool) (*[]model.ParentCommentInfo, error) {
-	log.Info("CommentList function is called")
-
 	// Get parent comments from database
 	parentComments, err := model.GetParentComments(evaluationId, limit, offset)
 	if err != nil {

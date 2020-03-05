@@ -26,8 +26,6 @@ type playgroundResponse struct {
 // @Success 200 {object} evaluation.playgroundResponse
 // @Router /evaluation/ [get]
 func EvaluationPlayground(c *gin.Context) {
-	log.Info("EvaluationPlayground function is called.")
-
 	limitStr := c.DefaultQuery("limit", "10")
 	limit, err := strconv.ParseInt(limitStr, 10, 32)
 	if err != nil {

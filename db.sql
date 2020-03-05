@@ -244,7 +244,7 @@ INSERT INTO `tags` (name) VALUES ("课程简单易学"), ("课程干货满满"),
 -- 系统用户 以及 匿名用户信息
 
 INSERT INTO `user` 
-  (`id`， `sid`, `username`, `is_blocked`)
+  (`id`, `sid`, `username`, `is_blocked`)
 VALUES 
   (1，'0', '系统提醒', '0'),
   (2, '0', ''， '0'); --空

@@ -29,7 +29,6 @@ func (*SelfCourseModel) TableName() string {
 func (class *UsingCourseModel) Add() error {
 	d := DB.Self.Create(class)
 	return d.Error
-	//return nil
 }
 
 // Delete a course.
@@ -60,8 +59,8 @@ func (class *UsingCourseModel) GetByHash2() (uint8, error) {
 }
 
 // Get history course by its hash.
-func (class *HistoryCourseModel) GetHistoryByHash() error {
-	d := DB.Self.First(class, "hash = ?", class.Hash)
+func (course *HistoryCourseModel) GetHistoryByHash() error {
+	d := DB.Self.First(course, "hash = ?", course.Hash)
 	return d.Error
 }
 
@@ -227,6 +226,27 @@ func GetTagNameById32(id uint32) (string, error) {
 	var tag TagModel
 	d := DB.Self.Where("id = ?", id).First(&tag)
 	return tag.Name, d.Error
+}
+
+// 根据课程id获取教师名
+func GetTeacherByCourseId(id string) (string, error) {
+	var data struct{ Teacher string }
+	d := DB.Self.Table("history_course").Select("teacher").Where("hash = ?", id).Scan(&data)
+	return data.Teacher, d.Error
+}
+
+// Get history course by hash id.
+func GetHistoryCourseByHashId(id string) (*HistoryCourseModel, error) {
+	var course HistoryCourseModel
+	d := DB.Self.First(&course, "hash = ?", id)
+	return &course, d.Error
+}
+
+// 判断课程是否存在
+func IsCourseExisting(id string) bool {
+	var course HistoryCourseModel
+	d := DB.Self.Where("hash = ?", id).First(&course)
+	return !d.RecordNotFound()
 }
 
 /*---------------------------- SelfCourse Operation --------------------------*/

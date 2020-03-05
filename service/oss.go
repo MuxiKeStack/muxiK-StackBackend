@@ -28,13 +28,13 @@ var initOSS = func() {
 	secretKey = viper.GetString("oss.secret_key")
 	bucketName = viper.GetString("oss.bucket_name")
 	domainName = viper.GetString("oss.domain_name")
-	typeMap = map[string]bool{".jpg": true, ".png": true, ".bmp": true, ".jpeg": true, ".gif": true}
+	typeMap = map[string]bool{"jpg": true, "png": true, "bmp": true, "jpeg": true, "gif": true, "svg": true}
 }
 
 func getType(filename string) (string, error) {
 	i := strings.LastIndex(filename, ".")
-	fileType := filename[i:]
-	if !typeMap[fileType] {
+	fileType := filename[i+1:]
+	if !typeMap[strings.ToLower(fileType)] {
 		return "", errors.New("the file type is not allowed")
 	}
 	return fileType, nil
@@ -57,7 +57,7 @@ func getObjectName(filename string, id uint32) (string, error) {
 		return "", err
 	}
 	timeEpochNow := time.Now().Unix()
-	objectName := strconv.FormatUint(uint64(id), 10) + "-" + strconv.FormatInt(timeEpochNow, 10) + fileType
+	objectName := strconv.FormatUint(uint64(id), 10) + "-" + strconv.FormatInt(timeEpochNow, 10) + "." + fileType
 	return objectName, nil
 }
 
