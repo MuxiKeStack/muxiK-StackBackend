@@ -98,13 +98,13 @@ func GetClassInfoForTableById(hashId string, classId string) (*model.ClassInfo, 
 	}
 
 	info := &model.ClassInfo{
-		CourseId: hashId,
-		ClassId:  class.ClassId,
-		//TeachingClassId: class.ClassId,
+		CourseId:  hashId,
+		ClassId:   class.ClassId,
 		ClassName: class.Name,
 		Teacher:   class.Teacher,
 		Places:    &places,
 		Times:     &timeInfos,
+		Type:      int8(class.Type),
 	}
 
 	return info, nil
@@ -168,8 +168,6 @@ func GetTableInfoByTableModel(table *model.ClassTableModel) (*model.ClassTableIn
 	select {
 	case <-finished:
 	case err := <-errChan:
-		// 会不会goroutine泄露
-		//for range classChan {}
 		return nil, err
 	}
 

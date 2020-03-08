@@ -14,6 +14,8 @@ type ClassTableInfo struct {
 	ClassList *[]ClassInfo `json:"class_list"`
 }
 
+// 增加Type，用于前端颜色分配
+// 课表-课堂信息，用于response
 type ClassInfo struct {
 	CourseId  string           `json:"course_id"`
 	ClassId   string           `json:"class_id"` // 教学班编号
@@ -21,6 +23,7 @@ type ClassInfo struct {
 	Teacher   string           `json:"teacher"`
 	Places    *[]string        `json:"places"`
 	Times     *[]ClassTimeInfo `json:"times"`
+	Type      int8             `json:"type"` // 0-通必,1-专必,2-专选,3-通选,4-专业课,5-通核
 }
 
 type ClassTimeInfo struct {

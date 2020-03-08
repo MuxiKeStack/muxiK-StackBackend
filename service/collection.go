@@ -60,9 +60,10 @@ func GetCollectionListForTables(userId uint32, tableId uint32) (*[]model.CourseI
 
 			data := &model.CourseInfoInTableCollection{
 				CourseId:   courseId,
-				CourseName: (*classes)[0].Teacher,
+				CourseName: (*classes)[0].Name,
 				ClassSum:   len(*classes),
 				Classes:    classInfos,
+				Type:       int8((*classes)[0].Type),
 			}
 			dataChan <- data
 

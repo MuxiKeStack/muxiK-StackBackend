@@ -1297,7 +1297,7 @@
                 "tags": [
                     "user"
                 ],
-                "summary": "加入项目计划",
+                "summary": "加入成绩共享计划",
                 "parameters": [
                     {
                         "type": "string",
@@ -1631,6 +1631,10 @@
                     "items": {
                         "$ref": "#/definitions/model.ClassTimeInfo"
                     }
+                },
+                "type": {
+                    "description": "0-通必,1-专必,2-专选,3-通选,4-专业课,5-通核",
+                    "type": "integer"
                 }
             }
         },
@@ -1651,7 +1655,6 @@
                     }
                 },
                 "teacher": {
-                    "description": "TeachingClassId uint64                        `json:\"teaching_class_id\"` // 教学班编号",
                     "type": "string"
                 },
                 "times": {
@@ -1813,6 +1816,10 @@
                 },
                 "course_name": {
                     "type": "string"
+                },
+                "type": {
+                    "description": "0-通必,1-专必,2-专选,3-通选,4-专业课,5-通核",
+                    "type": "integer"
                 }
             }
         },

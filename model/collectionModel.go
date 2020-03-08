@@ -6,22 +6,23 @@ type CourseListModel struct {
 	CourseHashId string `gorm:"column:course_hash_id"`
 }
 
+// 增加Type，用于前端颜色分配
 // 课表界面的课程清单信息
 type CourseInfoInTableCollection struct {
 	CourseId   string                    `json:"course_id"` // 课程hash id
 	CourseName string                    `json:"course_name"`
 	ClassSum   int                       `json:"class_sum"` // 课堂数
+	Type       int8                      `json:"type"`      // 0-通必,1-专必,2-专选,3-通选,4-专业课,5-通核
 	Classes    *[]ClassInfoInCollections `json:"classes"`
 }
 
 // 选课清单内的课堂（教学班）信息
 type ClassInfoInCollections struct {
-	ClassId   string `json:"class_id"` // 教学班编号
-	ClassName string `json:"class_name"`
-	//TeachingClassId uint64                        `json:"teaching_class_id"` // 教学班编号
-	Teacher string                        `json:"teacher"`
-	Times   *[]ClassTimeInfoInCollections `json:"times"`
-	Places  *[]string                     `json:"places"`
+	ClassId   string                        `json:"class_id"` // 教学班编号
+	ClassName string                        `json:"class_name"`
+	Teacher   string                        `json:"teacher"`
+	Times     *[]ClassTimeInfoInCollections `json:"times"`
+	Places    *[]string                     `json:"places"`
 }
 
 type ClassTimeInfoInCollections struct {
