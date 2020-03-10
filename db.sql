@@ -6,14 +6,13 @@ USE `muxikstack`;
 
 CREATE TABLE `user` (
   `id`         INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `sid`        VARCHAR(10)  NOT NULL COMMENT "学生学号",
+  `sid`        VARCHAR(10)  NOT NULL UNIQUE COMMENT "学生学号",
   `username`   VARCHAR(25)  ,
   `avatar`     VARCHAR(255) ,
   `is_blocked` TINYINT(1)   NOT NULL DEFAULT 0,
   `licence`    TINYINT(1)   NOT NULL DEFAULT 0 COMMENT "成绩查看许可",
 
-  PRIMARY KEY (`id`),
-  KEY `sid` (`sid`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE `message` (
@@ -241,13 +240,14 @@ CREATE TABLE `grade` (
 INSERT INTO `tags` (name) VALUES ("课程简单易学"), ("课程干货满满"), ("老师严谨负责"),
 ("老师温柔随和"), ("老师风趣幽默"), ("平时作业少"), ("期末划重点"), ("云课堂资料全");
 
--- 系统用户 以及 匿名用户信息
+-- 系统用户 以及 匿名用户信息 匿名用户信息都为空
 
 INSERT INTO `user` 
-  (`id`, `sid`, `username`, `is_blocked`)
+  (`id`, `sid`, `username`)
 VALUES 
-  (1，'0', '系统提醒', '0'),
-  (2, '0', ''， '0'); --空
+  (1, "0", "系统提醒"),
+  (2, "1", null);
+
 
 -- mock data
 /*
