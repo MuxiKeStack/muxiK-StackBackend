@@ -88,7 +88,7 @@ var (
 	AttendanceEnglish map[uint8]string = map[uint8]string{
 		1: "Often",
 		2: "Occasionally",
-		3: "Sign In",
+		3: "SignIn",
 	}
 	ExamEnglish map[uint8]string = map[uint8]string{
 		1: "None",
