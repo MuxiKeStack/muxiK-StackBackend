@@ -12,6 +12,7 @@ import (
 	"github.com/spf13/viper"
 	"strconv"
 	"strings"
+	"sync"
 )
 
 type Request struct {
@@ -31,11 +32,13 @@ type Response struct {
 // @Success 200 {object} report.Response
 // @Router /evaluation/{id}/report/ [post]
 func ReportEvaluation(c *gin.Context) {
+	// 获取评课 ID
 	eid, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
 		handler.SendBadRequest(c, errno.ErrGetParam, nil, err.Error())
 		return
 	}
+	// 获取当前用户 ID
 	uid, ok := c.Get("id")
 	if !ok || uid == nil {
 		handler.SendUnauthorized(c, errno.ErrAuthFailed, nil, "API get user id from token failed.")
@@ -47,26 +50,22 @@ func ReportEvaluation(c *gin.Context) {
 		handler.SendBadRequest(c, errno.ErrBind, nil, err.Error())
 		return
 	}
-	reportExistedCh := make(chan bool)
-	beReportedTotCh := make(chan int)
-	defer close(reportExistedCh)
-	defer close(beReportedTotCh)
 
+	var existed bool = false
+	var tot int = 0
+	wg := sync.WaitGroup{}
+	wg.Add(2)
 	go func() {
-		reportExistedCh <- model.ReportExisted(eid, uid.(uint32))
+		existed = model.ReportExisted(eid, uid.(uint64))
+		wg.Done()
 	}()
 	go func() {
 		// not passed total of reports
-		beReportedTotCh <- model.CountEvaluationBeReportedTimes(eid)
+		tot = model.CountEvaluationBeReportedTimes(eid)
+		wg.Done()
 	}()
-	var existed bool
-	var tot int
-	for i := 0; i < 2; i++ {
-		select {
-		case tot = <-beReportedTotCh:
-		case existed = <-reportExistedCh:
-		}
-	}
+	wg.Wait()
+
 	if existed {
 		handler.SendResponse(c, nil, Response{
 			Fail:   true,
@@ -109,7 +108,7 @@ func ReportEvaluation(c *gin.Context) {
 				err = smtpMail.SendMail("muxistudio@qq.com", viper.GetString("authcode"), []string{constvar.DefaultAdminEmailAddr}, smtpMail.Content{
 					NickName:    "木犀课栈: 评课举报通知",
 					User:        "muxistudio@qq.com",
-					Subject:     "木犀课栈左边儿胡同儿的驿站: 举报通知",
+					Subject:     "木犀课栈左边儿胡同儿口的驿站: 举报通知",
 					Body:        mailContent,
 					ContentType: "Content-Type: text/html; charset=UTF-8",
 				})
