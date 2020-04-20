@@ -76,7 +76,7 @@ func ReportEvaluation(c *gin.Context) {
 		tot += 1
 		newReport := model.ReportModel{
 			EvaluationId: eid,
-			UserId:       uid.(uint64),
+			UserId:       uid.(uint32),
 			Pass:         false,
 			Reason:       requestPayload.Reason,
 		}
