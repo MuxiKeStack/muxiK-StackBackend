@@ -15,7 +15,7 @@ CREATE TABLE `report` (
 type ReportModel struct {
 	Id           uint64 `gorm:"column:id; primary_key"`
 	EvaluationId uint64 `gorm:"column:evaluation_id"`
-	UserId       uint64 `gorm:"column:user_id"`
+	UserId       uint32 `gorm:"column:user_id"`
 	Pass         bool   `gorm:"column:pass"`
 	Reason       string `gorm:"column:reason"`
 }
