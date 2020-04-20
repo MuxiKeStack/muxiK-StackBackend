@@ -18,7 +18,7 @@ func (rm *ReportModel) Update() error {
 }
 
 // check the report is existed
-func ReportExisted(eid uint64, uid uint64) bool {
+func ReportExisted(eid uint64, uid uint32) bool {
 	return !DB.Self.Table("report").Where("evaluation_id = ? AND user_id = ?", eid, uid).RecordNotFound()
 }
 

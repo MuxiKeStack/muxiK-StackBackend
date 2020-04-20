@@ -171,7 +171,7 @@ func HasEvaluated(userId uint32, courseId string) bool {
 // 获取一个课程中评价最多的点名方式
 func GetAttendanceType(courseID string) uint8 {
 	var res []struct{ AttendanceCheckType uint8 }
-	d := DB.Self.Debug().Table("course_evaluation").
+	d := DB.Self.Table("course_evaluation").
 		Select("attendance_check_type, count( * ) AS count").
 		Where("course_id = ?", courseID).
 		Group("attendance_check_type").

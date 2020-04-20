@@ -56,7 +56,7 @@ func ReportEvaluation(c *gin.Context) {
 	wg := sync.WaitGroup{}
 	wg.Add(2)
 	go func() {
-		existed = model.ReportExisted(eid, uid.(uint64))
+		existed = model.ReportExisted(eid, uid.(uint32))
 		wg.Done()
 	}()
 	go func() {
