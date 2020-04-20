@@ -19,7 +19,11 @@ func (rm *ReportModel) Update() error {
 
 // check the report is existed
 func ReportExisted(eid uint64, uid uint32) bool {
-	return !DB.Self.Table("report").Where("evaluation_id = ? AND user_id = ?", eid, uid).RecordNotFound()
+	var count int = 0
+	if DB.Self.Table("report").Where("evaluation_id = ? AND user_id = ?", eid, uid).Count(&count); count > 0 {
+		return true
+	}
+	return false
 }
 
 // get an evaluation be reported total
