@@ -8,16 +8,20 @@ func (*CourseListModel) TableName() string {
 
 // Get all courses' hash ids from collection by userId, return array of course's hash id and error.
 func GetCourseHashIdsFromCollection(userId uint32) ([]string, error) {
-	var data []CourseListModel
+	var data []struct{ CourseHashId string }
 	var result []string
-	d := DB.Self.Where("user_id = ?", userId).Find(&data)
-	if d.RecordNotFound() {
-		return nil, nil
+
+	query := DB.Self.Table("course_list").Select("course_hash_id").Where("user_id = ?", userId)
+
+	if err := query.Scan(&data).Error; err != nil {
+		return nil, err
 	}
+
 	for _, i := range data {
 		result = append(result, i.CourseHashId)
 	}
-	return result, d.Error
+
+	return result, nil
 }
 
 // Get collections' records by userId.

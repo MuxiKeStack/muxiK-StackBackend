@@ -52,15 +52,15 @@ func GetCollectionListForTables(userId uint32, tableId uint32) (*[]model.CourseI
 				errChan <- err
 			}
 
+			if classes == nil || len((*classes)) == 0 {
+				log.Infof("Table Service Error: [Hash: %s] get classes is nil.", courseId)
+				return
+			}
+
 			classInfos, err := GetClassInfoInCollection(classes)
 			if err != nil {
 				log.Error("GetClassInfoInCollection function error", err)
 				errChan <- err
-			}
-
-			if classes == nil || len((*classes)) == 0{
-				log.Infof("Table Service Error: [Hash: %s] get classes is nil.\n", courseId)
-				return
 			}
 
 			data := &model.CourseInfoInTableCollection{
