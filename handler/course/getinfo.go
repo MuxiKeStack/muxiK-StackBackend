@@ -45,20 +45,17 @@ type InfoClass struct {
 }*/
 
 type ResponseInfo struct {
-	CourseName     string  `json:"course_name"`
-	TeacherName    string  `json:"teacher_name"`
-	CourseCategory uint8   `json:"course_category"`
-	CourseCredit   float32 `json:"course_credit"`
-	Rate           float32 `json:"rate"`
-	StarsNum       uint32  `json:"stars_num"`
-	//Score          map[uint32]uint32 `json:"score"`
-	//ScoreNum       uint32            `json:"score_num"`
-	Attendance map[string]uint32 `json:"attendance"`
-	Exam       map[string]uint32 `json:"exam"`
-	ClassInfo  []TTPL            `json:"class_info"`
-	Tag        []TagList         `json:"tag"`
-	//TotalScore     float32           `json:"total_score"`
-	//OrdinaryScore  float32           `json:"ordinary_score"`
+	CourseName     string            `json:"course_name"`
+	TeacherName    string            `json:"teacher_name"`
+	CourseCategory uint8             `json:"course_category"`
+	CourseCredit   float32           `json:"course_credit"`
+	Rate           float32           `json:"rate"`
+	StarsNum       uint32            `json:"stars_num"`
+	Attendance     map[string]uint32 `json:"attendance"`
+	Exam           map[string]uint32 `json:"exam"`
+	ClassInfo      []TTPL            `json:"class_info"`
+	Tag            []TagList         `json:"tag"`
+	LikeState      bool              `json:"like_state"`
 }
 
 type HistoryResponseInfo struct {
@@ -71,6 +68,7 @@ type HistoryResponseInfo struct {
 	Attendance     map[string]uint32 `json:"attendance"`
 	Exam           map[string]uint32 `json:"exam"`
 	Tag            []TagList         `json:"tag"`
+	LikeState      bool              `json:"like_state"`
 }
 
 func judge(classid string) string {
@@ -89,10 +87,22 @@ func GetCourseInfo(c *gin.Context) {
 
 	var n1 uint32
 
+	//获取hash
 	hash := c.Param("hash")
 	if hash == "" {
 		log.Info("Get Param error")
 		return
+	}
+
+	//userId获取及游客模式判断
+	var userId uint32
+	isLike := false
+
+	userIdInterface, ok := c.Get("id")
+	if ok {
+		userId = userIdInterface.(uint32)
+		log.Info("This User have token.")
+		_, isLike = model.HasFavorited(userId, hash)
 	}
 
 	//获取tag
@@ -116,7 +126,7 @@ func GetCourseInfo(c *gin.Context) {
 	course := &model.UsingCourseModel{Hash: hash}
 	j, err := course.GetByHash2()
 	if j == 1 {
-		historyInfo := GetHistoryCourseInfo(hash, tag)
+		historyInfo := GetHistoryCourseInfo(hash, tag, isLike)
 		handler.SendResponse(c, nil, historyInfo)
 		log.Info("This is a HistoryCourse")
 	} else {
@@ -198,6 +208,7 @@ func GetCourseInfo(c *gin.Context) {
 			Exam:           examMap,
 			ClassInfo:      test,
 			Tag:            tag,
+			LikeState:      isLike,
 		}
 
 		handler.SendResponse(c, nil, courseResponse) //*
@@ -205,7 +216,7 @@ func GetCourseInfo(c *gin.Context) {
 }
 
 //获取历史课程信息
-func GetHistoryCourseInfo(hash string, tag []TagList) HistoryResponseInfo {
+func GetHistoryCourseInfo(hash string, tag []TagList, isLike bool) HistoryResponseInfo {
 	course := &model.HistoryCourseModel{Hash: hash}
 	if err := course.GetHistoryByHash(); err != nil {
 		log.Info("course.GetHistoryByHash() error.")
@@ -225,6 +236,7 @@ func GetHistoryCourseInfo(hash string, tag []TagList) HistoryResponseInfo {
 		Attendance:     attendanceMap,
 		Exam:           examMap,
 		Tag:            tag,
+		LikeState:      isLike,
 	}
 
 	return courseResponse
