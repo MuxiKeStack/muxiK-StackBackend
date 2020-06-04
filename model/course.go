@@ -5,12 +5,13 @@ import (
 )
 
 const (
-	typeTemp       = "AND RIGHT(LEFT(using_course.course_id, 4), 1) = %s "
-	typeCourseTemp = "AND using_course.type = %s "
-	academyTemp    = "AND using_course.academy = '%s' "
-	weekdayTemp    = "AND (RIGHT(`time1`, 1) = %s OR RIGHT(`time2`, 1) = %s OR RIGHT(`time3`, 1) = %s) "
-	nPlaceTemp     = "AND LEFT(`place1`, 1) = 'N' AND (`place2` = '' OR LEFT(`place2`, 1) = 'N') AND (`place3` = '' OR LEFT(`place3`, 1) = 'N') "
-	bPlaceTemp     = "AND LEFT(`place1`, 1) != 'N' AND (`place2` = '' OR LEFT(`place2`, 1) != 'N') AND (`place3` = '' OR LEFT(`place3`, 1) != 'N') "
+	typeTemp              = "AND RIGHT(LEFT(using_course.course_id, 4), 1) = %s "
+	typeCourseTemp        = "AND using_course.type = %s "
+	typeHistoryCourseTemp = "AND history_course.type = %s "
+	academyTemp           = "AND using_course.academy = '%s' "
+	weekdayTemp           = "AND (RIGHT(`time1`, 1) = %s OR RIGHT(`time2`, 1) = %s OR RIGHT(`time3`, 1) = %s) "
+	nPlaceTemp            = "AND LEFT(`place1`, 1) = 'N' AND (`place2` = '' OR LEFT(`place2`, 1) = 'N') AND (`place3` = '' OR LEFT(`place3`, 1) = 'N') "
+	bPlaceTemp            = "AND LEFT(`place1`, 1) != 'N' AND (`place2` = '' OR LEFT(`place2`, 1) != 'N') AND (`place3` = '' OR LEFT(`place3`, 1) != 'N') "
 )
 
 func (UsingCourseModel) TableName() string {
@@ -162,7 +163,7 @@ func AgainstAndMatchHistoryCourses(kw string, page, limit uint64, t string) ([]H
 	courses := &[]HistoryCourseModel{}
 	where := "MATCH (`name`, `teacher`) AGAINST ('" + kw + "') "
 	if t != "" {
-		where += fmt.Sprintf(typeCourseTemp, t)
+		where += fmt.Sprintf(typeHistoryCourseTemp, t)
 	}
 	DB.Self.Table("history_course").Where(where).Limit(limit).Offset((page - 1) * limit).Find(courses)
 	return *courses, nil
@@ -187,14 +188,17 @@ func AllCourses(page, limit uint64, t, a, w, p string) ([]UsingCourseSearchModel
 	if p == "南湖校区" {
 		where += nPlaceTemp
 	}
+	//fmt.Println(where)
 	if where == "" {
 		DB.Self.Table("using_course").
 			Joins("LEFT JOIN history_course ON using_course.hash = history_course.hash").
 			Limit(limit).Offset((page - 1) * limit).Find(&courses)
 	} else {
+		whereFix := where[4:]
+		//fmt.Println(whereFix)
 		DB.Self.Table("using_course").
 			Joins("LEFT JOIN history_course ON using_course.hash = history_course.hash").
-			Where(where).
+			Where(whereFix).
 			Limit(limit).Offset((page - 1) * limit).Find(&courses)
 	}
 	return *courses, nil
