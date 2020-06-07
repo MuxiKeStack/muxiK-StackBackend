@@ -8,6 +8,7 @@ import (
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
 	"github.com/MuxiKeStack/muxiK-StackBackend/service"
 	"github.com/MuxiKeStack/muxiK-StackBackend/util"
+	"github.com/MuxiKeStack/muxiK-StackBackend/util/securityCheck"
 
 	"github.com/gin-gonic/gin"
 	"github.com/lexkong/log"
@@ -47,6 +48,14 @@ func CreateTopComment(c *gin.Context) {
 		handler.SendBadRequest(c, errno.ErrWordLimitation, nil, "Comment's content is limited to 400.")
 		return
 	}
+
+	// 小程序内容安全检测
+	go func(msg string) {
+		if err := securityCheck.MsgSecCheck(msg); err != nil {
+			log.Error("QQ security check error", err)
+		}
+		log.Info("QQ security check OK")
+	}(data.Content)
 
 	var comment = &model.ParentCommentModel{
 		Id:            uuid.NewV4().String(),
@@ -90,6 +99,7 @@ func CreateTopComment(c *gin.Context) {
 	if commentInfo.IsAnonymous {
 		userId = 2 //匿名用户
 	}
+
 	err = service.NewMessageForParentComment(userId, comment, evaluation)
 	if err != nil {
 		log.Error("NewMessageForParentComment failed", err)

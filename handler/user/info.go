@@ -5,10 +5,8 @@ import (
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
 	"github.com/MuxiKeStack/muxiK-StackBackend/service"
-	"github.com/MuxiKeStack/muxiK-StackBackend/util"
+
 	"github.com/gin-gonic/gin"
-	"github.com/lexkong/log"
-	"github.com/lexkong/log/lager"
 )
 
 // @Tags user
@@ -21,7 +19,7 @@ import (
 // @Success 200 "OK"
 // @Router /user/info/ [post]
 func PostInfo(c *gin.Context) {
-	log.Info("PostInfo function called.", lager.Data{"X-Request-Id": util.GetReqID(c)})
+	// log.Info("PostInfo function called.", lager.Data{"X-Request-Id": util.GetReqID(c)})
 	var info model.UserInfoRequest
 	// BindJSON 如果字段不存在会返回400
 	// ShouldBindJSON 不会自动返回400
@@ -50,7 +48,7 @@ func PostInfo(c *gin.Context) {
 // @Success 200 {object}  model.UserInfoResponse
 // @Router /user/info/ [get]
 func GetInfo(c *gin.Context) {
-	log.Info("GetInfo function called.", lager.Data{"X-Request-Id": util.GetReqID(c)})
+	// log.Info("GetInfo function called.", lager.Data{"X-Request-Id": util.GetReqID(c)})
 	id, _ := c.Get("id")
 	info, err := service.GetUserInfoById(id.(uint32))
 	if err != nil {

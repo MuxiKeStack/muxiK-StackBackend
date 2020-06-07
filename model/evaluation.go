@@ -14,7 +14,9 @@ func (data *EvaluationLikeModel) TableName() string {
 	return "course_evaluation_like"
 }
 
-/*-------------------------- Course Evaluation Operation --------------------------*/
+func NewEvaluation(id uint32) *CourseEvaluationModel {
+	return &CourseEvaluationModel{Id: id}
+}
 
 // Create new course evaluation.
 func (evaluation *CourseEvaluationModel) New() error {
@@ -66,8 +68,7 @@ func (evaluation *CourseEvaluationModel) CancelLiking(id uint32) error {
 
 // Get evaluation by its id.
 func (evaluation *CourseEvaluationModel) GetById() error {
-	d := DB.Self.Unscoped().First(evaluation, "id = ?", evaluation.Id)
-	return d.Error
+	return DB.Self.Unscoped().Where("id = ?", evaluation.Id).First(evaluation).Error
 }
 
 // Update evaluation's total comment amount.

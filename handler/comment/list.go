@@ -28,8 +28,6 @@ type commentListResponse struct {
 // @Success 200 {object} comment.commentListResponse
 // @Router /evaluation/{id}/comments/ [get]
 func GetComments(c *gin.Context) {
-	log.Info("GetComments function is called.")
-
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
 		handler.SendBadRequest(c, errno.ErrGetParam, nil, err.Error())

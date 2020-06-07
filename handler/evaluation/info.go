@@ -38,7 +38,7 @@ func GetEvaluation(c *gin.Context) {
 	}
 
 	// 从数据库中获取评课记录
-	evaluation := &model.CourseEvaluationModel{Id: uint32(id)}
+	evaluation := model.NewEvaluation(uint32(id))
 	if err := evaluation.GetById(); err != nil {
 		log.Error("evaluation.GetById function error.", err)
 		handler.SendError(c, errno.ErrGetEvaluationInfo, nil, err.Error())

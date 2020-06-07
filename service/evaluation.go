@@ -68,7 +68,7 @@ func GetEvaluationInfosByOriginModels(evaluations *[]model.CourseEvaluationModel
 
 			evaluationInfoList.IdMap[data.Id] = data
 
-		}(evaluation) // 不能传地址
+		}(evaluation)
 	}
 
 	go func() {

@@ -17,13 +17,16 @@ log:
 db:  # DB 配置 部署时环境变量覆盖
   name: muxikstack
   addr: 127.0.0.1:3306
-  username: muxi
-  password: 123
+  username: root
+  password: root
 oss:
   access_key:
   secret_key:
   bucket_name:
   domain_name:
+qq:
+  app_id: ""
+  app_secret: ""
 default_user:
   avatar: https://avatars2.githubusercontent.com/u/43539191?s=460&v=4
   username: muxike

@@ -9,6 +9,7 @@ import (
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/router"
 	"github.com/MuxiKeStack/muxiK-StackBackend/router/middleware"
+	"github.com/MuxiKeStack/muxiK-StackBackend/util/securityCheck"
 
 	"github.com/gin-gonic/gin"
 	"github.com/lexkong/log"
@@ -85,6 +86,8 @@ func main() {
 		}
 		log.Info("The router has been deployed successfully.")
 	}()
+
+	securityCheck.QQSecInit()
 
 	log.Infof("Start to listening the incoming requests on http address: %s", viper.GetString("addr"))
 	log.Info(http.ListenAndServe(viper.GetString("addr"), g).Error())
