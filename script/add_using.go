@@ -229,7 +229,7 @@ func main() {
 		key := util.HashCourseId(sCourseId, teachers)
 		cred, _ := strconv.ParseFloat(row[4], 32)
 		float = float32(cred)
-		oneCourse := &model.UsingCourseModel{
+		onecourse := &model.UsingCourseModel{
 			Hash:     key,
 			Academy:  row[0],
 			Name:     name,
@@ -256,7 +256,7 @@ func main() {
 			db.Save(onecourse)
 		}
 
-		fmt.Printf("正在导入第  %d  条记录...\r", oneCourse.Id)
+		fmt.Printf("正在导入第  %d  条记录...\r", onecourse.Id)
 	}
 
 	for i := 6; i <= 9; i++ {
@@ -270,7 +270,7 @@ func main() {
 			key := util.HashCourseId(sCourseId, teachers)
 			cred, _ := strconv.ParseFloat(row[4], 32)
 			float = float32(cred)
-			oneCourse := &model.UsingCourseModel{
+			onecourse := &model.UsingCourseModel{
 				Hash:     key,
 				Academy:  row[0],
 				Name:     row[1],
@@ -297,7 +297,7 @@ func main() {
 				db.Save(onecourse)
 			}
 
-			fmt.Printf("正在导入第  %d  条记录...\r", oneCourse.Id)
+			fmt.Printf("正在导入第  %d  条记录...\r", onecourse.Id)
 		}
 	}
 	fmt.Println("Import has completed")

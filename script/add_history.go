@@ -131,6 +131,9 @@ func main() {
 			count++
 			fmt.Printf("正在载入第  %d  个课程...\r", count)
 			courseId := fill(b.Data.List[i2].CourseId)
+			if len(courseId) > 8{
+				continue
+			}
 			teacher := b.Data.List[i2].Teacher
 			name := b.Data.List[i2].Name
 			key := util.HashCourseId(courseId, teacher)
@@ -139,6 +142,7 @@ func main() {
 				Hash:    key,
 				Name:    name,
 				Teacher: teacher,
+				CourseId: courseId,
 				Type:    judge1(courseId[3:4]),
 			}
 			d := db.Where("hash = ?", key).First(&oneCourse)

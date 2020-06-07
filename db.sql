@@ -166,6 +166,7 @@ CREATE TABLE `history_course` (
   `hash`      VARCHAR(50)  NOT NULL COMMENT "课程id + 教师名 hash 生成的唯一标识",
   `name`      VARCHAR(50)  NOT NULL,
   `teacher`   VARCHAR(50)  NOT NULL,
+  `course_id`      VARCHAR(9)   NOT NULL            COMMENT "课程号",
   `type`      INT          NOT NULL COMMENT "课程类型（根据学校提供的特定位进行判定）0-通必,1-专必,2-专选,3-通选,5-通核",
   `rate`      FLOAT        NOT NULL DEFAULT 0 COMMENT "课程评价星级",
   `stars_num` INT          NOT NULL DEFAULT 0 COMMENT "参与评课人数",

@@ -11,16 +11,17 @@ import (
 )
 
 type searchResponse struct {
-	Courses []service.CourseInfoForUsing `json:"courses"`
-	Length  int                          `json:"length"`
-	Page    uint64                       `json:"page"`
+	Courses []service.CourseInfoForAll `json:"courses"`
+	Length  int                        `json:"length"`
+	Page    uint64                     `json:"page"`
 }
 
+/*
 type searchHistoryCourseResponse struct {
 	Courses []service.CourseInfoForHistory `json:"courses"`
 	Length  int                            `json:"length"`
 	Page    uint64                         `json:"page"`
-}
+}*/
 
 // SearchCourse API means to search the courses by courseName, courseID and teacherName
 // @Summary 搜索课程接口
@@ -53,7 +54,7 @@ func SearchCourse(c *gin.Context) {
 	w := c.DefaultQuery("weekday", "")
 	p := c.DefaultQuery("place", "")
 
-	courseList := []service.CourseInfoForUsing{}
+	courseList := []service.CourseInfoForAll{}
 	if keyword != "" {
 		courseList, err = service.SearchCourses(keyword, page, limit, t, a, w, p)
 	} else {
@@ -78,7 +79,7 @@ func SearchCourse(c *gin.Context) {
 // @Param type query string false "课程类型"
 // @Param page query integer true "页码"
 // @Param limit query integer true "每页最大数"
-// @Success 200 {object} search.searchHistoryCourseResponse
+// @Success 200 {object} search.searchResponse
 // @Router /search/historyCourse/ [get]
 func SearchHistoryCourse(c *gin.Context) {
 	pageStr := c.DefaultQuery("page", "1")
@@ -96,7 +97,7 @@ func SearchHistoryCourse(c *gin.Context) {
 	keyword := c.DefaultQuery("keyword", "")
 	t := c.DefaultQuery("type", "")
 
-	courseList := []service.CourseInfoForHistory{}
+	courseList := []service.CourseInfoForAll{}
 	if keyword != "" {
 		courseList, err = service.SearchHistoryCourses(keyword, page, limit, t)
 	} else {
@@ -106,7 +107,7 @@ func SearchHistoryCourse(c *gin.Context) {
 		handler.SendError(c, errno.ErrSearchCourse, nil, err.Error())
 		return
 	}
-	response := searchHistoryCourseResponse{
+	response := searchResponse{
 		Courses: courseList,
 		Length:  len(courseList),
 		Page:    page,
