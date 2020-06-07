@@ -6,8 +6,8 @@ import (
 	"sync"
 )
 
-// 现用课堂信息
-type CourseInfoForUsing struct {
+// 现用&历史课堂信息
+type CourseInfoForAll struct {
 	Id         uint32   `json:"id"`         //主键
 	Hash       string   `json:"hash"`       //教师名和课程hash成的唯一标识，用于getinfo
 	CourseId   string   `json:"course_id"`  //仅用于在UI上进行展示
@@ -20,6 +20,7 @@ type CourseInfoForUsing struct {
 	Tags       []string `json:"tags"`       //前二的tag
 }
 
+/*
 // 搜索查询的课程列表（历史课堂信息）
 type CourseInfoForHistory struct {
 	Id         uint32   `json:"id"`   //数据库表中记录的id，自增id
@@ -31,7 +32,7 @@ type CourseInfoForHistory struct {
 	Attendance string   `json:"attendance"` //点名方式
 	Exam       string   `json:"exam"`       //考核方式
 	Tags       []string `json:"tags"`       //前二的tag
-}
+}*/
 
 // 获取点名方式
 func GetAttendanceTypeMax(hash string) string {
@@ -53,11 +54,11 @@ func kwReplace(kw string) string {
 }
 
 // Using
-func SearchCourses(keyword string, page, limit uint64, t, a, w, p string) ([]CourseInfoForUsing, error) {
+func SearchCourses(keyword string, page, limit uint64, t, a, w, p string) ([]CourseInfoForAll, error) {
 	keyword = kwReplace(keyword)
 	courseRows, _ := model.AgainstAndMatchCourses(keyword, page, limit, t, a, w, p)
 
-	courses := make([]CourseInfoForUsing, len(courseRows))
+	courses := make([]CourseInfoForAll, len(courseRows))
 	locker := sync.Mutex{}
 	wg := sync.WaitGroup{}
 
@@ -73,7 +74,7 @@ func SearchCourses(keyword string, page, limit uint64, t, a, w, p string) ([]Cou
 
 			locker.Lock()
 			defer locker.Unlock()
-			courses[index] = CourseInfoForUsing{
+			courses[index] = CourseInfoForAll{
 				Id:         row.Id,
 				Hash:       row.Hash,
 				Name:       row.Name,
@@ -94,11 +95,11 @@ func SearchCourses(keyword string, page, limit uint64, t, a, w, p string) ([]Cou
 }
 
 // History
-func SearchHistoryCourses(keyword string, page, limit uint64, t string) ([]CourseInfoForHistory, error) {
+func SearchHistoryCourses(keyword string, page, limit uint64, t string) ([]CourseInfoForAll, error) {
 	keyword = kwReplace(keyword)
 	courseRows, _ := model.AgainstAndMatchHistoryCourses(keyword, page, limit, t)
 
-	courses := make([]CourseInfoForHistory, len(courseRows))
+	courses := make([]CourseInfoForAll, len(courseRows))
 	locker := sync.Mutex{}
 	wg := sync.WaitGroup{}
 
@@ -114,11 +115,12 @@ func SearchHistoryCourses(keyword string, page, limit uint64, t string) ([]Cours
 
 			locker.Lock()
 			defer locker.Unlock()
-			courses[index] = CourseInfoForHistory{
+			courses[index] = CourseInfoForAll{
 				Id:         row.Id,
 				Hash:       row.Hash,
 				Name:       row.Name,
 				Teacher:    row.Teacher,
+				CourseId:   row.CourseId,
 				Rate:       row.Rate,
 				StarsNum:   row.StarsNum,
 				Attendance: attendance,
@@ -134,13 +136,13 @@ func SearchHistoryCourses(keyword string, page, limit uint64, t string) ([]Cours
 }
 
 // Using
-func GetAllCourses(page, limit uint64, t, a, w, p string) ([]CourseInfoForUsing, error) {
+func GetAllCourses(page, limit uint64, t, a, w, p string) ([]CourseInfoForAll, error) {
 	courseRows, err := model.AllCourses(page, limit, t, a, w, p)
 	if err != nil {
 		return nil, err
 	}
 
-	courses := make([]CourseInfoForUsing, len(courseRows))
+	courses := make([]CourseInfoForAll, len(courseRows))
 	locker := sync.Mutex{}
 	wg := sync.WaitGroup{}
 
@@ -156,7 +158,7 @@ func GetAllCourses(page, limit uint64, t, a, w, p string) ([]CourseInfoForUsing,
 
 			locker.Lock()
 			defer locker.Unlock()
-			courses[index] = CourseInfoForUsing{
+			courses[index] = CourseInfoForAll{
 				Id:         row.Id,
 				Hash:       row.Hash,
 				Name:       row.Name,
@@ -177,13 +179,13 @@ func GetAllCourses(page, limit uint64, t, a, w, p string) ([]CourseInfoForUsing,
 }
 
 // History
-func GetAllHistoryCourses(page, limit uint64, t string) ([]CourseInfoForHistory, error) {
+func GetAllHistoryCourses(page, limit uint64, t string) ([]CourseInfoForAll, error) {
 	courseRows, err := model.AllHistoryCourses(page, limit, t)
 	if err != nil {
 		return nil, err
 	}
 
-	courses := make([]CourseInfoForHistory, len(courseRows))
+	courses := make([]CourseInfoForAll, len(courseRows))
 	locker := sync.Mutex{}
 	wg := sync.WaitGroup{}
 
@@ -199,11 +201,12 @@ func GetAllHistoryCourses(page, limit uint64, t string) ([]CourseInfoForHistory,
 
 			locker.Lock()
 			defer locker.Unlock()
-			courses[index] = CourseInfoForHistory{
+			courses[index] = CourseInfoForAll{
 				Id:         row.Id,
 				Hash:       row.Hash,
 				Name:       row.Name,
 				Teacher:    row.Teacher,
+				CourseId:   row.CourseId,
 				Rate:       row.Rate,
 				StarsNum:   row.StarsNum,
 				Attendance: attendance,
