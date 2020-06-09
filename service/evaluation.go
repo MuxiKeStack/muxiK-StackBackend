@@ -5,6 +5,7 @@ import (
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/constvar"
+	"github.com/MuxiKeStack/muxiK-StackBackend/util"
 
 	"github.com/lexkong/log"
 )
@@ -130,6 +131,8 @@ func GetEvaluationInfo(evaluation *model.CourseEvaluationModel, userId uint32, v
 		return nil, err
 	}
 
+	date, time := util.ParseTime(evaluation.Time)
+
 	var info = &model.EvaluationInfo{
 		Id:                  evaluation.Id,
 		CourseId:            evaluation.CourseId,
@@ -139,7 +142,8 @@ func GetEvaluationInfo(evaluation *model.CourseEvaluationModel, userId uint32, v
 		AttendanceCheckType: GetAttendanceCheckTypeByCode(evaluation.AttendanceCheckType),
 		ExamCheckType:       GetExamCheckTypeByCode(evaluation.ExamCheckType),
 		Content:             evaluation.Content,
-		Time:                evaluation.Time.Unix(),
+		Date:                date,
+		Time:                time,
 		IsAnonymous:         evaluation.IsAnonymous,
 		IsLike:              isLike,
 		LikeNum:             evaluation.LikeNum,

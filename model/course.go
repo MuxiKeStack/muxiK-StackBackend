@@ -247,10 +247,11 @@ func GetHistoryCourseByHashId(id string) (*HistoryCourseModel, error) {
 }
 
 // 判断课程是否存在
-func IsCourseExisting(id string) bool {
-	var course HistoryCourseModel
-	d := DB.Self.Where("hash = ?", id).First(&course)
-	return !d.RecordNotFound()
+func IsCourseExisting(hash string) bool {
+	var data struct{ Id uint32 }
+
+	DB.Self.Table("history_course").Select("id").Where("hash = ?", hash).Scan(&data)
+	return data.Id != 0
 }
 
 /*---------------------------- SelfCourse Operation --------------------------*/

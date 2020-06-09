@@ -14,4 +14,4 @@ services:
 dist: bionic
 
 before_script:
-  - mysql -u root --password="" < db.sql
+  - mysql -u root --password=root < db.sql

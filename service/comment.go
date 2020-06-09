@@ -5,6 +5,7 @@ import (
 	"sync"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
+	"github.com/MuxiKeStack/muxiK-StackBackend/util"
 
 	"github.com/lexkong/log"
 )
@@ -119,13 +120,16 @@ func GetParentCommentInfo(id string, userId uint32, visitor bool) (*model.Parent
 		return nil, err
 	}
 
+	date, time := util.ParseTime(comment.Time)
+
 	data := &model.ParentCommentInfo{
 		Id:              comment.Id,
 		Content:         comment.Content,
 		LikeNum:         model.GetCommentLikeSum(comment.Id),
 		IsLike:          isLike,
 		IsValid:         true,
-		Time:            comment.Time.Unix(),
+		Date:            date,
+		Time:            time,
 		IsAnonymous:     comment.IsAnonymous,
 		UserInfo:        userInfo,
 		SubCommentsNum:  comment.SubCommentNum,
@@ -249,6 +253,8 @@ func GetSubCommentInfoById(id string, userId uint32, visitor bool) (*model.Comme
 		canDelete = true
 	}
 
+	date, time := util.ParseTime(comment.Time)
+
 	data := &model.CommentInfo{
 		Id:             comment.Id,
 		Content:        comment.Content,
@@ -256,7 +262,8 @@ func GetSubCommentInfoById(id string, userId uint32, visitor bool) (*model.Comme
 		IsLike:         isLike,
 		IsValid:        true,
 		IsAnonymous:    comment.IsAnonymous,
-		Time:           comment.Time.Unix(),
+		Date:           date,
+		Time:           time,
 		UserInfo:       commentUser,
 		TargetUserInfo: targetUser,
 		CanDelete:      canDelete,

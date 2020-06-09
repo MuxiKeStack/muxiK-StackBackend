@@ -873,7 +873,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/search.searchHistoryCourseResponse"
+                            "$ref": "#/definitions/search.searchResponse"
                         }
                     }
                 }
@@ -1733,6 +1733,9 @@
                 "content": {
                     "type": "string"
                 },
+                "date": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "string"
                 },
@@ -1753,7 +1756,7 @@
                     "$ref": "#/definitions/model.UserInfoResponse"
                 },
                 "time": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "user_info": {
                     "type": "object",
@@ -1844,6 +1847,9 @@
                 "course_name": {
                     "type": "string"
                 },
+                "date": {
+                    "type": "string"
+                },
                 "exam_check_type": {
                     "type": "string"
                 },
@@ -1875,7 +1881,7 @@
                     "type": "string"
                 },
                 "time": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "user_info": {
                     "type": "object",
@@ -1954,6 +1960,9 @@
                 "content": {
                     "type": "string"
                 },
+                "date": {
+                    "type": "string"
+                },
                 "id": {
                     "description": "父评论id",
                     "type": "string"
@@ -1980,7 +1989,7 @@
                     "type": "integer"
                 },
                 "time": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "user_info": {
                     "type": "object",
@@ -2035,30 +2044,13 @@
                 }
             }
         },
-        "search.searchHistoryCourseResponse": {
-            "type": "object",
-            "properties": {
-                "courses": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/service.CourseInfoForHistory"
-                    }
-                },
-                "length": {
-                    "type": "integer"
-                },
-                "page": {
-                    "type": "integer"
-                }
-            }
-        },
         "search.searchResponse": {
             "type": "object",
             "properties": {
                 "courses": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/service.CourseInfoForUsing"
+                        "$ref": "#/definitions/service.CourseInfoForAll"
                     }
                 },
                 "length": {
@@ -2069,47 +2061,7 @@
                 }
             }
         },
-        "service.CourseInfoForHistory": {
-            "type": "object",
-            "properties": {
-                "attendance": {
-                    "description": "点名方式",
-                    "type": "string"
-                },
-                "exam": {
-                    "description": "考核方式",
-                    "type": "string"
-                },
-                "hash": {
-                    "description": "教师名和课程hash成的唯一标识，用于getinfo",
-                    "type": "string"
-                },
-                "id": {
-                    "description": "数据库表中记录的id，自增id",
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "rate": {
-                    "type": "number"
-                },
-                "stars_num": {
-                    "type": "integer"
-                },
-                "tags": {
-                    "description": "前二的tag",
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "teacher": {
-                    "type": "string"
-                }
-            }
-        },
-        "service.CourseInfoForUsing": {
+        "service.CourseInfoForAll": {
             "type": "object",
             "properties": {
                 "attendance": {

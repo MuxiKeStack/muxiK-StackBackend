@@ -42,7 +42,8 @@ type CommentInfo struct {
 	LikeNum        uint32            `json:"like_num"`
 	IsLike         bool              `json:"is_like"`
 	IsValid        bool              `json:"is_valid"`
-	Time           int64             `json:"time"`
+	Date           string            `json:"date"`
+	Time           string            `json:"time"`
 	IsAnonymous    bool              `json:"is_anonymous"`
 	UserInfo       *UserInfoResponse `json:"user_info"`
 	TargetUserInfo *UserInfoResponse `json:"target_user_info"`
@@ -56,7 +57,8 @@ type ParentCommentInfo struct {
 	LikeNum         uint32            `json:"like_num"`
 	IsLike          bool              `json:"is_like"`
 	IsValid         bool              `json:"is_valid"`
-	Time            int64             `json:"time"`
+	Date            string            `json:"date"`
+	Time            string            `json:"time"`
 	IsAnonymous     bool              `json:"is_anonymous"`
 	UserInfo        *UserInfoResponse `json:"user_info"`
 	SubCommentsNum  uint32            `json:"sub_comments_num"`

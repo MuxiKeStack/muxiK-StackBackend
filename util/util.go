@@ -26,9 +26,12 @@ func GetReqID(c *gin.Context) string {
 }
 
 func GetCurrentTime() *time.Time {
-	var t time.Time
-	t = time.Now()
+	t := time.Now()
 	return &t
+}
+
+func ParseTime(t *time.Time) (string, string) {
+	return t.Format("2006-01-02"), t.Format("15:04:05")
 }
 
 // 根据获取的教师字段提取教师名，[2006982005/张立荣,2006982022/费军](或2006982005/张立荣/教授,2006982022/费军/讲师)=>张立荣,费军

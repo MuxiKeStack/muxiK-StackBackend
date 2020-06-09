@@ -38,7 +38,8 @@ type EvaluationInfo struct {
 	AttendanceCheckType string            `json:"attendance_check_type"`
 	ExamCheckType       string            `json:"exam_check_type"`
 	Content             string            `json:"content"`
-	Time                int64             `json:"time"`
+	Date                string            `json:"date"`
+	Time                string            `json:"time"`
 	IsAnonymous         bool              `json:"is_anonymous"`
 	IsLike              bool              `json:"is_like"`
 	LikeNum             uint32            `json:"like_num"`
