@@ -43,8 +43,11 @@ func Get(c *gin.Context) {
 		return
 	}
 
-	course, err := model.GetHistoryCourseByHashId(courseId)
-	if err != nil {
+	course, ok, err := model.GetHistoryCourseByHashId(courseId)
+	if !ok {
+		handler.SendBadRequest(c, errno.ErrCourseExisting, nil, "couse_id error")
+		return
+	} else if err != nil {
 		handler.SendError(c, err, nil, err.Error())
 		return
 	}

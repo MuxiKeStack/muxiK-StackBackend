@@ -136,7 +136,7 @@ func NewGradeSampleFoCourses(userId uint32) error {
 // 一门课程的成绩样本数据添加
 func NewGradeDataAdditionForOneCourse(userId uint32, data *model.GradeModel) error {
 	// 获取课程
-	course, err := model.GetHistoryCourseByHashId(data.CourseHashId)
+	course, _, err := model.GetHistoryCourseByHashId(data.CourseHashId)
 	if err != nil {
 		log.Error("GetHistoryCourseByHashId function error", err)
 		return err

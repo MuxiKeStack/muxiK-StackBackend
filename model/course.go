@@ -240,10 +240,25 @@ func GetTeacherByCourseId(id string) (string, error) {
 }
 
 // Get history course by hash id.
-func GetHistoryCourseByHashId(id string) (*HistoryCourseModel, error) {
+func GetHistoryCourseByHashId(id string) (*HistoryCourseModel, bool, error) {
 	var course HistoryCourseModel
 	d := DB.Self.First(&course, "hash = ?", id)
-	return &course, d.Error
+	if d.RecordNotFound() {
+		return nil, false, nil
+	}
+	return &course, true, d.Error
+}
+
+func GetHistoryCoursePartInfoByHashId(hash string) (*HistoryCourseModel, bool, error) {
+	var data = &HistoryCourseModel{}
+	d := DB.Self.Table("history_course").
+		Select("hash, name, teacher, rate, stars_num").
+		Where("hash = ?", hash).Scan(data)
+
+	if d.RecordNotFound() {
+		return nil, false, nil
+	}
+	return data, true, d.Error
 }
 
 // 判断课程是否存在

@@ -211,10 +211,13 @@ func GetCollectionList(userId uint32, lastId, limit int32) (*[]model.CourseInfoF
 		go func(record model.CourseListModel) {
 			defer wg.Done()
 
-			course, err := model.GetHistoryCourseByHashId(record.CourseHashId)
+			course, ok, err := model.GetHistoryCoursePartInfoByHashId(record.CourseHashId)
 			if err != nil {
-				log.Error("GetHistoryCourseByHashId function error", err)
+				log.Error("GetHistoryCoursePartInfoByHashId function error", err)
 				errChan <- err
+			} else if !ok {
+				log.Info(fmt.Sprintf("No this history course; hash = %s", record.CourseHashId))
+				return
 			}
 
 			attendanceTypeNum, err := model.GetTheMostAttendanceCheckType(record.CourseHashId)
@@ -267,7 +270,12 @@ func GetCollectionList(userId uint32, lastId, limit int32) (*[]model.CourseInfoF
 
 	var result []model.CourseInfoForCollections
 	for _, id := range ids {
-		result = append(result, *courseInfoList.IdMap[id])
+		// 2020-6-9: fix: history course may not exist
+		c, ok := courseInfoList.IdMap[id]
+		if !ok {
+			continue
+		}
+		result = append(result, *c)
 	}
 
 	return &result, nil
