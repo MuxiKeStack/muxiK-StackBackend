@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"strings"
 
 	_ "github.com/360EntSecGroup-Skylar/excelize"
@@ -12,6 +13,8 @@ import (
 type Config struct {
 	Name string
 }
+
+var GradeSwitch string = "on"
 
 func Init(cfg string) error {
 	c := Config{
@@ -28,6 +31,8 @@ func Init(cfg string) error {
 
 	// 监控配置文件变化并热加载程序
 	c.watchConfig()
+
+	initGlobalVariables()
 
 	return nil
 }
@@ -73,4 +78,10 @@ func (c *Config) watchConfig() {
 	viper.OnConfigChange(func(e fsnotify.Event) {
 		log.Infof("Config file changed: %s", e.Name)
 	})
+}
+
+func initGlobalVariables() {
+	// export MUXIKSTACK_GRADE_CRAWL=on
+	GradeSwitch = viper.GetString("grade_crawl")
+	fmt.Printf("gradeSwitch=%s\n", GradeSwitch)
 }

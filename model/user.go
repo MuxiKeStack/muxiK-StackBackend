@@ -42,7 +42,7 @@ func CreateUser(sid string) error {
 }
 
 func UserHasLicence(id uint32) (bool, error) {
-	var u = UserModel{Id: id}
-	d := DB.Self.First(&u)
-	return u.Licence, d.Error
+	var l struct{ Licence bool }
+	err := DB.Self.Table("user").Select("licence").Where("id = ?", id).Scan(&l).Error
+	return l.Licence, err
 }

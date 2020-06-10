@@ -1,6 +1,8 @@
 package course
 
 import (
+	"encoding/json"
+
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
@@ -9,7 +11,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/lexkong/log"
-	"github.com/spf13/viper"
 )
 
 type selfCoursesResponse struct {
@@ -77,27 +78,25 @@ func GetSelfCourses(c *gin.Context) {
 		Data: data,
 	})
 
-	/* ------ 成绩爬取服务 ------ */
+	/* ------ 成绩服务 ------ */
 
-	// 环境变量设置，是否爬取成绩
-	// export MUXIKSTACK_GRADE_CRAWL=on
-	if gradeSwitch := viper.GetString("grade_crawl"); gradeSwitch != "on" {
+	gMsg := &service.AsynGradeMsgModel{
+		LoginModel: model.LoginModel{
+			Sid:      l.Sid,
+			Password: l.Password,
+		},
+		UserId: userId,
+		New:    false,
+	}
+	msg, err := json.Marshal(gMsg)
+	if err != nil {
+		log.Errorf(err, "marshal asyn-grade-msg error for (userId=%d, sid=%s, psw=%s)", userId, gMsg.Sid, gMsg.Password)
 		return
 	}
 
-	// 检查是否加入成绩共享计划
-	if ok, err := model.UserHasLicence(userId); err != nil {
-		log.Error("UserHasLicence function error", err)
-		return
-	} else if !ok {
+	if err := model.PublishMsg(msg, model.GradeChan); err != nil {
+		log.Errorf(err, "asyn-grade-msg publish error for (%s)", string(msg))
 		return
 	}
-	log.Info("Crawling grades begins")
-
-	// 有许可，导入成绩至统计样本
-	if err := service.GradeImportService(userId, l.Sid, l.Password); err != nil {
-		log.Error("Grade import failed", err)
-		return
-	}
-	log.Info("Grade sample imported successfully")
+	log.Info("publish msg OK")
 }

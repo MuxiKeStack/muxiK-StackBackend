@@ -120,9 +120,14 @@ func GetGradeFromXK(sid, password string, curRecordNum int) (*[]ResultGradeItem,
 		// 获取平时和期末成绩
 		u, f, err := GetUsualAndFinalGradeFromXK(client, d.JxbId, d.Kcmc, d.Xnm, d.Xqm)
 		if err != nil {
-			log.Error("GetUsualAndFinalGradeFromXK function error", err)
+			log.Errorf(err, "GetUsualAndFinalGrade for (%s, %s, %s) error", d.Kch, d.Kcmc, d.Jsxm)
+			continue
 		}
-		t, _ := strconv.ParseFloat(d.Cj, 32)
+		t, err := strconv.ParseFloat(d.Cj, 32)
+		if err != nil {
+			log.Errorf(err, "parse %s to float error", d.Cj)
+			continue
+		}
 		item := ResultGradeItem{
 			Teacher:    d.Jsxm,
 			CourseId:   d.Kch,

@@ -10,6 +10,7 @@ require (
 	github.com/fsnotify/fsnotify v1.4.7
 	github.com/gin-gonic/gin v1.5.0
 	github.com/go-ole/go-ole v1.2.4 // indirect
+	github.com/go-redis/redis v6.15.8+incompatible
 	github.com/jinzhu/gorm v1.9.11
 	github.com/lexkong/log v0.0.0-20180607165131-972f9cd951fc
 	github.com/qiniu/api.v7/v7 v7.4.0

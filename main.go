@@ -9,6 +9,7 @@ import (
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/router"
 	"github.com/MuxiKeStack/muxiK-StackBackend/router/middleware"
+	"github.com/MuxiKeStack/muxiK-StackBackend/service"
 	"github.com/MuxiKeStack/muxiK-StackBackend/util/securityCheck"
 
 	"github.com/gin-gonic/gin"
@@ -63,6 +64,13 @@ func main() {
 	model.DB.Init()
 	defer model.DB.Close()
 
+	// init redis client
+	model.RedisDB.Init()
+	defer model.RedisDB.Close()
+	// init grade sub client
+	model.GradeSubClient.Init(model.GradeChan)
+	defer model.GradeSubClient.Close()
+
 	// Set gin mode.
 	gin.SetMode(viper.GetString("runmode"))
 
@@ -86,6 +94,9 @@ func main() {
 		}
 		log.Info("The router has been deployed successfully.")
 	}()
+
+	// Async grade service
+	go service.AsynGradeService()
 
 	securityCheck.QQSecInit()
 

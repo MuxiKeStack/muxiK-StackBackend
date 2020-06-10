@@ -30,3 +30,6 @@ qq:
 default_user:
   avatar: https://avatars2.githubusercontent.com/u/43539191?s=460&v=4
   username: muxike
+redis:
+  addr: 127.0.0.1:6379
+  password: ""

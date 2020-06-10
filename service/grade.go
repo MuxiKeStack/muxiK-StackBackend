@@ -4,6 +4,7 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/MuxiKeStack/muxiK-StackBackend/config"
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/util"
 
@@ -55,7 +56,7 @@ func NewGradeRecord(userId uint32, sid, pwd string) error {
 				return
 			}
 
-			g := &model.GradeModel{
+			gradeChan <- &model.GradeModel{
 				UserId:       userId,
 				CourseHashId: hash,
 				CourseName:   item.CourseName,
@@ -64,7 +65,6 @@ func NewGradeRecord(userId uint32, sid, pwd string) error {
 				FinalScore:   item.FinalScore,
 				HasAdded:     false,
 			}
-			gradeChan <- g
 		}(item)
 	}
 
@@ -171,18 +171,37 @@ func NewGradeDataAdditionForOneCourse(userId uint32, data *model.GradeModel) err
 }
 
 // 成绩服务，包括成绩爬取和导入统计样本
-func GradeImportService(userId uint32, sid, pwd string) error {
-	log.Info("Grade import service is called")
+func GradeImportService(userId uint32, sid, pwd string) {
+	log.Info("Crawling grades begins")
 
 	// 获取成绩
 	if err := NewGradeRecord(userId, sid, pwd); err != nil {
-		log.Error("NewGradeRecord function error", err)
-		return err
+		// log.Error("NewGradeRecord function error", err)
+		log.Errorf(err, "Grade import failed for (userId=%d, sid=%s, psw=%s)", userId, sid, pwd)
+		return
 	}
 	// 导入成绩样本数据
 	if err := NewGradeSampleFoCourses(userId); err != nil {
 		log.Error("NewGradeSampleFoCourses function error", err)
-		return err
+		return
 	}
-	return nil
+	log.Info("Grade sample imported successfully")
+}
+
+func GradeCrawlHandler(userId uint32, sid, pwd string) {
+	// 环境变量设置，是否爬取成绩
+	if config.GradeSwitch != "on" {
+		return
+	}
+
+	// 检查是否加入成绩共享计划
+	if ok, err := model.UserHasLicence(userId); err != nil {
+		log.Error("UserHasLicence function error", err)
+		return
+	} else if !ok {
+		log.Infof("user(%d) has no licence", userId)
+		return
+	}
+
+	GradeImportService(userId, sid, pwd)
 }

@@ -1,6 +1,8 @@
 package user
 
 import (
+	"encoding/json"
+
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
@@ -49,11 +51,25 @@ func JoinPro(c *gin.Context) {
 
 	handler.SendResponse(c, nil, nil)
 
-	// 成绩统计样本服务
-	// 成绩导入统计样本
-	if err := service.GradeImportService(userId, l.Sid, l.Password); err != nil {
-		log.Error("Grade import failed", err)
+	/* ------ 成绩服务 ------ */
+
+	gMsg := &service.AsynGradeMsgModel{
+		LoginModel: model.LoginModel{
+			Sid:      l.Sid,
+			Password: l.Password,
+		},
+		UserId: userId,
+		New:    true,
+	}
+	msg, err := json.Marshal(gMsg)
+	if err != nil {
+		log.Errorf(err, "marshal asyn-grade-msg error for (userId=%d, sid=%s, psw=%s)", userId, gMsg.Sid, gMsg.Password)
 		return
 	}
-	log.Info("Grade sample imported successfully")
+
+	if err := model.PublishMsg(msg, model.GradeChan); err != nil {
+		log.Errorf(err, "asyn-grade-msg publish error for (%s)", string(msg))
+		return
+	}
+	log.Info("publish msg OK")
 }

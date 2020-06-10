@@ -37,7 +37,7 @@ func QQSecInit() {
 
 	accessToken.loadToken()
 
-	fmt.Println(QQAppID, QQAppSecret, accessToken.Token)
+	// fmt.Println(QQAppID, QQAppSecret, accessToken.Token)
 
 	imgSecCheckURL += accessToken.Token
 	msgSecCheckURL += accessToken.Token

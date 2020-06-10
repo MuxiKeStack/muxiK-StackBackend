@@ -44,8 +44,6 @@ func GetGradeRecord(userId uint32, hashId string) (*GradeModel, bool, error) {
 func GradeRecordExisting(userId uint32, hashId string) (bool, error) {
 	var count int
 	d := DB.Self.Table("grade").Where("user_id = ? AND course_hash_id = ?", userId, hashId).Count(&count)
-	//d := DB.Self.Exec("SELECT id FROM grade WHERE user_id = ? AND course_hash_id = ?;", userId, hashId)
-	//d := DB.Self.Where("user_id = ? AND course_hash_id = ?", userId, hashId).First(&GradeModel{})
 	return count != 0, d.Error
 }
 
