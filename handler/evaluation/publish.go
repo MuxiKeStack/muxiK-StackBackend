@@ -56,9 +56,9 @@ func Publish(c *gin.Context) {
 		return
 	}
 
-	// Words are limited to 400
-	if len(data.Content) > 400 {
-		handler.SendBadRequest(c, errno.ErrWordLimitation, nil, "Evaluation's content is limited to 400.")
+	// Words are limited to 500
+	if len(data.Content) > 500 {
+		handler.SendBadRequest(c, errno.ErrWordLimitation, nil, "Evaluation's content is limited to 500.")
 		return
 	}
 

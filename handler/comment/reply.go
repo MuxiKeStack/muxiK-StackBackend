@@ -70,9 +70,9 @@ func Reply(c *gin.Context) {
 	//	return
 	//}
 
-	// Words are limited to 200
-	if len(data.Content) > 200 {
-		handler.SendBadRequest(c, errno.ErrWordLimitation, nil, "Comment's content is limited to 200.")
+	// Words are limited to 300
+	if len(data.Content) > 300 {
+		handler.SendBadRequest(c, errno.ErrWordLimitation, nil, "Comment's content is limited to 300.")
 		return
 	}
 
