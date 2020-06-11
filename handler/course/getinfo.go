@@ -48,6 +48,7 @@ type ResponseInfo struct {
 	CourseName     string            `json:"course_name"`
 	TeacherName    string            `json:"teacher_name"`
 	CourseCategory uint8             `json:"course_category"`
+	CourseType     string            `json:"course_type"` //using or history
 	CourseCredit   float32           `json:"course_credit"`
 	Rate           float32           `json:"rate"`
 	StarsNum       uint32            `json:"stars_num"`
@@ -62,7 +63,7 @@ type HistoryResponseInfo struct {
 	CourseName     string            `json:"course_name"`
 	TeacherName    string            `json:"teacher_name"`
 	CourseCategory uint8             `json:"course_category"`
-	CourseCredit   float32           `json:"course_credit"`
+	CourseType     string            `json:"course_type"` //using or history
 	Rate           float32           `json:"rate"`
 	StarsNum       uint32            `json:"stars_num"`
 	Attendance     map[string]uint32 `json:"attendance"`
@@ -201,6 +202,7 @@ func GetCourseInfo(c *gin.Context) {
 			CourseName:     course.Name,
 			TeacherName:    course.Teacher,
 			CourseCategory: course.Type,
+			CourseType:     "using",
 			CourseCredit:   course.Credit,
 			Rate:           class.Rate,
 			StarsNum:       class.StarsNum,
@@ -230,7 +232,7 @@ func GetHistoryCourseInfo(hash string, tag []TagList, isLike bool) HistoryRespon
 		CourseName:     course.Name,
 		TeacherName:    course.Teacher,
 		CourseCategory: course.Type,
-		CourseCredit:   course.Credit,
+		CourseType:     "history",
 		Rate:           course.Rate,
 		StarsNum:       course.StarsNum,
 		Attendance:     attendanceMap,

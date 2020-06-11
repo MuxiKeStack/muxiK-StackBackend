@@ -10,7 +10,6 @@ type HistoryCourseModel struct {
 	Type            uint8   `gorm:"column:type"`              //课程类型，公共课为0，专业课为1
 	Rate            float32 `gorm:"column:rate"`              //课程评价星级
 	StarsNum        uint32  `gorm:"column:stars_num"`         //参与评分人数
-	Credit          float32 `gorm:"column:credit"`            // 学分
 	GradeSampleSize uint32  `gorm:"column:grade_sample_size"` // 成绩样本数
 	TotalGrade      float32 `gorm:"column:total_grade"`       // 总成绩均分
 	UsualGrade      float32 `gorm:"column:usual_grade"`       // 平时成绩均分

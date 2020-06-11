@@ -170,7 +170,6 @@ CREATE TABLE `history_course` (
   `type`      INT          NOT NULL COMMENT "课程类型（根据学校提供的特定位进行判定）0-通必,1-专必,2-专选,3-通选,5-通核",
   `rate`      FLOAT        NOT NULL DEFAULT 0 COMMENT "课程评价星级",
   `stars_num` INT          NOT NULL DEFAULT 0 COMMENT "参与评课人数",
-  `credit`    FLOAT        NOT NULL DEFAULT 0 COMMENT "学分",
   `total_grade` FLOAT      NOT NULL DEFAULT 0 COMMENT "总成绩",
   `usual_grade` FLOAT      NOT NULL DEFAULT 0 COMMENT "平时成绩",
   `grade_sample_size` INT  NOT NULL DEFAULT 0 COMMENT "成绩样本人数",
