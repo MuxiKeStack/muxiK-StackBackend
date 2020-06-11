@@ -4,6 +4,7 @@ import (
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
+	"github.com/lexkong/log"
 
 	"github.com/gin-gonic/gin"
 )
@@ -43,12 +44,13 @@ func Get(c *gin.Context) {
 		return
 	}
 
-	course, ok, err := model.GetHistoryCourseByHashId(courseId)
+	course, ok, err := model.GetGradeInfoFromHistiryCourseInfo(courseId)
 	if !ok {
-		handler.SendBadRequest(c, errno.ErrCourseExisting, nil, "couse_id error")
+		handler.SendBadRequest(c, errno.ErrCourseExisting, nil, "course_id error")
 		return
 	} else if err != nil {
-		handler.SendError(c, err, nil, err.Error())
+		log.Errorf(err, "request grade for (hash=%s) error", courseId)
+		handler.SendError(c, errno.ErrDatabase, nil, err.Error())
 		return
 	}
 

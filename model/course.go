@@ -261,6 +261,17 @@ func GetHistoryCoursePartInfoByHashId(hash string) (*HistoryCourseModel, bool, e
 	return data, true, d.Error
 }
 
+func GetGradeInfoFromHistiryCourseInfo(hash string) (*HistoryCourseModel, bool, error) {
+	var data = &HistoryCourseModel{}
+	d := DB.Self.Table("history_course").
+		Select("total_grade, usual_grade, grade_sample_size, grade_section_1, grade_section_2, grade_section_3").
+		Where("hash = ?", hash).Scan(data)
+	if d.RecordNotFound() {
+		return nil, false, nil
+	}
+	return data, true, d.Error
+}
+
 // 判断课程是否存在
 func IsCourseExisting(hash string) bool {
 	var data struct{ Id uint32 }
