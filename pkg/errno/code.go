@@ -13,6 +13,8 @@ var (
 	ErrGetParam   = &Errno{Code: 20005, Message: "Error occurred while getting path params. "}
 	ErrDelete     = &Errno{Code: 20006, Message: "Error occurred while deleting sth. "}
 
+	ErrSecurityCheck = &Errno{Code: 20007, Message: "Error occurred in security check"}
+
 	// Auth errors
 	ErrAuthFailed   = &Errno{Code: 20101, Message: "The sid or password was incorrect."}
 	ErrTokenInvalid = &Errno{Code: 20102, Message: "The token was invalid."}

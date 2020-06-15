@@ -6,6 +6,7 @@ import (
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
 	"github.com/MuxiKeStack/muxiK-StackBackend/service"
 	"github.com/MuxiKeStack/muxiK-StackBackend/util"
+	"github.com/MuxiKeStack/muxiK-StackBackend/util/securityCheck"
 
 	"github.com/gin-gonic/gin"
 	"github.com/lexkong/log"
@@ -22,8 +23,6 @@ import (
 // @Success 200 {object} model.CommentInfo
 // @Router /comment/{id}/ [post]
 func Reply(c *gin.Context) {
-	log.Info("comment.Reply function is called.")
-
 	var data newCommentRequest
 	if err := c.ShouldBindJSON(&data); err != nil {
 		handler.SendBadRequest(c, errno.ErrBind, nil, err.Error())
@@ -75,6 +74,14 @@ func Reply(c *gin.Context) {
 		handler.SendBadRequest(c, errno.ErrWordLimitation, nil, "Comment's content is limited to 300.")
 		return
 	}
+
+	// 小程序内容安全检测
+	if err := securityCheck.MsgSecCheck(data.Content); err != nil {
+		log.Errorf(err, "QQ security check msg(%s) error", data.Content)
+		handler.SendBadRequest(c, errno.ErrSecurityCheck, nil, "comment content violation")
+		return
+	}
+	log.Info("QQ security check OK")
 
 	var comment = &model.SubCommentModel{
 		Id:           uuid.NewV4().String(),

@@ -35,7 +35,7 @@ go run add_using.go -file sample.xlsx
 + 用户加入成绩共享计划
 + 查看个人课程
 
-另外，设置环境变量`MUXIKSTACK_GRADE_CRAWL`决定在*查看个人课程*时是否爬取成绩
+另外，设置环境变量`MUXIKSTACK_GRADE_CRAWL`决定在**查看个人课程**时是否爬取成绩
 
 ```shell
 export MUXIKSTACK_GRADE_CRAWL=on  # 爬取，临近期末时设置

@@ -3,13 +3,13 @@ package model
 //云课堂课程物理表
 type HistoryCourseModel struct {
 	Id              uint32  `gorm:"column:id; primary_key"`
-	Hash            string  `gorm:"column:hash; unique_key"`  //教师名和课程hash成的唯一标识
-	Name            string  `gorm:"column:name"`              //课程名称
-	Teacher         string  `gorm:"column:teacher"`           //教师性名
-	CourseId        string  `gorm:"column:course_id"`         //UI上需要展示
-	Type            uint8   `gorm:"column:type"`              //课程类型，公共课为0，专业课为1
-	Rate            float32 `gorm:"column:rate"`              //课程评价星级
-	StarsNum        uint32  `gorm:"column:stars_num"`         //参与评分人数
+	Hash            string  `gorm:"column:hash; unique_key"`  // 教师名和课程hash成的唯一标识
+	Name            string  `gorm:"column:name"`              // 课程名称
+	Teacher         string  `gorm:"column:teacher"`           // 教师性名
+	CourseId        string  `gorm:"column:course_id"`         // 课程号（学校的）
+	Type            uint8   `gorm:"column:type"`              // 课程类型，公共课为0，专业课为1
+	Rate            float32 `gorm:"column:rate"`              // 课程评价星级
+	StarsNum        uint32  `gorm:"column:stars_num"`         // 参与评分人数
 	Credit          float32 `gorm:"column:credit"`            // 学分
 	GradeSampleSize uint32  `gorm:"column:grade_sample_size"` // 成绩样本数
 	TotalGrade      float32 `gorm:"column:total_grade"`       // 总成绩均分
@@ -27,7 +27,7 @@ type UsingCourseModel struct {
 	Academy  string  `gorm:"column:academy"`          //开课学院
 	Credit   float32 `gorm:"column:credit"`           //学分
 	Teacher  string  `gorm:"column:teacher"`          //教师姓名
-	CourseId string  `gorm:"column:course_id"`        //UI上需要展示
+	CourseId string  `gorm:"column:course_id"`        //课程号（选课手册）
 	ClassId  string  `gorm:"column:class_id"`         //课堂编号，用于区分课堂
 	Type     uint8   `gorm:"column:type"`             //通识必修，通识选修，通识核心，专业必修，专业选修分别为 0/1/2/3/4
 	Time1    string  `gorm:"column:time1"`            //上课时间1

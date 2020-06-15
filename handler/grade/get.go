@@ -34,6 +34,7 @@ func Get(c *gin.Context) {
 		return
 	} else if !ok {
 		// 无查看成绩许可，未加入计划
+		log.Infof("user(%d) has no licence", userId)
 		handler.SendResponse(c, nil, &GetGradeResponse{HasLicence: false})
 		return
 	}
