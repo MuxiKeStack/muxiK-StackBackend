@@ -297,6 +297,11 @@ func DeleteParentComment(id string, userId uint32) error {
 		return err
 	}
 
+	// 评课的评论数-1
+	if err := model.UpdateCommentNumById(comment.EvaluationId); err != nil {
+		log.Error("UpdateCommentNumById function error", err)
+		return err
+	}
 	return nil
 }
 

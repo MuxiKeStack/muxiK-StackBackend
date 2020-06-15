@@ -76,12 +76,15 @@ func Reply(c *gin.Context) {
 	}
 
 	// 小程序内容安全检测
-	if err := securityCheck.MsgSecCheck(data.Content); err != nil {
+	ok, err = securityCheck.MsgSecCheck(data.Content)
+	if err != nil {
+		handler.SendError(c, errno.ErrSecurityCheck, nil, "check error")
+		return
+	} else if !ok {
 		log.Errorf(err, "QQ security check msg(%s) error", data.Content)
 		handler.SendBadRequest(c, errno.ErrSecurityCheck, nil, "comment content violation")
 		return
 	}
-	log.Info("QQ security check OK")
 
 	var comment = &model.SubCommentModel{
 		Id:           uuid.NewV4().String(),

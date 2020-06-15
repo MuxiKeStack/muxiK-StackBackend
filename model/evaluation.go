@@ -169,6 +169,19 @@ func HasEvaluated(userId uint32, courseId string) bool {
 	return !d.RecordNotFound()
 }
 
+// Update evaluation's commentNum by it's id
+func UpdateCommentNumById(id uint32) error {
+	evaluation := &CourseEvaluationModel{Id: id}
+	if err := evaluation.GetById(); err != nil {
+		return err
+	}
+
+	if err := evaluation.UpdateCommentNum(-1); err != nil {
+		return err
+	}
+	return nil
+}
+
 // 获取一个课程中评价最多的点名方式
 func GetAttendanceType(courseID string) uint8 {
 	var res []struct{ AttendanceCheckType uint8 }

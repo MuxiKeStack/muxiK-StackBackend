@@ -3,7 +3,6 @@ package securityCheck
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -99,7 +98,7 @@ type checkResponse struct {
 }
 
 // 消息文本检测
-func MsgSecCheck(content string) error {
+func MsgSecCheck(content string) (bool, error) {
 	accessToken.check()
 
 	data, err := json.Marshal(msgCheckReq{
@@ -107,7 +106,7 @@ func MsgSecCheck(content string) error {
 		Content: content,
 	})
 	if err != nil {
-		return err
+		return false, err
 	}
 
 	// fmt.Println(string(data))
@@ -115,33 +114,33 @@ func MsgSecCheck(content string) error {
 	resp, err := http.Post(msgSecCheckURL, "application/json", bytes.NewBuffer(data))
 	if err != nil {
 		log.Error("QQ msg security check err", err)
-		return err
+		return false, err
 	}
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return err
+		return false, err
 	}
 
 	// fmt.Println(string(body))
 
 	var rp checkResponse
 	if err := json.Unmarshal(body, &rp); err != nil {
-		return err
+		return false, err
 	}
 
 	// fmt.Println(rp)
 	if rp.ErrCode != 0 {
 		log.Info(fmt.Sprintf("msg security check failed. code: %d; msg: %s.", rp.ErrCode, rp.ErrMsg))
-		return errors.New("risky content")
+		return false, nil
 	}
-	log.Info("msg security check")
+	log.Info("msg security check OK.")
 
-	return nil
+	return true, nil
 }
 
 // 图片检测
-func ImgSecCheck(image string) error {
-	return nil
+func ImgSecCheck(image string) (bool, error) {
+	return true, nil
 }

@@ -29,6 +29,7 @@ func Delete(c *gin.Context) {
 
 	if err != nil {
 		handler.SendError(c, errno.ErrDeleteComment, nil, err.Error())
+		return
 	}
 
 	handler.SendResponse(c, nil, nil)
