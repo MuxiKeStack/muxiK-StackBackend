@@ -63,12 +63,12 @@ func Publish(c *gin.Context) {
 	}
 
 	// 小程序内容安全检测
-	go func(msg string) {
-		if err := securityCheck.MsgSecCheck(msg); err != nil {
-			log.Error("QQ security check error", err)
-		}
-		log.Info("QQ security check OK")
-	}(data.Content)
+	if err := securityCheck.MsgSecCheck(data.Content); err != nil {
+		log.Errorf(err, "QQ security check msg(%s) error", data.Content)
+		handler.SendBadRequest(c, errno.ErrSecurityCheck, nil, "evaluation content violation")
+		return
+	}
+	log.Info("QQ security check OK")
 
 	var evaluation = &model.CourseEvaluationModel{
 		CourseId:            data.CourseId,

@@ -3,6 +3,7 @@ package securityCheck
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -133,6 +134,7 @@ func MsgSecCheck(content string) error {
 	// fmt.Println(rp)
 	if rp.ErrCode != 0 {
 		log.Info(fmt.Sprintf("msg security check failed. code: %d; msg: %s.", rp.ErrCode, rp.ErrMsg))
+		return errors.New("risky content")
 	}
 	log.Info("msg security check")
 
