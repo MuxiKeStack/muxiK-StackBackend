@@ -1,5 +1,3 @@
--- DROP DATABASE IF EXISTS `muxikstack`;
-
 CREATE DATABASE IF NOT EXISTS `muxikstack`;
 
 USE `muxikstack`;
@@ -166,11 +164,10 @@ CREATE TABLE `history_course` (
   `hash`      VARCHAR(50)  NOT NULL COMMENT "课程id + 教师名 hash 生成的唯一标识",
   `name`      VARCHAR(50)  NOT NULL,
   `teacher`   VARCHAR(50)  NOT NULL,
-  `course_id`      VARCHAR(9)   NOT NULL            COMMENT "课程号",
+  `course_id` VARCHAR(9)   NOT NULL COMMENT "课程号",
   `type`      INT          NOT NULL COMMENT "课程类型（根据学校提供的特定位进行判定）0-通必,1-专必,2-专选,3-通选,5-通核",
   `rate`      FLOAT        NOT NULL DEFAULT 0 COMMENT "课程评价星级",
   `stars_num` INT          NOT NULL DEFAULT 0 COMMENT "参与评课人数",
-  `credit`    FLOAT        NOT NULL DEFAULT 0 COMMENT "学分",
   `total_grade` FLOAT      NOT NULL DEFAULT 0 COMMENT "总成绩",
   `usual_grade` FLOAT      NOT NULL DEFAULT 0 COMMENT "平时成绩",
   `grade_sample_size` INT  NOT NULL DEFAULT 0 COMMENT "成绩样本人数",
@@ -243,9 +240,9 @@ INSERT INTO `tags` (name) VALUES ("课程简单易学"), ("课程干货满满"),
 
 -- 系统用户 以及 匿名用户信息 匿名用户信息都为空
 
-INSERT INTO `user` 
+INSERT INTO `user`
   (`id`, `sid`, `username`)
-VALUES 
+VALUES
   (1, "0", "系统提醒"),
   (2, "1", null);
 

@@ -22,7 +22,7 @@ export MUXIKSTACK_DB_PASSWORD=muxi
 go run add_using.go -file sample.xlsx
 ```
 
->ps: 脚本文件要先去除注释
+> ps: 脚本文件要先去除注释
 
 #### 导入云课堂课程
 

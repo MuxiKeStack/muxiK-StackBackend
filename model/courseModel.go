@@ -6,11 +6,10 @@ type HistoryCourseModel struct {
 	Hash            string  `gorm:"column:hash; unique_key"`  // 教师名和课程hash成的唯一标识
 	Name            string  `gorm:"column:name"`              // 课程名称
 	Teacher         string  `gorm:"column:teacher"`           // 教师性名
-	CourseId        string  `gorm:"column:course_id"`         // 课程号（学校的）
+	CourseId        string  `gorm:"column:course_id"`         // 课程号（学校上）
 	Type            uint8   `gorm:"column:type"`              // 课程类型，公共课为0，专业课为1
 	Rate            float32 `gorm:"column:rate"`              // 课程评价星级
 	StarsNum        uint32  `gorm:"column:stars_num"`         // 参与评分人数
-	Credit          float32 `gorm:"column:credit"`            // 学分
 	GradeSampleSize uint32  `gorm:"column:grade_sample_size"` // 成绩样本数
 	TotalGrade      float32 `gorm:"column:total_grade"`       // 总成绩均分
 	UsualGrade      float32 `gorm:"column:usual_grade"`       // 平时成绩均分
