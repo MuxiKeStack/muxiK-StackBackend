@@ -98,7 +98,9 @@ func main() {
 	// Async grade service
 	go service.AsynGradeService()
 
+	// QQ security check
 	securityCheck.QQSecInit()
+	go securityCheck.RefreshTokenScheduled()
 
 	log.Infof("Start to listening the incoming requests on http address: %s", viper.GetString("addr"))
 	log.Info(http.ListenAndServe(viper.GetString("addr"), g).Error())

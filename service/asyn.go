@@ -2,7 +2,6 @@ package service
 
 import (
 	"encoding/json"
-	"fmt"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 
@@ -23,12 +22,12 @@ func AsynGradeService() {
 
 	ch := model.GradeSubClient.Self.Channel()
 	for msg := range ch {
-		fmt.Println(msg)
+		// fmt.Println(msg)
 		err := json.Unmarshal([]byte(msg.Payload), data)
 		if err != nil {
 			log.Errorf(err, "asyn grade service unmarshal msg(%s) error", msg.Payload)
 		}
-		fmt.Println(data)
+		// fmt.Println(data)
 
 		if data.New {
 			GradeImportService(data.UserId, data.Sid, data.Password)

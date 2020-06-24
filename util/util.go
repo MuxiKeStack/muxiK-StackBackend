@@ -26,7 +26,8 @@ func GetReqID(c *gin.Context) string {
 }
 
 func GetCurrentTime() *time.Time {
-	t := time.Now()
+	var loc, _ = time.LoadLocation("Asia/Shanghai")
+	t := time.Now().In(loc)
 	return &t
 }
 
