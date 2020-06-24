@@ -64,6 +64,8 @@ func (t *accessTokenManager) loadToken() error {
 		return err
 	}
 
+	fmt.Println("QQ access token: ", t.Token, obj.AccessToken)
+
 	t.Token = obj.AccessToken
 	t.CreateAt = time.Now().UTC()
 
@@ -80,6 +82,9 @@ func (t *accessTokenManager) check() error {
 		log.Info("Refresh access token OK")
 	}
 	// fmt.Println(t.CreateAt, t.ExpiresIn, t.CreateAt.Add(t.ExpiresIn).Sub(now))
+	fmt.Printf("QQ access token info: createAt=%v, expiresIn=%v, sub time from now=%v",
+		t.CreateAt, t.ExpiresIn, t.CreateAt.Add(t.ExpiresIn).Sub(now))
+
 	return nil
 }
 
