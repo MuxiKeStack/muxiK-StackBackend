@@ -2,31 +2,7 @@
 
 ## 课程导入
 
-每学期选课手册公布时，运维人员执行脚本，手动导入选课手册的课程和云课堂的课程
-
-#### 环境变量
-
-> 一般而言无需改变环境变量
-
-```shell
-export MUXIKSTACK_DB_ADDR=127.0.0.1:3306
-export MUXIKSTACK_DB_USERNAME=muxi
-export MUXIKSTACK_DB_PASSWORD=muxi
-```
-
-#### 导入选课手册
-
-导入选课手册要先将Excel文件移动至`script`目录下，然后在`script`目录下执行
-
-```shell
-go run add_using.go -file sample.xlsx
-```
-
-> ps: 脚本文件要先去除注释
-
-#### 导入云课堂课程
-
-同样，进入`script`目录，在去除注释后运行go文件
+导入的脚本已转移至[manage_script](https://github.com/MuxiKeStack/manage_script)
 
 ## 关于成绩
 
