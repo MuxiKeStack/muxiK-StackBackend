@@ -65,7 +65,7 @@ func (t *accessTokenManager) loadToken() error {
 		return err
 	}
 
-	// fmt.Printf("QQ access token: old token: %s; new token: %s\n", t.Token, obj.AccessToken)
+	fmt.Printf("QQ access token: old token: %s; new token: %s\n", t.Token, obj.AccessToken)
 
 	t.Token = obj.AccessToken
 	t.CreateAt = util.GetCurrentTime()

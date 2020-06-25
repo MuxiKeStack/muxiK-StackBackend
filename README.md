@@ -2,6 +2,9 @@
 
 ## 课程导入
 
++ 云课堂课程导入 => history_course
++ 选课手册课程导入 => using_course
+
 导入的脚本已转移至[manage_script](https://github.com/MuxiKeStack/manage_script)
 
 ## 关于成绩
