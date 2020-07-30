@@ -116,25 +116,26 @@ func GetGradeFromXK(sid, password string, curRecordNum int) (*[]ResultGradeItem,
 
 	var result []ResultGradeItem
 
-	for _, d := range *data.Items {
+	for _, item := range *data.Items {
 		// 获取平时和期末成绩
-		u, f, err := GetUsualAndFinalGradeFromXK(client, d.JxbId, d.Kcmc, d.Xnm, d.Xqm)
+		usualScore, finalScore, err := GetUsualAndFinalGradeFromXK(client, item.JxbId, item.Kcmc, item.Xnm, item.Xqm)
 		if err != nil {
-			log.Errorf(err, "GetUsualAndFinalGrade for (%s, %s, %s) error", d.Kch, d.Kcmc, d.Jsxm)
+			log.Errorf(err, "GetUsualAndFinalGrade for (%s, %s, %s) error", item.Kch, item.Kcmc, item.Jsxm)
 			continue
 		}
-		t, err := strconv.ParseFloat(d.Cj, 32)
+		totalScore, err := strconv.ParseFloat(item.Cj, 32)
 		if err != nil {
-			log.Errorf(err, "parse %s to float error", d.Cj)
+			log.Errorf(err, "parse %s to float error", item.Cj)
 			continue
 		}
+
 		item := ResultGradeItem{
-			Teacher:    d.Jsxm,
-			CourseId:   d.Kch,
-			CourseName: d.Kcmc,
-			TotalScore: float32(t),
-			UsualScore: u,
-			FinalScore: f,
+			Teacher:    item.Jsxm,
+			CourseId:   item.Kch,
+			CourseName: item.Kcmc,
+			TotalScore: float32(totalScore),
+			UsualScore: usualScore,
+			FinalScore: finalScore,
 		}
 		result = append(result, item)
 	}
