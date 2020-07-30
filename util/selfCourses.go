@@ -60,31 +60,16 @@ func GetSelfCoursesFromXK(sid, password string, year, term string) (*OriginalCou
 	return MakeCoursesGetRequest(client, sid, year, term)
 }
 
-// xk.ccnu.edu.cn 模拟登录
-func MakeXKLogin(client *http.Client) error {
-	request, err := http.NewRequest("GET", "https://account.ccnu.edu.cn/cas/login?service=http%3A%2F%2Fxk.ccnu.edu.cn%2Fssoserver%2Flogin%3Fywxt%3Djw%26url%3Dxtgl%2Findex_initMenu.html", nil)
-	if err != nil {
-		return err
-	}
-
-	_, err = client.Do(request)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
 // 请求获取课程列表
 func MakeCoursesGetRequest(client *http.Client, sid, year, term string) (*OriginalCourses, error) {
-	var rqTerm = map[string]string{"1": "3", "2": "12", "3": "16"} // 请求学期参数
+	var termMap = map[string]string{"1": "3", "2": "12", "3": "16"} // 学期参数
 	if year == "0" {
 		year = ""
 	}
 
 	formData := url.Values{}
-	formData.Set("xnm", year)         // 学年名
-	formData.Set("xqm", rqTerm[term]) // 学期名
+	formData.Set("xnm", year)          // 学年名
+	formData.Set("xqm", termMap[term]) // 学期名
 	formData.Set("_search", "false")
 	formData.Set("nd", string(time.Now().UnixNano()))
 	formData.Set("queryModel.showCount", "1000")
@@ -93,7 +78,7 @@ func MakeCoursesGetRequest(client *http.Client, sid, year, term string) (*Origin
 	formData.Set("queryModel.sortOrder", "asc")
 	formData.Set("time", "5")
 
-	requestUrl := "http://xk.ccnu.edu.cn/xkcx/xkmdcx_cxXkmdcxIndex.html?doType=query&gnmkdm=N255010&su=" + sid
+	requestUrl := "http://xk.ccnu.edu.cn/jwglxt/xkcx/xkmdcx_cxXkmdcxIndex.html?doType=query&gnmkdm=N255010&su=" + sid
 	req, err := http.NewRequest("POST", requestUrl, strings.NewReader(formData.Encode()))
 	if err != nil {
 		return nil, err

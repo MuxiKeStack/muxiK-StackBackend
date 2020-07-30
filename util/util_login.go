@@ -101,8 +101,6 @@ func MakeAccountPreflightRequest() (*AccountReqeustParams, error) {
 	}
 	_eventId = _eventIdArr[1]
 
-	//log.Println("Get params successfully", lt, execution, _eventId)
-
 	params.lt = lt
 	params.execution = execution
 	params._eventId = _eventId
@@ -152,6 +150,21 @@ func MakeAccountRequest(sid, password string, params *AccountReqeustParams, clie
 	}
 
 	log.Println("Login successfully")
+	return nil
+}
+
+// xk.ccnu.edu.cn 模拟登录
+func MakeXKLogin(client *http.Client) error {
+	request, err := http.NewRequest("GET", "https://account.ccnu.edu.cn/cas/login?service=http%3A%2F%2Fxk.ccnu.edu.cn%2Fsso%2Fpziotlogin", nil)
+	if err != nil {
+		return err
+	}
+
+	_, err = client.Do(request)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
