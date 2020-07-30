@@ -77,7 +77,7 @@ func GetGradeFromXK(sid, password string, curRecordNum int) (*[]ResultGradeItem,
 	formData.Set("queryModel.sortOrder", "asc")
 	formData.Set("time", "0")
 
-	requestUrl := "http://xk.ccnu.edu.cn/cjcx/cjcx_cxDgXscj.html?doType=query&gnmkdm=N305005"
+	requestUrl := "http://xk.ccnu.edu.cn/jwglxt/cjcx/cjcx_cxDgXscj.html?doType=query&gnmkdm=N305005"
 	req, err := http.NewRequest("POST", requestUrl, strings.NewReader(formData.Encode()))
 	if err != nil {
 		return nil, false, err
@@ -151,7 +151,7 @@ func GetUsualAndFinalGradeFromXK(client *http.Client, jxbid, kcmc, xnm, xqm stri
 	formData.Set("jxb_id", jxbid)
 	formData.Set("kcmc", kcmc)
 
-	requestUrl := "http://xk.ccnu.edu.cn/cjcx/cjcx_cxCjxq.html?time=" + strconv.Itoa(int(time.Now().UnixNano())) + "&gnmkdm=N305005"
+	requestUrl := "http://xk.ccnu.edu.cn/jwglxt/cjcx/cjcx_cxCjxq.html?time=" + strconv.Itoa(int(time.Now().UnixNano())) + "&gnmkdm=N305005"
 
 	req, err := http.NewRequest("POST", requestUrl, strings.NewReader(formData.Encode()))
 	if err != nil {
