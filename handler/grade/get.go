@@ -16,7 +16,7 @@ type GetGradeResponse struct {
 	SampleSize uint32  `json:"sample_size"` // 样本数
 	Section1   float32 `json:"section_1"`   // 成绩区间1,85以上所占的比例
 	Section2   float32 `json:"section_2"`   // 区间2，70-85所占的比例
-	Section3   float32 `json:"section_3"`   // 区间3，85以下所占的比例
+	Section3   float32 `json:"section_3"`   // 区间3，70以下所占的比例
 }
 
 // @Tags grade

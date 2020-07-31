@@ -102,33 +102,14 @@ func NewGradeSampleFoCourses(userId uint32) error {
 		return err
 	}
 
-	wg := new(sync.WaitGroup)
-	errChan := make(chan error, 1)
-	finished := make(chan bool, 1)
+	// 逐个导入
+	// 修改：2020.7.31 取消并发。事故：没有加锁，导致 goroutines 竟态，程序崩溃。
+	for _, record := range records {
 
-	// 逐个导入，并发
-	for _, record := range *records {
-		wg.Add(1)
-
-		go func(record model.GradeModel) {
-			defer wg.Done()
-
-			if err := NewGradeDataAdditionForOneCourse(userId, &record); err != nil {
-				log.Error("NewGradeDataAdditionForOneCourse function error", err)
-				errChan <- err
-			}
-		}(record)
-	}
-
-	go func() {
-		wg.Wait()
-		close(finished)
-	}()
-
-	select {
-	case <-finished:
-	case err := <-errChan:
-		return err
+		// 成绩数据添加
+		if err := NewGradeDataAdditionForOneCourse(userId, record); err != nil {
+			log.Errorf(err, "NewGradeDataAdditionForOneCourse function error for %t", record)
+		}
 	}
 	return nil
 }
@@ -142,7 +123,7 @@ func NewGradeDataAdditionForOneCourse(userId uint32, data *model.GradeModel) err
 		return err
 	}
 
-	// 有数据库写入覆盖的隐患
+	// 数据库数据覆盖问题
 	curSampleSize := course.GradeSampleSize
 	course.TotalGrade = (course.TotalGrade*float32(curSampleSize) + data.TotalScore) / float32(curSampleSize+1)
 	course.UsualGrade = (course.UsualGrade*float32(curSampleSize) + data.UsualScore) / float32(curSampleSize+1)
@@ -176,7 +157,6 @@ func GradeImportService(userId uint32, sid, pwd string) {
 
 	// 获取成绩
 	if err := NewGradeRecord(userId, sid, pwd); err != nil {
-		// log.Error("NewGradeRecord function error", err)
 		log.Errorf(err, "Grade import failed for (userId=%d, sid=%s, psw=%s)", userId, sid, pwd)
 		return
 	}
@@ -188,6 +168,7 @@ func GradeImportService(userId uint32, sid, pwd string) {
 	log.Info("Grade sample imported successfully")
 }
 
+// 成绩爬取，需要检查是否开启异步爬取
 func GradeCrawlHandler(userId uint32, sid, pwd string) {
 	// 环境变量设置，是否爬取成绩
 	if config.GradeSwitch != "on" {

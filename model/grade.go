@@ -55,8 +55,8 @@ func GetRecordsNum(userId uint32) (int, error) {
 }
 
 // Get user's all grade records that have not added to statistical sample.
-func GetGradeRecordsByUserId(userId uint32) (*[]GradeModel, error) {
-	var records []GradeModel
+func GetGradeRecordsByUserId(userId uint32) ([]*GradeModel, error) {
+	var records []*GradeModel
 	d := DB.Self.Where("user_id = ? AND has_added = 0", userId).Find(&records)
-	return &records, d.Error
+	return records, d.Error
 }
