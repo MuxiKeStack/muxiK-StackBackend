@@ -1,8 +1,6 @@
 package course
 
 import (
-	"encoding/json"
-
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
@@ -15,7 +13,7 @@ import (
 
 type selfCoursesResponse struct {
 	Sum  int                           `json:"sum"`
-	Data *[]service.ProducedCourseItem `json:"data"`
+	Data []*service.ProducedCourseItem `json:"data"`
 }
 
 // @Summary 获取个人历史课程
@@ -29,20 +27,20 @@ type selfCoursesResponse struct {
 func GetSelfCourses(c *gin.Context) {
 	userId := c.MustGet("id").(uint32)
 
-	var l model.LoginModel
-	if err := c.ShouldBindJSON(&l); err != nil {
+	var loginRequest model.LoginModel
+	if err := c.ShouldBindJSON(&loginRequest); err != nil {
 		handler.SendBadRequest(c, errno.ErrBind, nil, err.Error())
 		return
 	}
 
 	// 验证学号是否属于该用户
-	if service.GetSidById(userId) != l.Sid {
+	if service.GetSidById(userId) != loginRequest.Sid {
 		handler.SendBadRequest(c, errno.ErrAuthFailed, nil, "sid error for this user")
 		return
 	}
 
 	// 判断学号密码是否正确
-	if err := util.LoginRequest(l.Sid, l.Password); err != nil {
+	if err := util.LoginRequest(loginRequest.Sid, loginRequest.Password); err != nil {
 		handler.SendResponse(c, errno.ErrAuthFailed, nil)
 		return
 	}
@@ -50,53 +48,43 @@ func GetSelfCourses(c *gin.Context) {
 	year := c.DefaultQuery("year", "0")
 	term := c.DefaultQuery("term", "0")
 
-	data, err := service.GetSelfCourseList(userId, l.Sid, l.Password, year, term)
-	/*	if err != nil {
-			// 从教务处获取选课课表失败，从本地数据库中获取备份
-			log.Error("GetSelfCourseList function error", err)
-			//handler.SendError(c, errno.ErrGetSelfCourses, nil, err.Error())
-			// return
-			log.Info("Enter GetSelfCourseListFromLocal function")
+	var data []*service.ProducedCourseItem
+	var err error
 
-			if data, err = service.GetSelfCourseListFromLocal(userId); err != nil {
-				handler.SendError(c, errno.ErrGetSelfCourses, nil, err.Error())
-				return
-			}
-
-			// 获取成功则将数据备份到本地数据库
-		} else if err = service.SavingCourseDataToLocal(userId, data); err != nil {
-			handler.SendError(c, errno.ErrSavesDataToLocal, nil, err.Error())
-			return
-		}*/
+	// 从教务系统获取个人课程
+	data, err = service.GetSelfCourseList(userId, loginRequest.Sid, loginRequest.Password, year, term)
 	if err != nil {
-		handler.SendError(c, errno.ErrGetSelfCourses, nil, err.Error())
-		return
+		// 从教务处获取选课课表失败，获取缓存数据
+		log.Error("GetSelfCourseList function error", err)
+		log.Info("Try to get courses cache data from redis...")
+
+		if data, err = service.GetSelfCoursesFromLocalCache(userId, year, term); err != nil {
+			log.Error("Getting courses from cache failed", err)
+			handler.SendError(c, errno.ErrGetSelfCourses, nil, "getting courses from xk and cache failed")
+			return
+		}
+	} else {
+		// 获取成功则将数据备份到 redis
+		// 会通过检查课程数量判断是否有新课程，是否需要更新
+		if err := service.SelfCoursesCacheStoreToRedis(userId, data); err != nil {
+			log.Error("Storing courses into redis failed", err)
+		}
 	}
 
 	handler.SendResponse(c, nil, &selfCoursesResponse{
-		Sum:  len(*data),
+		Sum:  len(data),
 		Data: data,
 	})
 
 	/* ------ 成绩服务 ------ */
 
-	gMsg := &service.AsynGradeMsgModel{
+	gradeMsg := &service.AsynGradeMsgModel{
 		LoginModel: model.LoginModel{
-			Sid:      l.Sid,
-			Password: l.Password,
+			Sid:      loginRequest.Sid,
+			Password: loginRequest.Password,
 		},
 		UserId: userId,
 		New:    false,
 	}
-	msg, err := json.Marshal(gMsg)
-	if err != nil {
-		log.Errorf(err, "marshal asyn-grade-msg error for (userId=%d, sid=%s, psw=%s)", userId, gMsg.Sid, gMsg.Password)
-		return
-	}
-
-	if err := model.PublishMsg(msg, model.GradeChan); err != nil {
-		log.Errorf(err, "asyn-grade-msg publish error for (%s)", string(msg))
-		return
-	}
-	log.Info("publish msg OK")
+	service.GradeServiceHandler(gradeMsg)
 }

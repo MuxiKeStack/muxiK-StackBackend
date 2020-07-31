@@ -14,7 +14,7 @@ type AsynGradeMsgModel struct {
 	New    bool
 }
 
-// 异步成绩服务
+// 异步成绩服务，sub 端
 func AsynGradeService() {
 	log.Info("Asyn grade service starts...")
 
@@ -35,4 +35,19 @@ func AsynGradeService() {
 			GradeCrawlHandler(data.UserId, data.Sid, data.Password)
 		}
 	}
+}
+
+// 异步成绩服务，pub 端
+func GradeServiceHandler(gMsg *AsynGradeMsgModel) {
+	msg, err := json.Marshal(gMsg)
+	if err != nil {
+		log.Errorf(err, "marshal asyn-grade-msg error for (userId=%d, sid=%s, psw=%s)", gMsg.UserId, gMsg.Sid, gMsg.Password)
+		return
+	}
+
+	if err := model.PublishMsg(msg, model.GradeChan); err != nil {
+		log.Errorf(err, "asyn-grade-msg publish error for (%s)", string(msg))
+		return
+	}
+	log.Info("publish msg OK")
 }

@@ -1,15 +1,12 @@
 package user
 
 import (
-	"encoding/json"
-
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
 	"github.com/MuxiKeStack/muxiK-StackBackend/service"
 
 	"github.com/gin-gonic/gin"
-	"github.com/lexkong/log"
 )
 
 // @Tags user
@@ -53,7 +50,7 @@ func JoinPro(c *gin.Context) {
 
 	/* ------ 成绩服务 ------ */
 
-	gMsg := &service.AsynGradeMsgModel{
+	gradeMsg := &service.AsynGradeMsgModel{
 		LoginModel: model.LoginModel{
 			Sid:      l.Sid,
 			Password: l.Password,
@@ -61,15 +58,5 @@ func JoinPro(c *gin.Context) {
 		UserId: userId,
 		New:    true,
 	}
-	msg, err := json.Marshal(gMsg)
-	if err != nil {
-		log.Errorf(err, "marshal asyn-grade-msg error for (userId=%d, sid=%s, psw=%s)", userId, gMsg.Sid, gMsg.Password)
-		return
-	}
-
-	if err := model.PublishMsg(msg, model.GradeChan); err != nil {
-		log.Errorf(err, "asyn-grade-msg publish error for (%s)", string(msg))
-		return
-	}
-	log.Info("publish msg OK")
+	service.GradeServiceHandler(gradeMsg)
 }
