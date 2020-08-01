@@ -2,6 +2,7 @@ package comment
 
 import (
 	"strconv"
+	"unicode/utf8"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
@@ -44,7 +45,7 @@ func CreateTopComment(c *gin.Context) {
 	}
 
 	// Words are limited to 300
-	if len(data.Content) > 300 {
+	if utf8.RuneCountInString(data.Content) > 300 {
 		handler.SendBadRequest(c, errno.ErrWordLimitation, nil, "Comment's content is limited to 300.")
 		return
 	}

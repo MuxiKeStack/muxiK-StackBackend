@@ -2,6 +2,7 @@ package evaluation
 
 import (
 	"fmt"
+	"unicode/utf8"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
@@ -59,7 +60,8 @@ func Publish(c *gin.Context) {
 	}
 
 	// Words are limited to 500
-	if len(data.Content) > 500 {
+	// 字符数，非字节
+	if utf8.RuneCountInString(data.Content) > 500 {
 		handler.SendBadRequest(c, errno.ErrWordLimitation, nil, "Evaluation's content is limited to 500.")
 		return
 	}
