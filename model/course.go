@@ -191,14 +191,20 @@ func AllCourses(page, limit uint64, t, a, w, p string) ([]UsingCourseSearchModel
 	//fmt.Println(where)
 	if where == "" {
 		DB.Self.Table("using_course").
+			Select("using_course.*, history_course.stars_num, history_course.rate").
 			Joins("LEFT JOIN history_course ON using_course.hash = history_course.hash").
+			Group("using_course.hash").
+			Order("history_course.stars_num  DESC, history_course.rate DESC").
 			Limit(limit).Offset((page - 1) * limit).Find(&courses)
 	} else {
 		whereFix := where[4:]
 		//fmt.Println(whereFix)
 		DB.Self.Table("using_course").
+			Select("using_course.*, history_course.stars_num, history_course.rate").
 			Joins("LEFT JOIN history_course ON using_course.hash = history_course.hash").
 			Where(whereFix).
+			Group("using_course.hash").
+			Order("history_course.stars_num  DESC, history_course.rate DESC").
 			Limit(limit).Offset((page - 1) * limit).Find(&courses)
 	}
 	return *courses, nil
@@ -208,9 +214,13 @@ func AllCourses(page, limit uint64, t, a, w, p string) ([]UsingCourseSearchModel
 func AllHistoryCourses(page, limit uint64, t string) ([]HistoryCourseModel, error) {
 	courses := &[]HistoryCourseModel{}
 	if t != "" {
-		DB.Self.Table("history_course").Where("type = ?", t).Limit(limit).Offset((page - 1) * limit).Find(courses)
+		DB.Self.Table("history_course").Where("type = ?", t).
+			Order("history_course.stars_num  DESC, history_course.rate DESC").
+			Limit(limit).Offset((page - 1) * limit).Find(courses)
 	} else {
-		DB.Self.Table("history_course").Limit(limit).Offset((page - 1) * limit).Find(courses)
+		DB.Self.Table("history_course").
+			Order("history_course.stars_num  DESC, history_course.rate DESC").
+			Limit(limit).Offset((page - 1) * limit).Find(courses)
 	}
 	return *courses, nil
 }
