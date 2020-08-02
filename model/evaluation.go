@@ -234,8 +234,7 @@ func UpdateCourseRateByEvaluation(id string, rate float32) error {
 	c.Rate = (c.Rate*float32(c.StarsNum) + rate) / float32(c.StarsNum+1)
 	c.StarsNum++
 
-	d := DB.Self.Save(&c)
-	return d.Error
+	return DB.Self.Save(&c).Error
 }
 
 // Update course's info after deleting an evaluation.
@@ -246,11 +245,15 @@ func UpdateCourseInfoAfterDeletingEvaluation(id string, rate float32) error {
 	}
 
 	rate = c.Rate*float32(c.StarsNum) - rate
-	if c.StarsNum <= 0 || rate <= 0 {
+	if c.StarsNum <= 0 || rate < 0 {
 		return errors.New("Unexpected data error ")
 	}
 	c.StarsNum--
-	c.Rate = rate / float32(c.StarsNum)
+	if c.StarsNum == 0 {
+		c.Rate = 0
+	} else {
+		c.Rate = rate / float32(c.StarsNum)
+	}
 
 	return DB.Self.Save(&c).Error
 }
@@ -260,4 +263,46 @@ func GetUIDByEvaluationID(eid uint32) (uint32, error) {
 	var e CourseEvaluationModel
 	d := DB.Self.Where("id = ?", eid).First(&e)
 	return e.UserId, d.Error
+}
+
+// 删除评课，同时更新课程信息，事务
+func DeleteEvaluation(evaluation *CourseEvaluationModel) error {
+	tx := DB.Self.Begin()
+
+	var course = &HistoryCourseModel{}
+	if err := tx.Where("hash = ?", evaluation.CourseId).First(course).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	rate := course.Rate*float32(course.StarsNum) - evaluation.Rate
+	if course.StarsNum <= 0 || rate < 0 {
+		tx.Rollback()
+		return errors.New("Unexpected data error ")
+	}
+	course.StarsNum--
+	if course.StarsNum == 0 {
+		course.Rate = 0
+	} else {
+		course.Rate = rate / float32(course.StarsNum)
+	}
+
+	// 更新课程
+	if err := tx.Save(course).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	// 删除评课
+	if err := tx.Delete(evaluation).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return nil
 }

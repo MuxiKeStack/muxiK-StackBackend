@@ -47,16 +47,10 @@ func Delete(c *gin.Context) {
 		return
 	}
 
-	if err = evaluation.Delete(); err != nil {
-		log.Info("evaluation.Delete function error.")
+	// 删除评课
+	if err := model.DeleteEvaluation(evaluation); err != nil {
+		log.Error("DeleteEvaluation function error", err)
 		handler.SendError(c, errno.ErrDatabase, nil, err.Error())
-		return
-	}
-
-	// Update course's info
-	if err := model.UpdateCourseInfoAfterDeletingEvaluation(evaluation.CourseId, evaluation.Rate); err != nil {
-		log.Info("UpdateCourseInfoAfterDeletingEvaluation function error.")
-		handler.SendError(c, errno.ErrUpdateCourseInfo, nil, err.Error())
 		return
 	}
 
