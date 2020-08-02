@@ -97,6 +97,11 @@ func (class *UsingCourseModel) GetByCourseId(time int, place int) error { //intä
 	return d.Error
 }
 
+// Update histiry course.
+func (course *HistoryCourseModel) Update() error {
+	return DB.Self.Save(course).Error
+}
+
 // Judge whether a course has already favorited by the current user,
 // return record id and bool type.
 func HasFavorited(userId uint32, hash string) (uint32, bool) {
@@ -225,10 +230,6 @@ func AllHistoryCourses(page, limit uint64, t string) ([]HistoryCourseModel, erro
 	return *courses, nil
 }
 
-func (course *HistoryCourseModel) UpdateGradeInfo() error {
-	return DB.Self.Save(course).Error
-}
-
 func GetCourseTags(hash string) ([]CourseTagModel, error) {
 	var tags []CourseTagModel
 	d := DB.Self.Where("course_id = ?", hash).Find(&tags)
@@ -250,13 +251,10 @@ func GetTeacherByCourseId(id string) (string, error) {
 }
 
 // Get history course by hash id.
-func GetHistoryCourseByHashId(id string) (*HistoryCourseModel, bool, error) {
-	var course HistoryCourseModel
-	d := DB.Self.First(&course, "hash = ?", id)
-	if d.RecordNotFound() {
-		return nil, false, nil
-	}
-	return &course, true, d.Error
+func GetHistoryCourseByHashId(id string) (*HistoryCourseModel, error) {
+	var course = &HistoryCourseModel{Hash: id}
+	err := course.GetHistoryByHash()
+	return course, err
 }
 
 func GetHistoryCoursePartInfoByHashId(hash string) (*HistoryCourseModel, bool, error) {

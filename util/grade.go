@@ -16,7 +16,7 @@ import (
 )
 
 type OriginalGrade struct {
-	Items *[]GradeItem `json:"items"`
+	Items []*GradeItem `json:"items"`
 }
 
 type GradeItem struct {
@@ -39,7 +39,7 @@ type ResultGradeItem struct {
 }
 
 // 从教务处获取成绩
-func GetGradeFromXK(sid, password string, curRecordNum int) (*[]ResultGradeItem, bool, error) {
+func GetGradeFromXK(sid, password string, curRecordNum int) ([]*ResultGradeItem, bool, error) {
 	params, err := MakeAccountPreflightRequest()
 	if err != nil {
 		log.Error("MakeAccountPreflightRequest function error", err)
@@ -110,38 +110,40 @@ func GetGradeFromXK(sid, password string, curRecordNum int) (*[]ResultGradeItem,
 	}
 
 	// 未发布新成绩成绩，直接返回
-	if len(*data.Items) <= curRecordNum {
+	if len(data.Items) <= curRecordNum {
 		return nil, false, nil
 	}
 
-	var result []ResultGradeItem
+	var result []*ResultGradeItem
 
-	for _, item := range *data.Items {
-		// 获取平时和期末成绩
-		usualScore, finalScore, err := GetUsualAndFinalGradeFromXK(client, item.JxbId, item.Kcmc, item.Xnm, item.Xqm)
-		if err != nil {
-			log.Errorf(err, "GetUsualAndFinalGrade for (%s, %s, %s) error", item.Kch, item.Kcmc, item.Jsxm)
-			continue
-		}
+	for _, item := range data.Items {
+		// 解析总成绩
+		// 解析出现错误值：缓考
 		totalScore, err := strconv.ParseFloat(item.Cj, 32)
 		if err != nil {
 			log.Errorf(err, "parse %s to float error", item.Cj)
 			continue
 		}
 
-		item := ResultGradeItem{
+		// 获取平时和期末成绩
+		usualScore, finalScore, err := GetUsualAndFinalGradeFromXK(client, item.JxbId, item.Kcmc, item.Xnm, item.Xqm)
+		if err != nil {
+			log.Errorf(err, "GetUsualAndFinalGrade for (%s, %s, %s) error", item.Kch, item.Kcmc, item.Jsxm)
+			continue
+		}
+
+		result = append(result, &ResultGradeItem{
 			Teacher:    item.Jsxm,
 			CourseId:   item.Kch,
 			CourseName: item.Kcmc,
 			TotalScore: float32(totalScore),
 			UsualScore: usualScore,
 			FinalScore: finalScore,
-		}
-		result = append(result, item)
+		})
 	}
 
 	log.Info("Get grades successfully")
-	return &result, true, nil
+	return result, true, nil
 }
 
 // 发起请求，获取平时和期末成绩
@@ -192,6 +194,7 @@ func ParseByRegexp(bodyStr string) (float32, float32, error) {
 	if len(result) < 2 {
 		return 0, 0, nil
 	}
+
 	var score [2]float64
 	for i, r := range result {
 		if i >= 2 {

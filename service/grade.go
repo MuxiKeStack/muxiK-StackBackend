@@ -12,7 +12,7 @@ import (
 )
 
 // 爬取成绩，并发
-func NewGradeRecord(userId uint32, sid, pwd string) error {
+func NewGradeRecords(userId uint32, sid, pwd string) error {
 	// 获取现有成绩数
 	curRecordNum, err := model.GetRecordsNum(userId)
 	if err != nil {
@@ -33,11 +33,11 @@ func NewGradeRecord(userId uint32, sid, pwd string) error {
 
 	wg := new(sync.WaitGroup)
 	errChan := make(chan error, 1)
-	finished := make(chan bool, 1)
+	finished := make(chan interface{}, 1)
 	gradeChan := make(chan *model.GradeModel, 1)
 
 	// 新增记录，并发
-	for _, item := range *data {
+	for _, item := range data {
 		wg.Add(1)
 
 		go func(item util.ResultGradeItem) {
@@ -65,7 +65,7 @@ func NewGradeRecord(userId uint32, sid, pwd string) error {
 				FinalScore:   item.FinalScore,
 				HasAdded:     false,
 			}
-		}(item)
+		}(*item)
 	}
 
 	go func() {
@@ -102,49 +102,71 @@ func NewGradeSampleFoCourses(userId uint32) error {
 		return err
 	}
 
-	// 逐个导入
-	// 修改：2020.7.31 取消并发。事故：没有加锁，导致 goroutines 竟态，程序崩溃。
-	for _, record := range records {
+	wg := new(sync.WaitGroup)
+	errChan := make(chan error, 1)
+	finished := make(chan interface{}, 1)
 
-		// 成绩数据添加
-		if err := NewGradeDataAdditionForOneCourse(userId, record); err != nil {
-			log.Errorf(err, "NewGradeDataAdditionForOneCourse function error for %t", record)
-		}
+	// 逐个导入，并发
+	for _, record := range records {
+		wg.Add(1)
+
+		go func(record model.GradeModel) {
+			defer wg.Done()
+
+			if err := NewGradeDataAdditionForOneCourse(userId, &record); err != nil {
+				log.Errorf(err, "NewGradeDataAdditionForOneCourse function error for %t", record)
+				errChan <- err
+			}
+		}(*record)
+	}
+
+	go func() {
+		wg.Wait()
+		close(finished)
+	}()
+
+	select {
+	case <-finished:
+	case err := <-errChan:
+		return err
 	}
 	return nil
 }
 
 // 一门课程的成绩样本数据添加
-func NewGradeDataAdditionForOneCourse(userId uint32, data *model.GradeModel) error {
+// 更新 historyCourse 的成绩字段和 grade 的 hasAdded 字段
+func NewGradeDataAdditionForOneCourse(userId uint32, grade *model.GradeModel) error {
 	// 获取课程
-	course, _, err := model.GetHistoryCourseByHashId(data.CourseHashId)
+	course, err := model.GetHistoryCourseByHashId(grade.CourseHashId)
 	if err != nil {
-		log.Error("GetHistoryCourseByHashId function error", err)
+		log.Errorf(err, "GetHistoryCourseByHashId function error; [hash: %s]", grade.CourseHashId)
 		return err
 	}
 
 	// 数据库数据覆盖问题
+	// TO DO: 事务
 	curSampleSize := course.GradeSampleSize
-	course.TotalGrade = (course.TotalGrade*float32(curSampleSize) + data.TotalScore) / float32(curSampleSize+1)
-	course.UsualGrade = (course.UsualGrade*float32(curSampleSize) + data.UsualScore) / float32(curSampleSize+1)
+	course.TotalGrade = (course.TotalGrade*float32(curSampleSize) + grade.TotalScore) / float32(curSampleSize+1)
+	course.UsualGrade = (course.UsualGrade*float32(curSampleSize) + grade.UsualScore) / float32(curSampleSize+1)
 	course.GradeSampleSize++
 
-	if data.TotalScore > 85 {
+	if grade.TotalScore > 85 {
 		course.GradeSection1++
-	} else if data.TotalScore >= 70 {
+	} else if grade.TotalScore >= 70 {
 		course.GradeSection2++
 	} else {
 		course.GradeSection3++
 	}
 
-	if err := course.UpdateGradeInfo(); err != nil {
-		log.Error("UpdateGradeInfo function error", err)
+	// 更新课程数据
+	if err := course.Update(); err != nil {
+		log.Error("Update history error", err)
 		return err
 	}
 
-	data.HasAdded = true
-	if err := data.Update(); err != nil {
-		log.Error("gradeModel.Update function error", err)
+	grade.HasAdded = true
+	if err := grade.Update(); err != nil {
+		log.Error("Update grade error", err)
 		return err
 	}
 
@@ -156,7 +178,7 @@ func GradeImportService(userId uint32, sid, pwd string) {
 	log.Info("Crawling grades begins")
 
 	// 获取成绩
-	if err := NewGradeRecord(userId, sid, pwd); err != nil {
+	if err := NewGradeRecords(userId, sid, pwd); err != nil {
 		log.Errorf(err, "Grade import failed for (userId=%d, sid=%s, psw=%s)", userId, sid, pwd)
 		return
 	}
