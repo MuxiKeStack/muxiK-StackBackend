@@ -2,11 +2,10 @@ package service
 
 import (
 	"fmt"
-	"strconv"
-	"strings"
 	"sync"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
+	"github.com/MuxiKeStack/muxiK-StackBackend/util"
 
 	"github.com/lexkong/log"
 )
@@ -17,14 +16,15 @@ type CourseInfoForCollectionsList struct {
 }
 
 // Get collections which have been processed by userId in table page.
-func GetCollectionListForTables(userId uint32, tableId uint32) (*[]model.CourseInfoInTableCollection, error) {
-	var result []model.CourseInfoInTableCollection
+func GetCollectionListForTables(userId uint32, tableId uint32) ([]*model.CourseInfoInTableCollection, error) {
+	var result []*model.CourseInfoInTableCollection
 	courseIds, err := model.GetCourseHashIdsFromCollection(userId)
 	if err != nil {
 		log.Error("GetCollectionsByUserId function error", err)
 		return nil, err
 	}
 
+	// Get all course ids in user's table, as skip items when gets collections
 	hiddenCourseIds, err := GetAllClassIdsByTableId(userId, tableId)
 	if err != nil {
 		log.Error("GetAllClassIdsInTables function error", err)
@@ -34,11 +34,11 @@ func GetCollectionListForTables(userId uint32, tableId uint32) (*[]model.CourseI
 	errChan := make(chan error, 1)
 	wg := &sync.WaitGroup{}
 	finished := make(chan bool, 1)
-	dataChan := make(chan *model.CourseInfoInTableCollection, 10)
+	dataChan := make(chan *model.CourseInfoInTableCollection)
 
 	for _, courseId := range courseIds {
 		// skip the course which has been added into tables
-		if ok := hiddenCourseIds[courseId]; ok {
+		if exist := hiddenCourseIds[courseId]; exist {
 			continue
 		}
 
@@ -46,29 +46,32 @@ func GetCollectionListForTables(userId uint32, tableId uint32) (*[]model.CourseI
 		go func(courseId string) {
 			defer wg.Done()
 
+			// Get all classes of the course by its hash id.
 			classes, err := model.GetClassesByCourseHash(courseId)
 			if err != nil {
-				log.Error("GetClassesByCourseHash function error", err)
+				log.Errorf(err, "GetClassesByCourseHash function error; [Hash: %s]", courseId)
 				errChan <- err
 			}
 
-			if classes == nil || len((*classes)) == 0 {
+			// No classes to choose.
+			if classes == nil || len(classes) == 0 {
 				log.Infof("Table Service Error: [Hash: %s] get classes is nil.", courseId)
 				return
 			}
 
+			// Parse and produce classes, to get avaliable class infos.
 			classInfos, err := GetClassInfoInCollection(classes)
 			if err != nil {
-				log.Error("GetClassInfoInCollection function error", err)
+				log.Errorf(err, "GetClassInfoInCollection function error; [Hash: %s].", courseId)
 				errChan <- err
 			}
 
 			data := &model.CourseInfoInTableCollection{
 				CourseId:   courseId,
-				CourseName: (*classes)[0].Name,
-				ClassSum:   len(*classes),
+				CourseName: classes[0].Name,
+				ClassSum:   len(classes),
 				Classes:    classInfos,
-				Type:       int8((*classes)[0].Type),
+				Type:       int8(classes[0].Type),
 			}
 			dataChan <- data
 
@@ -82,7 +85,7 @@ func GetCollectionListForTables(userId uint32, tableId uint32) (*[]model.CourseI
 
 	go func() {
 		for class := range dataChan {
-			result = append(result, *class)
+			result = append(result, class)
 		}
 		close(finished)
 	}()
@@ -93,14 +96,15 @@ func GetCollectionListForTables(userId uint32, tableId uint32) (*[]model.CourseI
 		return nil, err
 	}
 
-	return &result, nil
+	return result, nil
 }
 
 // Get class info by original classes for table image's collection.
-func GetClassInfoInCollection(classes *[]model.UsingCourseModel) (*[]model.ClassInfoInCollections, error) {
-	var infos []model.ClassInfoInCollections
+func GetClassInfoInCollection(classes []*model.UsingCourseModel) ([]*model.ClassInfoInCollections, error) {
+	var infos []*model.ClassInfoInCollections
 
-	for _, class := range *classes {
+	// 选课手册课程，复数个课堂
+	for _, class := range classes {
 		// 解析上课地点
 		places := []string{class.Place1}
 		if class.Place2 != "" {
@@ -128,63 +132,41 @@ func GetClassInfoInCollection(classes *[]model.UsingCourseModel) (*[]model.Class
 			times = append(times, class.Time3)
 		}
 
-		// 解析上课时间详情
-		var timeInfos []model.ClassTimeInfoInCollections
-		for i, time := range times {
-			split1 := strings.Index(time, "-")
-			split2 := strings.Index(time, "#")
-
-			start, err := strconv.ParseInt(time[:split1], 10, 8)
+		// 一个课堂，复数个时间段
+		var timeInfos []*model.ClassTimeInfoInCollections
+		for i := 0; i < len(times); i++ {
+			// 解析时间和周次信息
+			timeInfoItems, err := util.ParseClassTime(times[i], weeks[i])
 			if err != nil {
-				log.Error("ParseInt function error when parsing start", err)
+				log.Error("ParseClassTime function error", err)
 				return nil, err
 			}
 
-			stop, err := strconv.ParseInt(time[split1+1:split2], 10, 8)
-			if err != nil {
-				log.Error("ParseInt function error when parsing stop", err)
-				return nil, err
+			// 可能有复数个时间段
+			// 2020-8-2 fix: time 出现个例 3-4,9-10#4
+			for _, item := range timeInfoItems {
+				timeInfos = append(timeInfos, &model.ClassTimeInfoInCollections{
+					Time:      fmt.Sprintf("%d-%d", item.Start, item.End),
+					Day:       item.Day,
+					Weeks:     item.Weeks,
+					WeekState: item.WeekState,
+				})
 			}
-
-			// 上课星期
-			day, err := strconv.ParseInt(time[split2+1:], 10, 8)
-			if err != nil {
-				log.Error("ParseInt function error when parsing day", err)
-				return nil, err
-			}
-
-			// 解析上课周次和单双周状态
-			week := weeks[i]
-			splitWeek := strings.Index(week, "#")
-
-			weekState, err := strconv.ParseInt(week[splitWeek+1:], 10, 8)
-			if err != nil {
-				log.Error("ParseInt function error when parsing weekState", err)
-				return nil, err
-			}
-
-			timeInfos = append(timeInfos, model.ClassTimeInfoInCollections{
-				Time:      fmt.Sprintf("%d-%d", start, stop),
-				Day:       int8(day),
-				Weeks:     week[:splitWeek],
-				WeekState: int8(weekState),
-			})
 		}
 
-		infos = append(infos, model.ClassInfoInCollections{
+		infos = append(infos, &model.ClassInfoInCollections{
 			ClassId:   class.ClassId,
 			ClassName: class.Name,
-			//TeachingClassId: class.ClassId,
-			Teacher: class.Teacher,
-			Times:   &timeInfos,
-			Places:  &places,
+			Teacher:   class.Teacher,
+			Times:     timeInfos,
+			Places:    places,
 		})
 	}
-	return &infos, nil
+	return infos, nil
 }
 
 // Get collections in course list page.
-func GetCollectionList(userId uint32, lastId, limit int32) (*[]model.CourseInfoForCollections, error) {
+func GetCollectionList(userId uint32, lastId, limit int32) ([]*model.CourseInfoForCollections, error) {
 	records, err := model.GetCollectionsByUserId(userId, lastId, limit)
 	if err != nil {
 		log.Error("GetCollectionsByUserId function error", err)
@@ -268,15 +250,15 @@ func GetCollectionList(userId uint32, lastId, limit int32) (*[]model.CourseInfoF
 		return nil, err
 	}
 
-	var result []model.CourseInfoForCollections
+	var result []*model.CourseInfoForCollections
 	for _, id := range ids {
 		// 2020-6-9: fix: history course may not exist
 		c, ok := courseInfoList.IdMap[id]
 		if !ok {
 			continue
 		}
-		result = append(result, *c)
+		result = append(result, c)
 	}
 
-	return &result, nil
+	return result, nil
 }

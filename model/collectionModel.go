@@ -13,7 +13,7 @@ type CourseInfoInTableCollection struct {
 	CourseName string                    `json:"course_name"`
 	ClassSum   int                       `json:"class_sum"` // 课堂数
 	Type       int8                      `json:"type"`      // 0-通必,1-专必,2-专选,3-通选,4-专业课,5-通核
-	Classes    *[]ClassInfoInCollections `json:"classes"`
+	Classes    []*ClassInfoInCollections `json:"classes"`
 }
 
 // 选课清单内的课堂（教学班）信息
@@ -21,14 +21,14 @@ type ClassInfoInCollections struct {
 	ClassId   string                        `json:"class_id"` // 教学班编号
 	ClassName string                        `json:"class_name"`
 	Teacher   string                        `json:"teacher"`
-	Times     *[]ClassTimeInfoInCollections `json:"times"`
-	Places    *[]string                     `json:"places"`
+	Times     []*ClassTimeInfoInCollections `json:"times"`
+	Places    []string                      `json:"places"`
 }
 
 type ClassTimeInfoInCollections struct {
-	Time      string `json:"time"`
-	Day       int8   `json:"day"`
-	Weeks     string `json:"weeks"`
+	Time      string `json:"time"`       // 时间区间（节数），1-2
+	Day       int8   `json:"day"`        // 星期几
+	Weeks     string `json:"weeks"`      // 周次，2-17
 	WeekState int8   `json:"week_state"` // 全周0,单周1,双周2
 }
 

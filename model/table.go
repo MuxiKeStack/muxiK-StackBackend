@@ -15,7 +15,7 @@ func (table *ClassTableModel) Delete() error {
 }
 
 // Get table info by id.
-func (table *ClassTableModel) GetById() error {
+func (table *ClassTableModel) Get() error {
 	return DB.Self.First(table).Error
 }
 
@@ -38,6 +38,16 @@ func (table *ClassTableModel) UpdateClasses(classes string) error {
 	table.Classes = classes
 	d := DB.Self.Save(table)
 	return d.Error
+}
+
+// Get table by id.
+func GetTableById(id uint32) (*ClassTableModel, error) {
+	table := &ClassTableModel{Id: id}
+	d := DB.Self.First(table)
+	if d.RecordNotFound() {
+		return nil, nil
+	}
+	return table, d.Error
 }
 
 // Judge whether the tableId is valid.

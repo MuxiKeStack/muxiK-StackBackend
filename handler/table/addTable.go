@@ -62,8 +62,8 @@ func AddTable(c *gin.Context) {
 			return
 		}
 
-		// 根据id获取父课表
-		if err := table.GetById(); err != nil {
+		// 根据 id 和 user_id 获取父课表
+		if err := table.Get(); err != nil {
 			handler.SendError(c, errno.ErrDatabase, nil, err.Error())
 			return
 		}

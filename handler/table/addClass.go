@@ -58,7 +58,7 @@ func AddClass(c *gin.Context) {
 		return
 	}
 	// 获取课表
-	if err := table.GetById(); err != nil {
+	if err := table.Get(); err != nil {
 		handler.SendError(c, errno.ErrDatabase, nil, err.Error())
 		return
 	}

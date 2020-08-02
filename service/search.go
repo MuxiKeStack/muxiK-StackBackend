@@ -1,9 +1,10 @@
 package service
 
 import (
+	"sync"
+
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/lexkong/log"
-	"sync"
 )
 
 // 现用&历史课堂信息
@@ -149,6 +150,8 @@ func GetAllCourses(page, limit uint64, t, a, w, p string) ([]CourseInfoForAll, e
 	for i, row := range courseRows {
 		wg.Add(1)
 		go func(index int, row model.UsingCourseSearchModel) {
+			defer wg.Done()
+
 			result, err := model.GetTwoMostTagNamesOfCourseByHashId(row.Hash)
 			if err != nil {
 				log.Error("Get Tag Name error", err)
@@ -170,7 +173,6 @@ func GetAllCourses(page, limit uint64, t, a, w, p string) ([]CourseInfoForAll, e
 				Exam:       exam,
 				Tags:       result,
 			}
-			wg.Done()
 		}(i, row)
 	}
 	wg.Wait()
@@ -192,6 +194,8 @@ func GetAllHistoryCourses(page, limit uint64, t string) ([]CourseInfoForAll, err
 	for i, row := range courseRows {
 		wg.Add(1)
 		go func(index int, row model.HistoryCourseModel) {
+			defer wg.Done()
+
 			result, err := model.GetTwoMostTagNamesOfCourseByHashId(row.Hash)
 			if err != nil {
 				log.Error("Get Tag Name error", err)
@@ -213,7 +217,6 @@ func GetAllHistoryCourses(page, limit uint64, t string) ([]CourseInfoForAll, err
 				Exam:       exam,
 				Tags:       result,
 			}
-			wg.Done()
 		}(i, row)
 	}
 	wg.Wait()

@@ -2,20 +2,20 @@ package service
 
 import (
 	"errors"
-	"strconv"
 	"strings"
 	"sync"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
+	"github.com/MuxiKeStack/muxiK-StackBackend/util"
 
 	"github.com/lexkong/log"
 )
 
 // Get table info by table id.
 func GetTableInfoById(id uint32) (*model.ClassTableInfo, error) {
-	table := &model.ClassTableModel{Id: id}
-	if err := table.GetById(); err != nil {
-		log.Error("table.GetById function error", err)
+	table, err := model.GetTableById(id)
+	if err != nil {
+		log.Error("GetTableById function error", err)
 		return nil, err
 	}
 
@@ -57,44 +57,25 @@ func GetClassInfoForTableById(hashId string, classId string) (*model.ClassInfo, 
 		times = append(times, class.Time3)
 	}
 
-	// 解析上课时间详情
-	var timeInfos []model.ClassTimeInfo
-	for i, time := range times {
-		split1 := strings.Index(time, "-")
-		split2 := strings.Index(time, "#")
-
-		start, err := strconv.ParseInt(time[:split1], 10, 8)
+	var timeInfos []*model.ClassTimeInfo
+	for i := 0; i < len(times); i++ {
+		// 解析时间和周次信息
+		timeInfoItems, err := util.ParseClassTime(times[i], weeks[i])
 		if err != nil {
+			log.Error("ParseClassTime function error", err)
 			return nil, err
 		}
 
-		stop, err := strconv.ParseInt(time[split1+1:split2], 10, 8)
-		if err != nil {
-			return nil, err
+		// 可能有复数个时间段
+		for _, item := range timeInfoItems {
+			timeInfos = append(timeInfos, &model.ClassTimeInfo{
+				Start:     item.Start,
+				Duration:  item.End - item.Start + 1,
+				Day:       item.Day,
+				Weeks:     item.Weeks,
+				WeekState: item.WeekState,
+			})
 		}
-
-		// 上课星期
-		day, err := strconv.ParseInt(time[split2+1:], 10, 8)
-		if err != nil {
-			return nil, err
-		}
-
-		// 解析上课周次和单双周状态
-		week := weeks[i]
-		splitWeek := strings.Index(week, "#")
-
-		weekState, err := strconv.ParseInt(week[splitWeek+1:], 10, 8)
-		if err != nil {
-			return nil, err
-		}
-
-		timeInfos = append(timeInfos, model.ClassTimeInfo{
-			Start:     int8(start),
-			Duration:  int8(stop - start + 1),
-			Day:       int8(day),
-			Weeks:     week[:splitWeek],
-			WeekState: int8(weekState),
-		})
 	}
 
 	info := &model.ClassInfo{
@@ -102,8 +83,8 @@ func GetClassInfoForTableById(hashId string, classId string) (*model.ClassInfo, 
 		ClassId:   class.ClassId,
 		ClassName: class.Name,
 		Teacher:   class.Teacher,
-		Places:    &places,
-		Times:     &timeInfos,
+		Places:    places,
+		Times:     timeInfos,
 		Type:      int8(class.Type),
 	}
 
@@ -122,7 +103,7 @@ func GetTableInfoByTableModel(table *model.ClassTableModel) (*model.ClassTableIn
 
 	ids := strings.Split(table.Classes, ",")
 
-	var classList []model.ClassInfo
+	var classList []*model.ClassInfo
 
 	wg := &sync.WaitGroup{}
 	errChan := make(chan error, 1)
@@ -160,7 +141,7 @@ func GetTableInfoByTableModel(table *model.ClassTableModel) (*model.ClassTableIn
 
 	go func() {
 		for class := range classChan {
-			classList = append(classList, *class)
+			classList = append(classList, class)
 		}
 		close(finished)
 	}()
@@ -175,7 +156,7 @@ func GetTableInfoByTableModel(table *model.ClassTableModel) (*model.ClassTableIn
 		TableId:   table.Id,
 		TableName: table.Name,
 		ClassNum:  uint32(len(ids)),
-		ClassList: &classList,
+		ClassList: classList,
 	}
 
 	return info, nil
@@ -187,8 +168,7 @@ func GetAllClassIdsByTableId(userId uint32, tableId uint32) (map[string]bool, er
 		Id:     tableId,
 		UserId: userId,
 	}
-
-	if err := table.GetById(); err != nil {
+	if err := table.Get(); err != nil {
 		log.Error("table.GetById function error", err)
 		return nil, err
 	}

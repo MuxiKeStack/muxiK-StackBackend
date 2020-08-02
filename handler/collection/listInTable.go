@@ -13,7 +13,7 @@ import (
 
 type CollectionsInfo struct {
 	Sum        int                                  `json:"sum"`
-	CourseList *[]model.CourseInfoInTableCollection `json:"course_list"`
+	CourseList []*model.CourseInfoInTableCollection `json:"course_list"`
 }
 
 // @Summary 课表界面获取课程清单
@@ -44,7 +44,7 @@ func CollectionsForTable(c *gin.Context) {
 	}
 
 	handler.SendResponse(c, nil, &CollectionsInfo{
-		Sum:        len(*data),
+		Sum:        len(data),
 		CourseList: data,
 	})
 }

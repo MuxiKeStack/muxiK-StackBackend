@@ -14,7 +14,7 @@ import (
 
 type collectionListResponse struct {
 	Sum  int                               `json:"sum"`
-	List *[]model.CourseInfoForCollections `json:"list"`
+	List []*model.CourseInfoForCollections `json:"list"`
 }
 
 // @Summary 获取课程清单列表
@@ -48,7 +48,7 @@ func GetCollections(c *gin.Context) {
 	}
 
 	handler.SendResponse(c, nil, collectionListResponse{
-		Sum:  len(*data),
+		Sum:  len(data),
 		List: data,
 	})
 }

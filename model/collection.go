@@ -41,13 +41,13 @@ func GetCollectionsByUserId(userId uint32, lastId, limit int32) (*[]CourseListMo
 }
 
 // Get classes by course's hash id.
-func GetClassesByCourseHash(id string) (*[]UsingCourseModel, error) {
-	var classes []UsingCourseModel
+func GetClassesByCourseHash(id string) ([]*UsingCourseModel, error) {
+	var classes []*UsingCourseModel
 	d := DB.Self.Where("hash = ?", id).Find(&classes)
 	if d.RecordNotFound() {
 		return nil, nil
 	}
-	return &classes, d.Error
+	return classes, d.Error
 }
 
 func GetTheMostAttendanceCheckType(courseId string) (uint8, error) {
