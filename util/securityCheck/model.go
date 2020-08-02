@@ -15,6 +15,7 @@ import (
 
 // QQ小程序内容安全检测
 
+// QQ小程序 Access Token 管理
 type accessTokenManager struct {
 	Token     string
 	CreateAt  *time.Time
@@ -44,6 +45,13 @@ func QQSecInit() {
 	msgSecCheckURL += accessToken.Token
 }
 
+type QQGetTokenPayload struct {
+	AccessToken string `json:"access_token"`
+	ExpiresIn   int32  `json:"expires_in"`
+	ErrCode     int32  `json:"errcode"`
+	ErrMsg      string `json:"errmsg"`
+}
+
 func (t *accessTokenManager) loadToken() error {
 	resp, err := http.Get(fmt.Sprintf(accessTokenGetURL, QQAppID, QQAppSecret))
 	if err != nil {
@@ -55,13 +63,9 @@ func (t *accessTokenManager) loadToken() error {
 	if err != nil {
 		return err
 	}
-	var obj struct {
-		AccessToken string `json:"access_token"`
-		ExpiresIn   int32  `json:"expires_in"`
-		ErrCode     int32  `json:"errcode"`
-		ErrMsg      string `json:"errmsg"`
-	}
+	var obj QQGetTokenPayload
 	if err := json.Unmarshal([]byte(body), &obj); err != nil {
+		log.Error("json.Unmarshal error", err)
 		return err
 	}
 
@@ -76,8 +80,9 @@ func (t *accessTokenManager) loadToken() error {
 func (t *accessTokenManager) check() error {
 	now := time.Now()
 	if t.CreateAt.Add(t.ExpiresIn).Sub(now) <= 0 {
-		err := t.loadToken()
-		if err != nil {
+		// 过期，更新 token
+		if err := t.loadToken(); err != nil {
+			log.Error("Refresh access token failed", err)
 			return err
 		}
 		log.Info("Refresh access token OK")
@@ -89,6 +94,7 @@ func (t *accessTokenManager) check() error {
 	return nil
 }
 
+// 定时更新 QQ APP token
 func RefreshTokenScheduled() {
 	for {
 		// 提前10分钟更新
