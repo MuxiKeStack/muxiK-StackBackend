@@ -3,9 +3,7 @@ package service
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"strconv"
-	"strings"
 	"sync"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
@@ -67,83 +65,6 @@ func GetSelfCourseList(userId uint32, sid, pwd, year, term string) ([]*ProducedC
 	return list, nil
 }
 
-// 暂时废弃...
-// 获取个人课程备份
-func GetSelfCourseListFromLocal(userId uint32) ([]*ProducedCourseItem, error) {
-	hashIdStr, err := model.GetSelfCoursesByUserId(userId)
-	if err != nil {
-		log.Error("GetSelfCoursesByUserId function error", err)
-		return nil, err
-	}
-
-	hashIds := strings.Split(hashIdStr, ",")
-	var list []*ProducedCourseItem
-
-	for _, hashId := range hashIds {
-		course := &model.UsingCourseModel{Hash: hashId}
-		if err := course.GetByHash(); err != nil {
-			log.Error("GetByHash function error", err)
-			return nil, err
-		}
-		item := &ProducedCourseItem{
-			CourseId:     hashId,
-			Name:         course.Name,
-			Teacher:      course.Teacher,
-			HasEvaluated: model.HasEvaluated(userId, hashId),
-		}
-		list = append(list, item)
-	}
-
-	return list, nil
-}
-
-// 暂时废弃...
-// 存入备份数据至本地数据库
-func SavingCourseDataToLocal(userId uint32, list []*ProducedCourseItem) error {
-	var record = &model.SelfCourseModel{UserId: userId}
-	ok, err := record.GetByUserId()
-	if err != nil {
-		log.Error("SelfCourseModel.GetByUserId error", err)
-		return err
-	}
-
-	curNum := len(list)
-
-	// 记录存在且课程无变化，无需更新
-	if ok && record.Num == uint32(curNum) {
-		return nil
-	}
-
-	// 无记录则新添
-	//var hashIds []string
-	var hashIdStr string
-	for i, item := range list {
-		//hashIds = append(hashIds, item.CourseId)
-		if i > 0 {
-			hashIdStr = fmt.Sprintf("%s,%s", hashIdStr, item.CourseId)
-			continue
-		}
-		hashIdStr += item.CourseId
-	}
-	//hashIdStr := strings.Join(hashIds, ",")
-
-	record.Courses = hashIdStr
-	record.Num = uint32(curNum)
-
-	// 不存在记录则新添记录
-	if !ok {
-		err = record.New()
-	} else {
-		// 若存在且课程变化则更新
-		err = record.Update()
-	}
-
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
 var (
 	CourseDataKey  = "course-data"
 	CourseCountKey = "course-count"
@@ -154,27 +75,29 @@ func SelfCoursesCacheStoreToRedis(userId uint32, list []*ProducedCourseItem) err
 	userIdStr := strconv.Itoa(int(userId))
 
 	// 获取课程数量
-	s, ok, err := model.HashGet(CourseCountKey, userIdStr)
-	if err != nil {
-		log.Error("Redis hashGet course count error", err)
-		return err
-	} else if ok {
-		// 课程数量存在，根据数量判断是否有新课程
+	// 选课课程接口有bug，自主选课时选的课程会获取
+	// s, ok, err := model.HashGet(CourseCountKey, userIdStr)
+	// if err != nil {
+	// 	log.Error("Redis hashGet course count error", err)
+	// 	return err
+	// } else if ok {
+	// 	课程数量存在，根据数量判断是否有新课程
 
-		count, err := strconv.Atoi(s)
-		if err != nil {
-			return err
-		}
+	// 	count, err := strconv.Atoi(s)
+	// 	if err != nil {
+	// 		return err
+	// 	}
 
-		// 无新课程，无需更新缓存数据
-		if count >= len(list) {
-			return nil
-		}
-	}
+	// 	// 无新课程，无需更新缓存数据
+	// 	if count >= len(list) {
+	// 		return nil
+	// 	}
+	// }
 
 	// 序列化
 	coursesBytes, err := json.Marshal(list)
 	if err != nil {
+		log.Error("json.Marshal error", err)
 		return err
 	}
 
@@ -185,10 +108,10 @@ func SelfCoursesCacheStoreToRedis(userId uint32, list []*ProducedCourseItem) err
 	}
 
 	// 更新课程数量
-	if err = model.HashSet(CourseCountKey, userIdStr, len(list)); err != nil {
-		log.Error("Redis hashSet course count error", err)
-		return err
-	}
+	// if err = model.HashSet(CourseCountKey, userIdStr, len(list)); err != nil {
+	// 	log.Error("Redis hashSet course count error", err)
+	// 	return err
+	// }
 
 	log.Info("Store self-courses successfully.")
 	return nil
@@ -200,6 +123,7 @@ func SelfCoursesCacheGetFromRedis(userId uint32) ([]*ProducedCourseItem, error) 
 
 	s, ok, err := model.HashGet(CourseDataKey, userIdStr)
 	if err != nil {
+		log.Error("HashGet error", err)
 		return nil, err
 	} else if !ok {
 		// 无缓存数据
@@ -208,6 +132,7 @@ func SelfCoursesCacheGetFromRedis(userId uint32) ([]*ProducedCourseItem, error) 
 
 	var courses []*ProducedCourseItem
 	if err := json.Unmarshal([]byte(s), &courses); err != nil {
+		log.Error("json.Unmarshal error", err)
 		return nil, err
 	}
 

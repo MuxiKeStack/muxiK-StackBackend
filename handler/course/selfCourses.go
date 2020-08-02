@@ -58,17 +58,18 @@ func GetSelfCourses(c *gin.Context) {
 		log.Error("GetSelfCourseList function error", err)
 		log.Info("Try to get courses cache data from redis...")
 
-		if data, err = service.GetSelfCoursesFromLocalCache(userId, year, term); err != nil {
+		data, err = service.GetSelfCoursesFromLocalCache(userId, year, term)
+		if err != nil {
 			log.Error("Getting courses from cache failed", err)
 			handler.SendError(c, errno.ErrGetSelfCourses, nil, "getting courses from xk and cache failed")
 			return
 		}
 	} else {
-		// 获取成功则将数据备份到 redis
-		// 会通过检查课程数量判断是否有新课程，是否需要更新
+		// 获取教务课程成功则将数据备份到 redis
 		if err := service.SelfCoursesCacheStoreToRedis(userId, data); err != nil {
 			log.Error("Storing courses into redis failed", err)
 		}
+		log.Info("Storing courses into redis succeed")
 	}
 
 	handler.SendResponse(c, nil, &selfCoursesResponse{

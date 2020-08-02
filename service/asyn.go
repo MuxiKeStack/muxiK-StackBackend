@@ -51,3 +51,8 @@ func GradeServiceHandler(gMsg *AsynGradeMsgModel) {
 	}
 	log.Info("publish msg OK")
 }
+
+// 异步课程缓存
+// func AsyncStoreSelfCourse() {
+
+// }
