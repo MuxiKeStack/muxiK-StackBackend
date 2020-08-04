@@ -14,9 +14,9 @@ type GetGradeResponse struct {
 	TotalScore float32 `json:"total_score"` // 总成绩均分
 	UsualScore float32 `json:"usual_score"` // 平时均分
 	SampleSize uint32  `json:"sample_size"` // 样本数
-	Section1   float32 `json:"section_1"`   // 成绩区间1，85 以上所占的比例
-	Section2   float32 `json:"section_2"`   // 成绩区间2，70-85 所占的比例
-	Section3   float32 `json:"section_3"`   // 成绩区间3，70 以下所占的比例
+	Section1   uint32  `json:"section_1"`   // 成绩区间1，85 以上所占的数量
+	Section2   uint32  `json:"section_2"`   // 成绩区间2，70-85 所占的数量
+	Section3   uint32  `json:"section_3"`   // 成绩区间3，70 以下所占的数量
 }
 
 // @Tags grade
@@ -55,18 +55,14 @@ func Get(c *gin.Context) {
 		return
 	}
 
-	var result = GetGradeResponse{
+	var result = &GetGradeResponse{
 		HasLicence: true,
 		TotalScore: course.TotalGrade,
 		UsualScore: course.UsualGrade,
 		SampleSize: course.GradeSampleSize,
-	}
-
-	// 样本数不为0，计算各区间的百分比
-	if course.GradeSampleSize != 0 {
-		result.Section1 = float32(course.GradeSection1) / float32(course.GradeSampleSize)
-		result.Section2 = float32(course.GradeSection2) / float32(course.GradeSampleSize)
-		result.Section3 = float32(course.GradeSection3) / float32(course.GradeSampleSize)
+		Section1:   course.GradeSection1,
+		Section2:   course.GradeSection2,
+		Section3:   course.GradeSection3,
 	}
 
 	handler.SendResponse(c, nil, result)

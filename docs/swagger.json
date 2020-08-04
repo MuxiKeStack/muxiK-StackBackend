@@ -1553,16 +1553,16 @@
                     "type": "integer"
                 },
                 "section_1": {
-                    "description": "成绩区间1,85以上所占的比例",
-                    "type": "number"
+                    "description": "成绩区间1，85 以上所占的数量",
+                    "type": "integer"
                 },
                 "section_2": {
-                    "description": "区间2，70-85所占的比例",
-                    "type": "number"
+                    "description": "成绩区间2，70-85 所占的数量",
+                    "type": "integer"
                 },
                 "section_3": {
-                    "description": "区间3，70以下所占的比例",
-                    "type": "number"
+                    "description": "成绩区间3，70 以下所占的数量",
+                    "type": "integer"
                 },
                 "total_score": {
                     "description": "总成绩均分",
@@ -1689,12 +1689,15 @@
             "type": "object",
             "properties": {
                 "day": {
+                    "description": "星期",
                     "type": "integer"
                 },
                 "duration": {
+                    "description": "持续节数，若为1，则该课占两节",
                     "type": "integer"
                 },
                 "start": {
+                    "description": "开始节数",
                     "type": "integer"
                 },
                 "week_state": {
@@ -1702,6 +1705,7 @@
                     "type": "integer"
                 },
                 "weeks": {
+                    "description": "周次，2-17",
                     "type": "string"
                 }
             }
@@ -1710,9 +1714,11 @@
             "type": "object",
             "properties": {
                 "day": {
+                    "description": "星期几",
                     "type": "integer"
                 },
                 "time": {
+                    "description": "时间区间（节数），1-2",
                     "type": "string"
                 },
                 "week_state": {
@@ -1720,6 +1726,7 @@
                     "type": "integer"
                 },
                 "weeks": {
+                    "description": "周次，2-17",
                     "type": "string"
                 }
             }
