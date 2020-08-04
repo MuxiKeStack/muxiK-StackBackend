@@ -61,11 +61,11 @@ const (
 				</td>
 			</tr>
 			<tr>
-				<td>此电子邮件地址无法接收回复。如需更多信息，请访问 
+				<td>此电子邮件地址无法接收回复。如需更多信息，请访问
 					<a href="https://www.muxixyz.com" style="text-decoration: none; color: #4d90fe;" rel="noopener" target="_blank">木犀团队官网
 					</a>。
-					<br>Muxi Studio, CCNU, Wuhan HuBei, China 
-					<table style="font-family: Roboto-Regular,Helvetica,Arial,sans-serif; font-size: 10px; color: #666666; line-height: 18px; padding-bottom: 10px">						
+					<br>Muxi Studio, CCNU, Wuhan HuBei, China
+					<table style="font-family: Roboto-Regular,Helvetica,Arial,sans-serif; font-size: 10px; color: #666666; line-height: 18px; padding-bottom: 10px">
 					</table>
 				</td>
 			</tr>
@@ -80,10 +80,10 @@ var (
 		3: "签到点名",
 	}
 	Exam map[uint8]string = map[uint8]string{
-		1: "无考核",
-		2: "闭卷考试",
-		3: "开卷考试",
-		4: "论文考核",
+		1: "闭卷考试",
+		2: "开卷考试",
+		3: "论文考核",
+		4: "无考核",
 	}
 	AttendanceEnglish map[uint8]string = map[uint8]string{
 		1: "Often",
@@ -91,9 +91,9 @@ var (
 		3: "SignIn",
 	}
 	ExamEnglish map[uint8]string = map[uint8]string{
-		1: "None",
-		2: "Close",
-		3: "Open",
-		4: "Eassay",
+		1: "Close",
+		2: "Open",
+		3: "Eassay",
+		4: "None",
 	}
 )
