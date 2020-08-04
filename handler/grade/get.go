@@ -14,9 +14,9 @@ type GetGradeResponse struct {
 	TotalScore float32 `json:"total_score"` // 总成绩均分
 	UsualScore float32 `json:"usual_score"` // 平时均分
 	SampleSize uint32  `json:"sample_size"` // 样本数
-	Section1   float32 `json:"section_1"`   // 成绩区间1,85以上所占的比例
-	Section2   float32 `json:"section_2"`   // 区间2，70-85所占的比例
-	Section3   float32 `json:"section_3"`   // 区间3，70以下所占的比例
+	Section1   float32 `json:"section_1"`   // 成绩区间1，85 以上所占的比例
+	Section2   float32 `json:"section_2"`   // 成绩区间2，70-85 所占的比例
+	Section3   float32 `json:"section_3"`   // 成绩区间3，70 以下所占的比例
 }
 
 // @Tags grade
@@ -30,10 +30,10 @@ func Get(c *gin.Context) {
 
 	// 检查该用户是否有查看成绩的许可
 	if ok, err := model.UserHasLicence(userId); err != nil {
-		handler.SendError(c, err, nil, err.Error())
+		handler.SendError(c, errno.ErrDatabase, nil, err.Error())
 		return
 	} else if !ok {
-		// 无查看成绩许可，未加入计划
+		// 无查看成绩许可，未加入成绩共享计划
 		log.Infof("user(%d) has no licence", userId)
 		handler.SendResponse(c, nil, &GetGradeResponse{HasLicence: false})
 		return
@@ -64,9 +64,9 @@ func Get(c *gin.Context) {
 
 	// 样本数不为0，计算各区间的百分比
 	if course.GradeSampleSize != 0 {
-		result.Section1 = float32(course.GradeSection1 / course.GradeSampleSize)
-		result.Section2 = float32(course.GradeSection2 / course.GradeSampleSize)
-		result.Section3 = float32(course.GradeSection3 / course.GradeSampleSize)
+		result.Section1 = float32(course.GradeSection1) / float32(course.GradeSampleSize)
+		result.Section2 = float32(course.GradeSection2) / float32(course.GradeSampleSize)
+		result.Section3 = float32(course.GradeSection3) / float32(course.GradeSampleSize)
 	}
 
 	handler.SendResponse(c, nil, result)
