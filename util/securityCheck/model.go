@@ -53,6 +53,8 @@ type QQGetTokenPayload struct {
 }
 
 func (t *accessTokenManager) loadToken() error {
+	fmt.Println("Begin to load or refresh access token from QQ server...")
+
 	resp, err := http.Get(fmt.Sprintf(accessTokenGetURL, QQAppID, QQAppSecret))
 	if err != nil {
 		return err
@@ -65,7 +67,7 @@ func (t *accessTokenManager) loadToken() error {
 	}
 	var obj QQGetTokenPayload
 	if err := json.Unmarshal([]byte(body), &obj); err != nil {
-		log.Error("json.Unmarshal error", err)
+		log.Error("json unmarshal to QQGetTokenPayload error", err)
 		return err
 	}
 
@@ -100,8 +102,11 @@ func RefreshTokenScheduled() {
 		// 提前10分钟更新
 		time.Sleep(accessToken.ExpiresIn - time.Minute*10)
 
-		accessToken.loadToken()
+		if err := accessToken.loadToken(); err != nil {
+			log.Error("Refresh access token failed", err)
+			continue
+		}
 
-		log.Info("refresh QQ access token OK")
+		log.Info("Refresh QQ access token OK")
 	}
 }
