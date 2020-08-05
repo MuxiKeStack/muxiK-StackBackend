@@ -2,6 +2,7 @@ package util
 
 import (
 	"encoding/json"
+	"errors"
 	"io/ioutil"
 	"net/http"
 	"net/http/cookiejar"
@@ -201,11 +202,19 @@ func ParseByRegexp(bodyStr string) (float32, float32, error) {
 			break
 		}
 		if len(r) < 2 {
-			return 0, 0, nil
+			log.Infof("score body: %t", r)
+			return 0, 0, errors.New("No score")
 		}
+
+		// 解析分数
 		score[i], err = strconv.ParseFloat(r[1], 32)
 		if err != nil {
 			return 0, 0, err
+		}
+
+		// 分数为0，需要判错
+		if score[i] == 0 {
+			return 0, 0, errors.New("score is zero")
 		}
 	}
 

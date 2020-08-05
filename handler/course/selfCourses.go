@@ -5,7 +5,6 @@ import (
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
 	"github.com/MuxiKeStack/muxiK-StackBackend/service"
-	"github.com/MuxiKeStack/muxiK-StackBackend/util"
 
 	"github.com/gin-gonic/gin"
 	"github.com/lexkong/log"
@@ -40,10 +39,10 @@ func GetSelfCourses(c *gin.Context) {
 	}
 
 	// 判断学号密码是否正确
-	if err := util.LoginRequest(loginRequest.Sid, loginRequest.Password); err != nil {
-		handler.SendResponse(c, errno.ErrAuthFailed, nil)
-		return
-	}
+	// if err := util.LoginRequest(loginRequest.Sid, loginRequest.Password); err != nil {
+	// 	handler.SendResponse(c, errno.ErrAuthFailed, nil)
+	// 	return
+	// }
 
 	year := c.DefaultQuery("year", "0")
 	term := c.DefaultQuery("term", "0")
@@ -54,6 +53,12 @@ func GetSelfCourses(c *gin.Context) {
 	// 从教务系统获取个人课程
 	data, err = service.GetSelfCourseList(userId, loginRequest.Sid, loginRequest.Password, year, term)
 	if err != nil {
+		// 首先判断是否是用户名密码错误
+		if err == errno.ErrAuthFailed {
+			handler.SendResponse(c, errno.ErrAuthFailed, nil)
+			return
+		}
+
 		// 从教务处获取选课课表失败，获取缓存数据
 		log.Error("GetSelfCourseList function error", err)
 		log.Info("Try to get courses cache data from redis...")

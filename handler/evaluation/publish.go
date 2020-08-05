@@ -1,7 +1,6 @@
 package evaluation
 
 import (
-	"fmt"
 	"unicode/utf8"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
@@ -93,8 +92,6 @@ func Publish(c *gin.Context) {
 		IsValid:             true,
 		Time:                util.GetCurrentTime(),
 	}
-
-	fmt.Println(evaluation.Time)
 
 	if err := evaluation.New(); err != nil {
 		handler.SendError(c, err, nil, err.Error())
