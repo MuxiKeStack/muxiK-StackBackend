@@ -82,6 +82,7 @@ func Reply(c *gin.Context) {
 	// 先关掉，之后查验
 	ok, err = securityCheck.MsgSecCheck(data.Content)
 	if err != nil {
+		log.Error("QQ security check function error", err)
 		// handler.SendError(c, errno.ErrSecurityCheck, nil, "check error")
 		// return
 	} else if !ok {

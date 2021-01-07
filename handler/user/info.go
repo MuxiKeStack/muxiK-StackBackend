@@ -19,7 +19,6 @@ import (
 // @Success 200 "OK"
 // @Router /user/info/ [post]
 func PostInfo(c *gin.Context) {
-	// log.Info("PostInfo function called.", lager.Data{"X-Request-Id": util.GetReqID(c)})
 	var info model.UserInfoRequest
 	// BindJSON 如果字段不存在会返回400
 	// ShouldBindJSON 不会自动返回400
@@ -48,7 +47,6 @@ func PostInfo(c *gin.Context) {
 // @Success 200 {object}  model.UserInfoResponse
 // @Router /user/info/ [get]
 func GetInfo(c *gin.Context) {
-	// log.Info("GetInfo function called.", lager.Data{"X-Request-Id": util.GetReqID(c)})
 	id, _ := c.Get("id")
 	info, err := service.GetUserInfoById(id.(uint32))
 	if err != nil {

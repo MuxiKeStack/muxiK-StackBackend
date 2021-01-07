@@ -26,8 +26,6 @@ type checkResponse struct {
 
 // 消息文本检测
 func MsgSecCheck(content string) (bool, error) {
-	// accessToken.check()
-
 	data, err := json.Marshal(msgCheckReq{
 		AppID:   QQAppID,
 		Content: content,
@@ -35,8 +33,6 @@ func MsgSecCheck(content string) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-
-	// fmt.Println(string(data))
 
 	resp, err := http.Post(msgSecCheckURL, "application/json", bytes.NewBuffer(data))
 	if err != nil {
@@ -50,20 +46,17 @@ func MsgSecCheck(content string) (bool, error) {
 		return false, err
 	}
 
-	// fmt.Println(string(body))
-
 	var rp checkResponse
 	if err := json.Unmarshal(body, &rp); err != nil {
 		return false, err
 	}
 
-	// fmt.Println(rp)
 	if rp.ErrCode != 0 {
 		log.Info(fmt.Sprintf("msg security check failed. code: %d; msg: %s.", rp.ErrCode, rp.ErrMsg))
 		return false, nil
 	}
-	log.Info("msg security check OK.")
 
+	log.Info("msg security check OK.")
 	return true, nil
 }
 

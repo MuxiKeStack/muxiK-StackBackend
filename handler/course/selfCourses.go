@@ -39,6 +39,7 @@ func GetSelfCourses(c *gin.Context) {
 	}
 
 	// 判断学号密码是否正确
+	// 放到获取教务课程中判断，减少一次模拟登陆的时间
 	// if err := util.LoginRequest(loginRequest.Sid, loginRequest.Password); err != nil {
 	// 	handler.SendResponse(c, errno.ErrAuthFailed, nil)
 	// 	return
@@ -50,7 +51,20 @@ func GetSelfCourses(c *gin.Context) {
 	var data []*service.ProducedCourseItem
 	var err error
 
-	// 从教务系统获取个人课程
+	// 先从教务系统获取个人课程,
+	// 如获取成功，则更新 Redis 中的缓存数据,
+	// 如获取失败，则直接从 Redis 获取缓存数据。
+	// To do: redis 异步更新
+
+	// 另一个想法：
+	// 以缓存数据为主，先从缓存中读取数据，如有则直接返回，
+	// 并且异步爬取教务课表数据，更新缓存数据；
+	// 如从缓存数据中读取失败（无数据），则从教务获取，再更新缓存。
+	// 但是这样就有一个问题，学号密码的正确性就检验不了了：
+	// 先检查 redis，有则直接返回，然后爬取课表失败，因为账号错误，
+	// 然后就一直查询一直错误，缓存中数据永远得不到更新。
+	// 所以要采用这种方式，就需要确保学号密码的验证。
+
 	data, err = service.GetSelfCourseList(userId, loginRequest.Sid, loginRequest.Password, year, term)
 	if err != nil {
 		// 首先判断是否是用户名密码错误

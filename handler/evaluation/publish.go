@@ -47,6 +47,8 @@ func Publish(c *gin.Context) {
 	userId := c.MustGet("id").(uint32)
 
 	// Check whether the course exists
+	// TO DO: 课程不存在则创建
+	// ...
 	if ok := model.IsCourseExisting(data.CourseId); !ok {
 		handler.SendBadRequest(c, errno.ErrCourseExisting, nil, "")
 		return
@@ -70,6 +72,7 @@ func Publish(c *gin.Context) {
 	// 先关掉，之后查验
 	ok, err := securityCheck.MsgSecCheck(data.Content)
 	if err != nil {
+		log.Error("QQ security check function error", err)
 		// handler.SendError(c, errno.ErrSecurityCheck, nil, "check error")
 		// return
 	} else if !ok {
