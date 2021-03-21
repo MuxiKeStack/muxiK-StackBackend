@@ -47,11 +47,33 @@ func Publish(c *gin.Context) {
 	userId := c.MustGet("id").(uint32)
 
 	// Check whether the course exists
-	// TO DO: 课程不存在则创建
-	// ...
+	// TODO: 解决老师获取问题，目标查看当前用户所有课程的逻辑
 	if ok := model.IsCourseExisting(data.CourseId); !ok {
-		handler.SendBadRequest(c, errno.ErrCourseExisting, nil, "")
-		return
+		handler.SendBadRequest(c, errno.ErrHistoryCourseExisting, nil, "")
+
+		// 获取选课手册中对应的课程
+		usingCourse := &model.UsingCourseModel{Hash: data.CourseId}
+		i, err := usingCourse.GetByHash2()
+		// 没有找到课程记录的情况
+		if i == 1 {
+			handler.SendBadRequest(c, errno.ErrUsingCourseExisting, nil, "")
+			return
+		} else if i == 0 && err != nil {
+			handler.SendBadRequest(c, errno.ErrFindUsingCourse, nil, "")
+			return
+		}
+
+		course := &model.HistoryCourseModel{
+			Hash:     data.CourseId,
+			Name:     data.CourseName,
+			Teacher:  usingCourse.Teacher,
+			CourseId: usingCourse.CourseId,
+			Type:     usingCourse.Type,
+		}
+		if err := course.New(); err != nil {
+			handler.SendBadRequest(c, errno.ErrCreateHistoryCourse, nil, "")
+			return
+		}
 	}
 
 	// Check whether user has evaluated the course

@@ -45,9 +45,9 @@ func Get(c *gin.Context) {
 		return
 	}
 
-	course, ok, err := model.GetGradeInfoFromHistiryCourseInfo(courseId)
+	course, ok, err := model.GetGradeInfoFromHistoryCourseInfo(courseId)
 	if !ok {
-		handler.SendBadRequest(c, errno.ErrCourseExisting, nil, "course_id error")
+		handler.SendBadRequest(c, errno.ErrHistoryCourseExisting, nil, "course_id error")
 		return
 	} else if err != nil {
 		log.Errorf(err, "request grade for (hash=%s) error", courseId)
