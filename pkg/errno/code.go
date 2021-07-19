@@ -63,9 +63,12 @@ var (
 	ErrUploadFile = &Errno{Code: 20702, Message: "Error occurred in uploading file to oss"}
 
 	// course errors
-	ErrCourseExisting   = &Errno{Code: 20801, Message: "Course does not exist."}
-	ErrGetSelfCourses   = &Errno{Code: 20802, Message: "Error occurred in getting self courses"}
-	ErrSavesDataToLocal = &Errno{Code: 20803, Message: "Error occurred in Saving data to local"}
+	ErrHistoryCourseExisting = &Errno{Code: 20801, Message: "History Course does not exist."}
+	ErrGetSelfCourses        = &Errno{Code: 20802, Message: "Error occurred in getting self courses"}
+	ErrSavesDataToLocal      = &Errno{Code: 20803, Message: "Error occurred in Saving data to local"}
+	ErrCreateHistoryCourse   = &Errno{Code: 20804, Message: "Error occurred in creating a new history course"}
+	ErrFindUsingCourse       = &Errno{Code: 20805, Message: "Error occurred in finding the specific using course"}
+	ErrUsingCourseExisting   = &Errno{Code: 20806, Message: "Using Course does not exist."}
 
 	// report errors
 	ErrCreateReport = &Errno{Code: 20901, Message: "Error occurred in creating new report."}

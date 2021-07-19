@@ -91,13 +91,13 @@ func (class *UsingCourseModel) GetByTeacher() error {
 	return d.Error
 }
 
-// Get course by its courseid.(course assistant)
+// Get course by its courseId.(course assistant)
 func (class *UsingCourseModel) GetByCourseId(time int, place int) error { //int为映射，作为筛选条件
 	d := DB.Self.Find(class, "course_id = ?", class.CourseId)
 	return d.Error
 }
 
-// Update histiry course.
+// Update history course.
 func (course *HistoryCourseModel) Update() error {
 	return DB.Self.Save(course).Error
 }
@@ -269,7 +269,7 @@ func GetHistoryCoursePartInfoByHashId(hash string) (*HistoryCourseModel, bool, e
 	return data, true, d.Error
 }
 
-func GetGradeInfoFromHistiryCourseInfo(hash string) (*HistoryCourseModel, bool, error) {
+func GetGradeInfoFromHistoryCourseInfo(hash string) (*HistoryCourseModel, bool, error) {
 	var data = &HistoryCourseModel{}
 	d := DB.Self.Table("history_course").
 		Select("total_grade, usual_grade, grade_sample_size, grade_section_1, grade_section_2, grade_section_3").
@@ -286,6 +286,11 @@ func IsCourseExisting(hash string) bool {
 
 	DB.Self.Table("history_course").Select("id").Where("hash = ?", hash).Scan(&data)
 	return data.Id != 0
+}
+
+// 创建新的历史课程
+func (course *HistoryCourseModel) New() error {
+	return DB.Self.Create(course).Error
 }
 
 /*---------------------------- SelfCourse Operation --------------------------*/
