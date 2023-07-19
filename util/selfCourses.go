@@ -6,10 +6,11 @@ import (
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
+	"strconv"
 	"strings"
 	"time"
 
-	"github.com/lexkong/log"
+	"github.com/MuxiKeStack/muxiK-StackBackend/log"
 	"golang.org/x/net/publicsuffix"
 )
 
@@ -57,7 +58,33 @@ func GetSelfCoursesFromXK(sid, password string, year, term string) (*OriginalCou
 		return nil, err
 	}
 
-	return MakeCoursesGetRequest(client, sid, year, term)
+	courses, err := MakeCoursesGetRequest(client, "http://xk.ccnu.edu.cn/jwglxt/xkcx/xkmdcx_cxXkmdcxIndex.html?doType=query&gnmkdm=N255010&su="+sid, year, term)
+	if err != nil {
+		log.Error("MakeCoursesGetRequest function error", err)
+		return nil, err
+	}
+
+	// 排除选课期间刚选的课
+	if courses.Items != nil {
+		var list []OriginalCourseItem
+
+		m := "0"
+		switch true {
+		case time.Now().Month() > 5 && time.Now().Month() < 10:
+			m = "1"
+		case time.Now().Month() < 4 || time.Now().Month() > 11:
+			m = "2"
+		}
+
+		for _, course := range *courses.Items {
+			if course.Xnm != strconv.Itoa(time.Now().Year()) || course.Xqmc != m {
+				list = append(list, course)
+			}
+		}
+		courses.Items = &list
+	}
+
+	return courses, err
 }
 
 // 请求获取课程列表

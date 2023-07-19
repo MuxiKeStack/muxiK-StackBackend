@@ -7,7 +7,7 @@ import (
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/util"
 
-	"github.com/lexkong/log"
+	"github.com/MuxiKeStack/muxiK-StackBackend/log"
 )
 
 type ParentCommentInfoList struct {
@@ -189,7 +189,7 @@ func GetSubCommentInfosByParentId(id string, userId uint32, visitor bool) (*[]mo
 
 			subCommentInfoList.IdMap[info.Id] = info
 
-		}(comment) //传址会panic
+		}(comment) // 传址会panic
 	}
 
 	go func() {
@@ -328,7 +328,7 @@ func DeleteSubComment(id string, userId uint32) error {
 }
 
 // Update liked number of a comment after liking or canceling it.
-//func UpdateCommentLikeNum(commentId string, num int) (uint32, error) {
+// func UpdateCommentLikeNum(commentId string, num int) (uint32, error) {
 //	log.Info("UpdateCommentLikeNum function is called")
 //
 //	subComment, ok := model.IsSubComment(commentId)
@@ -345,4 +345,4 @@ func DeleteSubComment(id string, userId uint32) error {
 //
 //	err := parentComment.UpdateLikeNum(num)
 //	return parentComment.LikeNum, err
-//}
+// }

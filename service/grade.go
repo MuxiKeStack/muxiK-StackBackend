@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"strings"
 	"sync"
 
@@ -8,7 +9,7 @@ import (
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/util"
 
-	"github.com/lexkong/log"
+	"github.com/MuxiKeStack/muxiK-StackBackend/log"
 )
 
 // 爬取成绩，并发
@@ -20,7 +21,7 @@ func NewGradeRecords(userId uint32, sid, pwd string) error {
 		return err
 	}
 
-	//教务处获取成绩
+	// 教务处获取成绩
 	data, ok, err := util.GetGradeFromXK(sid, pwd, curRecordNum)
 	if err != nil {
 		log.Error("util.GetGradeFromXK function error", err)
@@ -52,7 +53,7 @@ func NewGradeRecords(userId uint32, sid, pwd string) error {
 				errChan <- err
 				return
 			} else if ok {
-				//log.Info("The record has existed")
+				// log.Info("The record has existed")
 				return
 			}
 
@@ -114,7 +115,7 @@ func NewGradeSampleFoCourses(userId uint32) error {
 			defer wg.Done()
 
 			if err := NewGradeDataAdditionForOneCourse(userId, &record); err != nil {
-				log.Errorf(err, "NewGradeDataAdditionForOneCourse function error for %t", record)
+				log.Error(fmt.Sprintf("NewGradeDataAdditionForOneCourse function error for %t", record), err)
 				errChan <- err
 			}
 		}(*record)
@@ -139,7 +140,7 @@ func NewGradeDataAdditionForOneCourse(userId uint32, grade *model.GradeModel) er
 	// 获取课程
 	course, err := model.GetHistoryCourseByHashId(grade.CourseHashId)
 	if err != nil {
-		log.Errorf(err, "GetHistoryCourseByHashId function error; [hash: %s]", grade.CourseHashId)
+		log.Error(fmt.Sprintf("GetHistoryCourseByHashId function error; [hash: %s]", grade.CourseHashId), err)
 		return err
 	}
 
@@ -179,7 +180,7 @@ func GradeImportService(userId uint32, sid, pwd string) {
 
 	// 获取成绩
 	if err := NewGradeRecords(userId, sid, pwd); err != nil {
-		log.Errorf(err, "Grade import failed for (userId=%d, sid=%s, psw=%s)", userId, sid, pwd)
+		log.Error(fmt.Sprintf("Grade import failed for (userId=%d, sid=%s, psw=%s)", userId, sid, pwd), err)
 		return
 	}
 	// 导入成绩样本数据
@@ -202,7 +203,7 @@ func GradeCrawlHandler(userId uint32, sid, pwd string) {
 		log.Error("UserHasLicence function error", err)
 		return
 	} else if !ok {
-		log.Infof("user(%d) has no licence", userId)
+		log.Info(fmt.Sprintf("user(%d) has no licence", userId))
 		return
 	}
 

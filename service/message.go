@@ -7,7 +7,7 @@ import (
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 
-	"github.com/lexkong/log"
+	"github.com/MuxiKeStack/muxiK-StackBackend/log"
 )
 
 /*
@@ -64,9 +64,9 @@ func MessageList(page, limit, uid uint32) (*[]model.MessageSub, error) {
 	return &messageSubs, nil
 }
 
-//所以对于消息提醒暂时分为三种，所有的信息返回也就是这三种。
-//所以我的想法是使用interface将其封装，而不应该是这样多个函数。
-//TODO FIX TO interface
+// 所以对于消息提醒暂时分为三种，所有的信息返回也就是这三种。
+// 所以我的想法是使用interface将其封装，而不应该是这样多个函数。
+// TODO FIX TO interface
 // type MessageForComment interface {
 // 	GetEvaluation() *model.CourseEvaluationModel
 // 	// GetComment() *model.CommentModel
@@ -253,7 +253,7 @@ func NewMessageForSubCommentLiking(userId uint32, comment *model.SubCommentModel
 	message := &model.MessagePub{
 		PubUserId:       userId,
 		SubUserId:       comment.UserId,
-		Kind:            0, //点赞
+		Kind:            0, // 点赞
 		IsRead:          false,
 		Reply:           "",
 		Time:            strconv.FormatInt(time.Now().Unix(), 10),
@@ -296,7 +296,7 @@ func NewMessageForReport(evaluationId uint32) error {
 	message := &model.MessagePub{
 		PubUserId:       SystemUserId,
 		SubUserId:       userID,
-		Kind:            2, //举报
+		Kind:            2, // 举报
 		IsRead:          false,
 		Reply:           "你的评课被多人举报已被删除",
 		Time:            strconv.FormatInt(time.Now().Unix(), 10),
@@ -326,7 +326,7 @@ func NewMessageForSystem(userId uint32, usingCourseId uint32) error {
 	message := &model.MessagePub{
 		PubUserId:       SystemUserId,
 		SubUserId:       userId,
-		Kind:            3, //系统提醒
+		Kind:            3, // 系统提醒
 		IsRead:          false,
 		Reply:           "你的课程还未评课",
 		Time:            strconv.FormatInt(time.Now().Unix(), 10),

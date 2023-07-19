@@ -2,12 +2,12 @@ package course
 
 import (
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
+	"github.com/MuxiKeStack/muxiK-StackBackend/log"
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
 	"github.com/MuxiKeStack/muxiK-StackBackend/service"
-
+	"github.com/MuxiKeStack/muxiK-StackBackend/util"
 	"github.com/gin-gonic/gin"
-	"github.com/lexkong/log"
 )
 
 type selfCoursesResponse struct {
@@ -40,10 +40,10 @@ func GetSelfCourses(c *gin.Context) {
 
 	// 判断学号密码是否正确
 	// 放到获取教务课程中判断，减少一次模拟登陆的时间
-	// if err := util.LoginRequest(loginRequest.Sid, loginRequest.Password); err != nil {
-	// 	handler.SendResponse(c, errno.ErrAuthFailed, nil)
-	// 	return
-	// }
+	if err := util.LoginRequest(loginRequest.Sid, loginRequest.Password); err != nil {
+		handler.SendResponse(c, errno.ErrAuthFailed, nil)
+		return
+	}
 
 	year := c.DefaultQuery("year", "0")
 	term := c.DefaultQuery("term", "0")
@@ -64,7 +64,6 @@ func GetSelfCourses(c *gin.Context) {
 	// 先检查 redis，有则直接返回，然后爬取课表失败，因为账号错误，
 	// 然后就一直查询一直错误，缓存中数据永远得不到更新。
 	// 所以要采用这种方式，就需要确保学号密码的验证。
-
 	data, err = service.GetSelfCourseList(userId, loginRequest.Sid, loginRequest.Password, year, term)
 	if err != nil {
 		// 首先判断是否是用户名密码错误

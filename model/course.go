@@ -92,7 +92,7 @@ func (class *UsingCourseModel) GetByTeacher() error {
 }
 
 // Get course by its courseId.(course assistant)
-func (class *UsingCourseModel) GetByCourseId(time int, place int) error { //int为映射，作为筛选条件
+func (class *UsingCourseModel) GetByCourseId(time int, place int) error { // int为映射，作为筛选条件
 	d := DB.Self.Find(class, "course_id = ?", class.CourseId)
 	return d.Error
 }
@@ -134,7 +134,10 @@ func Unfavorite(id uint32) error {
 // 2020-02-10: Add Join History Course SQL: join hash, get stars_num and rate
 func AgainstAndMatchCourses(kw string, page, limit uint64, t, a, w, p string) ([]UsingCourseSearchModel, error) {
 	courses := &[]UsingCourseSearchModel{}
-	where := "MATCH (using_course.name, using_course.course_id, using_course.teacher) AGAINST ('" + kw + "') "
+	// where := "MATCH (using_course.name, using_course.course_id, using_course.teacher) AGAINST ('" + kw + "') "
+	// 全文索引无效（无法作用于course_id和teacher, 且name不是模糊查询），但没找到原因，只能改为like
+	kw = "%" + kw + "%"
+	where := "using_course.name like ? or using_course.course_id like ? or using_course.teacher like ?"
 	if t != "" {
 		where += fmt.Sprintf(typeTemp, t)
 	}
@@ -153,7 +156,7 @@ func AgainstAndMatchCourses(kw string, page, limit uint64, t, a, w, p string) ([
 
 	DB.Self.Debug().Table("using_course").
 		Select("using_course.*, history_course.stars_num, history_course.rate").
-		Where(where).
+		Where(where, kw, kw, kw).
 		Joins("LEFT JOIN history_course ON using_course.hash = history_course.hash").
 		Limit(limit).Offset((page - 1) * limit).
 		Find(courses)
@@ -166,11 +169,14 @@ func AgainstAndMatchCourses(kw string, page, limit uint64, t, a, w, p string) ([
 // 2020-01-15: Add New Filter: type
 func AgainstAndMatchHistoryCourses(kw string, page, limit uint64, t string) ([]HistoryCourseModel, error) {
 	courses := &[]HistoryCourseModel{}
-	where := "MATCH (`name`, `teacher`) AGAINST ('" + kw + "') "
+	// where := "MATCH (`name`, `teacher`) AGAINST ('" + kw + "') "
+	kw = "%" + kw + "%"
+	where := "name like ? or teacher like ?"
 	if t != "" {
 		where += fmt.Sprintf(typeHistoryCourseTemp, t)
 	}
-	DB.Self.Table("history_course").Where(where).Limit(limit).Offset((page - 1) * limit).Find(courses)
+
+	DB.Self.Table("history_course").Where(where, kw, kw).Limit(limit).Offset((page - 1) * limit).Find(courses)
 	return *courses, nil
 }
 
@@ -193,7 +199,7 @@ func AllCourses(page, limit uint64, t, a, w, p string) ([]UsingCourseSearchModel
 	if p == "南湖校区" {
 		where += nPlaceTemp
 	}
-	//fmt.Println(where)
+	// fmt.Println(where)
 	if where == "" {
 		DB.Self.Table("using_course").
 			Select("using_course.*, history_course.stars_num, history_course.rate").
@@ -203,7 +209,7 @@ func AllCourses(page, limit uint64, t, a, w, p string) ([]UsingCourseSearchModel
 			Limit(limit).Offset((page - 1) * limit).Find(&courses)
 	} else {
 		whereFix := where[4:]
-		//fmt.Println(whereFix)
+		// fmt.Println(whereFix)
 		DB.Self.Table("using_course").
 			Select("using_course.*, history_course.stars_num, history_course.rate").
 			Joins("LEFT JOIN history_course ON using_course.hash = history_course.hash").

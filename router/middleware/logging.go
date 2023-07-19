@@ -3,6 +3,7 @@ package middleware
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"regexp"
 	"time"
@@ -10,8 +11,8 @@ import (
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
 
+	"github.com/MuxiKeStack/muxiK-StackBackend/log"
 	"github.com/gin-gonic/gin"
-	"github.com/lexkong/log"
 	"github.com/willf/pad"
 )
 
@@ -55,7 +56,7 @@ func Logging() gin.HandlerFunc {
 		method := c.Request.Method
 		ip := c.ClientIP()
 
-		//log.Debugf("New request come in, path: %s, Method: %s, body `%s`", path, method, string(bodyBytes))
+		// log.Debugf("New request come in, path: %s, Method: %s, body `%s`", path, method, string(bodyBytes))
 		blw := &bodyLogWriter{
 			body:           bytes.NewBufferString(""),
 			ResponseWriter: c.Writer,
@@ -74,7 +75,7 @@ func Logging() gin.HandlerFunc {
 		// get code and message
 		var response handler.Response
 		if err := json.Unmarshal(blw.body.Bytes(), &response); err != nil {
-			log.Errorf(err, "response body can not unmarshal to model.Response struct, body: `%s`", blw.body.Bytes())
+			log.Error(fmt.Sprintf("response body can not unmarshal to model.Response struct, body: `%s`", blw.body.Bytes()), err)
 			code = errno.InternalServerError.Code
 			message = err.Error()
 		} else {
@@ -82,6 +83,6 @@ func Logging() gin.HandlerFunc {
 			message = response.Message
 		}
 
-		log.Infof("%-13s | %-12s | %s %s | {code: %d, message: %s}", latency, ip, pad.Right(method, 5, ""), path, code, message)
+		log.Info(fmt.Sprintf("%-13s | %-12s | %s %s | {code: %d, message: %s}", latency, ip, pad.Right(method, 5, ""), path, code, message))
 	}
 }

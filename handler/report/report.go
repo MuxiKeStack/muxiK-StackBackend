@@ -3,12 +3,12 @@ package report
 import (
 	"fmt"
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
+	"github.com/MuxiKeStack/muxiK-StackBackend/log"
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/constvar"
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
 	"github.com/MuxiKeStack/muxiK-StackBackend/util/smtpMail"
 	"github.com/gin-gonic/gin"
-	"github.com/lexkong/log"
 	"github.com/spf13/viper"
 	"strconv"
 	"strings"
@@ -103,7 +103,7 @@ func ReportEvaluation(c *gin.Context) {
 					}
 				}
 				mailContent = strings.Replace(mailContent, "ALL_REASON", strings.Join(allReasons, "\n"), 1)
-				log.Infof("Start to send email to: %s", constvar.DefaultAdminEmailAddr)
+				log.Info(fmt.Sprintf("Start to send email to: %s", constvar.DefaultAdminEmailAddr))
 
 				err = smtpMail.SendMail("muxistudio@qq.com", viper.GetString("authcode"), []string{constvar.DefaultAdminEmailAddr}, smtpMail.Content{
 					NickName:    "木犀课栈: 评课举报通知",

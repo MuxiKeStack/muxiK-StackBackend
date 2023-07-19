@@ -7,7 +7,7 @@ import (
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/constvar"
 	"github.com/MuxiKeStack/muxiK-StackBackend/util"
 
-	"github.com/lexkong/log"
+	"github.com/MuxiKeStack/muxiK-StackBackend/log"
 )
 
 type EvaluationInfoList struct {

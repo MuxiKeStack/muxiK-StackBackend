@@ -1,10 +1,11 @@
 package grade
 
 import (
+	"fmt"
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
+	"github.com/MuxiKeStack/muxiK-StackBackend/log"
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
-	"github.com/lexkong/log"
 
 	"github.com/gin-gonic/gin"
 )
@@ -34,7 +35,7 @@ func Get(c *gin.Context) {
 		return
 	} else if !ok {
 		// 无查看成绩许可，未加入成绩共享计划
-		log.Infof("user(%d) has no licence", userId)
+		log.Info(fmt.Sprintf("user(%d) has no licence", userId))
 		handler.SendResponse(c, nil, &GetGradeResponse{HasLicence: false})
 		return
 	}
@@ -50,7 +51,7 @@ func Get(c *gin.Context) {
 		handler.SendBadRequest(c, errno.ErrHistoryCourseExisting, nil, "course_id error")
 		return
 	} else if err != nil {
-		log.Errorf(err, "request grade for (hash=%s) error", courseId)
+		log.Error(fmt.Sprintf("request grade for (hash=%s) error", courseId), err)
 		handler.SendError(c, errno.ErrDatabase, nil, err.Error())
 		return
 	}

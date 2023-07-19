@@ -5,15 +5,15 @@ import (
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
 
+	"github.com/MuxiKeStack/muxiK-StackBackend/log"
 	"github.com/gin-gonic/gin"
-	"github.com/lexkong/log"
 )
 
 type likeDataRequest struct {
 	LikeState bool `json:"like_state"`
 }
 
-//收藏课程
+// 收藏课程
 // @Summary 收藏课程/取消收藏
 // @Tags course
 // @Param token header string true "token"

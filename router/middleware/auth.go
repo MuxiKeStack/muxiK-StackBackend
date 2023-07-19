@@ -2,9 +2,9 @@ package middleware
 
 import (
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
+	"github.com/MuxiKeStack/muxiK-StackBackend/log"
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/token"
-	"github.com/lexkong/log"
 
 	"github.com/gin-gonic/gin"
 )
@@ -18,7 +18,7 @@ func AuthMiddleware() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-		//gin.Context内有一个keys是一个map[string][interface{}]
+		// gin.Context内有一个keys是一个map[string][interface{}]
 		c.Set("id", ctx.Id)
 		c.Next()
 	}

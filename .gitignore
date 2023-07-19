@@ -3,6 +3,7 @@ main
 *.log
 .idea
 *.xml
+*.yaml
 *.iml
 *.out
 *.zip

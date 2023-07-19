@@ -7,8 +7,8 @@ import (
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
 
+	"github.com/MuxiKeStack/muxiK-StackBackend/log"
 	"github.com/gin-gonic/gin"
-	"github.com/lexkong/log"
 )
 
 // 删除评课

@@ -1,14 +1,14 @@
 package handler
 
 import (
+	"go.uber.org/zap"
 	"net/http"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
 	"github.com/MuxiKeStack/muxiK-StackBackend/util"
 
+	"github.com/MuxiKeStack/muxiK-StackBackend/log"
 	"github.com/gin-gonic/gin"
-	"github.com/lexkong/log"
-	"github.com/lexkong/log/lager"
 )
 
 type Response struct {
@@ -29,7 +29,7 @@ func SendResponse(c *gin.Context, err error, data interface{}) {
 
 func SendBadRequest(c *gin.Context, err error, data interface{}, cause string) {
 	code, message := errno.DecodeErr(err)
-	log.Info(message, lager.Data{"X-Request-Id": util.GetReqID(c), "cause": cause})
+	log.Info(message, zap.String("X-Request-Id", util.GetReqID(c)), zap.String("cause", cause))
 	c.JSON(http.StatusBadRequest, Response{
 		Code:    code,
 		Message: message + ": " + cause,
@@ -39,7 +39,7 @@ func SendBadRequest(c *gin.Context, err error, data interface{}, cause string) {
 
 func SendUnauthorized(c *gin.Context, err error, data interface{}, cause string) {
 	code, message := errno.DecodeErr(err)
-	log.Info(message, lager.Data{"X-Request-Id": util.GetReqID(c), "cause": cause})
+	log.Info(message, zap.String("X-Request-Id", util.GetReqID(c)), zap.String("cause", cause))
 	c.JSON(http.StatusUnauthorized, Response{
 		Code:    code,
 		Message: message + ": " + cause,
@@ -49,7 +49,7 @@ func SendUnauthorized(c *gin.Context, err error, data interface{}, cause string)
 
 func SendForbidden(c *gin.Context, err error, data interface{}, cause string) {
 	code, message := errno.DecodeErr(err)
-	log.Info(message, lager.Data{"X-Request-Id": util.GetReqID(c), "cause": cause})
+	log.Info(message, zap.String("X-Request-Id", util.GetReqID(c)), zap.String("cause", cause))
 	c.JSON(http.StatusForbidden, Response{
 		Code:    code,
 		Message: message + ": " + cause,
@@ -59,7 +59,7 @@ func SendForbidden(c *gin.Context, err error, data interface{}, cause string) {
 
 func SendNotFound(c *gin.Context, err error, data interface{}, cause string) {
 	code, message := errno.DecodeErr(err)
-	log.Info(message, lager.Data{"X-Request-Id": util.GetReqID(c), "cause": cause})
+	log.Info(message, zap.String("X-Request-Id", util.GetReqID(c)), zap.String("cause", cause))
 	c.JSON(http.StatusNotFound, Response{
 		Code:    code,
 		Message: message + ": " + cause,
@@ -69,7 +69,7 @@ func SendNotFound(c *gin.Context, err error, data interface{}, cause string) {
 
 func SendError(c *gin.Context, err error, data interface{}, cause string) {
 	code, message := errno.DecodeErr(err)
-	log.Info(message, lager.Data{"X-Request-Id": util.GetReqID(c), "cause": cause})
+	log.Info(message, zap.String("X-Request-Id", util.GetReqID(c)), zap.String("cause", cause))
 	c.JSON(http.StatusInternalServerError, Response{
 		Code:    code,
 		Message: message + ": " + cause,

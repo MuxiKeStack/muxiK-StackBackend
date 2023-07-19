@@ -1,6 +1,7 @@
 package evaluation
 
 import (
+	"fmt"
 	"unicode/utf8"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
@@ -10,8 +11,8 @@ import (
 	"github.com/MuxiKeStack/muxiK-StackBackend/util"
 	"github.com/MuxiKeStack/muxiK-StackBackend/util/securityCheck"
 
+	"github.com/MuxiKeStack/muxiK-StackBackend/log"
 	"github.com/gin-gonic/gin"
-	"github.com/lexkong/log"
 )
 
 // Request data of publishing a new evaluation
@@ -99,7 +100,7 @@ func Publish(c *gin.Context) {
 		// handler.SendError(c, errno.ErrSecurityCheck, nil, "check error")
 		// return
 	} else if !ok {
-		log.Errorf(err, "QQ security check msg(%s) error", data.Content)
+		log.Info(fmt.Sprintf("QQ security check msg(%s) error", data.Content))
 		// handler.SendBadRequest(c, errno.ErrSecurityCheck, nil, "comment content violation")
 		// return
 	}

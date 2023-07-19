@@ -71,8 +71,8 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 		m.POST("/readall/", message.ReadAll)
 	}
 
-	//默认是转到docs文件下的json，不需要修改。
-	//url := ginSwagger.URL("http://kstack.test.muxi-tech.xyz/swagger/doc.json") // The url pointing to API definition
+	// 默认是转到docs文件下的json，不需要修改。
+	// url := ginSwagger.URL("http://kstack.test.muxi-tech.xyz/swagger/doc.json") // The url pointing to API definition
 	g.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// 选课手册课程

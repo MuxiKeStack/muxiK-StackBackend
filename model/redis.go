@@ -3,8 +3,8 @@ package model
 import (
 	"time"
 
+	"github.com/MuxiKeStack/muxiK-StackBackend/log"
 	"github.com/go-redis/redis"
-	"github.com/lexkong/log"
 	"github.com/spf13/viper"
 )
 

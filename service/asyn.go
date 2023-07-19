@@ -2,10 +2,11 @@ package service
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 
-	"github.com/lexkong/log"
+	"github.com/MuxiKeStack/muxiK-StackBackend/log"
 )
 
 type AsynGradeMsgModel struct {
@@ -25,7 +26,7 @@ func AsynGradeService() {
 		// fmt.Println(msg)
 		err := json.Unmarshal([]byte(msg.Payload), data)
 		if err != nil {
-			log.Errorf(err, "asyn grade service unmarshal msg(%s) error", msg.Payload)
+			log.Error(fmt.Sprintf("asyn grade service unmarshal msg(%s) error", msg.Payload), err)
 		}
 		// fmt.Println(data)
 
@@ -41,12 +42,12 @@ func AsynGradeService() {
 func GradeServiceHandler(gMsg *AsynGradeMsgModel) {
 	msg, err := json.Marshal(gMsg)
 	if err != nil {
-		log.Errorf(err, "marshal asyn-grade-msg error for (userId=%d, sid=%s, psw=%s)", gMsg.UserId, gMsg.Sid, gMsg.Password)
+		log.Error(fmt.Sprintf("marshal asyn-grade-msg error for (userId=%d, sid=%s, psw=%s)", gMsg.UserId, gMsg.Sid, gMsg.Password), err)
 		return
 	}
 
 	if err := model.PublishMsg(msg, model.GradeChan); err != nil {
-		log.Errorf(err, "asyn-grade-msg publish error for (%s)", string(msg))
+		log.Error(fmt.Sprintf("asyn-grade-msg publish error for (%s)", string(msg)), err)
 		return
 	}
 	log.Info("publish msg OK")

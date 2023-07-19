@@ -9,7 +9,7 @@ import (
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/util"
 
-	"github.com/lexkong/log"
+	"github.com/MuxiKeStack/muxiK-StackBackend/log"
 )
 
 type ProducedCourseItem struct {
@@ -23,6 +23,7 @@ type ProducedCourseItem struct {
 
 // Get one's all courses from XK.
 func GetSelfCourseList(userId uint32, sid, pwd, year, term string) ([]*ProducedCourseItem, error) {
+	// var termMap = map[string]string{"3": "1", "12": "2", "16": "3"} // 学期参数（逆向）
 	originalCourses, err := util.GetSelfCoursesFromXK(sid, pwd, year, term)
 	if err != nil {
 		log.Error("GetSelfCoursesFromXK function error", err)
@@ -32,25 +33,28 @@ func GetSelfCourseList(userId uint32, sid, pwd, year, term string) ([]*ProducedC
 	wg := sync.WaitGroup{}
 	infoChan := make(chan *ProducedCourseItem, 5)
 	var list []*ProducedCourseItem
-	//(*originalCourses.Items)[0].Jsxx = "2006982627/葛非,2006982646/彭熙,2006982670/刘明,2007980066/姚华雄"
+	// (*originalCourses.Items)[0].Jsxx = "2006982627/葛非,2006982646/彭熙,2006982670/刘明,2007980066/姚华雄"
 
-	for _, item := range *originalCourses.Items {
-		wg.Add(1)
-		go func(item util.OriginalCourseItem) {
-			defer wg.Done()
+	if originalCourses.Items != nil {
+		for _, item := range *originalCourses.Items {
+			wg.Add(1)
+			go func(item util.OriginalCourseItem) {
+				defer wg.Done()
 
-			teacher := util.GetTeachersSqStrBySplitting(item.Jsxx)
-			hashId := util.HashCourseId(item.Kch, teacher)
-			info := &ProducedCourseItem{
-				CourseId:     hashId,
-				Name:         item.Kcmc,
-				Teacher:      teacher,
-				HasEvaluated: model.HasEvaluated(userId, hashId),
-				Year:         item.Xnm,
-				Term:         item.Xqmc,
-			}
-			infoChan <- info
-		}(item)
+				teacher := util.GetTeachersSqStrBySplitting(item.Jsxx)
+				hashId := util.HashCourseId(item.Kch, teacher)
+				info := &ProducedCourseItem{
+					CourseId:     hashId,
+					Name:         item.Kcmc,
+					Teacher:      teacher,
+					HasEvaluated: model.HasEvaluated(userId, hashId),
+					Year:         item.Xnm,
+					// Term:         termMap[item.Xqm],
+					Term: item.Xqmc,
+				}
+				infoChan <- info
+			}(item)
+		}
 	}
 
 	go func() {

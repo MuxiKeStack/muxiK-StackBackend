@@ -1,6 +1,7 @@
 package comment
 
 import (
+	"fmt"
 	"unicode/utf8"
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
@@ -10,8 +11,8 @@ import (
 	"github.com/MuxiKeStack/muxiK-StackBackend/util"
 	"github.com/MuxiKeStack/muxiK-StackBackend/util/securityCheck"
 
+	"github.com/MuxiKeStack/muxiK-StackBackend/log"
 	"github.com/gin-gonic/gin"
-	"github.com/lexkong/log"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -66,10 +67,10 @@ func Reply(c *gin.Context) {
 	// }
 
 	// Check whether the targetUserId is right
-	//if !(parentComment.IsAnonymous && targetUserId == 0 || !parentComment.IsAnonymous && parentComment.UserId == targetUserId) {
+	// if !(parentComment.IsAnonymous && targetUserId == 0 || !parentComment.IsAnonymous && parentComment.UserId == targetUserId) {
 	//	handler.SendBadRequest(c, errno.ErrGetQuery, nil, "Sid is error, doesn't match the parentComment's")
 	//	return
-	//}
+	// }
 
 	// Words are limited to 300
 	if utf8.RuneCountInString(data.Content) > 300 {
@@ -86,7 +87,7 @@ func Reply(c *gin.Context) {
 		// handler.SendError(c, errno.ErrSecurityCheck, nil, "check error")
 		// return
 	} else if !ok {
-		log.Errorf(err, "QQ security check msg(%s) error", data.Content)
+		log.Info(fmt.Sprintf("QQ security check msg(%s) error", data.Content))
 		// handler.SendBadRequest(c, errno.ErrSecurityCheck, nil, "comment content violation")
 		// return
 	}
@@ -128,7 +129,7 @@ func Reply(c *gin.Context) {
 
 	// New message reminder
 	if commentInfo.IsAnonymous {
-		userId = 2 //匿名用户
+		userId = 2 // 匿名用户
 	}
 	err = service.NewMessageForSubComment(userId, comment, parentComment)
 	if err != nil {

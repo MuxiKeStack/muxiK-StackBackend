@@ -7,7 +7,7 @@ import (
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
 	"github.com/MuxiKeStack/muxiK-StackBackend/util"
 
-	"github.com/lexkong/log"
+	"github.com/MuxiKeStack/muxiK-StackBackend/log"
 )
 
 type CourseInfoForCollectionsList struct {
@@ -49,20 +49,20 @@ func GetCollectionListForTables(userId uint32, tableId uint32) ([]*model.CourseI
 			// Get all classes of the course by its hash id.
 			classes, err := model.GetClassesByCourseHash(courseId)
 			if err != nil {
-				log.Errorf(err, "GetClassesByCourseHash function error; [Hash: %s]", courseId)
+				log.Error(fmt.Sprintf("GetClassesByCourseHash function error; [Hash: %s]", courseId), err)
 				errChan <- err
 			}
 
 			// No classes to choose.
 			if classes == nil || len(classes) == 0 {
-				log.Infof("Table Service Error: [Hash: %s] get classes is nil.", courseId)
+				log.Info(fmt.Sprintf("Table Service Error: [Hash: %s] get classes is nil.", courseId))
 				return
 			}
 
 			// Parse and produce classes, to get avaliable class infos.
 			classInfos, err := GetClassInfoInCollection(classes)
 			if err != nil {
-				log.Errorf(err, "GetClassInfoInCollection function error; [Hash: %s].", courseId)
+				log.Error(fmt.Sprintf("GetClassInfoInCollection function error; [Hash: %s].", courseId), err)
 				errChan <- err
 			}
 

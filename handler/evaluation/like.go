@@ -8,8 +8,8 @@ import (
 	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
 	"github.com/MuxiKeStack/muxiK-StackBackend/service"
 
+	"github.com/MuxiKeStack/muxiK-StackBackend/log"
 	"github.com/gin-gonic/gin"
-	"github.com/lexkong/log"
 )
 
 type likeDataResponse struct {
@@ -90,7 +90,7 @@ func UpdateEvaluationLike(c *gin.Context) {
 
 	handler.SendResponse(c, nil, likeDataResponse{
 		LikeState: !hasLiked,
-		//LikeNum:   model.GetEvaluationLikeSum(uint32(id)),
+		// LikeNum:   model.GetEvaluationLikeSum(uint32(id)),
 		LikeNum: evaluation.LikeNum,
 	})
 

@@ -3,6 +3,7 @@ package util
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/http/cookiejar"
@@ -12,7 +13,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/lexkong/log"
+	"github.com/MuxiKeStack/muxiK-StackBackend/log"
 	"golang.org/x/net/publicsuffix"
 )
 
@@ -122,14 +123,14 @@ func GetGradeFromXK(sid, password string, curRecordNum int) ([]*ResultGradeItem,
 		// 解析出现错误值：缓考
 		totalScore, err := strconv.ParseFloat(item.Cj, 32)
 		if err != nil {
-			log.Errorf(err, "parse %s to float error", item.Cj)
+			log.Error(fmt.Sprintf("parse %s to float error", item.Cj), err)
 			continue
 		}
 
 		// 获取平时和期末成绩
 		usualScore, finalScore, err := GetUsualAndFinalGradeFromXK(client, item.JxbId, item.Kcmc, item.Xnm, item.Xqm)
 		if err != nil {
-			log.Errorf(err, "GetUsualAndFinalGrade for (%s, %s, %s) error", item.Kch, item.Kcmc, item.Jsxm)
+			log.Error(fmt.Sprintf("GetUsualAndFinalGrade for (%s, %s, %s) error", item.Kch, item.Kcmc, item.Jsxm), err)
 			continue
 		}
 
@@ -202,7 +203,7 @@ func ParseByRegexp(bodyStr string) (float32, float32, error) {
 			break
 		}
 		if len(r) < 2 {
-			log.Infof("score body: %t", r)
+			log.Info(fmt.Sprintf("score body: %t", r))
 			return 0, 0, errors.New("No score")
 		}
 

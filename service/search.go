@@ -3,22 +3,22 @@ package service
 import (
 	"sync"
 
+	"github.com/MuxiKeStack/muxiK-StackBackend/log"
 	"github.com/MuxiKeStack/muxiK-StackBackend/model"
-	"github.com/lexkong/log"
 )
 
 // 现用&历史课堂信息
 type CourseInfoForAll struct {
-	Id         uint32   `json:"id"`         //主键
-	Hash       string   `json:"hash"`       //教师名和课程hash成的唯一标识，用于getinfo
-	CourseId   string   `json:"course_id"`  //仅用于在UI上进行展示
-	Name       string   `json:"name"`       //课程名称
-	Teacher    string   `json:"teacher"`    //教师姓名
-	Rate       float32  `json:"rate"`       //课程评价星级
-	StarsNum   uint32   `json:"stars_num"`  //参与评分人数
-	Attendance string   `json:"attendance"` //点名方式
-	Exam       string   `json:"exam"`       //考核方式
-	Tags       []string `json:"tags"`       //前二的tag
+	Id         uint32   `json:"id"`         // 主键
+	Hash       string   `json:"hash"`       // 教师名和课程hash成的唯一标识，用于getinfo
+	CourseId   string   `json:"course_id"`  // 仅用于在UI上进行展示
+	Name       string   `json:"name"`       // 课程名称
+	Teacher    string   `json:"teacher"`    // 教师姓名
+	Rate       float32  `json:"rate"`       // 课程评价星级
+	StarsNum   uint32   `json:"stars_num"`  // 参与评分人数
+	Attendance string   `json:"attendance"` // 点名方式
+	Exam       string   `json:"exam"`       // 考核方式
+	Tags       []string `json:"tags"`       // 前二的tag
 }
 
 /*

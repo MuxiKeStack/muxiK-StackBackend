@@ -2,6 +2,8 @@ package main
 
 import (
 	"errors"
+	"fmt"
+	"go.uber.org/zap"
 	"net/http"
 	"time"
 
@@ -12,8 +14,8 @@ import (
 	"github.com/MuxiKeStack/muxiK-StackBackend/service"
 	"github.com/MuxiKeStack/muxiK-StackBackend/util/securityCheck"
 
+	"github.com/MuxiKeStack/muxiK-StackBackend/log"
 	"github.com/gin-gonic/gin"
-	"github.com/lexkong/log"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 )
@@ -90,7 +92,7 @@ func main() {
 	// Ping the server to make sure the router is working.
 	go func() {
 		if err := pingServer(); err != nil {
-			log.Fatal("The router has no response, or it might took too long to start up.", err)
+			log.Fatal("The router has no response, or it might took too long to start up.", zap.String("reason", err.Error()))
 		}
 		log.Info("The router has been deployed successfully.")
 	}()
@@ -102,7 +104,7 @@ func main() {
 	securityCheck.QQSecInit()
 	go securityCheck.RefreshTokenScheduled()
 
-	log.Infof("Start to listening the incoming requests on http address: %s", viper.GetString("addr"))
+	log.Info(fmt.Sprintf("Start to listening the incoming requests on http address: %s", viper.GetString("addr")))
 	log.Info(http.ListenAndServe(viper.GetString("addr"), g).Error())
 }
 

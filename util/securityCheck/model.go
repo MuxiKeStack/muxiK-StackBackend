@@ -9,7 +9,7 @@ import (
 
 	"github.com/MuxiKeStack/muxiK-StackBackend/util"
 
-	"github.com/lexkong/log"
+	"github.com/MuxiKeStack/muxiK-StackBackend/log"
 	"github.com/spf13/viper"
 )
 
